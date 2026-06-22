@@ -1,0 +1,26 @@
+{
+    "name": "aphim-telegram-bot",
+    "version": "1.0.0",
+    "description": "Telegram bot tự động tạo link phim từ aphim.io.vn",
+    "main": "bot.js",
+    "scripts": {
+        "start": "node bot.js",
+        "dev": "nodemon bot.js"
+    },
+    "keywords": [
+        "telegram",
+        "bot",
+        "movie",
+        "aphim"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^1.6.0",
+        "dotenv": "^16.3.1",
+        "node-telegram-bot-api": "^0.64.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    }
+}

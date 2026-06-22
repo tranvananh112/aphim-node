@@ -1,0 +1,173 @@
+{
+    "domain": "aphim.io.vn",
+    "plan": "free",
+    "dns_records": [
+        {
+            "type": "CNAME",
+            "name": "@",
+            "content": "YOUR_GITHUB_USERNAME.github.io",
+            "proxied": true,
+            "ttl": 1,
+            "comment": "Root domain - GitHub Pages"
+        },
+        {
+            "type": "CNAME",
+            "name": "www",
+            "content": "YOUR_GITHUB_USERNAME.github.io",
+            "proxied": true,
+            "ttl": 1,
+            "comment": "WWW subdomain"
+        }
+    ],
+    "ssl_tls": {
+        "mode": "full_strict",
+        "always_use_https": true,
+        "automatic_https_rewrites": true,
+        "min_tls_version": "1.2",
+        "tls_1_3": "on",
+        "opportunistic_encryption": true
+    },
+    "speed": {
+        "auto_minify": {
+            "js": true,
+            "css": true,
+            "html": true
+        },
+        "brotli": true,
+        "early_hints": true,
+        "http3": true,
+        "rocket_loader": false,
+        "mirage": false,
+        "polish": "off"
+    },
+    "caching": {
+        "caching_level": "standard",
+        "browser_cache_ttl": 14400,
+        "always_online": true,
+        "development_mode": false
+    },
+    "page_rules": [
+        {
+            "priority": 1,
+            "status": "active",
+            "targets": [
+                {
+                    "target": "url",
+                    "constraint": {
+                        "operator": "matches",
+                        "value": "aphim.io.vn/phim-x.html*"
+                    }
+                }
+            ],
+            "actions": [
+                {
+                    "id": "cache_level",
+                    "value": "bypass"
+                },
+                {
+                    "id": "security_level",
+                    "value": "essentially_off"
+                },
+                {
+                    "id": "disable_apps"
+                },
+                {
+                    "id": "disable_performance"
+                }
+            ],
+            "comment": "Bypass cache for adult content to avoid ISP blocking"
+        },
+        {
+            "priority": 2,
+            "status": "active",
+            "targets": [
+                {
+                    "target": "url",
+                    "constraint": {
+                        "operator": "matches",
+                        "value": "aphim.io.vn/api/*"
+                    }
+                }
+            ],
+            "actions": [
+                {
+                    "id": "cache_level",
+                    "value": "bypass"
+                }
+            ],
+            "comment": "Bypass cache for API endpoints"
+        },
+        {
+            "priority": 3,
+            "status": "active",
+            "targets": [
+                {
+                    "target": "url",
+                    "constraint": {
+                        "operator": "matches",
+                        "value": "aphim.io.vn/admin/*"
+                    }
+                }
+            ],
+            "actions": [
+                {
+                    "id": "cache_level",
+                    "value": "bypass"
+                },
+                {
+                    "id": "security_level",
+                    "value": "high"
+                }
+            ],
+            "comment": "Bypass cache and high security for admin panel"
+        },
+        {
+            "priority": 4,
+            "status": "active",
+            "targets": [
+                {
+                    "target": "url",
+                    "constraint": {
+                        "operator": "matches",
+                        "value": "aphim.io.vn/*"
+                    }
+                }
+            ],
+            "actions": [
+                {
+                    "id": "cache_level",
+                    "value": "cache_everything"
+                },
+                {
+                    "id": "edge_cache_ttl",
+                    "value": 2592000
+                },
+                {
+                    "id": "browser_cache_ttl",
+                    "value": 14400
+                }
+            ],
+            "comment": "Cache everything else for 30 days"
+        }
+    ],
+    "firewall": {
+        "waf": true,
+        "rate_limiting": {
+            "enabled": true,
+            "threshold": 100,
+            "period": 10,
+            "action": "challenge"
+        }
+    },
+    "network": {
+        "http3": true,
+        "ipv6": true,
+        "websockets": true,
+        "pseudo_ipv4": "add_header"
+    },
+    "scrape_shield": {
+        "email_obfuscation": true,
+        "server_side_exclude": true,
+        "hotlink_protection": false
+    }
+}

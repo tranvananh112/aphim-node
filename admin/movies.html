@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phim - A Phim Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* ─── Movies page enhanced ─── */
+        .movie-thumb {
+            width: 48px;
+            height: 68px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: var(--surface-3);
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        .movie-thumb:hover {
+            transform: scale(1.08);
+        }
+
+        .movie-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .movie-origin {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .movie-slug {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+            opacity: 0.6;
+            background: var(--surface-3);
+            padding: 1px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .movie-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        /* Link input */
+        .link-input {
+            width: 100%;
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 12px;
+            outline: none;
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+        }
+
+        .link-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .link-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-10);
+            background: var(--surface-2);
+        }
+
+        .link-input.has-link {
+            border-color: rgba(16, 185, 129, 0.35);
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        /* Link status indicator */
+        .link-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .link-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .link-status-dot.has {
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+        }
+
+        .link-status-dot.empty {
+            background: var(--text-muted);
+        }
+
+        /* Category tabs */
+        .cat-tabs-wrap {
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .cat-tabs-wrap::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .cat-tabs {
+            display: flex;
+            gap: 6px;
+            min-width: max-content;
+        }
+
+        .cat-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 99px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cat-tab:hover {
+            color: var(--text-secondary);
+            border-color: var(--border-hover);
+        }
+
+        .cat-tab.active {
+            background: var(--primary-20);
+            border-color: var(--primary);
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .cat-tab .material-icons-round {
+            font-size: 14px;
+        }
+
+        /* Section meta bar */
+        .section-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .section-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .source-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            background: var(--primary-10);
+            border: 1px solid var(--primary-20);
+            border-radius: 99px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        .source-chip .material-icons-round {
+            font-size: 14px;
+        }
+
+        /* Pagination bar */
+        .pag-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .pag-info-text {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pag-info-text strong {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Table enhanced */
+        .admin-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .admin-table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        /* Quality badges */
+        .q-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .q-badge.hd {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+        }
+
+        .q-badge.fhd {
+            background: rgba(59, 130, 246, 0.18);
+            color: #60a5fa;
+        }
+
+        .q-badge.cam {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+        }
+
+        .q-badge.other {
+            background: var(--surface-3);
+            color: var(--text-muted);
+        }
+
+        /* Animation */
+        @keyframes rowIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-table tbody tr {
+            animation: rowIn 0.18s ease both;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- ───SIDEBAR ───-->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"
+                    style="background:transparent; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+                    <img src="../favicon.png" alt="A Phim"
+                        style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));" />
+                </div>
+                <div class="sidebar-logo-text">
+                    <h1 style="letter-spacing: 0.5px;">A Phim</h1>
+                    <p style="color: var(--primary);">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="/dashboard" class="sidebar-nav-item" id="nav-dashboard">
+                        <i data-lucide="layout-dashboard" style="width: 1em; height: 1em;"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">nội dung</p>
+                    <a href="/movies" class="sidebar-nav-item active" id="nav-movies">
+                        <i data-lucide="film" style="width: 1em; height: 1em;"></i>
+                        <span>Quản lý phim</span>
+                    </a>
+                    <a href="/categories" class="sidebar-nav-item" id="nav-categories">
+                        <i data-lucide="list-tree" style="width: 1em; height: 1em;"></i>
+                        <span>Danh mục</span>
+                    </a>
+                    <a href="/banners" class="sidebar-nav-item" id="nav-banners">
+                        <i data-lucide="image" style="width: 1em; height: 1em;"></i>
+                        <span>Banner &amp; Ads</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Người dùng</p>
+                    <a href="/users" class="sidebar-nav-item" id="nav-users">
+                        <i data-lucide="users" style="width: 1em; height: 1em;"></i>
+                        <span>Người dùng</span>
+                    </a>
+                    <a href="/chat" class="sidebar-nav-item" id="nav-chat">
+                        <i data-lucide="message-square" style="width: 1em; height: 1em;"></i>
+                        <span>Quản lý Chat</span>
+                    </a>
+                    <a href="/comments" class="sidebar-nav-item" id="nav-comments">
+                        <i data-lucide="message-circle" style="width: 1em; height: 1em;"></i>
+                        <span>Bình luận</span>
+                    </a>
+                    <a href="/subscriptions" class="sidebar-nav-item" id="nav-subscriptions">
+                        <i data-lucide="credit-card" style="width: 1em; height: 1em;"></i>
+                        <span>Gói thành viên</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tài chính</p>
+                    <a href="/payments" class="sidebar-nav-item" id="nav-payments">
+                        <i data-lucide="circle-dollar-sign" style="width: 1em; height: 1em;"></i>
+                        <span>Thanh toán</span>
+                    </a>
+                    <a href="/supporters" class="sidebar-nav-item" id="nav-supporters">
+                        <i data-lucide="heart" style="width: 1em; height: 1em;"></i>
+                        <span>Ủng hộ</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">hệ thống</p>
+                    <a href="/settings" class="sidebar-nav-item" id="nav-settings">
+                        <i data-lucide="settings" style="width: 1em; height: 1em;"></i>
+                        <span>Cài đặt</span>
+                    </a>
+                    <a href="/partner" class="sidebar-nav-item" id="nav-partner">
+                        <i data-lucide="handshake" style="width: 1em; height: 1em;"></i>
+                        <span>Partner DT99</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="sidebar-logout"
+                    onclick="adminAuthService ? adminAuthService.logout() : (location.href = '/dashboard')">
+                    <i data-lucide="log-out" style="width: 1em; height: 1em;"></i>
+                    <span>Đăng xuất</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ───MAIN ───-->
+        <main class="admin-main">
+
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Quản lý Phim</h2>
+                    <p>Cập nhật link video &amp; quản lý toàn bộ"nội dung phim</p>
+                </div>
+                <div class="header-right">
+                    <div class="header-search">
+                        <i data-lucide="search" class="search-icon" style="width: 1em; height: 1em;"></i>
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
+                    </div>
+                    <button class="header-icon-btn" title="Làm mới" onclick="loadMovies(currentSource, 1)">
+                        <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i>
+                    </button>
+                    <div class="header-separator"></div>
+                    <div class="header-admin">
+                        <div class="header-admin-avatar">A</div>
+                        <div class="header-admin-info">
+                            <p>Admin</p>
+                            <span>Quản trị viên</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="admin-content">
+
+                <!-- Category Tabs -->
+                <div class="admin-card mb-20" style="margin-bottom: 20px;">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">
+                            <i data-lucide="filter" style="width: 1em; height: 1em;"></i>
+                            Lọc theo danh mục
+                        </span>
+                        <span class="source-chip">
+                            <i data-lucide="cloud" style="width: 1em; height: 1em;"></i>
+                            <span id="currentSourceLabel">Tất cả phim</span>
+                        </span>
+                    </div>
+                    <div class="admin-card-body" style="padding-top: 14px; padding-bottom: 14px;">
+                        <div class="cat-tabs-wrap">
+                            <div class="cat-tabs">
+                                <button class="cat-tab active" data-source="all"
+                                    onclick="switchSource('all', 'Tất cả phim', this)">
+                                    <i data-lucide="layout-grid" style="width: 1em; height: 1em;"></i> Tất cả
+                                </button>
+                                <button class="cat-tab" data-source="phim-moi"
+                                    onclick="switchSource('phim-moi', 'Phim Mới', this)">
+                                    <i data-lucide="sparkles" style="width: 1em; height: 1em;"></i> Phim Mới
+                                </button>
+                                <button class="cat-tab" data-source="phim-bo"
+                                    onclick="switchSource('phim-bo', 'Phim Bộ', this)">
+                                    <i data-lucide="library" style="width: 1em; height: 1em;"></i> Phim Bộ
+                                </button>
+                                <button class="cat-tab" data-source="phim-le"
+                                    onclick="switchSource('phim-le', 'Phim Lẻ', this)">
+                                    <i data-lucide="film" style="width: 1em; height: 1em;"></i> Phim Lẻ
+                                </button>
+                                <button class="cat-tab" data-source="tv-shows"
+                                    onclick="switchSource('tv-shows', 'TV Shows', this)">
+                                    <i data-lucide="tv" style="width: 1em; height: 1em;"></i> TV Shows
+                                </button>
+                                <button class="cat-tab" data-source="hoat-hinh"
+                                    onclick="switchSource('hoat-hinh', 'Hoạt Hình', this)">
+                                    <i data-lucide="aperture" style="width: 1em; height: 1em;"></i> Hoạt Hình
+                                </button>
+                                <button class="cat-tab" data-source="phim-vietsub"
+                                    onclick="switchSource('phim-vietsub', 'Vietsub', this)">
+                                    <i data-lucide="captions" style="width: 1em; height: 1em;"></i> Vietsub
+                                </button>
+                                <button class="cat-tab" data-source="phim-thuyet-minh"
+                                    onclick="switchSource('phim-thuyet-minh', 'Thuyết Minh', this)">
+                                    <i data-lucide="mic" style="width: 1em; height: 1em;"></i> Thuyết Minh
+                                </button>
+                                <button class="cat-tab" data-source="phim-long-tien"
+                                    onclick="switchSource('phim-long-tien', 'L ng Tiếng', this)">
+                                    <i data-lucide="volume-2" style="width: 1em; height: 1em;"></i> Lồng Tiếng
+                                </button>
+                                <button class="cat-tab" data-source="phim-bo-dang-chieu"
+                                    onclick="switchSource('phim-bo-dang-chieu', 'Đang Chiếu', this)">
+                                    <i data-lucide="play-circle" style="width: 1em; height: 1em;"></i> Đang Chiếu
+                                </button>
+                                <button class="cat-tab" data-source="phim-bo-hoan-thanh"
+                                    onclick="switchSource('phim-bo-hoan-thanh', 'Hoàn Thành', this)">
+                                    <i data-lucide="check-square" style="width: 1em; height: 1em;"></i> Hoàn Thành
+                                </button>
+                                <button class="cat-tab" data-source="phim-sap-chieu"
+                                    onclick="switchSource('phim-sap-chieu', 'Sắp Chiếu', this)">
+                                    <i data-lucide="calendar-clock" style="width: 1em; height: 1em;"></i> Sắp Chiếu
+                                </button>
+                                <button class="cat-tab" data-source="phim-chieu-rap"
+                                    onclick="switchSource('phim-chieu-rap', 'Chiếu Rạp', this)">
+                                    <i data-lucide="film" style="width: 1em; height: 1em;"></i> Chiếu Rạp
+                                </button>
+                                <button class="cat-tab" data-source="vietnam"
+                                    onclick="switchSource('vietnam', 'Phim Việt Nam', this)">
+                                    <i data-lucide="flag" style="width: 1em; height: 1em;"></i> Việt Nam
+                                </button>
+                                <button class="cat-tab" data-source="hidden"
+                                    onclick="switchSource('hidden', 'a️ Phim Đã Ẩn', this)"
+                                    style="border-color: var(--danger); color: var(--danger);">
+                                    <i data-lucide="eye-off" style="width: 1em; height: 1em;"></i> Đã Ẩn
+                                    <span id="hiddenCountBadge"
+                                        style="background: var(--danger-bg); color: var(--danger); font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px; margin-left: 2px;">0</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section meta bar -->
+                <div class="section-meta">
+                    <div class="section-meta-left">
+                        <div class="filter-search" style="min-width: 280px;">
+                            <i data-lucide="search" class="search-icon" style="width: 1em; height: 1em;"></i>
+                            <input type="text" id="tableSearchInput" placeholder="Tìm theo tên phim, slug...">
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="loadMovies(currentSource, currentPage)"
+                            title="Làm mới">
+                            <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i> Làm mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="loading" class="admin-card">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Đang tải danh sách phim...</p>
+                    </div>
+                </div>
+
+                <!-- Movies Table -->
+                <div id="moviesTable" class="admin-card hidden">
+
+                    <!-- Table card header with quick stats -->
+                    <div class="admin-card-header" style="gap:16px;flex-wrap:wrap;">
+                        <span class="admin-card-title" style="display:flex;align-items:center;gap:8px;">
+                            <i data-lucide="film" style="width: 1em; height: 1em;"></i>
+                            Danh sách phim
+                        </span>
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;">
+                            <div id="statsRow" style="display:flex;gap:8px;"></div>
+                            <span id="movieCountBadge" class="badge badge-primary"
+                                style="font-size:12px;padding:4px 14px;">0 phim</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:36px;">#</th>
+                                    <th>Phim</th>
+                                    <th style="width:80px;">Năm</th>
+                                    <th style="width:70px;">Chất lượng</th>
+                                    <th>Thể loại</th>
+                                    <th style="width:120px;">Tập</th>
+                                    <th style="min-width:180px;">Nguồn Video</th>
+                                    <th style="text-align:center;width:150px;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="moviesBody">
+                                <!-- Loaded by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination bar enhanced -->
+                    <div class="pag-bar" style="justify-content: flex-start;">
+                        <div id="pagination" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                            <!-- Rendered by renderPagination() -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div><!-- /admin-content -->
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        /* ─────────────────────────────
+        GIỮ NGUY`N TOìN BộLOGIC JS GỐC
+        ──────────────────────────────*/
+        let allMovies = [];
+        let hiddenMovies = []; // Loaded from API
+        let currentType = 'danh-sach';
+        let currentSource = 'all';
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalItems = 0;
+
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api'
+            : 'https://a-phim-production-fb41.up.railway.app/api';
+
+        async function fetchHiddenMoviesList() {
+            try {
+                const res = await fetch(`${API_BASE}/movies/hidden/list`);
+                const data = await res.json();
+                if (data.success) {
+                    hiddenMovies = data.data;
+                    updateHiddenBadge();
+                }
+            } catch (e) {
+                console.error('Lỗi tải danh sách phim ẩn:', e);
+            }
+        }
+        fetchHiddenMoviesList();
+
+        // ─ ─Cập nhật badge tab Đã Ẩn ─ 
+        function updateHiddenBadge() {
+            const badge = document.getElementById('hiddenCountBadge');
+            if (badge) badge.textContent = hiddenMovies.length;
+        }
+        updateHiddenBadge();
+
+        // ─ ─Switch source (new) ─ 
+        function switchSource(source, label, btn) {
+            // Update tab active state
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            // Update label chip
+            const labelEl = document.getElementById('currentSourceLabel');
+            if (labelEl) labelEl.textContent = label;
+
+            // Bóc tách type từ btn config hoặc data attr nếu có
+            let t = btn ? (btn.dataset.type || 'danh-sach') : 'danh-sach';
+            const cntrArr = ['viet-nam', 'han-quoc', 'trung-quoc', 'nhat-ban', 'thai-lan', 'au-my', 'hong-kong', 'dai-loan', 'an-do', 'anh', 'phap', 'canada'];
+            if (cntrArr.includes(source)) t = 'quoc-gia';
+
+            loadMovies(t, source, 1);
+        }
+
+        // ─ ─Load movies from API (unified logic handling type & source) ─ 
+        async function loadMovies(type = 'danh-sach', source = 'all', page = 1) {
+            // Xử lý tab Đã Ẩn riêng (không cần gọi API)
+            if (source === 'hidden') {
+                currentType = 'hidden';
+                currentSource = 'hidden';
+                currentPage = 1;
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('moviesTable').classList.remove('hidden');
+                renderHiddenMovies();
+                return;
+            }
+
+            try {
+                currentType = type;
+                currentSource = source;
+                currentPage = page;
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('moviesTable').classList.add('hidden');
+
+                let url;
+                if (type === 'danh-sach' && source === 'all') {
+                    url = `https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${page}`;
+                } else {
+                    url = `https://ophim1.com/v1/api/${type}/${source}?page=${page}`;
+                }
+
+                console.log('Loading from:', url);
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'accept': 'application/json' }
+                });
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                if (data && data.status === 'success' && data.data && data.data.items) {
+                    allMovies = data.data.items;
+
+                    // ─ ─Fix: H trợ cả 2 format API và tự động tính số trang ─ 
+                    const pag = data.data.params?.pagination
+                        || data.data.paginate
+                        || data.data.pagination
+                        || {};
+                    totalItems = pag.totalItems || pag.total_items || allMovies.length;
+                    const itemsPerPage = pag.totalItemsPerPage || 24;
+                    totalPages = pag.totalPages || pag.total_pages || Math.ceil(totalItems / itemsPerPage) || 1;
+
+                    renderMovies(allMovies);
+                    renderPagination();
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('moviesTable').classList.remove('hidden');
+                    const countBadge = document.getElementById('movieCountBadge');
+                    if (countBadge) countBadge.textContent = `${totalItems.toLocaleString('vi-VN')} phim`;
+                } else {
+                    showError('Không thể tải danh sách phim');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Lỗi khi tải phim: ' + error.message);
+            }
+        }
+
+        // ─ ─Render movies enhanced fullỗinfo ─ 
+        function renderMovies(movies) {
+            const tbody = document.getElementById('moviesBody');
+            if (!movies.length) {
+                tbody.innerHTML = `
+ <tr><td colspan="8">
+  <div class="empty-state"style="padding:40px;">
+  <i data-lucide="film"style="width: 1em; height: 1em;"></i>
+  <h3>Không có phim nào</h3>
+  <p>Thử chọn danh mục khác hoặc tìm kiếm lại</p>
+  </div>
+ </td></tr>`;
+                return;
+            }
+
+            // Quick stats
+            const hasLinkCount = movies.length;
+            const hiddenCount = movies.filter(m => hiddenMovies.includes(m.slug)).length;
+            const statsRow = document.getElementById('statsRow');
+            if (statsRow) {
+                statsRow.innerHTML = `
+ <span style="display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--success);">
+  <i data-lucide="link"style="width: 1em; height: 1em;"></i>
+  Tất cả tự động đồng bộ API
+ </span>
+ <span style="display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--danger);">
+  <i data-lucide="eye-off"style="width: 1em; height: 1em;"></i>
+  ${hiddenCount} đã ẩn
+ </span>`;
+            }
+
+            tbody.innerHTML = movies.map((movie, idx) => {
+                const isHidden = hiddenMovies.includes(movie.slug);
+                const categories = movie.category?.map(c => `
+ <span style="display:inline-flex;align-items:center;gap:3px;background:var(--primary-10);color:var(--primary-light);padding:1px 7px;border-radius:99px;font-size:10.5px;font-weight:600;white-space:nowrap;margin:1px;">
+  ${c.name}
+ </span>`).join('') || '<span class="badge badge-gray">N/A</span>';
+
+                // Quality badge
+                const q = (movie.quality || '').toLowerCase();
+                const qCls = q.includes('full') || q.includes('1080') ? 'fhd'
+                    : q.includes('hd') ? 'hd'
+                        : q.includes('cam') ? 'cam'
+                            : 'other';
+                const qualityBadge = movie.quality
+                    ? `<span class="q-badge ${qCls}">${movie.quality}</span>`
+                    : `<span class="q-badge other"> </span>`;
+
+                // Episode info
+                const epCurrent = movie.episode_current || '';
+                const epTotal = movie.episode_total || '';
+                const epText = epCurrent
+                    ? `<div style="font-size:12px;font-weight:600;color:var(--text-primary);">${epCurrent}</div>
+  ${epTotal ? `<div style="font-size:10.5px;color:var(--text-muted);">/ ${epTotal} tập</div>` : ''}`
+                    : `<span style="color:var(--text-muted);font-size:12px;"> </span>`;
+
+                // Link status
+                const linkDot = `<div class="link-status">
+ <div class="link-status-dot has"></div>
+ <span style="color:var(--success)">Đã đồng bộ nguồn (API)</span>
+ </div>`;
+
+                const rowStyle = isHidden
+                    ? 'opacity:0.45;filter:grayscale(0.7);'
+                    : 'border-left:2px solid rgba(16,185,129,0.25);';
+
+                return `
+ <tr style="${rowStyle}"data-slug="${movie.slug}">
+ <td style="text-align:center;font-size:11px;color:var(--text-muted);font-weight:600;">${(currentPage - 1) * 40 + idx + 1}</td>
+ <td style="min-width:220px;">
+  <div style="display:flex;align-items:flex-start;gap:11px;">
+  <img src="https://img.ophim.live/uploads/movies/${movie.thumb_url}"
+  alt="${movie.name}"
+  class="movie-thumb"
+  onerror="this.src='https://via.placeholder.com/48x68/1c1f33/6366f1?text=?'">
+  <div style="flex:1;min-width:0;">
+  <div class="movie-title">
+  ${movie.name}
+  ${isHidden ? '<span class="badge badge-danger"style="font-size:9.5px;padding:1px 6px;">Đã Ẩn</span>' : ''}
+  <span style="display:inline-flex;align-items:center;gap:2px;background:rgba(16,185,129,0.12);color:#34d399;padding:1px 5px;border-radius:4px;font-size:9.5px;font-weight:700;"><span class=\'material-icons-round\' style=\'font-size:10px;\'>check_circle</span>Link</span>
+  </div>
+  <div class="movie-origin"style="font-size:11.5px;">${movie.origin_name || ''}</div>
+  <div class="movie-slug">${movie.slug}</div>
+  </div>
+  </div>
+ </td>
+  <td style="text-align:center;">
+   <span class="badge badge-gray"style="font-size:12px;font-weight:700;">${movie.year || 'N/A'}</span>
+  </td>
+  <td style="text-align:center;">${qualityBadge}</td>
+  <td style="max-width:200px;">${categories}</td>
+  <td style="text-align:center;">${epText}</td>
+  <td style="vertical-align:top;padding-top:12px;">
+   ${linkDot}
+  </td>
+  <td style="text-align:center;vertical-align:middle;">
+   <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
+   <div style="display:flex;gap:5px;">
+   <a href="..//phim/${movie.slug}"target="_blank"
+   class="btn btn-success btn-sm"title="Chi tiết trên web"${isHidden ? 'style="pointer-events:none;opacity:0.4;"' : ''}>
+   <i data-lucide="play"style="width: 1em; height: 1em;"></i> Xem
+   </a>
+   <button onclick="toggleHideMovie('${movie.slug}', this)"class="btn ${isHidden ? 'btn-success' : 'btn-danger'} btn-sm"
+    title="${isHidden ? 'Hiện lại phim này' : 'Ẩn phim này khỏi website'}">
+   <i data-lucide="${isHidden ? 'eye' : 'eye-off'}"style="width: 1em; height: 1em;"></i>
+   ${isHidden ? 'Hiện' : 'Ẩn'}
+   </button>
+   </div>
+   </div>
+  </td>
+  </tr>`;
+            }).join('');
+        }
+
+        // ─ ─Render pagination + update pagInfoText ─ 
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (!container) return;
+
+            if (totalPages <= 1) {
+                container.innerHTML = `<span style="font-size:13.5px;color:var(--text-muted);">Tổng <strong>${totalItems.toLocaleString('vi-VN')}</strong> phim &mdash; Trang <strong>1/1</strong></span>`;
+                return;
+            }
+
+            let html = '';
+            const visiblePages = 5;
+
+            if (currentPage > 1) {
+                html += `<button onclick="loadMovies('${currentType}', '${currentSource}', ${currentPage - 1})"class="page-btn">
+ <i data-lucide="chevron-left"style="width: 1em; height: 1em;"></i>
+ </button>`;
+            }
+
+            const start = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+            const end = Math.min(totalPages, start + visiblePages - 1);
+
+            if (start > 1) {
+                html += `<button onclick="loadMovies('${currentType}', '${currentSource}', 1)"class="page-btn">1</button>`;
+                if (start > 2) html += `<span style="color:var(--text-muted);padding:0 4px;">...</span>`;
+            }
+
+            for (let i = start; i <= end; i++) {
+                if (i === currentPage) {
+                    html += `<button class="page-btn active">${i}</button>`;
+                } else {
+                    html += `<button onclick="loadMovies('${currentType}', '${currentSource}', ${i})"class="page-btn">${i}</button>`;
+                }
+            }
+
+            if (end < totalPages) {
+                if (end < totalPages - 1) html += `<span style="color:var(--text-muted);padding:0 4px;">...</span>`;
+                html += `<button onclick="loadMovies('${currentType}', '${currentSource}', ${totalPages})"class="page-btn">${totalPages}</button>`;
+            }
+
+            if (currentPage < totalPages) {
+                html += `<button onclick="loadMovies('${currentSource}', ${currentPage + 1})"class="page-btn">
+ <i data-lucide="chevron-right"style="width: 1em; height: 1em;"></i>
+ </button>`;
+            }
+
+            html += `<span style="margin-left: 12px; font-size: 13.5px; color: var(--text-muted); white-space:nowrap;">Trang ${currentPage}/${totalPages} | Tổng ${totalItems.toLocaleString('vi-VN')} phim</span>`;
+
+            container.innerHTML = html;
+        }
+
+        // ─ ─Render danh sách Phim Đã Ẩn ─ 
+        function renderHiddenMovies() {
+            const tbody = document.getElementById('moviesBody');
+            const countBadge = document.getElementById('movieCountBadge');
+            const pagContainer = document.getElementById('pagination');
+
+            if (pagContainer) pagContainer.innerHTML = '';
+            if (countBadge) countBadge.textContent = `${hiddenMovies.length} phim ẩn`;
+
+            if (!hiddenMovies.length) {
+                tbody.innerHTML = `
+ <tr><td colspan="5">
+  <div class="empty-state"style="padding: 40px;">
+  <i data-lucide="eye"style="width: 1em; height: 1em;"></i>
+  <h3>Không có phim nào bị ẩn</h3>
+  <p>Tất cả phim ang ược hiển thị trên trang web</p>
+  </div>
+ </td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = hiddenMovies.map(slug => `
+ <tr style="opacity: 0.75;">
+ <td>
+  <div style="display: flex; align-items: center; gap: 12px;">
+  <div style="width:44px;height:60px;background:var(--surface-3);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+  <i data-lucide="eye-off"style="width: 1em; height: 1em;"></i>
+  </div>
+  <div>
+  <div class="movie-title">
+  ${slug}
+  <span class="badge badge-danger"style="margin-left:6px;font-size:10px;">Đã Ẩn</span>
+  </div>
+  <div class="movie-slug">${slug}</div>
+  </div>
+  </div>
+ </td>
+ <td><span class="badge badge-gray"> </span></td>
+ <td><span class="badge badge-gray"style="font-size:11px;"> </span></td>
+ <td><span style="font-size:12px;color:var(--text-muted);">Phim ang bị ẩn</span></td>
+ <td style="text-align: center;">
+  <div style="display: flex; gap: 6px; justify-content: center;">
+  <button onclick="toggleHideMovie('${slug}')"class="btn btn-success btn-sm"title="Hi!n lại phim này">
+  <i data-lucide="eye"style="width: 1em; height: 1em;"></i> Hi!n lại
+  </button>
+  </div>
+ </td>
+ </tr>
+ `).join('');
+        }
+
+        // ─ ─Toggle hide movie ─ 
+        window.toggleHideMovie = async function (slug, btn) {
+            try {
+                const isCurrentlyHidden = hiddenMovies.includes(slug);
+
+                if (!isCurrentlyHidden) {
+                    if (!confirm(`⚠️ Ẩn phim "${slug}" khỏi trang web?\n\nPhim sẽ không hiển thị với người dùng. Bạn có thể hiện lại bất cứ lúc nào từ tab "Đã Ẩn".`)) return;
+                }
+
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                }
+
+                const res = await fetch(`${API_BASE}/movies/hidden/toggle/${slug}`, { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    // Cập nhật mảng hiddenMovies
+                    if (data.isHidden && !hiddenMovies.includes(slug)) {
+                        hiddenMovies.push(slug);
+                    } else if (!data.isHidden) {
+                        hiddenMovies = hiddenMovies.filter(s => s !== slug);
+                    }
+
+                    updateHiddenBadge();
+                    showToast(data.message, 'success');
+
+                    if (currentSource === 'hidden') {
+                        renderHiddenMovies();
+                    } else {
+                        renderMovies(allMovies);
+                    }
+                } else {
+                    showToast(data.message || 'Lỗi server', 'error');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                showToast('Lỗi kết nối', 'error');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }
+            }
+        }
+
+        // ─ ─Show error ─ 
+        function showError(message) {
+            document.getElementById('loading').innerHTML = `
+ <div class="empty-state">
+ <i data-lucide="alert-circle"style="width: 1em; height: 1em;"></i>
+ <h3 style="color: var(--danger);">${message}</h3>
+ <p>KiỒm tra kết nối và thử lại</p>
+ <button onclick="location.reload()"class="btn btn-primary"style="margin-top: 8px;">
+  <i data-lucide="refresh-cw"style="width: 1em; height: 1em;"></i> Thử lại
+ </button>
+ </div>`;
+        }
+
+        // ─ ─Toast notification ─ 
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const icons = { success: 'check_circle', error: 'error', info: 'info' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i data-lucide="info"style="width: 1em; height: 1em;"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ─ ─Event: inline search within table (original logic preserved) ─ 
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = allMovies.filter(movie =>
+                movie.name.toLowerCase().includes(keyword) ||
+                (movie.origin_name && movie.origin_name.toLowerCase().includes(keyword)) ||
+                movie.slug.toLowerCase().includes(keyword)
+            );
+            renderMovies(filtered);
+            const countBadge = document.getElementById('movieCountBadge');
+            if (countBadge) countBadge.textContent = `${filtered.length} phim`;
+        });
+
+        // ─ ─Event: secondary search (table-level) ─ 
+        document.getElementById('tableSearchInput').addEventListener('input', (e) => {
+            document.getElementById('searchInput').value = e.target.value;
+            document.getElementById('searchInput').dispatchEvent(new Event('input'));
+        });
+
+        // ─ ─Init: ọc URL ?source= & ?type= Ồ auto-switch tab ─ 
+        (function initWithURLParams() {
+            const params = new URLSearchParams(location.search);
+            const source = params.get('source');
+            const typeUrl = params.get('type') || 'danh-sach';
+
+            if (source) {
+                const tabBtn = document.querySelector(`[data-source="${source}"]`);
+                if (tabBtn) {
+                    const label = tabBtn.textContent.trim();
+                    switchSource(source, label, tabBtn);
+                } else {
+                    const labelEl = document.getElementById('currentSourceLabel');
+                    const countryEndpoints = ['viet-nam', 'han-quoc', 'trung-quoc', 'nhat-ban', 'thai-lan', 'au-my', 'hong-kong', 'dai-loan', 'an-do', 'anh', 'phap', 'canada'];
+
+                    let detectedType = typeUrl;
+                    if (!params.has('type') && countryEndpoints.includes(source)) {
+                        detectedType = 'quoc-gia';
+                    }
+
+                    if (labelEl) labelEl.textContent = source;
+                    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                    loadMovies(detectedType, source, 1);
+                }
+            } else {
+                loadMovies('danh-sach', 'all', 1);
+            }
+        })();
+    </script>
+    <script>lucide.createIcons();</script>
+
+    <script>
+        // Tự động render Lucide Icons khi DOM thay đổi (tải dữ liệu bảng/động)
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) lucide.createIcons();
+            let isUpdating = false;
+            const observer = new MutationObserver(() => {
+                if (isUpdating) return;
+                isUpdating = true;
+                if (window.lucide) {
+                    try { lucide.createIcons(); } catch (e) { }
+                }
+                setTimeout(() => { isUpdating = false; }, 100);
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+
+</html>

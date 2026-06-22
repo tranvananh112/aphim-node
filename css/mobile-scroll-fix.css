@@ -1,0 +1,108 @@
+/* =====================================================
+   MOBILE SCROLL & TOUCH FIX v4
+   Fix đúng: dùng overscroll-behavior thay vì pan-x
+   Không làm khựng lướt dọc trang trên mobile
+   ===================================================== */
+
+/* ---- FIX 1: Tắt highlight cam/xanh toàn bộ slider ---- */
+.overflow-x-auto *,
+.snap-x *,
+.scrollbar-hide * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+/* ---- FIX 2: Container scroll ngang ---- */
+/* KHÔNG dùng touch-action: pan-x — sẽ block lướt dọc trang!
+   Dùng overscroll-behavior-x: contain thay thế — nhẹ hơn, đúng hơn */
+.overflow-x-auto,
+[class*="overflow-x-auto"],
+.scrollbar-hide,
+.snap-x {
+    /* Chặn scroll ngang lan ra ngoài container (không ảnh hưởng lướt dọc) */
+    overscroll-behavior-x: contain;
+    /* Scroll mượt trên iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Tắt highlight */
+    -webkit-tap-highlight-color: transparent;
+    /* Ẩn scroll dọc trong slider */
+    overflow-y: hidden !important;
+}
+
+/* ---- FIX 3: Card chiều cao đồng đều ---- */
+.snap-x > *,
+.overflow-x-auto > * {
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+
+/* Ảnh poster cố định tỉ lệ 2:3 */
+.snap-x img,
+.overflow-x-auto img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    object-position: center top;
+    flex-shrink: 0;
+}
+
+/* ---- FIX 4: CLICK NHANH + CHÍNH XÁC ---- */
+/* Xóa 300ms double-tap delay — nhận click ngay */
+a, button, [onclick],
+[role="button"],
+[class*="card"],
+[class*="movie-item"],
+[class*="film-item"],
+[class*="premium-card"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+/* ---- FIX 5: Hover chỉ trên desktop ---- */
+@media (hover: hover) and (pointer: fine) {
+    .snap-x a:hover,
+    .overflow-x-auto a:hover {
+        opacity: 0.85;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    /* Mobile: tắt hover để không bị sáng khung */
+    .snap-x a:hover,
+    .snap-x div:hover,
+    .overflow-x-auto a:hover,
+    .overflow-x-auto div:hover,
+    [class*="card"]:hover,
+    [class*="movie-item"]:hover,
+    [class*="film-item"]:hover,
+    [class*="premium-card"]:hover {
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* ---- FIX 6: Mobile ---- */
+@media (max-width: 768px) {
+    /* Xóa 300ms tap delay toàn trang — KHÔNG block scroll */
+    a, button, [onclick], [role="button"] {
+        touch-action: manipulation;
+    }
+
+    .overflow-x-auto,
+    .snap-x,
+    .scrollbar-hide {
+        /* Dùng overscroll thay vì pan-x để không block lướt dọc */
+        overscroll-behavior-x: contain;
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory;
+    }
+
+    .snap-x > *,
+    .overflow-x-auto > * {
+        align-self: flex-start !important;
+    }
+}

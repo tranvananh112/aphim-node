@@ -1,0 +1,383 @@
+/* ================================================================
+   A PHIM — Movie Cards v2 — Midnight Cinema Theme
+   Hệ thống card phim cao cấp — học RoPhim + Netflix
+   ================================================================ */
+
+/* ── Card Base ── */
+.movie-card-v2 {
+    position: relative;
+    border-radius: var(--radius-card, 12px);
+    overflow: hidden;
+    background: var(--bg-surface, #12131f);
+    border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+    cursor: pointer;
+    transition:
+        transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    /* will-change: transform, box-shadow; Disabled for scroll performance */
+    flex: none;
+    width: 100px;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+    .movie-card-v2 { width: 128px; }
+}
+
+.movie-card-v2:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(232, 185, 79, 0.22);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 20px rgba(232, 185, 79, 0.09),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* ── Poster image container (2:3 ratio) ── */
+.movie-card-v2 .card-poster {
+    position: relative;
+    width: 100%;
+    padding-top: 150%; /* 2:3 aspect ratio */
+    overflow: hidden;
+    background: var(--bg-elevated, #1a1b2e);
+}
+
+.movie-card-v2 .card-poster img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.movie-card-v2:hover .card-poster img {
+    transform: scale(1.06);
+}
+
+/* ── Bottom Gradient fade - Disabled for brightness ── */
+/* 
+.movie-card-v2 .card-poster::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(
+        to top,
+        rgba(30, 33, 48, 0.92) 0%,
+        rgba(30, 33, 48, 0.55) 45%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+}
+*/
+
+/* ── Badge chất lượng — Bottom Left (Học RoPhim) ── */
+.card-quality-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    z-index: 3;
+    background: rgba(16, 185, 129, 0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: var(--radius-xs, 4px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.card-quality-badge.fhd {
+    background: rgba(59, 130, 246, 0.85);
+}
+
+.card-quality-badge.cam {
+    background: rgba(239, 68, 68, 0.85);
+    font-size: 8px;
+}
+
+/* ── Badge số tập — Top Right ── */
+.card-episode-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    background: rgba(30, 33, 48, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--text-secondary, #9899b0);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: var(--radius-xs, 4px);
+    border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+}
+
+/* ── Badge "MỚI" — Top Left ── */
+.card-new-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 3;
+    background: linear-gradient(135deg, #e8b94f, #f59e0b);
+    color: #1e2130;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs, 4px);
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 10px rgba(232, 185, 79, 0.40);
+}
+
+/* ── Overlay khi hover: nút Play hiện ra ── */
+.card-hover-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: rgba(30, 33, 48, 0.55);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.movie-card-v2:hover .card-hover-overlay {
+    opacity: 1;
+}
+
+.card-play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-gold, #e8b94f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.7);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 20px rgba(232, 185, 79, 0.50);
+}
+
+.movie-card-v2:hover .card-play-btn {
+    transform: scale(1);
+}
+
+/* Play icon (dùng CSS triangle) */
+.card-play-btn::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent #1e2130;
+    margin-left: 3px;
+}
+
+/* ── Info section dưới poster ── */
+.card-info {
+    padding: 10px 10px 12px;
+}
+
+.card-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary, #f0f0f5);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 4px;
+    transition: color 0.2s ease;
+}
+
+.movie-card-v2:hover .card-title {
+    color: var(--accent-gold, #e8b94f);
+}
+
+.card-subtitle {
+    font-size: 0.65rem;
+    color: var(--text-muted, #5a5b72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Watch Progress bar ── */
+.card-progress {
+    height: 2px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 1px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.card-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e8b94f, #f59e0b);
+    border-radius: 1px;
+    box-shadow: 0 0 8px rgba(232, 185, 79, 0.50);
+}
+
+/* ── Loading Skeleton ── */
+.movie-card-v2.skeleton .card-poster {
+    background: linear-gradient(
+        90deg,
+        var(--bg-surface, #12131f) 25%,
+        var(--bg-elevated, #1a1b2e) 50%,
+        var(--bg-surface, #12131f) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+.movie-card-v2.skeleton .card-title,
+.movie-card-v2.skeleton .card-subtitle {
+    background: linear-gradient(
+        90deg,
+        var(--bg-surface, #12131f) 25%,
+        var(--bg-elevated, #1a1b2e) 50%,
+        var(--bg-surface, #12131f) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+    border-radius: var(--radius-xs, 4px);
+    color: transparent;
+}
+
+@keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── Section Header — Gradient text (học RoPhim) ── */
+.section-title {
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    position: relative;
+    display: inline-block;
+}
+
+/* Gradient text version */
+.section-title.gradient {
+    background: linear-gradient(
+        135deg,
+        #e8b94f  0%,
+        #f0f0f5  55%,
+        #e8b94f  100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Accent line dưới title */
+.section-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #e8b94f, transparent);
+    border-radius: 2px;
+    margin-top: 5px;
+}
+
+/* ── "Xem toàn bộ" link ── */
+.section-see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary, #9899b0);
+    transition: color 0.2s ease, gap 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.section-see-all:hover {
+    color: var(--accent-gold, #e8b94f);
+    gap: 8px;
+}
+
+/* Arrow icon */
+.section-see-all::after {
+    content: '›';
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* ── Category Color Bubbles (học RoPhim) ── */
+.category-bubble {
+    position: relative;
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    transition:
+        transform 0.30s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.30s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+}
+
+.category-bubble:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+}
+
+/* Overlay fade đáy - Disabled for brightness */
+/*
+.category-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0,0,0,0.60), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+*/
+
+.category-bubble-name {
+    position: relative;
+    z-index: 2;
+    font-weight: 800;
+    font-size: 0.92rem;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.55);
+    line-height: 1.2;
+}
+
+.category-bubble-count {
+    position: relative;
+    z-index: 2;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.70);
+    margin-top: 2px;
+}
+
+/* Màu gradient từng thể loại — Brighter version */
+.cat-hanh-dong    { background: linear-gradient(135deg, #3949ab 0%, #5c6bc0 100%); }
+.cat-kinh-di      { background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%); }
+.cat-tinh-cam     { background: linear-gradient(135deg, #c2185b 0%, #e91e63 100%); }
+.cat-hoat-hinh    { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); }
+.cat-vien-tuong   { background: linear-gradient(135deg, #00838f 0%, #00acc1 100%); }
+.cat-hai-huoc     { background: linear-gradient(135deg, #ef6c00 0%, #fb8c00 100%); }
+.cat-chinh-kich   { background: linear-gradient(135deg, #455a64 0%, #78909c 100%); }
+.cat-than-thoai   { background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%); }
+.cat-kinh-dien    { background: linear-gradient(135deg, #424242 0%, #757575 100%); }
+.cat-the-thao     { background: linear-gradient(135deg, #283593 0%, #3f51b5 100%); }
+.cat-am-nhac      { background: linear-gradient(135deg, #c62828 0%, #f44336 100%); }
+.cat-tai-lieu     { background: linear-gradient(135deg, #4e342e 0%, #795548 100%); }

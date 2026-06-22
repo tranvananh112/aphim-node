@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-white">
+    <!-- Ambient Background (7 Orbs for Full Coverage) -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+        <div class="ambient-orb ambient-orb-4"></div>
+        <div class="ambient-orb ambient-orb-5"></div>
+        <div class="ambient-orb ambient-orb-6"></div>
+        <div class="ambient-orb ambient-orb-7"></div>
+        <div class="ambient-noise"></div>
+        <div class="ambient-grain"></div>
+    </div>
+    <!-- ⚡ Anti-flash: Ẩn grid ngay nếu đang ở chế độ xem danh sách phim -->
+    <script>
+        if (new URLSearchParams(window.location.search).get('list')) {
+            document.write('<style>#categoriesGrid { display: none !important; }</style>');
+        }
+    </script>
+    <!-- Navigation -->
+    <%- include('partials/header') %>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 pt-safe-main pb-20 min-h-[80vh]">
+        <div class="mb-6">
+            <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white mb-4 w-fit group">
+                <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
+                    <span class="material-icons-round text-[14px]">chevron_left</span>
+                </div>
+                <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
+            </button>
+            <h1 id="pageTitle" class="text-4xl md:text-5xl font-bold mb-2">Danh Sách Phim</h1>
+            <p id="pageSubtitle" class="text-gray-400 text-lg">Khám phá phim ảnh từ 13 loại phim</p>
+        </div>
+
+        <!-- Categories Grid (Default View - No Query Parameter) -->
+        <div id="categoriesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <a href="?list=phim-moi"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim mới</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-bo"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-pink-600 to-red-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim bộ</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-le"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-green-600 to-teal-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim lẻ</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=tv-shows"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-yellow-600 to-orange-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Shows</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=hoat-hinh"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Hoạt hình</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-vietsub"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-cyan-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim vietsub</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-thuyet-minh"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-red-600 to-pink-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim thuyết minh</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-long-tien"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-teal-600 to-green-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim lồng tiếng</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-bo-dang-chieu"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-orange-600 to-yellow-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim bộ đang chiếu</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-bo-hoan-thanh"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim bộ đã hoàn thành</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-sap-chieu"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-cyan-600 to-blue-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim sắp chiếu</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=subteam"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-green-600 to-emerald-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Subteam</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+            <a href="?list=phim-chieu-rap"
+                class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-red-600 to-orange-600 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl aspect-[3/2]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="relative z-10 h-full flex flex-col justify-center p-6">
+                    <h3 class="text-white font-bold text-xl mb-2">Phim chiếu rạp</h3>
+                    <p class="text-white/90 text-sm flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-lg">play_circle</span>
+                        Xem ngay
+                    </p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="text-center py-20 hidden">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-gray-400">Đang tải...</p>
+        </div>
+
+        <!-- Movies Grid View -->
+        <div id="moviesTable" class="hidden">
+            <!-- Grid Layout -->
+            <div id="moviesGrid"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mb-8">
+                <!-- Movies will be loaded here -->
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="mt-12 flex justify-center items-center gap-2">
+                <!-- Pagination will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="hidden text-center py-20">
+            <span class="material-icons-round text-6xl text-red-400 mb-4">error_outline</span>
+            <p class="text-red-400 text-lg">Không thể tải dữ liệu</p>
+        </div>
+</main>
+    <!-- Footer -->
+    <!-- Ads disabled -->
+                    <%- include('partials/footer') %>
+    <!-- App Guide Popup -->
+    <div id="aphim-guide-overlay" onclick="if(event.target===this)aphimCloseGuide()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:460px;background:#0d0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.8);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.25);">
+                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hướng dẫn cài đặt A Phim</span>
+                <button onclick="aphimCloseGuide()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:#aaa;font-size:1rem;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">✕</button>
+            </div>
+            <div style="padding:14px;overflow-y:auto;max-height:78vh;">
+                <img src="/quangcao/HD_cai_app.png" alt="Huong dan cai dat" style="width:100%;height:auto;border-radius:8px;display:block;"/>
+            </div>
+        </div>
+    </div>
+    <script>
+        function aphimOpenGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='flex';document.body.style.overflow='hidden';}}
+        function aphimCloseGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='none';document.body.style.overflow='';}}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')aphimCloseGuide();});
+    </script>
+
+
+    <script src="/js/image-optimization.js?v=15"></script>
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/premium-ad-blocker.js?v=3"></script>
+    <script src="/js/auth-modal.js?v=15"></script>
+    <script src="/js/mobile-menu-modern.js?v=42"></script>
+    <script src="/js/nav-instant-suggest.js?v=7"></script>
+    <script src="/js/categories-dropdown.js?v=17"></script>
+    <script src="/js/countries-dropdown.js?v=17"></script>
+
+    <script src="/js/sticky-nav.js?v=19"></script>
+    <script src="/js/danh-sach.js?v=17"></script>
+    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+
+
+    <!-- ====== Chat Widget A Phim ====== -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/chat-room.css?v=65">
+    <link rel="stylesheet" href="/css/chat-mobile-fixed.css?v=65">
+    <!-- FAB Button -->
+    <button id="chatFab" class="chat-fab" aria-label="Mở chat cộng đồng" title="Chat Cộng Đồng">
+        <span class="fab-icon material-icons">forum</span>
+        <span class="chat-fab-badge" id="chatFabBadge">0</span>
+    </button>
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window" role="dialog" aria-label="Chat cộng đồng A Phim">
+        <!-- HEADER -->
+        <div class="chat-header" id="chatHeader">
+            <div class="chat-header-info">
+                <div class="chat-header-avatar">
+                    <span class="material-icons">forum</span>
+                </div>
+                <div class="chat-header-text">
+                    <div class="chat-header-title">Cộng Đồng A Phim</div>
+                    <div class="chat-header-status">
+                        <div class="online-dot"></div>
+                        <span class="chat-header-online-text" id="headerOnlineCount">42 người trực tuyến</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-btn" id="chatMinimizeBtn" title="Thu nhỏ"><span
+                        class="material-icons">remove</span></button>
+                <button class="chat-header-btn" id="chatCloseBtn" title="Đóng"><span
+                        class="material-icons">close</span></button>
+            </div>
+        </div>
+        <!-- BODY -->
+        <div class="chat-body" id="chatBody">
+            <!-- SCREEN 1: WELCOME -->
+            <div class="chat-screen chat-screen-welcome active" id="screenWelcome">
+                <div class="welcome-glow"><img src="/apple-touch-icon.png" alt="A Phim"
+                        style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15));">
+                </div>
+                <div>
+                    <h2 class="welcome-title">Chào mừng đến <span>Kênh A Phim</span></h2>
+                    <p class="welcome-desc" style="margin-top:8px;">Kết nối, thảo luận và tận hưởng điện ảnh cùng hàng
+                        ngàn tín đồ phim ảnh.</p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num" id="welcomeOnline">1,284</div>
+                        <div class="welcome-stat-label">Trực tuyến</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">50K+</div>
+                        <div class="welcome-stat-label">Thành viên</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">24/7</div>
+                        <div class="welcome-stat-label">Hoạt động</div>
+                    </div>
+                </div>
+                <div class="welcome-features">
+                    <div class="welcome-feature"><span class="material-icons">movie</span>
+                        <div class="welcome-feature-text"><strong>Thảo luận phim</strong><span>Review, rating và khám
+                                phá phim mới</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">groups</span>
+                        <div class="welcome-feature-text"><strong>Cộng đồng sôi nổi</strong><span>Kết nối với người xem
+                                cùng sở thích</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">bolt</span>
+                        <div class="welcome-feature-text"><strong>Chat thời gian thực</strong><span>Nhắn tin ngay lập
+                                tức, không độ trễ</span></div>
+                    </div>
+                </div>
+                <button class="welcome-start-btn" id="welcomeStartBtn">Bắt đầu chat ngay <span
+                        class="material-icons">arrow_forward</span></button>
+            </div>
+            <!-- SCREEN 2: ENTER NAME -->
+            <div class="chat-screen chat-screen-name" id="screenEnterName">
+                <div class="enter-name-header">
+                    <button class="enter-name-back-btn" id="enterNameBackBtn"><span
+                            class="material-icons">arrow_back</span></button>
+                    <div class="enter-name-title-wrap">
+                        <h2>Tạo hồ sơ</h2>
+                        <p>Chọn biệt danh và màu sắc của bạn</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="name-color-label">Màu đại diện</span>
+                    <div class="color-picker-row" id="colorPickerRow">
+                        <div class="color-option selected" data-color="#ffd709" style="background:#ffd709"></div>
+                        <div class="color-option" data-color="#22c55e" style="background:#22c55e"></div>
+                        <div class="color-option" data-color="#3b82f6" style="background:#3b82f6"></div>
+                        <div class="color-option" data-color="#ef4444" style="background:#ef4444"></div>
+                        <div class="color-option" data-color="#a855f7" style="background:#a855f7"></div>
+                        <div class="color-option" data-color="#f97316" style="background:#f97316"></div>
+                        <div class="color-option" data-color="#06b6d4" style="background:#06b6d4"></div>
+                        <div class="color-option" data-color="#ec4899" style="background:#ec4899"></div>
+                    </div>
+                </div>
+                <div class="name-input-group">
+                    <div class="name-input-label">
+                        <span>Biệt danh của bạn</span>
+                        <span class="name-char-count" id="nameCharCount">0 / 20</span>
+                    </div>
+                    <div class="name-input-wrapper">
+                        <input type="text" id="chatNameInput" class="name-input" placeholder="VD: MovieLover_99"
+                            maxlength="20" autocomplete="off">
+                        <span class="name-input-icon material-icons">person</span>
+                    </div>
+                    <div class="name-error-msg" id="nameErrorMsg">Tên phải từ 3–20 ký tự, không chứa ký tự đặc biệt.
+                    </div>
+                </div>
+                <div class="name-preview">
+                    <div class="name-preview-avatar" id="previewAvatar" style="background:#ffd709;">A</div>
+                    <div class="name-preview-info"><strong id="previewName">Biệt danh của bạn</strong><span>Thành viên
+                            mới · Hôm nay</span></div>
+                </div>
+                <div class="online-preview">
+                    <div class="online-avatars">
+                        <div class="online-avatar-mini" style="background:#ffd709;color:#1a1200;font-weight:700;">K
+                        </div>
+                        <div class="online-avatar-mini" style="background:#22c55e;color:#fff;font-weight:700;">L</div>
+                        <div class="online-avatar-mini" style="background:#3b82f6;color:#fff;font-weight:700;">M</div>
+                        <div class="online-avatar-mini more">+39</div>
+                    </div>
+                    <div class="online-info"><strong><span
+                                style="display:inline-block;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>42
+                            trực tuyến</strong><span>Đang thảo luận sôi nổi</span></div>
+                </div>
+                <button class="join-btn" id="chatJoinBtn" disabled><span class="material-icons">login</span>Tham gia
+                    phòng chat</button>
+            </div>
+            <!-- SCREEN 3: CHAT ROOM -->
+            <div class="chat-screen chat-screen-room" id="screenRoom">
+                <div class="messages-area" id="messagesArea">
+                    <div class="date-separator"><span>Hôm Nay</span></div>
+                    <div class="sys-msg"><span>🎬 Chào mừng đến với Kênh A Phim!</span></div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#3b82f6;color:#fff;">M</div>
+                        <div class="msg-content">
+                            <div class="msg-name">MovieFan</div>
+                            <div class="msg-bubble">Mọi người thấy Dune: Part Two thế nào? Hình ảnh choáng ngợp luôn! 🤩
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:20</span></div>
+                        </div>
+                    </div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#22c55e;color:#fff;">L</div>
+                        <div class="msg-content">
+                            <div class="msg-name">LinhChi</div>
+                            <div class="msg-bubble">Nhạc phim của Hans Zimmer nữa, nghe mà rung động cả phòng chiếu 🎵
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:21</span></div>
+                        </div>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-avatar" style="background:#a855f7;border-radius:50%;"></div>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-reactions" id="quickReactions">
+                    <button class="quick-react-btn" data-text="👍 Tuyệt vời!">👍 Tuyệt vời</button>
+                    <button class="quick-react-btn" data-text="🔥 Quá đỉnh!">🔥 Quá đỉnh</button>
+                    <button class="quick-react-btn" data-text="🍿 Đang xem">🍿 Đang xem</button>
+                    <button class="quick-react-btn" data-text="⭐ 10/10">⭐ 10/10</button>
+                    <button class="quick-react-btn" data-text="🎬 Rất nghệ">🎬 Rất nghệ</button>
+                    <button class="quick-react-btn" data-text="😍 Cực hay!">😍 Cực hay</button>
+                </div>
+            </div>
+            <!-- SCREEN 4: HỖ TRỢ -->
+            <div class="chat-screen chat-screen-support" id="screenSupport">
+                <div class="support-inner">
+                    <div class="support-icon-wrap">
+                        <span class="material-icons">support_agent</span>
+                    </div>
+                    <h3 class="support-title">Hỗ trợ trực tuyến</h3>
+                    <p class="support-desc">Đội ngũ hỗ trợ của A Phim luôn sẵn sàng giải đáp mọi thắc mắc của bạn.</p>
+                    <div class="support-info-cards">
+                        <div class="support-info-card">
+                            <span class="material-icons">schedule</span>
+                            <div><strong>Giờ hoạt động</strong><span>24/7 — Phản hồi nhanh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">translate</span>
+                            <div><strong>Ngôn ngữ</strong><span>Tiếng Việt — Tiếng Anh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">verified</span>
+                            <div><strong>Chuyên nghiệp</strong><span>Được đào tạo bài bản</span></div>
+                        </div>
+                    </div>
+                    <button class="support-start-btn" id="supportStartTawk">
+                        <span class="material-icons">chat</span>
+                        Bắt đầu chat hỗ trợ
+                    </button>
+                    <p class="support-note">Nhấn để mở cửa sổ chat với nhân viên hỗ trợ</p>
+                </div>
+            </div>
+        </div>
+        <!-- INPUT AREA -->
+        <div class="chat-input-area" id="chatInputArea">
+            <div class="chat-tabs-bar">
+                <button class="chat-tab active" data-tab="general" id="tabGeneral"><span
+                        class="material-icons">public</span>Chung</button>
+                <button class="chat-tab" data-tab="movies" id="tabMovies"><span
+                        class="material-icons">movie</span>Phim</button>
+                <button class="chat-tab" data-tab="support" id="tabSupport"><span class="material-icons">help</span>Hỗ
+                    trợ</button>
+            </div>
+            <div class="input-row">
+                <button class="input-icon-btn" id="emojiToggleBtn" title="Emoji"><span
+                        class="material-icons">mood</span></button>
+                <textarea id="chatMessageInput" placeholder="Viết tin nhắn..." rows="1" maxlength="1000"></textarea>
+                <button class="send-btn" id="chatSendBtn" disabled><span class="material-icons">send</span></button>
+            </div>
+            <div class="input-footer">
+                <div class="current-user-tag">
+                    <div class="current-user-avatar" id="currentUserAvatar" style="background:#ffd709;">A</div>
+                    <span id="currentUserName">Khách</span>
+                </div>
+                <span class="change-name-link" id="changeNameLink">Đổi tên</span>
+            </div>
+        </div>
+        <!-- Emoji picker -->
+        <div class="emoji-picker-panel" id="emojiPickerPanel">
+            <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+    </div>
+
+    <!-- ====== Firebase SDK (Compat CDN) ====== -->
+    <!-- Firebase Chat Service -->
+    <script src="/js/firebase-chat.js?v=42"></script>
+    <!-- Chat Widget Logic -->
+
+
+
+
+
+    <!-- ====== End Chat Widget ====== -->
+    <script src="/js/nav-active-indicator.js?v=15"></script>
+
+    <!-- Catfish banner disabled -->
+<%- include('partials/chat') %>
+</body>
+
+</html>
+
+

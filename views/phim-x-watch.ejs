@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-gray-100 font-display min-h-screen">
+    <%- include('partials/header') %>
+
+    <main class="pt-20 min-h-screen">
+        <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold text-white mb-6">Xem Phim X</h1>
+            <div id="phimXWatchContent">
+                <!-- Content rendered by JS -->
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/chat') %>
+
+    <script src="/js/phim-x-watch.js?v=21"></script>
+</body>
+</html>

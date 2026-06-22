@@ -1,0 +1,480 @@
+/* ==========================================================
+   A PHIM — Desktop Navigation v2 (SofaFlix-inspired)
+   - Always fully transparent, no dark on scroll
+   - h-14 (56px) height
+   - Flat links, no pill wrapper
+   - Underline animation on hover
+   - Dark glass dropdowns
+   ========================================================== */
+
+/* ── Core Nav: Always Transparent ── */
+@media (min-width: 1280px) {
+    nav {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-bottom: none !important;
+    }
+
+    /* Override scrolled state — stay transparent always */
+    nav.scrolled {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-bottom: none !important;
+    }
+
+    /* ── Nav Inner Container: 56px height ── */
+    nav > div.container,
+    nav > div {
+        height: 56px !important;
+        min-height: 56px !important;
+        max-height: 56px !important;
+    }
+}
+
+/* ── Desktop Nav Layout ── */
+@media (min-width: 1280px) {
+
+    /* Remove the old pill wrapper if any remain */
+    .desktop-pill-wrapper {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        gap: 2px !important;
+        border-radius: 0 !important;
+        backdrop-filter: none !important;
+    }
+
+    /* ── Desktop Pill Container (Transparent by default, Solid on scroll) ── */
+    nav#mainNav:not(.scrolled) .desktop-nav-pill {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: transparent !important;
+        border: 1px solid transparent !important;
+        border-radius: 999px;
+        padding: 6px 8px 6px 6px;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+    }
+
+    nav#mainNav.scrolled .desktop-nav-pill {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: linear-gradient(90deg, rgba(14, 165, 233, 0.22) 0%, rgba(10, 10, 18, 0.75) 25%, rgba(10, 10, 18, 0.75) 75%, rgba(225, 29, 72, 0.22) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 999px;
+        padding: 6px 8px 6px 6px;
+        backdrop-filter: blur(24px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+        transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+    }
+
+    /* Search Bar initially transparent */
+    nav#mainNav:not(.scrolled) .desktop-nav-pill .nav-search-v2:not(:focus-within) {
+        background: transparent !important;
+        border-color: transparent !important;
+        margin-left: 0;
+    }
+
+    nav#mainNav.scrolled .desktop-nav-pill .nav-search-v2:not(:focus-within) {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.08);
+        margin-left: 0;
+    }
+
+    /* ── Flat Nav Link Base ── */
+    .nav-flat-link {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: normal;
+        transition: color 0.2s ease;
+        border-radius: 0;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        white-space: nowrap;
+    }
+
+    /* Underline: grows from center outward */
+    .nav-flat-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        right: 50%;
+        height: 2px;
+        background: linear-gradient(90deg, #f2f20d, #ffd700);
+        border-radius: 2px;
+        transition: left 0.25s ease, right 0.25s ease;
+    }
+
+    .nav-flat-link:hover {
+        color: #ffffff;
+    }
+
+    .nav-flat-link:hover::after {
+        left: 14px;
+        right: 14px;
+    }
+
+    /* Active state */
+    .nav-flat-link.active {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .nav-flat-link.active::after {
+        left: 14px;
+        right: 14px;
+        background: linear-gradient(90deg, #f2f20d, #ffd700);
+    }
+
+    /* Danger link (Phim X) */
+    .nav-flat-link--danger {
+        color: rgba(248, 113, 113, 0.9) !important;
+    }
+
+    .nav-flat-link--danger:hover {
+        color: #f87171 !important;
+    }
+
+    .nav-flat-link--danger::after {
+        background: linear-gradient(90deg, #f87171, #ef4444) !important;
+    }
+
+    /* ── Dropdown Trigger Button ── */
+    .nav-flat-dropdown {
+        position: relative;
+    }
+
+    .nav-flat-dropdown > button.nav-flat-link {
+        cursor: pointer;
+    }
+
+    .nav-flat-dropdown > button.nav-flat-link .nav-caret {
+        font-size: 16px;
+        transition: transform 0.25s ease;
+        opacity: 0.9;
+        line-height: 1;
+        margin-top: 1px;
+    }
+
+    .nav-flat-dropdown:hover > button.nav-flat-link .nav-caret {
+        transform: rotate(180deg);
+        opacity: 1;
+    }
+
+    /* ── Dropdown Panel: Shell Container ── */
+    .nav-flat-dropdown > .nav-dropdown-panel {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        /* Background transparent — nội dung bên trong tự mang màu nền xanh */
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+        /* Bỏ overflow:hidden — cho phép inner container hiển thị rounded corners */
+        overflow: visible;
+        padding: 2px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        filter: brightness(1) saturate(1);
+        transition:
+            opacity 0.25s ease,
+            visibility 0.25s ease,
+            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.25s ease,
+            box-shadow 0.25s ease;
+        z-index: 10000;
+    }
+
+    .nav-flat-dropdown:hover > .nav-dropdown-panel {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* ── Page Dim Overlay when dropdown is open ── */
+    /*
+     * Z-index hierarchy:
+     *   nav (z-50 = 50 Tailwind) → nằm TRÊN overlay
+     *   .nav-dim-overlay = z-index 45 → dưới nav, trước trang
+     *   .nav-dropdown-panel = z-index 10000 → nằm TRÊN hết
+     */
+    .nav-dim-overlay {
+        position: fixed;
+        inset: 0;
+        /* QUAN TRỌNG: z-index phải dưới nav (Tailwind z-50 = 50) */
+        z-index: 45;
+        background: rgba(0, 0, 0, 0);
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .nav-dim-overlay.active {
+        /* Giảm tối xuống mức vừa đủ — menu xanh phải nổi bật hơn */
+        background: rgba(0, 0, 10, 0.52);
+        pointer-events: none;
+    }
+
+    /* Dropdown panel luôn nằm rất cao, trên overlay */
+    .nav-flat-dropdown > .nav-dropdown-panel {
+        z-index: 10000 !important;
+    }
+
+    /* Khi dropdown mở: Làm SÁNG menu — phân biệt rõ với nền tối */
+    .nav-flat-dropdown:hover > .nav-dropdown-panel {
+        /* Tăng độ sáng vừa phải — không quá chói, vẫn nổi bật */
+        filter: brightness(1.05) saturate(1.05) !important;
+        box-shadow:
+            /* Viền xám sáng nhẹ giống hình số 1 */
+            0 0 0 1.5px rgba(255, 255, 255, 0.15),
+            /* Shadow độ sâu */
+            0 24px 60px rgba(0, 0, 0, 0.65) !important;
+        /* Scale nhẹ — không quá mạnh */
+        transform: translateY(0) scale(1.004) !important;
+        transform-origin: top center;
+    }
+
+    /* Đè màu nền khung xanh đá giống hình 1 cho tất cả các dropdown */
+    .nav-dropdown-panel > div {
+        background: #2b3a72 !important; /* Tone màu xanh đậm giống hình 1 */
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    }
+
+    /* Dropdown link items — Tăng độ đậm và độ sáng chữ giống hình 1 */
+    .nav-dropdown-panel a {
+        position: relative;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.88) !important;
+        font-weight: 700 !important; /* Chữ đậm giống hình 1 */
+        font-size: 0.9rem !important;
+        transition: background 0.18s, color 0.18s !important;
+        border-color: rgba(255, 255, 255, 0.08) !important; /* Đồng bộ viền chia ô */
+    }
+
+    .nav-dropdown-panel a span {
+        font-weight: 700 !important;
+    }
+
+    /* ::before placeholder (không hiển thị nếu JS đã quản lý hover) */
+    .nav-dropdown-panel a::before {
+        content: none;
+    }
+
+    /* Hiệu ứng khi di chuột đến: đổi thành màu vàng ấm giống hình 3 */
+    .nav-dropdown-panel a:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #ffd700 !important; /* Màu vàng giống hình 3 */
+    }
+
+    /* Fallback cho các trang sử dụng cấu trúc cũ .relative.group > .absolute.top-full */
+    nav .relative.group > .absolute.top-full {
+        background: #2b3a72 !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    }
+    nav .relative.group > .absolute.top-full a {
+        color: rgba(255, 255, 255, 0.88) !important;
+        font-weight: 700 !important;
+        font-size: 0.82rem !important;
+    }
+    nav .relative.group > .absolute.top-full a span {
+        font-weight: 700 !important;
+    }
+    nav .relative.group > .absolute.top-full a:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #ffd700 !important;
+    }
+
+    /* ── Desktop Search Bar ── */
+    .nav-search-v2 {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 320px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-left: 12px;
+        flex-shrink: 0;
+        transition:
+            width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.25s,
+            background 0.25s,
+            box-shadow 0.25s;
+        backdrop-filter: blur(8px);
+    }
+
+    .nav-search-v2:focus-within {
+        width: 420px;
+        border-color: rgba(242, 242, 13, 0.45);
+        background: rgba(0, 0, 0, 0.55);
+        box-shadow: 0 0 0 3px rgba(242, 242, 13, 0.1), 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .nav-search-v2 .search-icon {
+        flex-shrink: 0;
+        padding: 0 10px 0 14px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 0.2s;
+        line-height: 1;
+    }
+
+    .nav-search-v2:focus-within .search-icon {
+        color: #f2f20d;
+    }
+
+    .nav-search-v2 input {
+        flex: 1;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 400;
+        padding: 0 14px 0 0;
+        height: 100%;
+    }
+
+    .nav-search-v2 input::placeholder {
+        color: rgba(255, 255, 255, 0.38);
+        font-size: 0.9rem;
+    }
+
+    /* ── Auth / Login Button ── */
+    .nav-auth-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 20px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #000;
+        background: #f2f20d;
+        border-radius: 999px;
+        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        white-space: nowrap;
+        box-shadow: 0 0 16px rgba(242, 242, 13, 0.25);
+    }
+
+    .nav-auth-btn:hover {
+        background: #ffd700;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(242, 242, 13, 0.4);
+    }
+
+    /* Logged-in user badge */
+    .nav-user-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 14px 5px 6px;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.06);
+        transition: background 0.2s, border-color 0.2s;
+        cursor: pointer;
+    }
+
+    .nav-user-badge:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.25);
+    }
+
+    .nav-user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid #f2f20d;
+        overflow: hidden;
+        background: #1a1a2e;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #f2f20d;
+    }
+}
+
+/* ==========================================================
+   A PHIM — Navigation Responsive Override (SofaFlix-inspired Breakpoint)
+   Forces layout transition to mobile view below 1280px instead of 1024px.
+   ========================================================== */
+@media (max-width: 1279.98px) {
+    /* 1. Hide Desktop Navigation Container */
+    nav#mainNav div.hidden.lg\:flex {
+        display: none !important;
+    }
+
+    /* 2. Hide Desktop Login Button */
+    nav#mainNav .nav-auth-btn.hidden.lg\:inline-flex {
+        display: none !important;
+    }
+
+    /* 3. Force Show Mobile Menu Button (Hamburger) */
+    nav#mainNav button#mobileMenuBtn.lg\:hidden,
+    nav#mainNav .mm-burger-btn.lg\:hidden {
+        display: block !important;
+    }
+
+    /* 4. Force Show Mobile Inline Search Bar */
+    nav#mainNav .mobile-inline-search {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 1280px) {
+    /* 1. Force Show Desktop Navigation Container */
+    nav#mainNav div.hidden.lg\:flex {
+        display: flex !important;
+    }
+
+    /* 2. Force Show Desktop Login Button */
+    nav#mainNav .nav-auth-btn.hidden.lg\:inline-flex {
+        display: inline-flex !important;
+    }
+
+    /* 3. Force Hide Mobile Menu Button (Hamburger) */
+    nav#mainNav button#mobileMenuBtn.lg\:hidden,
+    nav#mainNav .mm-burger-btn.lg\:hidden {
+        display: none !important;
+    }
+
+    /* 4. Force Hide Mobile Inline Search Bar */
+    nav#mainNav .mobile-inline-search {
+        display: none !important;
+    }
+}

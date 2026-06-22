@@ -1,0 +1,68 @@
+# 💎 Optimized robots.txt for A Phim (Cinema)
+# Protects against automated SEO scrapers and data-mining bots while allowing prime Search Engines.
+
+# ------------------------------------------------------------
+# SECTION 1: Welcome Prime Search Engines (SEO Friendly)
+# ------------------------------------------------------------
+User-agent: Google-InspectionTool
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Googlebot-News
+User-agent: Googlebot-Video
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: DuckDuckBot
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /api/
+Disallow: /cgi-bin/
+Allow: /watch.html
+Allow: /movie-detail.html
+Allow: /
+
+# ------------------------------------------------------------
+# SECTION 2: Block Artificial Intelligence Training Bots (Protects bandwidth)
+# ------------------------------------------------------------
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: FacebookBot
+User-agent: Omgili
+User-agent: CCBot
+Disallow: /
+
+# ------------------------------------------------------------
+# SECTION 3: Block SEO Scrapers and Common DMCA Scanning Bots
+# ------------------------------------------------------------
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: SemrushBot-SA
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: Rogerbot
+User-agent: MegaIndex.ru
+User-agent: BlexBot
+User-agent: PetalBot
+User-agent: Pinterestbot
+User-agent: Baiduspider
+User-agent: Yandex
+User-agent: YandexBot
+User-agent: SeznamBot
+User-agent: Mail.RU_Bot
+User-agent: Sogou web spider
+User-agent: Exabot
+User-agent: ZoominfoBot
+User-agent: BUbiNG
+Disallow: /
+
+# ------------------------------------------------------------
+# SECTION 4: Generic fallback
+# ------------------------------------------------------------
+User-agent: *
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /api/
+Allow: /
+
+Sitemap: https://aphim.io.vn/sitemap.xml

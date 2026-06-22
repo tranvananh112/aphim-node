@@ -1,0 +1,661 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chat - A Phim Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .chat-mgmt-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .chat-user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--surface-2);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .chat-user-card:hover {
+            background: var(--surface-3);
+            transform: translateY(-1px);
+        }
+
+        .chat-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-user-name {
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge-admin {
+            background: #fbbf24;
+            color: #000;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            margin-left: 5px;
+        }
+
+        .badge-banned {
+            background: #ef4444;
+            color: #fff;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .admin-msg-row {
+            background: rgba(251, 191, 36, 0.05) !important;
+        }
+
+        /* Autocomplete Dropdown */
+        .search-dropdown {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
+
+        .search-dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .search-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-dropdown-item:hover {
+            background: var(--surface-2);
+        }
+
+        .search-dropdown-item.active {
+            background: var(--primary-10);
+        }
+
+        .search-dropdown-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .search-dropdown-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-dropdown-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-dropdown-email {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-dropdown-empty {
+            padding: 12px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        border: 1px solid var(--border);
+        transition: all 0.2s;
+        }
+
+        .chat-user-card:hover {
+            background: var(--surface-3);
+            transform: translateY(-1px);
+        }
+
+        .chat-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-user-name {
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge-admin {
+            background: #fbbf24;
+            color: #000;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            margin-left: 5px;
+        }
+
+        .badge-banned {
+            background: #ef4444;
+            color: #fff;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .admin-msg-row {
+            background: rgba(251, 191, 36, 0.05) !important;
+        }
+    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"
+                    style="border: 2px solid var(--primary); border-radius: 50%; padding: 4px;">
+                    <img src="../favicon.png" alt="A Phim" style="width: 100%; height: 100%; object-fit: contain;" />
+                </div>
+                <div class="sidebar-logo-text">
+                    <h1>A Phim</h1>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="/dashboard" class="sidebar-nav-item"><i
+                            data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Người dùng</p>
+                    <a href="/users" class="sidebar-nav-item"><i data-lucide="users"></i><span>Người dùng</span></a>
+                    <a href="/chat" class="sidebar-nav-item active"><i data-lucide="message-square"></i><span>Quản
+                            lý Chat</span></a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Quản lý Chat Cộng Đồng</h2>
+                </div>
+                <div class="header-right">
+                    <div class="header-admin">
+                        <div class="header-admin-avatar">A</div>
+                        <div class="header-admin-info">
+                            <p>Admin</p><span>Quản trị viên</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="chat-mgmt-grid">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <span class="admin-card-title">Lịch sử tin nhắn (MongoDB)</span>
+                            <div class="flex gap-8">
+                                <select id="tabFilter" class="form-select" onchange="loadChatHistory()">
+                                    <option value="general">Chung</option>
+                                    <option value="movies">Phim</option>
+                                    <option value="support">Hỗ trợ</option>
+                                </select>
+                                <button class="btn btn-secondary btn-sm" onclick="loadChatHistory()"><i
+                                        data-lucide="refresh-cw"></i></button>
+                            </div>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thời gian</th>
+                                            <th>Người dùng</th>
+                                            <th>Nội dung</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="chatHistoryTable"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <span class="admin-card-title">Người dùng hệ thống</span>
+                            <div style="width: 200px;">
+                                <input type="text" id="userSearch" class="form-input" placeholder="Tìm tên/email..."
+                                    style="width: 100%; height: 32px; font-size: 12px;" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="admin-card-body">
+                            <div id="userSearchDropdown" class="search-dropdown" style="display: none;"></div>
+                            <div id="chatUserList" style="max-height: 520px; overflow-y: auto;">
+                                <div class="text-muted text-center p-4">Đang tải danh sách...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/admin/config.js"></script>
+    <script src="../js/admin/auth.js"></script>
+    <script>
+        const token = localStorage.getItem('cinestream_admin_token') || localStorage.getItem('cinestream_token');
+
+        async function loadChatHistory() {
+            try {
+                const tab = document.getElementById('tabFilter').value;
+                const res = await fetch(`${API_CONFIG.BACKEND_URL}/chat/history/${tab}`);
+                const data = await res.json();
+                if (data.success) {
+                    const tbody = document.getElementById('chatHistoryTable');
+                    tbody.innerHTML = data.data.reverse().map(msg => `
+                    <tr class="${msg.chatRole === 'admin' ? 'admin-msg-row' : ''}">
+                        <td style="font-size: 11px;">
+                            ${new Date(msg.createdAt).toLocaleDateString('vi-VN')}<br>
+                            ${new Date(msg.createdAt).toLocaleTimeString('vi-VN')}
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-8">
+                                <img src="${msg.avatar || '/favicon.png'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">
+                                <span style="font-weight:700; color:${msg.chatRole === 'admin' ? '#fbbf24' : 'inherit'}">${msg.user}</span>
+                                ${msg.chatRole === 'admin' ? '<span class="badge-admin">Admin</span>' : ''}
+                            </div>
+                        </td>
+                        <td style="max-width:300px; word-break:break-word; font-size:13px;">${msg.text}</td>
+                        <td>
+                            <div class="flex gap-4">
+                                <button class="btn btn-icon btn-sm ${msg.isPinned ? 'text-primary' : ''}" onclick="togglePin('${msg._id}')">
+                                    <i data-lucide="${msg.isPinned ? 'pin-off' : 'pin'}"></i>
+                                </button>
+                                <button class="btn btn-icon btn-sm text-danger" onclick="deleteMessage('${msg._id}')">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                    lucide.createIcons();
+                }
+            } catch (e) { }
+        }
+
+        async function loadChatUsers(query = '', selectedUserName = null) {
+            const list = document.getElementById('chatUserList');
+            try {
+                const url = query ? `${API_CONFIG.BACKEND_URL}/users?search=${encodeURIComponent(query)}` : `${API_CONFIG.BACKEND_URL}/users`;
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401) {
+                    list.innerHTML = '<div class="text-danger text-center p-4">401: Không có quyền. Vui lòng đăng nhập lại.</div>';
+                    return;
+                }
+
+                const data = await res.json();
+                if (data.success) {
+                    let users = data.data || data.users;
+                    if (!users || users.length === 0) {
+                        list.innerHTML = '<div class="text-muted text-center p-4">Không tìm thấy người dùng</div>';
+                        return;
+                    }
+
+                    // Debug: Log user data
+                    console.log('Users loaded:', users.map(u => ({ name: u.name, chatRole: u.chatRole })));
+
+                    // Nếu có selectedUserName, đưa user đó lên đầu
+                    if (selectedUserName) {
+                        const selectedIndex = users.findIndex(u => u.name === selectedUserName);
+                        if (selectedIndex > 0) {
+                            const selectedUser = users.splice(selectedIndex, 1)[0];
+                            users.unshift(selectedUser);
+                        }
+                    }
+
+                    list.innerHTML = users.map(u => `
+                    <div class="chat-user-card" style="border-left: 3px solid ${u.chatRole === 'admin' ? '#fbbf24' : 'transparent'}">
+                        <img src="${u.avatar || '../favicon.png'}" class="chat-user-avatar">
+                        <div class="chat-user-info">
+                            <div class="chat-user-name" style="color:${u.chatRole === 'admin' ? '#fbbf24' : 'inherit'}">
+                                ${u.name} ${u.chatRole === 'admin' ? '<span class="badge-admin">Admin</span>' : ''}
+                            </div>
+                            <div class="chat-user-role">${u.email}</div>
+                            <div style="margin-top:2px;">${u.isChatBanned ? '<span class="badge-banned">BỊ CẤM CHAT</span>' : ''}</div>
+                        </div>
+                        <div class="flex gap-4">
+                            <button class="btn btn-icon btn-sm ${u.chatRole === 'admin' ? 'text-primary' : ''}" title="Đổi quyền Admin" onclick="toggleChatRole('${u._id}', '${u.chatRole}')">
+                                <i data-lucide="${u.chatRole === 'admin' ? 'shield-off' : 'shield-check'}"></i>
+                            </button>
+                            <button class="btn btn-icon btn-sm ${u.isChatBanned ? 'text-danger' : ''}" title="${u.isChatBanned ? 'Gỡ cấm' : 'Cấm Chat'}" onclick="toggleChatBan('${u._id}', ${u.isChatBanned})">
+                                <i data-lucide="${u.isChatBanned ? 'unlock' : 'lock'}"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                    lucide.createIcons();
+
+                    // Scroll về đầu danh sách
+                    if (selectedUserName) {
+                        list.scrollTop = 0;
+                    }
+                }
+            } catch (e) {
+                console.error('Load users error:', e);
+                list.innerHTML = '<div class="text-danger text-center p-4">Lỗi kết nối server</div>';
+            }
+        }
+
+        async function toggleChatBan(uid, current) {
+            if (!confirm(`${current ? 'Gỡ cấm' : 'Cấm'} chat người dùng này?`)) return;
+
+            try {
+                console.log(`[Admin] Toggling chat ban for ${uid}, current: ${current}`);
+                const res = await fetch(`${API_CONFIG.BACKEND_URL}/users/${uid}/chat-ban`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await res.json();
+                console.log('[Admin] Response:', data);
+
+                if (data.success) {
+                    alert(`✅ Đã ${current ? 'gỡ cấm' : 'cấm'} chat người dùng\n\n⚠️ Người dùng cần logout/login để thấy thay đổi`);
+                    // Reload danh sách để hiển thị trạng thái mới
+                    const query = document.getElementById('userSearch').value;
+                    await loadChatUsers(query);
+                    // Scroll về user vừa cập nhật
+                    setTimeout(() => {
+                        const userCard = document.querySelector(`[onclick*="${uid}"]`)?.closest('.chat-user-card');
+                        if (userCard) {
+                            userCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            userCard.style.background = 'rgba(239, 68, 68, 0.1)';
+                            setTimeout(() => { userCard.style.background = ''; }, 2000);
+                        }
+                    }, 300);
+                } else {
+                    alert('❌ Lỗi: ' + (data.message || 'Không thể cập nhật'));
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('❌ Lỗi kết nối server');
+            }
+        }
+
+        async function toggleChatRole(uid, current) {
+            const newRole = current === 'admin' ? 'user' : 'admin';
+            if (!confirm(`Đổi quyền Admin cho người dùng này?`)) return;
+
+            try {
+                console.log(`[Admin] Updating chat role for ${uid} to ${newRole}`);
+                const res = await fetch(`${API_CONFIG.BACKEND_URL}/users/${uid}/chat-role`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: newRole })
+                });
+
+                const data = await res.json();
+                console.log('[Admin] Response:', data);
+
+                if (data.success) {
+                    alert(`✅ Đã ${newRole === 'admin' ? 'cấp' : 'thu hồi'} quyền Admin chat\n\n⚠️ Người dùng cần logout/login để thấy thay đổi`);
+                    // Reload danh sách để cập nhật icon
+                    const query = document.getElementById('userSearch').value;
+                    await loadChatUsers(query);
+                    // Scroll về user vừa cập nhật
+                    setTimeout(() => {
+                        const userCard = document.querySelector(`[onclick*="${uid}"]`)?.closest('.chat-user-card');
+                        if (userCard) {
+                            userCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            userCard.style.background = 'rgba(251, 191, 36, 0.1)';
+                            setTimeout(() => { userCard.style.background = ''; }, 2000);
+                        }
+                    }, 300);
+                } else {
+                    alert('❌ Lỗi: ' + (data.message || 'Không thể cập nhật quyền'));
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('❌ Lỗi kết nối server');
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('Xóa tin nhắn này?')) return;
+            await fetch(`${API_CONFIG.BACKEND_URL}/chat/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            loadChatHistory();
+        }
+
+        async function togglePin(id) {
+            await fetch(`${API_CONFIG.BACKEND_URL}/chat/pin/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            loadChatHistory();
+        }
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        // Autocomplete functionality
+        let allUsers = [];
+        let selectedIndex = -1;
+        const searchInput = document.getElementById('userSearch');
+        const dropdown = document.getElementById('userSearchDropdown');
+
+        async function loadAllUsers() {
+            try {
+                const res = await fetch(`${API_CONFIG.BACKEND_URL}/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    allUsers = data.data || data.users || [];
+                }
+            } catch (e) {
+                console.error('Failed to load users:', e);
+            }
+        }
+
+        function showAutocomplete(query) {
+            if (!query || query.length < 1) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const filtered = allUsers.filter(u =>
+                u.name.toLowerCase().includes(query.toLowerCase()) ||
+                u.email.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 8); // Limit to 8 suggestions
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div class="search-dropdown-empty">Không tìm thấy người dùng</div>';
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            dropdown.innerHTML = filtered.map((u, idx) => `
+                <div class="search-dropdown-item ${idx === selectedIndex ? 'active' : ''}" data-index="${idx}" data-name="${u.name}">
+                    <img src="${u.avatar || '../favicon.png'}" class="search-dropdown-avatar">
+                    <div class="search-dropdown-info">
+                        <div class="search-dropdown-name">${u.name}${u.chatRole === 'admin' ? ' <span class="badge-admin">ADMIN</span>' : ''}</div>
+                        <div class="search-dropdown-email">${u.email}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            dropdown.style.display = 'block';
+            selectedIndex = -1;
+
+            // Add click handlers
+            dropdown.querySelectorAll('.search-dropdown-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const userName = item.dataset.name;
+                    searchInput.value = userName;
+                    dropdown.style.display = 'none';
+                    // Load users với selectedUserName để đưa lên đầu
+                    loadChatUsers(userName, userName);
+                });
+            });
+        }
+
+        const debouncedAutocomplete = debounce((query) => {
+            showAutocomplete(query);
+        }, 200);
+
+        const debouncedSearch = debounce((query) => {
+            loadChatUsers(query);
+        }, 300);
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value;
+            debouncedAutocomplete(query);
+            // Lọc danh sách user theo thời gian thực
+            debouncedSearch(query);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            const items = dropdown.querySelectorAll('.search-dropdown-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateActiveItem(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateActiveItem(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (selectedIndex >= 0 && items[selectedIndex]) {
+                    items[selectedIndex].click();
+                } else {
+                    dropdown.style.display = 'none';
+                    loadChatUsers(searchInput.value);
+                }
+            } else if (e.key === 'Escape') {
+                dropdown.style.display = 'none';
+                selectedIndex = -1;
+            }
+        });
+
+        function updateActiveItem(items) {
+            items.forEach((item, idx) => {
+                item.classList.toggle('active', idx === selectedIndex);
+            });
+            if (selectedIndex >= 0 && items[selectedIndex]) {
+                items[selectedIndex].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+                selectedIndex = -1;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatHistory();
+            loadChatUsers();
+            loadAllUsers(); // Load users for autocomplete
+            lucide.createIcons();
+        });
+    </script>
+</body>
+
+</html>

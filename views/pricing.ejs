@@ -1,0 +1,817 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/pricing-premium.css?v=1">
+</head>
+
+<body class="bg-background-dark text-gray-100 font-display min-h-screen pricing-page">
+    <!-- Ambient Background (7 Orbs for Full Coverage) -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+        <div class="ambient-orb ambient-orb-4"></div>
+        <div class="ambient-orb ambient-orb-5"></div>
+        <div class="ambient-orb ambient-orb-6"></div>
+        <div class="ambient-orb ambient-orb-7"></div>
+        <div class="ambient-noise"></div>
+        <div class="ambient-grain"></div>
+    </div>
+    <!-- Navigation -->
+    <%- include('partials/header') %>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                navbar.classList.add('shadow-2xl');
+            } else {
+                navbar.classList.remove('shadow-2xl');
+            }
+        });
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MOBILE SWIPE PRICING UI (chỉ hiện trên mobile < 768px)
+         ═══════════════════════════════════════════════════════════ -->
+    <style>
+    @media (min-width: 768px) {
+        #pricingMobileSwipe { display: none !important; }
+    }
+    @media (max-width: 767px) {
+        #pricingMain { display: none !important; }
+    }
+
+    #pricingMobileSwipe {
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        background: #0a0a0f;
+        padding-top: var(--safe-top, 56px);
+        padding-bottom: 90px;
+    }
+
+    #chatFab, .chat-fab {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    .msw-tabs {
+        display: flex;
+        justify-content: center;
+        padding: 14px 0 8px;
+    }
+    .msw-tab-wrap {
+        display: inline-flex;
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 999px;
+        padding: 5px;
+        position: relative;
+    }
+    .msw-tab-bg {
+        position: absolute;
+        top: 5px; bottom: 5px; left: 5px;
+        width: 120px;
+        background: #e8b94f;
+        border-radius: 999px;
+        transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+        box-shadow: 0 4px 14px rgba(232,185,79,0.4);
+    }
+    .msw-tab-bg.coin-active { transform: translateX(120px); }
+    .msw-tab-btn {
+        position: relative; z-index: 1;
+        width: 120px; padding: 9px 0;
+        border: none; background: none;
+        font-size: 0.85rem; font-weight: 800;
+        color: #9ca3af; cursor: pointer;
+        border-radius: 999px;
+        transition: color 0.2s;
+    }
+    .msw-tab-btn.active { color: #000; }
+
+    .msw-track {
+        display: flex;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 14px;
+        padding: 16px 20px;
+        scroll-padding-left: 20px;
+    }
+    .msw-track::-webkit-scrollbar { display: none; }
+
+    .msw-card {
+        flex: none;
+        width: calc(100vw - 56px);
+        border-radius: 24px;
+        padding: 24px 24px;
+        scroll-snap-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 240px;
+        max-height: 250px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        transition: transform 0.25s ease;
+    }
+    .msw-card::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+        border-radius: 24px;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .msw-card > * { position: relative; z-index: 1; }
+
+    .msw-card--free    { background: rgba(15, 15, 25, 0.55); }
+    .msw-card--premium, .msw-card--coin2 { background: rgba(15, 15, 25, 0.50); border: 2px solid #FFD700 !important;
+                         box-shadow: 0 0 24px rgba(255,215,0,0.3); }
+    .msw-card--family  { background: rgba(15, 15, 25, 0.55); }
+    .msw-card--coin1   { background: rgba(15, 15, 35, 0.55); }
+    .msw-card--coin3   { background: rgba(25, 5,  35, 0.55); }
+
+    .msw-card-tag {
+        display: inline-block;
+        width: fit-content;
+        align-self: flex-start;
+        flex-shrink: 0;
+        font-size: 0.62rem; font-weight: 800;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 4px 12px; border-radius: 20px;
+        margin-bottom: 0;
+        color: rgba(255,255,255,0.9);
+        white-space: nowrap;
+        backdrop-filter: blur(4px);
+    }
+    .msw-card--premium .msw-card-tag, .msw-card--coin2 .msw-card-tag { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.4); color: #FFD700; }
+    .msw-card--family  .msw-card-tag { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
+
+    .msw-card-name {
+        font-size: 1.6rem; font-weight: 900;
+        color: #fff; line-height: 1;
+        margin-bottom: 6px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .msw-card--premium .msw-card-name, .msw-card--coin2 .msw-card-name { color: #FFD700; }
+
+    .msw-card-price {
+        font-size: 2.6rem; font-weight: 900;
+        color: #fff; letter-spacing: -1px;
+        line-height: 1;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    }
+    .msw-card--premium .msw-card-price, .msw-card--coin2 .msw-card-price { color: #FFD700; }
+
+    .msw-card-period {
+        font-size: 0.8rem; font-weight: 700;
+        color: rgba(255,255,255,0.9);
+        margin-left: 2px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .msw-card--premium .msw-card-period, .msw-card--coin2 .msw-card-period { color: rgba(255,215,0,0.9); }
+
+    .msw-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 8px;
+    }
+
+    .msw-card-badge {
+        position: static;
+        flex-shrink: 0;
+        font-size: 0.58rem; font-weight: 900;
+        background: rgba(255,255,255,0.25);
+        color: #fff; padding: 4px 10px;
+        border-radius: 999px; letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .msw-card--premium .msw-card-badge, .msw-card--coin2 .msw-card-badge { background: rgba(255,215,0,0.2); color: #FFD700; border: 1px solid rgba(255,215,0,0.4); }
+    .msw-card--family  .msw-card-badge { background: rgba(255,255,255,0.15); color: #fff; }
+
+    .msw-dots {
+        display: flex;
+        justify-content: center;
+        gap: 7px;
+        padding: 4px 0 16px;
+    }
+    .msw-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    .msw-dot.active {
+        background: #fff;
+        width: 22px; border-radius: 4px;
+    }
+
+    .msw-info {
+        flex: 1;
+        padding: 8px 20px 0;
+    }
+    .msw-info-title {
+        font-size: 1.1rem; font-weight: 800;
+        color: #fff; margin-bottom: 12px;
+    }
+    .msw-feature-list {
+        list-style: none; margin: 0; padding: 0;
+        display: flex; flex-direction: column; gap: 10px;
+    }
+    .msw-feature-item {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 0.88rem; color: rgba(255,255,255,0.8);
+    }
+    .msw-feature-item .material-icons-round {
+        font-size: 18px; color: #e8b94f; flex-shrink: 0;
+    }
+    .msw-bonus-row {
+        margin-top: 16px;
+        display: flex; align-items: center; gap: 10px;
+        background: rgba(232,185,79,0.08);
+        border: 1px solid rgba(232,185,79,0.2);
+        border-radius: 12px; padding: 12px 14px;
+    }
+    .msw-bonus-icon {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: #e8b94f; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .msw-bonus-icon .material-icons-round { font-size: 18px; color: #000; }
+    .msw-bonus-text-main { font-size: 0.82rem; font-weight: 800; color: #e8b94f; }
+    .msw-bonus-text-sub  { font-size: 0.7rem;  color: rgba(255,255,255,0.4); }
+
+    #mswBottomBar {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        z-index: 100;
+        background: #111111;
+        padding: 16px 20px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+    #mswBottomBar.hidden-bar { display: none; }
+    .msw-bar-price {
+        display: flex; flex-direction: column;
+    }
+    .msw-bar-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+    .msw-bar-amount { font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1; }
+    .msw-bar-period { font-size: 0.72rem; color: rgba(255,255,255,0.45); }
+    .msw-bar-btn {
+        background: #fff; color: #000;
+        font-size: 0.95rem; font-weight: 800;
+        border: none; border-radius: 50px;
+        padding: 14px 28px; cursor: pointer;
+        letter-spacing: 0.01em;
+        box-shadow: 0 4px 16px rgba(255,255,255,0.15);
+        transition: background 0.15s, transform 0.1s;
+    }
+    .msw-bar-btn:active { transform: scale(0.97); background: #e8e8e8; }
+
+    .msw-card-backdrop {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center 20%;
+        opacity: 1 !important;
+        border-radius: 24px;
+        z-index: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .msw-card > *:not(.msw-card-backdrop) {
+        position: relative;
+        z-index: 1;
+    }
+    </style>
+
+    <!-- MOBILE SWIPE SECTION -->
+    <div id="pricingMobileSwipe">
+
+        <div class="msw-tabs">
+            <div class="msw-tab-wrap">
+                <div class="msw-tab-bg" id="mswTabBg"></div>
+                <button class="msw-tab-btn active" id="mswTabPlan" onclick="mswSwitchTab('plan')">Mua Gói</button>
+                <button class="msw-tab-btn" id="mswTabCoin" onclick="mswSwitchTab('coin')">Nạp Xu</button>
+            </div>
+        </div>
+
+        <div id="mswPlanPanel">
+            <div class="msw-track" id="mswPlanTrack">
+                <div class="msw-card msw-card--free">
+                    <div class="msw-card-backdrop" id="msw-bd-free"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói Miễn Phí</div>
+                    </div>
+                    <div class="msw-card-name">Miễn Phí</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">0</div>
+                        <span class="msw-card-period">đ / tháng</span>
+                    </div>
+                </div>
+                <div class="msw-card msw-card--premium">
+                    <div class="msw-card-backdrop" id="msw-bd-premium"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói Thành Viên</div>
+                        <div class="msw-card-badge">Phổ biến nhất</div>
+                    </div>
+                    <div class="msw-card-name">Cao Cấp</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">169.000</div>
+                        <span class="msw-card-period">đ / tháng</span>
+                    </div>
+                </div>
+                <div class="msw-card msw-card--family">
+                    <div class="msw-card-backdrop" id="msw-bd-family"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói Gia Đình</div>
+                        <div class="msw-card-badge">Tiết kiệm 20%</div>
+                    </div>
+                    <div class="msw-card-name">Gia Đình</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">699.000</div>
+                        <span class="msw-card-period">đ / năm</span>
+                    </div>
+                </div>
+            </div>
+            <div class="msw-dots" id="mswPlanDots">
+                <div class="msw-dot active" onclick="mswScrollTo('plan',0)"></div>
+                <div class="msw-dot" onclick="mswScrollTo('plan',1)"></div>
+                <div class="msw-dot" onclick="mswScrollTo('plan',2)"></div>
+            </div>
+            <div class="msw-info" id="mswPlanInfo"></div>
+        </div>
+
+        <div id="mswCoinPanel" style="display:none;">
+            <div class="msw-track" id="mswCoinTrack">
+                <div class="msw-card msw-card--coin1">
+                    <div class="msw-card-backdrop" id="msw-bd-coin1"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói Khởi Đầu</div>
+                    </div>
+                    <div class="msw-card-name">5.000 Xu</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">20.000</div>
+                        <span class="msw-card-period">đ</span>
+                    </div>
+                </div>
+                <div class="msw-card msw-card--coin2">
+                    <div class="msw-card-backdrop" id="msw-bd-coin2"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói Đam Mê</div>
+                        <div class="msw-card-badge">Phổ biến</div>
+                    </div>
+                    <div class="msw-card-name">30.000 Xu</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">100.000</div>
+                        <span class="msw-card-period">đ</span>
+                    </div>
+                </div>
+                <div class="msw-card msw-card--coin3">
+                    <div class="msw-card-backdrop" id="msw-bd-coin3"></div>
+                    <div class="msw-card-header">
+                        <div class="msw-card-tag">Gói VIP Collector</div>
+                    </div>
+                    <div class="msw-card-name">200.000 Xu</div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                        <div class="msw-card-price">500.000</div>
+                        <span class="msw-card-period">đ</span>
+                    </div>
+                </div>
+            </div>
+            <div class="msw-dots" id="mswCoinDots">
+                <div class="msw-dot active" onclick="mswScrollTo('coin',0)"></div>
+                <div class="msw-dot" onclick="mswScrollTo('coin',1)"></div>
+                <div class="msw-dot" onclick="mswScrollTo('coin',2)"></div>
+            </div>
+            <div class="msw-info" id="mswCoinInfo"></div>
+        </div>
+    </div>
+
+    <div id="mswBottomBar" class="hidden-bar">
+        <div class="msw-bar-price">
+            <div class="msw-bar-label">Tổng thanh toán</div>
+            <div class="msw-bar-amount" id="mswBarAmount">—</div>
+            <div class="msw-bar-period" id="mswBarPeriod"></div>
+        </div>
+        <button class="msw-bar-btn" onclick="mswBuyNow()">Mua Ngay →</button>
+    </div>
+
+    <script>
+    const MSW_PLANS = [
+        { key: 'free', payUrl: null, name: 'Miễn Phí', amount: '0đ', period: '/tháng',
+          features: ['Truy cập kho phim giới hạn', 'Chất lượng SD (480p)', 'Xem trên 1 thiết bị'], bonus: null },
+        { key: 'premium', payUrl: '/payment?plan=premium', name: 'Cao Cấp', amount: '169.000đ', period: '/tháng',
+          features: ['Truy cập toàn bộ kho phim', 'Chất lượng Full HD & 4K', 'Không quảng cáo', 'Xem trên 2 thiết bị', 'Dùng thử miễn phí 7 ngày'],
+          bonus: { icon: 'redeem', main: 'Tặng 10.000 Xu Thưởng', sub: '+ 300 XP (Lên ngay 10 Cấp)' } },
+        { key: 'family', payUrl: '/payment?plan=family', name: 'Gia Đình', amount: '699.000đ', period: '/năm',
+          features: ['Tất cả quyền lợi Cao Cấp', 'Xem trên 4 thiết bị cùng lúc', 'Hỗ trợ ưu tiên 24/7'],
+          bonus: { icon: 'card_giftcard', main: 'Tặng 50.000 Xu Siêu Cấp', sub: '+ 1.000 XP Thần Thánh' } }
+    ];
+    const MSW_COINS = [
+        { key: 'xu_20k', name: 'Khởi Đầu', amount: '20.000đ', period: '',
+          features: ['5.000 Xu nạp vào tài khoản', 'Dành cho người mới bắt đầu', 'Dùng mua khung Avatar & Banner'], bonus: null },
+        { key: 'xu_100k', name: 'Đam Mê', amount: '100.000đ', period: '',
+          features: ['30.000 Xu nạp vào tài khoản', 'Tặng thêm 5.000 Xu Thưởng', 'Mở khoá khung Avatar hiếm'],
+          bonus: { icon: 'stars', main: '+ Tặng 5.000 Xu Thưởng', sub: 'Giá trị tốt nhất!' } },
+        { key: 'xu_500k', name: 'VIP Collector', amount: '500.000đ', period: '',
+          features: ['200.000 Xu nạp vào tài khoản', 'Tặng thêm 50.000 Xu Thưởng', 'Mở khoá toàn bộ khung VIP'],
+          bonus: { icon: 'diamond', main: '+ Tặng 50.000 Xu Thưởng', sub: 'Bộ sưu tập đỉnh cao' } }
+    ];
+
+    let mswActiveTab = 'plan';
+    let mswPlanIdx = 0;
+    let mswCoinIdx = 0;
+
+    function mswRenderInfo(tab, idx) {
+        const data = tab === 'plan' ? MSW_PLANS[idx] : MSW_COINS[idx];
+        const infoEl = document.getElementById(tab === 'plan' ? 'mswPlanInfo' : 'mswCoinInfo');
+        if (!infoEl || !data) return;
+        const bonusHTML = data.bonus ? `
+            <div class="msw-bonus-row">
+                <div class="msw-bonus-icon"><span class="material-icons-round">${data.bonus.icon}</span></div>
+                <div>
+                    <div class="msw-bonus-text-main">${data.bonus.main}</div>
+                    <div class="msw-bonus-text-sub">${data.bonus.sub}</div>
+                </div>
+            </div>` : '';
+        infoEl.innerHTML = `
+            <div class="msw-info-title">${data.name} — Quyền lợi</div>
+            <ul class="msw-feature-list">
+                ${data.features.map(f => `<li class="msw-feature-item"><span class="material-icons-round">check_circle</span>${f}</li>`).join('')}
+            </ul>${bonusHTML}`;
+        const bar = document.getElementById('mswBottomBar');
+        bar.classList.remove('hidden-bar');
+        document.getElementById('mswBarAmount').textContent = data.amount;
+        document.getElementById('mswBarPeriod').textContent = data.period;
+    }
+
+    function mswInitTrack(trackId, dotsId, tab) {
+        const track = document.getElementById(trackId);
+        const dots  = document.getElementById(dotsId);
+        if (!track) return;
+        let ticking = false;
+        track.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const cards = track.querySelectorAll('.msw-card');
+                    let closest = 0, minDist = Infinity;
+                    cards.forEach((c, i) => {
+                        const dist = Math.abs(c.getBoundingClientRect().left - track.getBoundingClientRect().left - track.clientWidth * 0.075);
+                        if (dist < minDist) { minDist = dist; closest = i; }
+                    });
+                    dots.querySelectorAll('.msw-dot').forEach((d, i) => d.classList.toggle('active', i === closest));
+                    if (tab === 'plan') mswPlanIdx = closest;
+                    else mswCoinIdx = closest;
+                    mswRenderInfo(tab, closest);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    function mswScrollTo(tab, idx) {
+        const track = document.getElementById(tab === 'plan' ? 'mswPlanTrack' : 'mswCoinTrack');
+        if (!track) return;
+        const card = track.querySelectorAll('.msw-card')[idx];
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    function mswSwitchTab(tab) {
+        mswActiveTab = tab;
+        const bg = document.getElementById('mswTabBg');
+        const planBtn = document.getElementById('mswTabPlan');
+        const coinBtn = document.getElementById('mswTabCoin');
+        const planPanel = document.getElementById('mswPlanPanel');
+        const coinPanel = document.getElementById('mswCoinPanel');
+        if (tab === 'plan') {
+            bg.classList.remove('coin-active');
+            planBtn.classList.add('active'); coinBtn.classList.remove('active');
+            planPanel.style.display = ''; coinPanel.style.display = 'none';
+            mswRenderInfo('plan', mswPlanIdx);
+        } else {
+            bg.classList.add('coin-active');
+            coinBtn.classList.add('active'); planBtn.classList.remove('active');
+            coinPanel.style.display = ''; planPanel.style.display = 'none';
+            mswRenderInfo('coin', mswCoinIdx);
+        }
+    }
+
+    function mswBuyNow() {
+        if (mswActiveTab === 'plan') {
+            const d = MSW_PLANS[mswPlanIdx];
+            if (d.payUrl) window.location.href = d.payUrl;
+        } else {
+            const d = MSW_COINS[mswCoinIdx];
+            window.location.href = `/payment?plan=${d.key}`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth >= 768) return;
+        mswInitTrack('mswPlanTrack', 'mswPlanDots', 'plan');
+        mswInitTrack('mswCoinTrack', 'mswCoinDots', 'coin');
+        mswRenderInfo('plan', 0);
+    });
+    </script>
+
+    <!-- ═══ DESKTOP MAIN ═══ -->
+    <main id="pricingMain" class="flex-grow pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full relative" style="padding-top: 85px;">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] pointer-events-none -z-10"></div>
+
+        <!-- Toggle Switch -->
+        <div class="flex justify-center relative z-10" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="inline-flex bg-[#1a1a1a] border border-white/10 rounded-full relative shadow-[0_0_20px_rgba(232,185,79,0.15)]" style="padding: 6px;">
+                <div id="pricingToggleBg" class="absolute rounded-full transition-transform duration-300 pointer-events-none"
+                     style="top: 6px; bottom: 6px; left: 6px; width: 140px; background: #e8b94f; transform: translateX(0); box-shadow: 0 4px 15px rgba(232,185,79,0.4);"></div>
+                <button id="togglePlanBtn" onclick="switchPricingTab('plan')"
+                    class="relative rounded-full text-sm font-extrabold transition-colors duration-300 z-10"
+                    style="width: 140px; padding: 10px 0; color: #000;">Mua Gói</button>
+                <button id="toggleCoinBtn" onclick="switchPricingTab('coin')"
+                    class="relative rounded-full text-sm font-extrabold transition-colors duration-300 z-10 hover:text-white"
+                    style="width: 140px; padding: 10px 0; color: #9ca3af;">Nạp Xu</button>
+            </div>
+        </div>
+
+        <div id="planSection" class="transition-opacity duration-300" style="opacity: 1; display: block; margin-top: 0;">
+            <div class="text-center mb-8">
+                <h1 class="text-xl md:text-2xl font-bold mb-3">Nâng Cấp Trải Nghiệm Điện Ảnh</h1>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm">
+                    Chọn gói thành viên phù hợp để mở khóa kho phim 4K không giới hạn và xem phim không quảng cáo ngay hôm nay.
+                </p>
+            </div>
+
+            <div class="p-pricing-grid">
+                <!-- Free Plan -->
+                <div class="p-card">
+                    <div class="p-card-backdrop" id="bd-free"></div>
+                    <div class="p-title">Miễn Phí</div>
+                    <div class="p-price-wrap">
+                        <span class="p-price">0</span>
+                        <span class="p-currency">đ</span>
+                        <span class="p-period">/tháng</span>
+                    </div>
+                    <ul class="p-features">
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Truy cập kho phim giới hạn</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Chất lượng SD (480p)</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trên 1 thiết bị</li>
+                    </ul>
+                    <button id="btn-free-plan" class="p-btn p-btn-outline">Đang sử dụng</button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="p-card p-card-featured p-shine-effect">
+                    <div class="p-card-backdrop" id="bd-premium"></div>
+                    <div style="position:absolute; top:12px; right:32px; background:var(--p-gold); color:#000; font-size:10px; font-weight:900; padding:4px 12px; border-radius:10px; text-transform:uppercase;">Phổ biến nhất</div>
+                    <div class="p-title" style="color:var(--p-gold)">Cao Cấp</div>
+                    <div class="p-price-wrap">
+                        <span class="p-price" id="price-premium" style="color:var(--p-gold)">169.000</span>
+                        <span class="p-currency" style="color:var(--p-gold)">đ</span>
+                        <span class="p-period">/tháng</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--p-gold); font-weight:700; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">Dùng thử miễn phí 7 ngày</div>
+                    <ul class="p-features">
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Truy cập toàn bộ kho phim</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Chất lượng Full HD & 4K</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Không quảng cáo</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Xem trên 2 thiết bị</li>
+                    </ul>
+                    <div class="p-bonus-badge" style="border-color:rgba(232,185,79,0.3); background:rgba(232,185,79,0.05);">
+                        <div class="p-bonus-icon" style="background:var(--p-gold)"><span class="material-icons-round">redeem</span></div>
+                        <div>
+                            <div style="font-size:13px; font-weight:800; color:var(--p-gold);">Tặng 10.000 Xu Thưởng</div>
+                            <div style="font-size:10px; opacity:0.6;">+ 300 XP (Lên ngay 10 Cấp)</div>
+                        </div>
+                    </div>
+                    <a href="/payment?plan=premium" data-plan="premium" id="btn-premium-plan" class="p-btn p-btn-gold">Chọn Gói Cao Cấp</a>
+                </div>
+
+                <!-- Family Plan -->
+                <div class="p-card">
+                    <div class="p-card-backdrop" id="bd-family"></div>
+                    <div style="position:absolute; top:24px; right:24px; background:rgba(16,185,129,0.15); color:var(--p-emerald); font-size:10px; font-weight:800; padding:4px 10px; border-radius:8px;">TIẾT KIỆM 20%</div>
+                    <div class="p-title">Gia Đình</div>
+                    <div class="p-price-wrap">
+                        <span class="p-price" id="price-premium-year">699.000</span>
+                        <span class="p-currency">đ</span>
+                        <span class="p-period">/năm</span>
+                    </div>
+                    <ul class="p-features">
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Tất cả quyền lợi Cao Cấp</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trên 4 thiết bị cùng lúc</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Hỗ trợ ưu tiên 24/7</li>
+                    </ul>
+                    <div class="p-bonus-badge">
+                        <div class="p-bonus-icon"><span class="material-icons-round">card_giftcard</span></div>
+                        <div>
+                            <div style="font-size:13px; font-weight:800; color:var(--p-emerald);">Tặng 50.000 Xu Siêu Cấp</div>
+                            <div style="font-size:10px; opacity:0.6;">+ 1.000 XP Thần Thánh</div>
+                        </div>
+                    </div>
+                    <a href="/payment?plan=family" data-plan="family" id="btn-family-plan" class="p-btn p-btn-outline">Chọn Gói Gia Đình</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: GÓI NẠP XU -->
+        <div id="coinSection" class="transition-opacity duration-300" style="opacity: 0; display: none; margin-top: 0;">
+            <div class="mb-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold text-white mb-3">Gói Nạp Xu <span class="text-primary">Tiết Kiệm</span></h2>
+                    <p class="text-gray-400 max-w-xl mx-auto text-sm">Dùng Xu để mở khóa Khung Avatar & Banner độc quyền tại Cửa hàng Profile của bạn.</p>
+                </div>
+                <div class="p-coin-grid">
+                    <div class="p-coin-card" onclick="openPaymentModal('xu_20k')">
+                        <div class="p-card-backdrop" id="bd-coin1"></div>
+                        <div class="p-coin-icon" style="background:rgba(56,189,248,0.1); color:var(--p-blue);"><span class="material-icons-round">savings</span></div>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gói Khởi Đầu</h3>
+                        <div style="font-size:2.5rem; font-weight:900; color:var(--p-blue); letter-spacing:-1px;">5.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.3); margin-bottom:20px;">Dành cho người mới bắt đầu</div>
+                        <div style="height:1px; background:rgba(255,255,255,0.05); margin-bottom:20px;"></div>
+                        <div style="font-size:1.4rem; font-weight:800; margin-bottom:20px;">20.000 đ</div>
+                        <button class="p-btn p-btn-outline" style="padding:12px;">Nạp Ngay</button>
+                    </div>
+                    <div class="p-coin-card p-shine-effect" style="border-color:var(--p-gold); background:rgba(232,185,79,0.04);" onclick="openPaymentModal('xu_100k')">
+                        <div class="p-card-backdrop" id="bd-coin2"></div>
+                        <div style="position:absolute; top:12px; right:12px; background:var(--p-gold); color:#000; font-size:9px; font-weight:900; padding:3px 8px; border-radius:10px; text-transform:uppercase;">PHỔ BIẾN</div>
+                        <div class="p-coin-icon" style="background:rgba(232,185,79,0.15); color:var(--p-gold); box-shadow:0 0 20px rgba(232,185,79,0.2);"><span class="material-icons-round">stars</span></div>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.8); margin-bottom:4px;">Gói Đam Mê</h3>
+                        <div style="font-size:2.5rem; font-weight:900; color:var(--p-gold); letter-spacing:-1px;">30.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
+                        <div style="font-size:12px; color:var(--p-emerald); font-weight:700; margin-bottom:20px;">+ Tặng 5.000 Xu Thưởng</div>
+                        <div style="height:1px; background:rgba(232,185,79,0.1); margin-bottom:20px;"></div>
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--p-gold); margin-bottom:20px;">100.000 đ</div>
+                        <button class="p-btn p-btn-gold" style="padding:12px;">Nạp Ngay</button>
+                    </div>
+                    <div class="p-coin-card" onclick="openPaymentModal('xu_500k')">
+                        <div class="p-card-backdrop" id="bd-coin3"></div>
+                        <div class="p-coin-icon" style="background:rgba(168,85,247,0.1); color:var(--p-purple);"><span class="material-icons-round">diamond</span></div>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gói VIP Collector</h3>
+                        <div style="font-size:2.5rem; font-weight:900; color:var(--p-purple); letter-spacing:-1px;">200.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
+                        <div style="font-size:12px; color:var(--p-purple); font-weight:700; margin-bottom:20px;">+ Tặng 50.000 Xu Thưởng</div>
+                        <div style="height:1px; background:rgba(255,255,255,0.05); margin-bottom:20px;"></div>
+                        <div style="font-size:1.4rem; font-weight:800; margin-bottom:20px;">500.000 đ</div>
+                        <button class="p-btn p-btn-outline" style="padding:12px;">Nạp Ngay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        // -- Sync pricing from backend settings ----------------------------------
+        (async function syncPricing() {
+            function fmtVND(num) {
+                if (!num || isNaN(num)) return null;
+                return Number(num).toLocaleString('vi-VN');
+            }
+            function applyPrices(payment) {
+                const premium = fmtVND(payment?.pricePremium);
+                const premiumYear = fmtVND(payment?.pricePremiumYear);
+                if (premium) {
+                    const el = document.getElementById('price-premium');
+                    if (el) el.textContent = premium;
+                }
+                if (premiumYear) {
+                    const el = document.getElementById('price-premium-year');
+                    if (el) el.textContent = premiumYear;
+                }
+            }
+            try {
+                const BACKEND = (typeof API_CONFIG !== 'undefined')
+                    ? API_CONFIG.BACKEND_URL
+                    : (location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://a-phim-production-fb41.up.railway.app/api');
+                const paymentRes = await fetch(`${BACKEND}/settings/payment-public`);
+                if (paymentRes.ok) {
+                    const data = await paymentRes.json();
+                    if (data?.success && data?.data) {
+                        applyPrices(data.data);
+                        try {
+                            const cached = JSON.parse(localStorage.getItem('cinestream_public_settings') || '{}');
+                            Object.assign(cached, data.data);
+                            localStorage.setItem('cinestream_public_settings', JSON.stringify(cached));
+                        } catch (e) { }
+                    }
+                }
+            } catch (e) {
+                console.warn('Pricing sync failed, using defaults', e);
+            }
+
+            window.openPaymentModal = function (planId) {
+                window.location.href = `/payment?plan=${planId}`;
+            };
+
+            // Tab Switching Logic
+            window.switchPricingTab = function (tab) {
+                const planSec = document.getElementById('planSection');
+                const coinSec = document.getElementById('coinSection');
+                const bg = document.getElementById('pricingToggleBg');
+                const btnPlan = document.getElementById('togglePlanBtn');
+                const btnCoin = document.getElementById('toggleCoinBtn');
+                if (tab === 'plan') {
+                    coinSec.style.opacity = '0';
+                    setTimeout(() => {
+                        coinSec.style.display = 'none';
+                        planSec.style.display = 'block';
+                        void planSec.offsetWidth;
+                        planSec.style.opacity = '1';
+                    }, 150);
+                    bg.style.transform = 'translateX(0)';
+                    btnPlan.style.color = '#000';
+                    btnCoin.style.color = '#9ca3af';
+                } else {
+                    planSec.style.opacity = '0';
+                    setTimeout(() => {
+                        planSec.style.display = 'none';
+                        coinSec.style.display = 'block';
+                        void coinSec.offsetWidth;
+                        coinSec.style.opacity = '1';
+                    }, 150);
+                    bg.style.transform = 'translateX(100%)';
+                    btnCoin.style.color = '#000';
+                    btnPlan.style.color = '#9ca3af';
+                }
+            };
+
+            // Auto-switch based on URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('tab') === 'coin') {
+                const planSec = document.getElementById('planSection');
+                const coinSec = document.getElementById('coinSection');
+                const bg = document.getElementById('pricingToggleBg');
+                const btnPlan = document.getElementById('togglePlanBtn');
+                const btnCoin = document.getElementById('toggleCoinBtn');
+                if (planSec && coinSec) {
+                    planSec.style.display = 'none';
+                    planSec.style.opacity = '0';
+                    coinSec.style.display = 'block';
+                    coinSec.style.opacity = '1';
+                    bg.style.transform = 'translateX(100%)';
+                    btnCoin.style.color = '#000';
+                    btnPlan.style.color = '#9ca3af';
+                }
+            }
+        })();
+    </script>
+
+    <!-- App Guide Popup -->
+    <div id="aphim-guide-overlay" onclick="if(event.target===this)aphimCloseGuide()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:460px;background:#0d0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.8);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.25);">
+                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hướng dẫn cài đặt A Phim</span>
+                <button onclick="aphimCloseGuide()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:#aaa;font-size:1rem;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">✕</button>
+            </div>
+            <div style="padding:14px;overflow-y:auto;max-height:78vh;">
+                <img src="/quangcao/HD_cai_app.png" alt="Huong dan cai dat" style="width:100%;height:auto;border-radius:8px;display:block;"/>
+            </div>
+        </div>
+    </div>
+    <script>
+        function aphimOpenGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='flex';document.body.style.overflow='hidden';}}
+        function aphimCloseGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='none';document.body.style.overflow='';}}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')aphimCloseGuide();});
+    </script>
+
+    <!-- Scripts -->
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/data-cache.js?v=15"></script>
+    <script src="/js/user.js?v=40"></script>
+    <script src="/js/realtime-sync.js"></script>
+
+    <%- include('partials/chat') %>
+
+    <!-- ====== Pricing Card Backdrops ====== -->
+    <style>
+    #bd-free    { background-image: url('https://img.ophim.live/uploads/movies/nha-minh-di-thoi-thumb.jpg'); }
+    #bd-premium { background-image: url('https://img.ophim.live/uploads/movies/bo-gia-2021-thumb.jpg'); }
+    #bd-family  { background-image: url('https://img.ophim.live/uploads/movies/nha-ba-toi-mot-phong-thumb.jpg'); }
+    #bd-coin1 { background-image: url('https://img.ophim.live/uploads/movies/nha-ba-toi-mot-phong-thumb.jpg'); }
+    #bd-coin2 { background-image: url('https://img.ophim.live/uploads/movies/bo-gia-2021-thumb.jpg'); }
+    #bd-coin3 { background-image: url('https://img.ophim.live/uploads/movies/nha-minh-di-thoi-thumb.jpg'); }
+    #msw-bd-free    { background-image: url('https://img.ophim.live/uploads/movies/nha-minh-di-thoi-thumb.jpg'); }
+    #msw-bd-premium { background-image: url('https://img.ophim.live/uploads/movies/bo-gia-2021-thumb.jpg'); }
+    #msw-bd-family  { background-image: url('https://img.ophim.live/uploads/movies/nha-ba-toi-mot-phong-thumb.jpg'); }
+    #msw-bd-coin1   { background-image: url('https://img.ophim.live/uploads/movies/nha-ba-toi-mot-phong-thumb.jpg'); }
+    #msw-bd-coin2   { background-image: url('https://img.ophim.live/uploads/movies/bo-gia-2021-thumb.jpg'); }
+    #msw-bd-coin3   { background-image: url('https://img.ophim.live/uploads/movies/nha-minh-di-thoi-thumb.jpg'); }
+    </style>
+</body>
+</html>

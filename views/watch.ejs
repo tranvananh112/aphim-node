@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/chat-room.css?v=65">
+    <link rel="stylesheet" href="/css/chat-mobile-fixed.css?v=65">
+    <link rel="stylesheet" href="/css/pwa-safe-area.css?v=3">
+    <link rel="stylesheet" href="/css/mobile-viewport-fix.css?v=36">
+    <link rel="stylesheet" href="/css/mobile-menu-modern.css?v=38">
+    <link rel="stylesheet" href="/css/progressive-image.css?v=13">
+    <link rel="stylesheet" href="/css/ambient-bg.css?v=13">
+    <link rel="stylesheet" href="/css/avatar-frames.css?v=15">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="/js/anti-devtools.js?v=12"></script>
+
+    <!-- 🎬 PREMIUM UNIFIED 3-LAYER DARK THEME (Netflix & YouTube inspired) -->
+    <style id="premium-dark-theme-3-layer">
+        /* Enforce absolute play button sizing for Chrome/Safari Mobile Lottie */
+        #play-btn {
+            width: 55px !important;
+            height: 55px !important;
+            min-width: 55px !important;
+            min-height: 55px !important;
+            max-width: 55px !important;
+            max-height: 55px !important;
+            flex-shrink: 0 !important;
+            flex-grow: 0 !important;
+        }
+        #play-btn svg {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+        }
+        @media (min-width: 640px) {
+            #play-btn {
+                width: 80px !important;
+                height: 80px !important;
+                min-width: 80px !important;
+                min-height: 80px !important;
+                max-width: 80px !important;
+                max-height: 80px !important;
+            }
+        }
+
+        /* 📺📱 Seamlessly fuse Video Player and Action Bar universally (both Desktop and Mobile) */
+        #player-and-controls > div:first-of-type {
+            border-bottom-left-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            border-bottom-width: 0px !important;
+        }
+        #mob-action-bar,
+        #player-control-bar {
+            margin-top: 0px !important;
+            border-top-left-radius: 0px !important;
+            border-top-right-radius: 0px !important;
+            border-top-width: 0px !important;
+        }
+        /* Mobile: player + action bar = 1 khối đen liền mạch */
+        @media (max-width: 767px) {
+            #player-and-controls .relative.aspect-video {
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                border-bottom: none !important;
+            }
+        }
+
+        /* ── LỚP 1: Nền tổng thể toàn trang (Overall darkest page bg) ── */
+        /* Override ambient-bg.css transparent + void fallback */
+        html,
+        html body,
+        html body.bg-background-dark,
+        html body.watch-page,
+        body.bg-background-dark.watch-page,
+        .bg-background-dark,
+        main#watchMain {
+            background-color: #1e2130 !important;
+            background: #1e2130 !important;
+        }
+        /* Ẩn ambient-bg trên trang watch (đã dùng nền solid) */
+        .watch-page .ambient-bg {
+            display: none !important;
+        }
+
+        /* ── LỚP 2: Khung card chính, Sidebar containers (KHÔNG bao gồm comments-section) ── */
+        .bg-layer-2,
+        .bg-surface-dark\/50 {
+            background-color: #23263a !important;
+            background: #23263a !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: none !important;
+        }
+
+        /* ── Comments: div.mt-8 giữ màu nền trang, .ap-cmt-wrapper (#23263a) do firebase-comments.js inject ── */
+        #comments-section > div {
+            background-color: #1e2130 !important;
+            background: #1e2130 !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            box-shadow: none !important;
+        }
+        .ap-cmt-wrapper {
+            background-color: #23263a !important;
+            background: #23263a !important;
+        }
+
+        /* ── LỚP 3: Các thành phần con bên trong ── */
+        .bg-layer-3,
+        .ap-cmt-guest,
+        .comment-item,
+        #comments-section div.bg-\[\#323447\],
+        #comments-section .bg-\[\#282a3a\],
+        .ap-ava-dropdown,
+        .ap-dropdown-menu {
+            background-color: #1a1d2e !important;
+            background: #1a1d2e !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .ap-cmt-form-logged {
+            background: rgba(30, 33, 42, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+        }
+
+        /* ── Override styles cho từng comment & input bên trong ── */
+        .ap-cmt-replies {
+            border-left: 2px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        .ap-cmt-textarea, .ap-cmt-textarea::placeholder, #commentInput::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .ap-form-user-bar {
+            background: transparent !important;
+            border-bottom: none !important;
+        }
+        .ap-form-footer-wrap {
+            background: rgba(0, 0, 0, 0.15) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
+        }
+        .ap-spoiler-row, .ap-form-footer {
+            border-top: none !important;
+        }
+        .ap-dropdown-item {
+            color: #e5e7eb !important;
+            background: transparent !important;
+        }
+        .ap-dropdown-item:hover {
+            background-color: #2e3246 !important;
+            background: #2e3246 !important;
+        }
+        .ap-ep-tag {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Cấu trúc lưới Danh sách tập phim (Robust CSS Grid - Style of Image 4) */
+        #episode-list {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+            width: 100% !important;
+            max-height: 310px !important;
+            overflow-y: auto !important;
+            padding-right: 6px !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent !important;
+        }
+        #episode-list::-webkit-scrollbar {
+            width: 5px !important;
+        }
+        #episode-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02) !important;
+            border-radius: 10px !important;
+        }
+        #episode-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-radius: 10px !important;
+        }
+        #episode-list::-webkit-scrollbar-thumb:hover {
+            background: #fcd576 !important;
+        }
+        @media (min-width: 480px) {
+            #episode-list {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            }
+        }
+        @media (min-width: 640px) {
+            #episode-list {
+                grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+        }
+        @media (min-width: 768px) {
+            #episode-list {
+                grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            #episode-list {
+                grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+            }
+        }
+        @media (min-width: 1280px) {
+            #episode-list {
+                grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+            }
+        }
+
+        /* Từng nút tập phim (Compact & Uniform Size) */
+        #episode-list button {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 8px 4px !important;
+            min-width: 0 !important;
+            width: 100% !important;
+            background-color: #161924 !important;
+            background: #161924 !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            border-radius: 8px !important;
+            color: #9ca3af !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease-in-out !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        #episode-list button:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+        }
+        #episode-list button.active {
+            background-color: #fcd576 !important;
+            background: #fcd576 !important;
+            color: #000000 !important;
+            border-color: transparent !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(252, 211, 77, 0.3) !important;
+        }
+
+        /* Sidebar recommendations */
+        #recommendations-list > a {
+            background-color: #1e2130 !important;
+            background: #1e2130 !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+        }
+        #recommendations-list > a:hover {
+            transform: translateY(-4px) !important;
+            border-color: rgba(252, 213, 118, 0.3) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* ── Thanh điều khiển: ẩn chữ, chỉ giữ icon khi màn dưới 1280px ── */
+        @media (max-width: 1280px) {
+            #player-control-bar {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                gap: 4px !important;
+                padding: 12px 8px !important;
+            }
+            #player-control-bar button {
+                flex: 1 1 auto !important;
+                flex-direction: column !important;
+                gap: 4px !important;
+                padding: 8px 4px !important;
+                min-width: 0 !important;
+                width: auto !important;
+            }
+            #player-control-bar button span:last-child {
+                display: none !important;
+            }
+            #player-control-bar button .material-icons-round,
+            #player-control-bar button .material-icons {
+                font-size: 22px !important;
+                margin: 0 !important;
+            }
+        }
+
+        /* ══════════════════════════════════════════
+           MOBILE PLAYER OVERLAY & ACTION BAR
+           ══════════════════════════════════════════ */
+
+        /* Overlay controls bên trong video (chỉ mobile) */
+        #mob-player-ctrl {
+            display: none;
+        }
+        @media (max-width: 767px) {
+            /* Ẩn control bar cũ, thay bằng mobile action bar */
+            #player-control-bar {
+                display: none !important;
+            }
+            /* Overlay bên dưới iframe – luôn hiển thị trên mobile */
+            #mob-player-ctrl {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                position: absolute;
+                bottom: 0; left: 0; right: 0;
+                z-index: 10;
+                background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 60%, transparent 100%);
+                padding: 6px 10px 8px;
+                pointer-events: none; /* cho click xuyên qua iframe phần trên */
+            }
+            #mob-player-ctrl > * {
+                pointer-events: auto; /* nhưng controls thì click được */
+            }
+            /* Seekbar */
+            .mpb-bar {
+                width: 100%;
+                height: 3px;
+                background: rgba(255,255,255,0.25);
+                border-radius: 3px;
+                position: relative;
+                cursor: pointer;
+            }
+            .mpb-fill {
+                position: absolute;
+                left: 0; top: 0;
+                height: 100%;
+                width: 30%;
+                background: #fcd576;
+                border-radius: 3px;
+            }
+            .mpb-dot {
+                position: absolute;
+                right: -5px; top: -4px;
+                width: 11px; height: 11px;
+                background: #fcd576;
+                border-radius: 50%;
+                box-shadow: 0 0 6px rgba(252,213,118,0.8);
+            }
+            /* Controls row */
+            .mpb-row {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+            }
+            .mpb-btn {
+                background: none;
+                border: none;
+                color: #fff;
+                padding: 5px 6px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .mpb-btn:active { background: rgba(255,255,255,0.12); }
+            .mpb-btn .material-icons-round { font-size: 22px; }
+            .mpb-btn.sm .material-icons-round { font-size: 19px; color: rgba(255,255,255,0.8); }
+            .mpb-time {
+                font-size: 10px;
+                color: rgba(255,255,255,0.75);
+                margin: 0 2px;
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+            }
+            .mpb-spacer { flex: 1; }
+
+            /* ══ Mobile Action Bar — 1 hàng cinema style ══ */
+            #mob-action-bar {
+                display: flex !important;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                background: #0d0d0d;
+                border: none;
+                border-radius: 0 0 12px 12px;
+                padding: 6px 12px;
+                min-height: 48px;
+                position: relative;
+                z-index: 99999;
+            }
+            /* Nhóm trái: prev + next */
+            .mab-left {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+            }
+            /* Ngăn cách */
+            .mab-sep {
+                width: 1px;
+                height: 22px;
+                background: rgba(255,255,255,0.15);
+                margin: 0 8px;
+                flex-shrink: 0;
+            }
+            /* Nhóm phải: fav + save + share + fs + more */
+            .mab-right {
+                display: flex;
+                align-items: center;
+                gap: 0;
+                flex: 1;
+                justify-content: space-around;
+            }
+            /* Ẩn cột giữa (tên tập) — không dùng nữa */
+            .mab-mid { display: none; }
+            /* Button chung — icon TRẮNG, click được trên mobile */
+            .mab-btn {
+                background: none;
+                border: none;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 6px 8px;
+                cursor: pointer;
+                border-radius: 8px;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;   /* loại bỏ 300ms tap delay */
+                pointer-events: auto;          /* đảm bảo nhận touch */
+                transition: opacity 0.15s, transform 0.12s;
+            }
+            .mab-btn:active { opacity: 0.5; transform: scale(0.88); }
+            .mab-btn.mab-active { color: #fcd576 !important; }
+            /* Tất cả icon đồng bộ 22px */
+            .mab-btn .material-icons-round { font-size: 22px; }
+
+            /* Overflow menu — popup khi nhấn ··· */
+            #mab-more-menu {
+                display: none;
+                position: absolute;
+                bottom: calc(100% + 6px);
+                right: 0;
+                background: #1a1a1a;
+                border: 1px solid rgba(255,255,255,0.15);
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+                z-index: 9999;
+                min-width: 160px;
+                padding: 6px 0;
+                overflow: hidden;
+            }
+            #mab-more-menu.open { display: block; }
+            .mab-more-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 11px 16px;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 500;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+                transition: background 0.14s;
+            }
+            .mab-more-item:active { background: rgba(255,255,255,0.1); }
+            .mab-more-item .material-icons-round { font-size: 19px; color: rgba(255,255,255,0.6); }
+            /* Wrapper chứa more btn + menu */
+            #mab-more-wrap {
+                position: relative;
+            }
+        }
+        /* Ẩn mob-action-bar trên desktop */
+        @media (min-width: 768px) {
+            #mob-action-bar { display: none !important; }
+        }
+
+        /* ══════════════════════════════════════════
+           CSS PSEUDO-FULLSCREEN (iOS Safari safe)
+           ══════════════════════════════════════════ */
+
+        /* Khi tôi fullscreen bằng CSS (fallback cho iOS) */
+        .aphim-pseudo-fs {
+            position: fixed !important;
+            top: 0 !important; left: 0 !important;
+            width: 100vw !important;
+            height: 100dvh !important; /* dvh = dynamic viewport height, iOS-aware */
+            z-index: 2147483647 !important; /* MAX int — trên tất cả mọi thứ */
+            border-radius: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+            background: #000 !important;
+            overflow: hidden !important;
+        }
+        /* iframe bên trong phải fill hết */
+        .aphim-pseudo-fs iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+        /* Overlay controls khi pseudo-fs: hiện luôn, rõ hơn */
+        .aphim-pseudo-fs #mob-player-ctrl {
+            display: flex !important;
+            opacity: 1 !important;
+        }
+        /* Nút thoát pseudo-fs nổi bật */
+        .aphim-pseudo-fs #mpbFs .material-icons-round {
+            color: #fcd576 !important;
+        }
+        /* Khoá scroll của body khi pseudo-fs */
+        body.aphim-fs-lock {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+        }
+    </style>
+
+    <style>
+        /* Watch page specific styles from old watch.html */
+    </style>
+</head>
+
+<body class="bg-background-dark text-gray-100 font-display min-h-screen flex flex-col watch-page">
+    <%- include('partials/header') %>
+
+    <main class="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-8" id="watchMain">
+        <!-- Breadcrumbs -->
+        <div class="flex items-center gap-2 text-sm text-gray-400 mb-4 font-medium" id="watch-breadcrumb">
+            <a class="hover:text-white transition-colors" href="/">Trang chủ</a>
+            <span class="material-icons-round text-base">chevron_right</span>
+            <span id="breadcrumb-movie-name" class="text-white font-semibold"><%= movie ? movie.name : 'Đang tải...' %></span>
+        </div>
+
+        <style>
+            @media (min-width: 1024px) {
+                #video-container { grid-column: 1 / 9 !important; grid-row: 1 !important; }
+                #sidebar-col { grid-column: 9 / 13 !important; grid-row: 1 / 3 !important; }
+                #comments-section { grid-column: 1 / 9 !important; grid-row: 2 !important; margin-top: 0 !important; }
+                #mobile-recommendations { display: none !important; }
+            }
+            @media (max-width: 1023px) {
+                #video-container { order: 1 !important; }
+                #sidebar-col { order: 2 !important; width: 100% !important; overflow: hidden !important; }
+                #mobile-recommendations { order: 3 !important; width: 100% !important; }
+                #comments-section { order: 4 !important; width: 100% !important; }
+            }
+        </style>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-6 items-start">
+            
+            <!-- CỘT TRÁI (Chiếm ~70% - lg:col-span-8) -->
+            <div id="video-container" class="lg:col-span-8 flex flex-col gap-5 min-w-0 transition-all duration-300">
+                <!-- Player & Controls Integrated Wrapper -->
+                <div id="player-and-controls" class="w-full flex flex-col transition-all duration-300">
+                    <!-- Video Player -->
+                    <div class="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl group border border-white/10">
+                        <img alt="Video thumbnail" class="w-full h-full object-cover opacity-60"
+                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <button id="play-btn"
+                                class="w-20 h-20 bg-primary/90 text-black rounded-full flex items-center justify-center transform scale-100 group-hover:scale-110 transition-transform duration-300 hover:bg-white hover:text-primary">
+                                <span class="material-icons-round text-5xl ml-2">play_arrow</span>
+                            </button>
+                        </div>
+
+                        <!-- ═══ MOBILE PLAYER OVERLAY CONTROLS ═══ -->
+                        <div id="mob-player-ctrl">
+                            <!-- Seekbar -->
+                            <div class="mpb-bar" id="mpbBar">
+                                <div class="mpb-fill" id="mpbFill"><div class="mpb-dot"></div></div>
+                            </div>
+                            <!-- Controls row -->
+                            <div class="mpb-row">
+                                <button class="mpb-btn" id="mpbPrev" aria-label="Tập trước">
+                                    <span class="material-icons-round">skip_previous</span>
+                                </button>
+                                <button class="mpb-btn" id="mpbBack" aria-label="Tua lại 10s">
+                                    <span class="material-icons-round">replay_10</span>
+                                </button>
+                                <button class="mpb-btn" id="mpbPlay" aria-label="Phát/Dừng" style="padding:5px 10px;">
+                                    <span class="material-icons-round" id="mpbPlayIcon" style="font-size:28px;">play_arrow</span>
+                                </button>
+                                <button class="mpb-btn" id="mpbFwd" aria-label="Tua tiếp 10s">
+                                    <span class="material-icons-round">forward_10</span>
+                                </button>
+                                <button class="mpb-btn" id="mpbNext" aria-label="Tập tiếp">
+                                    <span class="material-icons-round">skip_next</span>
+                                </button>
+                                <button class="mpb-btn sm" id="mpbVol" aria-label="Âm thanh">
+                                    <span class="material-icons-round">volume_up</span>
+                                </button>
+                                <span class="mpb-time" id="mpbTime">00:00 / 00:00</span>
+                                <div class="mpb-spacer"></div>
+                                <button class="mpb-btn sm" id="mpbSettings" aria-label="Cài đặt">
+                                    <span class="material-icons-round">settings</span>
+                                </button>
+                                <button class="mpb-btn sm" id="mpbFs" aria-label="Toàn màn hình">
+                                    <span class="material-icons-round">fullscreen</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- ═══ END MOBILE PLAYER OVERLAY ═══ -->
+                    </div>
+
+                    <!-- ═══ MOBILE ACTION BAR — 1 hàng cinema style ═══ -->
+                    <div id="mob-action-bar">
+                        <!-- Nhóm TRÁI: điều hướng tập -->
+                        <div class="mab-left">
+                            <button class="mab-btn" id="mab-prev" aria-label="Tập trước">
+                                <span class="material-icons-round">skip_previous</span>
+                            </button>
+                            <button class="mab-btn" id="mab-next" aria-label="Tập tiếp">
+                                <span class="material-icons-round">skip_next</span>
+                            </button>
+                        </div>
+                        <!-- Ngăn cách -->
+                        <div class="mab-sep"></div>
+                        <!-- Nhóm PHẢI: tính năng -->
+                        <div class="mab-right">
+                            <button class="mab-btn" id="mab-fav" aria-label="Yêu thích">
+                                <span class="material-icons-round">favorite_border</span>
+                            </button>
+                            <button class="mab-btn" id="mab-save" aria-label="Thêm vào">
+                                <span class="material-icons-round">playlist_add</span>
+                            </button>
+                            <button class="mab-btn" onclick="shareMovie()" aria-label="Chia sẻ">
+                                <span class="material-icons-round">share</span>
+                            </button>
+                            <button class="mab-btn" id="mab-fs" aria-label="Toàn màn hình">
+                                <span class="material-icons-round">fullscreen</span>
+                            </button>
+                            <!-- Nút ··· -->
+                            <div id="mab-more-wrap">
+                                <button class="mab-btn" id="mab-more-btn" aria-label="Thêm">
+                                    <span class="material-icons-round">more_vert</span>
+                                </button>
+                                <div id="mab-more-menu" role="menu">
+                                    <button class="mab-more-item" id="mab-cinema" role="menuitem">
+                                        <span class="material-icons-round">lightbulb</span>
+                                        Tắt đèn
+                                    </button>
+                                    <button class="mab-more-item" onclick="reportError()" role="menuitem">
+                                        <span class="material-icons-round">flag</span>
+                                        Báo lỗi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ═══ END MOBILE ACTION BAR ═══ -->
+
+                    <!-- Solid Dark Integrated Control Bar -->
+                    <div id="player-control-bar" class="w-full bg-[#1e2130] border border-white/5 rounded-xl px-4 py-4 mt-5 grid grid-cols-4 gap-y-10 gap-x-2 md:flex md:flex-wrap md:items-center md:justify-between md:gap-y-0 text-xs text-gray-300 font-semibold select-none shadow-lg">
+                        <button id="btn-prev-episode" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">skip_previous</span>
+                            <span class="text-[10px] sm:text-xs">Tập trước</span>
+                        </button>
+                        <button id="btn-next-episode" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">skip_next</span>
+                            <span class="text-[10px] sm:text-xs">Tập tiếp</span>
+                        </button>
+                        <button id="favoriteMovieBtn" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-red-400 transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">favorite_border</span>
+                            <span class="text-[10px] sm:text-xs">Yêu thích</span>
+                        </button>
+                        <button id="saveMovieBtn" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">playlist_add</span>
+                            <span class="text-[10px] sm:text-xs">Thêm vào</span>
+                        </button>
+                        <button onclick="shareMovie()" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">share</span>
+                            <span class="text-[10px] sm:text-xs">Chia sẻ</span>
+                        </button>
+                        <button id="cinemaModeBtn" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">lightbulb</span>
+                            <span class="text-[10px] sm:text-xs">Tắt đèn</span>
+                        </button>
+                        <button id="fullscreenBtn" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-primary transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">fullscreen</span>
+                            <span class="text-[10px] sm:text-xs">Toàn màn hình</span>
+                        </button>
+                        <button onclick="reportError()" class="flex flex-col md:flex-row items-center justify-center gap-1.5 hover:text-red-400 transition-colors cursor-pointer text-gray-400 text-center w-full md:w-auto py-2 md:py-0">
+                            <span class="material-icons-round text-sm sm:text-base">flag</span>
+                            <span class="text-[10px] sm:text-xs">Báo lỗi</span>
+                        </button>
+                    </div>
+                </div> <!-- End Player & Controls Integrated Wrapper -->
+
+                <!-- Episodes Section -->
+                <div class="bg-layer-2 border border-white/5 rounded-2xl p-5 md:p-6 shadow-xl mt-5">
+                    <h3 class="text-base md:text-lg font-bold flex items-center gap-2 mb-4 text-white">
+                        <span class="w-1.5 h-5 bg-[#fcd576] rounded-full shadow-[0_0_12px_rgba(252,211,77,0.5)]"></span>
+                        Danh sách tập <span id="episode-count" class="text-gray-500 font-medium text-xs md:text-sm ml-1.5">(<%= episodes && episodes.length ? episodes[0].server_name || '?' : '?' %> tập)</span>
+                    </h3>
+                    <div id="episode-list" class="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-9 xl:grid-cols-10 gap-2 w-full">
+                        <!-- JS Render Here -->
+                    </div>
+                </div>
+
+                <!-- Gallery Section -->
+                <div id="movie-gallery-container" class="mt-5 bg-layer-2 border border-white/5 rounded-2xl p-5 md:p-6 shadow-xl w-full hidden">
+                    <h3 class="text-base md:text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-red-600 rounded-full shadow-[0_0_12px_rgba(220,38,38,0.5)]"></span>
+                        Hình ảnh <span id="movie-gallery-count" class="text-gray-400 text-sm font-normal ml-1"></span>
+                    </h3>
+                    <div class="relative w-full group">
+                        <button id="btn-scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/60 hover:bg-red-600 rounded-full text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-1/2 shadow-lg backdrop-blur-sm border border-white/20">
+                            <span class="material-icons-round">chevron_left</span>
+                        </button>
+                        <div id="movie-gallery-scroll" class="flex gap-4 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-2 pt-1 scroll-smooth" style="scrollbar-width: none; -ms-overflow-style: none;">
+                            <!-- JS Render Images Here -->
+                        </div>
+                        <button id="btn-scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/60 hover:bg-red-600 rounded-full text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-1/2 shadow-lg backdrop-blur-sm border border-white/20">
+                            <span class="material-icons-round">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Recommendations moved out to the grid level -->
+
+                <!-- Comments Section moved to bottom -->
+
+            <!-- CỘT PHẢI (Chiếm ~30% - lg:col-span-4) -->
+            <aside id="sidebar-col" class="lg:col-span-4 space-y-6 lg:block self-start lg:sticky lg:top-24 w-full min-w-0">
+                <!-- Premium Movie Info Card -->
+                <div class="bg-layer-2 border border-white/5 rounded-2xl p-4 md:p-6 text-white space-y-6 shadow-2xl transition-all duration-300 hover:border-white/10 w-full overflow-hidden">
+                    <!-- Poster & Basic Info Row -->
+                    <div class="flex gap-5 items-start">
+                        <div class="w-32 aspect-[2/3] rounded-xl overflow-hidden border border-white/10 flex-shrink-0 shadow-[0_8px_25px_rgba(0,0,0,0.6)] bg-black transition-transform duration-300 hover:scale-[1.02]">
+                            <img id="sidebar-poster" src="" alt="Poster" class="w-full h-full object-cover object-top" style="object-position: top;">
+                        </div>
+                        <div class="flex flex-col min-w-0 py-1.5 justify-between gap-2.5">
+                            <h2 id="sidebar-movie-name" class="font-black text-xl md:text-2xl leading-snug text-white tracking-tight line-clamp-2 hover:text-primary transition-colors cursor-pointer"><%= movie ? movie.name : 'Đang tải...' %></h2>
+                            <p id="sidebar-movie-origin" class="text-sm text-gray-400 font-semibold truncate leading-relaxed"><%= movie ? (movie.origin_name || '') : '' %></p>
+                            <div class="flex flex-wrap gap-2.5 mt-1">
+                                <span id="sidebar-quality" class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">HD</span>
+                                <span id="sidebar-lang" class="bg-white/5 text-gray-300 border border-white/10 text-[9px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">Vietsub</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metadata Cards -->
+                    <div id="sidebar-metadata-cards" class="grid grid-cols-2 gap-3 mt-4">
+                        <!-- JS will populate -->
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="sidebarFavoriteMovieBtn" class="flex items-center justify-center gap-2 h-12 px-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-gray-200 hover:text-white rounded-xl transition-all duration-300 text-sm font-extrabold hover:-translate-y-0.5 active:scale-95 shadow">
+                            <span class="material-icons-round text-lg text-gray-400">favorite_border</span>
+                            <span class="whitespace-nowrap">Yêu thích</span>
+                        </button>
+                        <button id="sidebarSaveMovieBtn" class="flex items-center justify-center gap-2 h-12 px-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-gray-200 hover:text-white rounded-xl transition-all duration-300 text-sm font-extrabold hover:-translate-y-0.5 active:scale-95 shadow">
+                            <span class="material-icons-round text-lg text-gray-400">playlist_add</span>
+                            <span class="whitespace-nowrap">Thêm vào</span>
+                        </button>
+                    </div>
+
+                    <!-- Cast Section -->
+                    <div id="sidebar-cast-section" class="hidden space-y-3">
+                        <h4 class="text-[10px] uppercase tracking-wider font-extrabold text-gray-400">Diễn viên</h4>
+                        <div id="sidebar-cast" class="flex gap-6 overflow-x-auto whitespace-nowrap pb-2.5 custom-scrollbar scrollbar-hide" style="scrollbar-width: none; -ms-overflow-style: none;">
+                            <!-- JS will populate -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Recommendations -->
+                <div class="hidden lg:block space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-base text-white border-l-4 border-primary pl-3">Có thể bạn sẽ thích</h3>
+                    </div>
+                    <div class="watch-rec-container">
+                        <!-- Placeholder -> will be rewritten by JS -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Mobile Recommendations (Placed here for ordering) -->
+            <div id="mobile-recommendations" class="block lg:hidden w-full mt-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-base text-white border-l-4 border-primary pl-3">Có thể bạn sẽ thích</h3>
+                </div>
+                <div class="watch-rec-container">
+                    <!-- Placeholder -> will be rewritten by JS -->
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div id="comments-section" class="w-full mt-5 lg:mt-0">
+                <div class="bg-[#1e2130] border border-white/5 rounded-2xl p-4 md:p-8 text-white w-full">
+                    <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-white">
+                        <span class="material-icons-round text-primary outline-none">sentiment_satisfied_alt</span>
+                        Bình luận
+                    </h3>
+
+                    <!-- Tabs: Bình luận / Đánh giá -->
+                    <div class="flex gap-2 mb-6">
+                        <button
+                            class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-full text-sm transition-colors shadow-lg shadow-red-600/30">
+                            Bình luận
+                        </button>
+                        <button
+                            class="px-6 py-2 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-full text-sm transition-colors">
+                            Đánh giá
+                        </button>
+                    </div>
+
+                    <!-- Login prompt -->
+                    <p class="text-gray-400 text-sm mb-6">
+                        Bạn có thể không <span
+                            class="text-red-500 font-medium cursor-pointer hover:text-red-400 hover:underline"
+                            onclick="if(window.showAuthModal)window.showAuthModal('login')">đăng nhập</span> để tham gia bình luận.
+                    </p>
+
+                    <!-- Comment Form -->
+                    <div class="space-y-4 border border-white/10 rounded-xl p-4 md:p-6 bg-[#252836]">
+                        <textarea id="commentInput"
+                            class="w-full bg-transparent border-none text-gray-300 placeholder-gray-500 focus:ring-0 resize-none"
+                            rows="3" placeholder="Viết bình luận"></textarea>
+                        <div class="text-right text-xs text-gray-500 mb-4">0 / 1000</div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">Tên của bạn</label>
+                                <input type="text"
+                                    class="w-full bg-[#1e2130] border border-white/10 rounded-lg p-3 text-white focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                    placeholder="Tên của bạn">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">Email</label>
+                                <input type="email"
+                                    class="w-full bg-[#1e2130] border border-white/10 rounded-lg p-3 text-white focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                    placeholder="Email (không bắt buộc)">
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center cursor-pointer">
+                                    <div class="relative">
+                                        <input type="checkbox" class="sr-only">
+                                        <div class="block bg-gray-600 w-10 h-6 rounded-full"></div>
+                                        <div
+                                            class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform">
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 text-gray-400 text-sm">Tiết lộ?</div>
+                                </label>
+                                <button
+                                    class="flex items-center gap-2 text-sm text-gray-400 bg-black/40 px-3 py-1.5 rounded-full border border-white/10">
+                                    <span class="w-4 h-4 rounded-full bg-gray-600"></span>
+                                    Ảnh đại diện
+                                </button>
+                            </div>
+                        </div>
+
+                        <button id="submitRating"
+                            class="mt-6 w-full flex items-center justify-center gap-2 py-3 bg-red-600 text-white font-bold rounded-full hover:bg-red-700 transition-colors shadow-lg shadow-red-600/30">
+                            GỬI
+                            <span class="material-icons-round text-sm">play_arrow</span>
+                        </button>
+
+                        <p class="text-xs text-gray-500 mt-4 text-center">* Không cần đăng nhập. Bình luận vi phạm chính
+                            sách sẽ bị xoá.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/chat') %>
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/premium-ad-blocker.js?v=3"></script>
+    <script src="/js/data-cache.js?v=15"></script>
+    <script src="/js/user.js?v=15"></script>
+    <script src="/js/rating.js?v=15"></script>
+    <script src="/js/playlist-service.js"></script>
+    <script src="/js/playlist-modal.js"></script>
+    <script src="/js/tmdb-api.js?v=17"></script>
+    <script src="/js/watch.js?v=21"></script>
+    <script src="/js/categories-dropdown.js?v=17"></script>
+    <script src="/js/countries-dropdown.js?v=17"></script>
+    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+    <script src="/js/mobile-menu-modern.js?v=42"></script>
+    <script src="/js/nav-instant-suggest.js?v=7"></script>
+    <script src="/js/sticky-nav.js?v=19"></script>
+
+    <!-- ====== Firebase SDK (Compat CDN) ====== -->
+    <!-- Firebase Chat Service -->
+    <script src="/js/firebase-chat.js?v=44"></script>
+    <!-- Chat Widget Logic -->
+
+    <!-- Movie Slider: Drag-to-scroll + Wheel-to-horizontal -->
+    <script src="/js/movie-slider.js?v=3"></script>
+
+    <!-- Auth Modal (Login/Register popup) -->
+    <script src="/js/auth-modal.js?v=15"></script>
+    <!-- Firebase Comments (aphim-comments project) -->
+    <script src="/js/firebase-comments.js?v=21"></script>
+    <script src="/js/nav-active-indicator.js?v=15"></script>
+    <script src="/js/realtime-sync.js"></script>
+
+    <!-- ====== Mobile Action Bar JS (standalone, no strict mode) ====== -->
+    <script>
+    // Chạy sau khi toàn bộ DOM sẵn sàng
+    (function initMobActionBar() {
+
+        // ── Helper: delegate click tới desktop button (vẫn hoạt động dù bị hide)
+        function tapDesk(id) {
+            var el = document.getElementById(id);
+            if (el) el.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true}));
+        }
+
+        // ── Helper: gắn sự kiện click + touchend để chắc chắn nhận trên mobile
+        function on(id, fn) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('click', fn);
+            el.addEventListener('touchend', function(e) {
+                e.preventDefault(); // tránh double-fire
+                fn(e);
+            }, { passive: false });
+        }
+
+        // ── ⁠⏮ Tập trước
+        on('mab-prev', function() { tapDesk('btn-prev-episode'); });
+
+        // ── ⁠⏭ Tập tiếp
+        on('mab-next', function() { tapDesk('btn-next-episode'); });
+
+        // ── ⁠♡ Yêu thích
+        on('mab-fav', function() {
+            tapDesk('favoriteMovieBtn');
+            var btn = document.getElementById('mab-fav');
+            if (!btn) return;
+            btn.classList.toggle('mab-active');
+            var ic = btn.querySelector('.material-icons-round');
+            if (ic) ic.textContent = btn.classList.contains('mab-active') ? 'favorite' : 'favorite_border';
+        });
+
+        // ── ⁠➕ Thêm vào danh sách
+        on('mab-save', function() { tapDesk('saveMovieBtn'); });
+
+        // ── ⁠⛶ Toàn màn hình — gọi trực tiếp window.aphimFullscreen (global)
+        on('mab-fs', function() {
+            if (typeof window.aphimFullscreen === 'function') {
+                window.aphimFullscreen();
+            } else {
+                // Fallback: dispatch toi mpbFs nếu IIFE chưa chạy xong
+                var mpbFsEl = document.getElementById('mpbFs');
+                if (mpbFsEl) mpbFsEl.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true}));
+            }
+        });
+
+        // ── ⁠↗ Chia sẻ
+        on('mab-share', function() {
+            if (typeof shareMovie === 'function') shareMovie();
+        });
+        // Fallback: gắn lại onclick cho nút share nếu có
+        var shareBtn = document.querySelector('#mob-action-bar button[onclick]');
+        // (onclick đã có sẵn trong HTML, không cần thêm)
+
+        // ── ⁠⋮ Menu ···
+        var moreBtn  = document.getElementById('mab-more-btn');
+        var moreMenu = document.getElementById('mab-more-menu');
+        if (moreBtn && moreMenu) {
+            function toggleMore(e) {
+                e.stopPropagation();
+                moreMenu.classList.toggle('open');
+            }
+            moreBtn.addEventListener('click', toggleMore);
+            moreBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                toggleMore(e);
+            }, { passive: false });
+            // Đóng khi bấm ra ngoài
+            document.addEventListener('click', function() { moreMenu.classList.remove('open'); });
+            document.addEventListener('touchend', function() { moreMenu.classList.remove('open'); });
+            moreMenu.addEventListener('click', function(e) { e.stopPropagation(); });
+            moreMenu.addEventListener('touchend', function(e) { e.stopPropagation(); });
+        }
+
+        // ── Tắt đèn (Cinema mode)
+        on('mab-cinema', function() {
+            tapDesk('cinemaModeBtn');
+            var btn = document.getElementById('mab-cinema');
+            if (btn) btn.classList.toggle('mab-active');
+            if (moreMenu) moreMenu.classList.remove('open');
+        });
+
+        // ── Đồng bộ yêu thích từ button gốc
+        var origFav = document.getElementById('favoriteMovieBtn');
+        var mabFav  = document.getElementById('mab-fav');
+        if (origFav && mabFav) {
+            new MutationObserver(function() {
+                var ic = mabFav.querySelector('.material-icons-round');
+                var isActive = origFav.classList.contains('active')
+                            || origFav.querySelector('.text-red-500, [data-active]');
+                if (ic && isActive) { ic.textContent = 'favorite'; mabFav.classList.add('mab-active'); }
+                else if (ic) { ic.textContent = 'favorite_border'; mabFav.classList.remove('mab-active'); }
+            }).observe(origFav, { attributes: true, childList: true, subtree: true });
+        }
+
+    })();
+    </script>
+    <!-- ====== End Mobile Action Bar JS ====== -->
+    <script>
+    (function() {
+        'use strict';
+        // Helper: gửi postMessage tới iframe player
+        function msgPlayer(data) {
+            var iframe = document.querySelector('#video-container iframe, #player-frame, iframe[src*="player"]');
+            if (!iframe) return;
+            try { iframe.contentWindow.postMessage(data, '*'); } catch(e) {}
+            try { iframe.contentWindow.postMessage(JSON.stringify(data), '*'); } catch(e) {}
+        }
+
+        // ── Overlay Controls (bên trong player) ──
+        var mpbBack     = document.getElementById('mpbBack');
+        var mpbPlay     = document.getElementById('mpbPlay');
+        var mpbPlayIcon = document.getElementById('mpbPlayIcon');
+        var mpbFwd      = document.getElementById('mpbFwd');
+        var mpbPrev     = document.getElementById('mpbPrev');
+        var mpbNext     = document.getElementById('mpbNext');
+        var mpbFs       = document.getElementById('mpbFs');
+        var isPlaying   = false;
+
+        if (mpbBack)  mpbBack.addEventListener('click', function(e){ e.stopPropagation(); msgPlayer({action:'seek',value:-10}); });
+        if (mpbFwd)   mpbFwd.addEventListener('click',  function(e){ e.stopPropagation(); msgPlayer({action:'seek',value:10}); });
+        if (mpbPlay)  mpbPlay.addEventListener('click', function(e){
+            e.stopPropagation();
+            isPlaying = !isPlaying;
+            mpbPlayIcon.textContent = isPlaying ? 'pause' : 'play_arrow';
+            msgPlayer({action: isPlaying ? 'play' : 'pause'});
+        });
+        if (mpbPrev)  mpbPrev.addEventListener('click', function(e){ e.stopPropagation(); var b=document.getElementById('btn-prev-episode'); if(b)b.click(); });
+        if (mpbNext)  mpbNext.addEventListener('click', function(e){ e.stopPropagation(); var b=document.getElementById('btn-next-episode'); if(b)b.click(); });
+        if (mpbFs)    mpbFs.addEventListener('click', function(e){
+            e.stopPropagation();
+            enterOrExitFullscreen();
+        });
+
+        // ════ Hàm fullscreen 3 tầng: native → webkit → CSS pseudo ════
+        function getPlayerEl() {
+            // Chỉ fullscreen phần video, không kèm action bar
+            return document.querySelector('#player-and-controls .relative.aspect-video, #player-and-controls > div:first-child') ||
+                   document.querySelector('.aspect-video');
+        }
+
+        function setFsIcon(isFs) {
+            var icon = mpbFs ? mpbFs.querySelector('.material-icons-round') : null;
+            var iconDesk = document.querySelector('#fullscreenBtn .material-icons-round');
+            var txt = isFs ? 'fullscreen_exit' : 'fullscreen';
+            if (icon) icon.textContent = txt;
+            if (iconDesk) iconDesk.textContent = txt;
+        }
+
+        function exitPseudoFs() {
+            var el = document.querySelector('.aphim-pseudo-fs');
+            if (el) el.classList.remove('aphim-pseudo-fs');
+            document.body.classList.remove('aphim-fs-lock');
+            setFsIcon(false);
+        }
+
+        function enterPseudoFs(playerEl) {
+            playerEl.classList.add('aphim-pseudo-fs');
+            document.body.classList.add('aphim-fs-lock');
+            setFsIcon(true);
+            // ESC hoặc swipe để thoát
+            playerEl.addEventListener('touchstart', function handleSwipe(ev) {
+                var startY = ev.touches[0].clientY;
+                playerEl.addEventListener('touchend', function done(ev2) {
+                    playerEl.removeEventListener('touchend', done);
+                    if (ev2.changedTouches[0].clientY - startY > 80) { exitPseudoFs(); playerEl.removeEventListener('touchstart', handleSwipe); }
+                }, { once: true });
+            }, { passive: true });
+        }
+
+        function enterOrExitFullscreen() {
+            var playerEl = getPlayerEl();
+            if (!playerEl) return;
+
+            // Kiểm tra đang pseudo-fs
+            if (playerEl.classList.contains('aphim-pseudo-fs')) {
+                exitPseudoFs(); return;
+            }
+            // Kiểm tra đang native fs
+            var nativeFs = document.fullscreenElement || document.webkitFullscreenElement;
+            if (nativeFs) {
+                (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+                return;
+            }
+
+            // Thử native fullscreen (Android Chrome OK, iOS fail)
+            var reqFs = playerEl.requestFullscreen
+                     || playerEl.webkitRequestFullscreen
+                     || playerEl.mozRequestFullScreen
+                     || playerEl.msRequestFullscreen;
+
+            if (reqFs) {
+                var p = reqFs.call(playerEl);
+                if (p && typeof p.then === 'function') {
+                    p.then(function() { setFsIcon(true); })
+                     .catch(function() {
+                         // Native thất bại (iOS) → dùng CSS pseudo-fs
+                         enterPseudoFs(playerEl);
+                     });
+                } else {
+                    // Không có Promise (trình duyệt cũ) → chập nhận
+                    setFsIcon(true);
+                }
+            } else {
+                // Không hỗ trợ native fullscreen (iOS Safari) → CSS pseudo-fs
+                enterPseudoFs(playerEl);
+            }
+        }
+
+        // Lắng nghe sự kiện native fullscreenchange để cập nhật icon
+        document.addEventListener('fullscreenchange', function() { setFsIcon(!!document.fullscreenElement); });
+        document.addEventListener('webkitfullscreenchange', function() { setFsIcon(!!document.webkitFullscreenElement); });
+
+        // ✨ Expose ra global để initMobActionBar gọi được
+        window.aphimFullscreen = enterOrExitFullscreen;
+        window.aphimSetFsIcon = function(isFs) {
+            setFsIcon(isFs);
+            // Cập nhật luôn icon trên mab-fs
+            var mabFsIcon = document.querySelector('#mab-fs .material-icons-round');
+            if (mabFsIcon) mabFsIcon.textContent = isFs ? 'fullscreen_exit' : 'fullscreen';
+        };
+        // override setFsIcon luôn sync mab-fs
+        var _origSetFsIcon = setFsIcon;
+        setFsIcon = function(isFs) {
+            _origSetFsIcon(isFs);
+            var mabFsIcon = document.querySelector('#mab-fs .material-icons-round');
+            if (mabFsIcon) mabFsIcon.textContent = isFs ? 'fullscreen_exit' : 'fullscreen';
+        };
+
+        // Nút fullscreen desktop (đã có trong #player-control-bar)
+        var fullscreenBtnDesk = document.getElementById('fullscreenBtn');
+        if (fullscreenBtnDesk) fullscreenBtnDesk.addEventListener('click', function() { enterOrExitFullscreen(); });
+
+        // ── Mobile Action Bar ──
+        var mabPrev     = document.getElementById('mab-prev');
+        var mabNext     = document.getElementById('mab-next');
+        var mabFav      = document.getElementById('mab-fav');
+        var mabSave     = document.getElementById('mab-save');
+        var mabCinema   = document.getElementById('mab-cinema');
+        var mabFsBtn    = document.getElementById('mab-fs');
+        var mabMoreBtn  = document.getElementById('mab-more-btn');
+        var mabMoreMenu = document.getElementById('mab-more-menu');
+
+        if (mabPrev)  mabPrev.addEventListener('click',  function(){ var b=document.getElementById('btn-prev-episode'); if(b)b.click(); });
+        if (mabNext)  mabNext.addEventListener('click',  function(){ var b=document.getElementById('btn-next-episode'); if(b)b.click(); });
+        if (mabFav)   mabFav.addEventListener('click',   function(){ var b=document.getElementById('favoriteMovieBtn'); if(b)b.click(); mabFav.classList.toggle('mab-active'); var ic=mabFav.querySelector('.material-icons-round'); if(ic) ic.textContent = mabFav.classList.contains('mab-active') ? 'favorite' : 'favorite_border'; });
+        if (mabSave)  mabSave.addEventListener('click',  function(){ var b=document.getElementById('saveMovieBtn'); if(b)b.click(); });
+        if (mabCinema)mabCinema.addEventListener('click',function(){ var b=document.getElementById('cinemaModeBtn'); if(b)b.click(); mabCinema.classList.toggle('mab-active'); if(mabMoreMenu) mabMoreMenu.classList.remove('open'); });
+
+        // Nút fullscreen ở action bar (mab-fs) — dùng cùng hàm enterOrExitFullscreen
+        if (mabFsBtn) mabFsBtn.addEventListener('click', function(){ enterOrExitFullscreen(); });
+
+        // Cập nhật icon fullscreen cho cả mab-fs
+        var _origSetFsIcon = setFsIcon;
+        setFsIcon = function(isFs) {
+            _origSetFsIcon(isFs);
+            var mabFsIcon = mabFsBtn ? mabFsBtn.querySelector('.material-icons-round') : null;
+            if (mabFsIcon) mabFsIcon.textContent = isFs ? 'fullscreen_exit' : 'fullscreen';
+        };
+
+        // ··· Menu toggle
+        if (mabMoreBtn && mabMoreMenu) {
+            mabMoreBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                mabMoreMenu.classList.toggle('open');
+            });
+            // Đóng menu khi click ra ngoài
+            document.addEventListener('click', function() {
+                if (mabMoreMenu) mabMoreMenu.classList.remove('open');
+            });
+            mabMoreMenu.addEventListener('click', function(e) { e.stopPropagation(); });
+        }
+
+        // ── Đồng bộ tên tập vào cột giữa ──
+        function syncEpName() {
+            var nameEl = document.getElementById('mab-ep-name');
+            if (!nameEl) return;
+            // Ưu tiên: nút tập đang active
+            var activeEpBtn = document.querySelector('#episode-list button.active');
+            if (activeEpBtn) { nameEl.textContent = activeEpBtn.textContent.trim(); return; }
+            // Fallback: lấy từ tiêu đề trang
+            var titleEl = document.querySelector('.movie-title, h1, [data-movie-title]');
+            if (titleEl) { nameEl.textContent = titleEl.textContent.trim().substring(0, 24); }
+        }
+        // Chạy sau khi JS render episode list xong
+        setTimeout(syncEpName, 1200);
+        document.addEventListener('episodeChanged', syncEpName); // custom event từ watch.js nếu có
+
+        // ── Đồng bộ trạng thái favorite từ button gốc ──
+        document.addEventListener('DOMContentLoaded', function() {
+            var origFav = document.getElementById('favoriteMovieBtn');
+            if (origFav && mabFav) {
+                var obs = new MutationObserver(function() {
+                    var isActive = origFav.classList.contains('active') || origFav.querySelector('[data-active]');
+                    var ic = mabFav.querySelector('.material-icons-round');
+                    if (ic && isActive) { ic.textContent = 'favorite'; mabFav.classList.add('mab-active'); }
+                });
+                obs.observe(origFav, { attributes: true, childList: true, subtree: true });
+            }
+        });
+    })();
+    </script>
+    <!-- ====== End Mobile Player Controls JS ====== -->
+    <!-- ====== Firebase Comments (đồng bộ với trang /phim) ====== -->
+    <script>
+        // Truyền slug phim từ server sang firebase-comments.js
+        window.AP_MOVIE_SLUG = '<%= movie && movie.slug ? movie.slug : "" %>';
+    </script>
+    <script src="/js/auth-modal.js?v=15"></script>
+    <script src="/js/firebase-comments.js?v=22"></script>
+    <!-- ====== End Firebase Comments ====== -->
+</body>
+</html>

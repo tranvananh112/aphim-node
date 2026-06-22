@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gói thành viên - A Phim Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .plan-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .plan-card.premium::before {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+
+        .plan-card.standard::before {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .plan-card.basic::before {
+            background: linear-gradient(90deg, var(--success), #34d399);
+        }
+
+        .plan-card.free::before {
+            background: var(--surface-3);
+        }
+
+        .plan-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .plan-icon .material-icons-round {
+            font-size: 24px;
+        }
+
+        .plan-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .plan-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .plan-price span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .plan-subs {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .sub-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Gamification Console Specific Helper for Modal overlays */
+        .form-control-dark {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            font-size: 13.5px;
+            outline: none;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"
+                    style="background:transparent; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+                    <img src="../favicon.png" alt="A Phim"
+                        style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));" />
+                </div>
+                <div class="sidebar-logo-text">
+                    <h1 style="letter-spacing: 0.5px;">A Phim</h1>
+                    <p style="color: var(--primary);">Admin Panel</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="/dashboard" class="sidebar-nav-item"><i data-lucide="layout-dashboard"
+                            style="width: 1em; height: 1em;"></i><span>Dashboard</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">nội dung</p>
+                    <a href="/movies" class="sidebar-nav-item"><i data-lucide="film"
+                            style="width: 1em; height: 1em;"></i><span>Quản lý phim</span></a>
+                    <a href="/categories" class="sidebar-nav-item"><i data-lucide="list-tree"
+                            style="width: 1em; height: 1em;"></i><span>Danh mục</span></a>
+                    <a href="/banners" class="sidebar-nav-item"><i data-lucide="image"
+                            style="width: 1em; height: 1em;"></i><span>Banner &amp; Ads</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Người dùng</p>
+                    <a href="/users" class="sidebar-nav-item"><i data-lucide="users"
+                            style="width: 1em; height: 1em;"></i><span>Người dùng</span></a>
+                    <a href="/chat" class="sidebar-nav-item"><i data-lucide="message-square"
+                            style="width: 1em; height: 1em;"></i><span>Quản lý Chat</span></a>
+                    <a href="/comments" class="sidebar-nav-item"><i data-lucide="message-circle"
+                            style="width: 1em; height: 1em;"></i><span>Bình luận</span></a>
+                    <a href="/subscriptions" class="sidebar-nav-item active"><i data-lucide="credit-card"
+                            style="width: 1em; height: 1em;"></i><span>Gói thành viên</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tài chính</p>
+                    <a href="/payments" class="sidebar-nav-item"><i data-lucide="circle-dollar-sign"
+                            style="width: 1em; height: 1em;"></i><span>Thanh toán</span></a>
+                    <a href="/supporters" class="sidebar-nav-item"><i data-lucide="heart"
+                            style="width: 1em; height: 1em;"></i><span>Ủng hộ</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">hệ thống</p>
+                    <a href="/settings" class="sidebar-nav-item"><i data-lucide="settings"
+                            style="width: 1em; height: 1em;"></i><span>Cài đặt</span></a>
+                    <a href="/partner" class="sidebar-nav-item"><i data-lucide="handshake"
+                            style="width: 1em; height: 1em;"></i><span>Partner DT99</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" onclick="location.href = '/dashboard'">
+                    <i data-lucide="log-out" style="width: 1em; height: 1em;"></i><span>Đăng xuất</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Gói thành viên</h2>
+                    <p>Quản lý gói đăng ký và số dư Xu real-time</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" onclick="loadSubscriptions()">
+                        <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i> Làm mới
+                    </button>
+                    <div class="header-separator"></div>
+                    <div class="header-admin">
+                        <div class="header-admin-avatar">A</div>
+                        <div class="header-admin-info">
+                            <p>Admin</p><span>Quản trị viên</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+
+                <!-- Stats -->
+                <div class="stats-grid"
+                    style="margin-bottom: 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+                    <!-- Stat 1: Total Subscriptions -->
+                    <div class="stat-card"
+                        style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none; box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4); padding: 16px; border-radius: 16px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;"
+                                id="totalSubsChange">LIVE</span>
+                        </div>
+                        <div style="font-size: 26px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px;"
+                            id="totalSubs">0</div>
+                        <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);">Tổng thành viên
+                        </div>
+                    </div>
+
+                    <!-- Stat 2: Active Premium -->
+                    <div class="stat-card"
+                        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4); padding: 16px; border-radius: 16px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i data-lucide="crown" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ACTIVE</span>
+                        </div>
+                        <div style="font-size: 26px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px;"
+                            id="activeSubs">0</div>
+                        <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);">Đang hoạt động
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Circulating Xu -->
+                    <div class="stat-card"
+                        style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.4); padding: 16px; border-radius: 16px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i data-lucide="coins" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">WALLET</span>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                            id="totalCirculatingCoins">0 Xu</div>
+                        <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);">Xu đang lưu hành
+                        </div>
+                    </div>
+
+                    <!-- Stat 4: Total Spent Xu (NEW) -->
+                    <div class="stat-card hover-glow" onclick="showAnalyticsModal('spending')"
+                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.4); padding: 16px; border-radius: 16px; cursor: pointer; transition: transform 0.2s;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">SPENT</span>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                            id="totalSpentCoins">0 Xu</div>
+                        <div
+                            style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); display:flex; align-items:center; gap:4px;">
+                            Tổng Xu đã tiêu <i data-lucide="chevron-right" style="width:12px; opacity:0.8;"></i></div>
+                    </div>
+
+                    <!-- Stat 5: Top Spent Category (NEW) -->
+                    <div class="stat-card hover-glow" onclick="showAnalyticsModal('spending')"
+                        style="background: #1e293b; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; cursor: pointer; transition: transform 0.2s;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); display: flex; align-items: center; justify-content: center; color: #a855f7;">
+                                <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(168, 85, 247, 0.1); color: #a855f7; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">TRENDING</span>
+                        </div>
+                        <div style="font-size: 18px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                            id="topSpentCategory">Đang tải...</div>
+                        <div
+                            style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); display:flex; align-items:center; gap:4px;">
+                            Hạng mục tiêu nhiều nhất <i data-lucide="chevron-right"
+                                style="width:12px; opacity:0.8;"></i></div>
+                    </div>
+
+                    <!-- Stat 6: Estimated Revenue -->
+                    <div class="stat-card hover-glow" onclick="showAnalyticsModal('revenue')"
+                        style="background: #1e293b; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; cursor: pointer; transition: transform 0.2s;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div
+                                style="width: 38px; height: 38px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                                <i data-lucide="bar-chart-3" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <span
+                                style="padding: 4px 10px; border-radius: 20px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">REVENUE</span>
+                        </div>
+                        <div style="font-size: 22px; font-weight: 900; color: #38bdf8; line-height: 1; margin-bottom: 6px;"
+                            id="monthRevenue">0đ</div>
+                        <div
+                            style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); display:flex; align-items:center; gap:4px;">
+                            Ước tính doanh thu <i data-lucide="chevron-right" style="width:12px; opacity:0.8;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan cards overview -->
+                <div class="grid-4 mb-28"
+                    style="margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div class="plan-card premium hover-glow" onclick="showAnalyticsModal('plan', 'PREMIUM')"
+                        style="cursor:pointer; transition:transform 0.2s;">
+                        <div class="plan-icon" style="background: var(--warning-bg);">
+                            <i data-lucide="crown" style="width: 1em; height: 1em;"></i>
+                        </div>
+                        <div class="plan-name">Premium (4K)</div>
+                        <div class="plan-price">260.000<span> /tháng</span></div>
+                        <div class="plan-subs" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span id="premiumCount">0</span> users đang dùng <i data-lucide="chevron-right"
+                                style="width:14px; opacity:0.5;"></i></div>
+                    </div>
+                    <div class="plan-card standard hover-glow" onclick="showAnalyticsModal('plan', 'FAMILY')"
+                        style="cursor:pointer; transition:transform 0.2s;">
+                        <div class="plan-icon" style="background: rgba(147, 51, 234, 0.15);">
+                            <i data-lucide="users" style="width: 1em; height: 1em; color: #a855f7;"></i>
+                        </div>
+                        <div class="plan-name">Family</div>
+                        <div class="plan-price">2.400.000<span> /năm</span></div>
+                        <div class="plan-subs" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span id="familyCount">0</span> users đang dùng <i data-lucide="chevron-right"
+                                style="width:14px; opacity:0.5;"></i></div>
+                    </div>
+                    <div class="plan-card free hover-glow" onclick="showAnalyticsModal('plan', 'FREE')"
+                        style="cursor:pointer; transition:transform 0.2s;">
+                        <div class="plan-icon" style="background: rgba(100,116,139,0.10);">
+                            <i data-lucide="gift" style="width: 1em; height: 1em;"></i>
+                        </div>
+                        <div class="plan-name">Free</div>
+                        <div class="plan-price">0<span> </span></div>
+                        <div class="plan-subs" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span id="freeCount">0</span> users <i data-lucide="chevron-right"
+                                style="width:14px; opacity:0.5;"></i></div>
+                    </div>
+                    <div class="plan-card total hover-glow" onclick="showAnalyticsModal('revenue')"
+                        style="cursor:pointer; transition:transform 0.2s;">
+                        <div class="plan-icon" style="background: rgba(16, 185, 129, 0.15);">
+                            <i data-lucide="check-circle-2" style="width: 1em; height: 1em; color: #10b981;"></i>
+                        </div>
+                        <div class="plan-name">Đã thanh toán</div>
+                        <div class="plan-price">Total<span> paid</span></div>
+                        <div class="plan-subs" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span id="paidCount">0</span> users <i data-lucide="chevron-right"
+                                style="width:14px; opacity:0.5;"></i></div>
+                    </div>
+                </div>
+
+                <!-- Subscriptions table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">Danh sách thuê bao thực tế (Live data)</span>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <!-- Live Search Box -->
+                            <div style="position: relative; display: flex; align-items: center; margin-right: 8px;">
+                                <i data-lucide="search"
+                                    style="position: absolute; left: 12px; width: 15px; color: rgba(255,255,255,0.4); pointer-events: none;"></i>
+                                <input type="text" id="subSearchInput"
+                                    placeholder="Tìm tên, email, ID hoặc 5 mã cuối..." class="form-control-dark"
+                                    style="padding-left: 36px; width: 260px; height: 38px; border-radius: 8px;">
+                            </div>
+
+                            <select class="form-select" style="width: auto;" id="planFilter">
+                                <option value="">Tất cả gói</option>
+                                <option value="PREMIUM">Premium</option>
+                                <option value="FAMILY">Family</option>
+                                <option value="STANDARD">Standard</option>
+                                <option value="BASIC">Basic</option>
+                                <option value="FREE">Free</option>
+                            </select>
+                            <select class="form-select" style="width: auto;" id="subStatusFilter">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="active">Đang chạy</option>
+                                <option value="expired">Hết hạn</option>
+                            </select>
+                            <select class="form-select" style="width: auto; border-color:#eab308; color:#eab308;"
+                                id="coinsFilter">
+                                <option value="" style="color:#fff">Tất cả Ví Xu</option>
+                                <option value="has_coins" style="color:#fff">Chỉ hiển thị User CÓ XU (> 0)</option>
+                                <option value="no_coins" style="color:#fff">User HẾT XU (= 0)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Người dùng</th>
+                                    <th>Gói</th>
+                                    <th>Ngày bắt đầu</th>
+                                    <th>Ngày hết hạn</th>
+                                    <th>Ví tài sản</th>
+                                    <th>Trạng thái</th>
+                                    <th style="text-align: center;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subsBody">
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="loading-spinner">
+                                            <div class="spinner"></div>
+                                            <p>Đang tải dữ liệu live...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Dependency loading -->
+    <script src="../js/config.js"></script>
+    <script src="../js/admin/config.js"></script>
+    <!-- Load real User Console logic for managing detail modal seamlessly -->
+    <script src="../js/admin/users-realtime.js?v=110"></script>
+
+    <script>
+        // API Fallback - Check if already defined by users-realtime.js
+        if (typeof API_URL === 'undefined') {
+            window.API_URL = (typeof API_CONFIG !== 'undefined' && API_CONFIG.BACKEND_URL) ? API_CONFIG.BACKEND_URL : 'http://localhost:5000/api';
+        }
+
+        // In-memory copy from user-api
+        let liveSubsData = [];
+
+        // Setup color matrix
+        const planColorMatrix = {
+            PREMIUM: 'badge-warning',
+            STANDARD: 'badge-primary',
+            BASIC: 'badge-success',
+            FAMILY: 'badge-primary',
+            FREE: 'badge-gray'
+        };
+
+        async function loadSubscriptions(isSilent = false) {
+            const tbody = document.getElementById('subsBody');
+
+            // Skip clearing HTML with spinner if background/silent refresh
+            if (!isSilent) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="loading-spinner"><div class="spinner"></div><p style="margin-top:12px;">Đang fetching database thực...</p></div></td></tr>';
+            }
+
+            try {
+                // Dùng helper có sẵn trong users-realtime.js?v=110 để lấy token an toàn
+                const token = typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('cinestream_admin_token') || sessionStorage.getItem('cinestream_admin_token'));
+
+                if (!token) {
+                    throw new Error('Phiên đăng nhập hết hạn. Vui lòng login lại Admin.');
+                }
+
+                const response = await fetch(`${API_URL}/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const responseData = await response.json();
+                if (!responseData.success) throw new Error(responseData.message || 'Access denied');
+
+                const rawUsers = responseData.data || [];
+
+                // Map user definitions to the legacy sub table structure for visuals
+                liveSubsData = rawUsers.map(usr => ({
+                    id: usr._id, // MongoDB specific ID key Fix
+                    userName: usr.name || 'Unnamed User',
+                    email: usr.email,
+                    plan: (usr.subscription?.plan || 'FREE').toUpperCase(),
+                    startDate: usr.subscription?.startDate ? new Date(usr.subscription.startDate).toLocaleDateString('vi-VN') : '—',
+                    endDate: (() => {
+                        const d = usr.subscription?.endDate || usr.subscription?.expiresAt;
+                        return d ? new Date(d).toLocaleDateString('vi-VN') : '—';
+                    })(),
+                    coins: usr.coins || 0,
+                    status: (() => {
+                        const sub = usr.subscription;
+                        if (!sub || !sub.plan || sub.plan === 'FREE') return 'inactive';
+                        const d = sub.endDate || sub.expiresAt;
+                        if (d) {
+                            const expiry = new Date(d);
+                            expiry.setDate(expiry.getDate() + 1);
+                            if (new Date() > expiry) return 'expired';
+                        }
+                        return sub.status === 'active' ? 'active' : 'active';
+                    })(),
+                    fullRecord: usr
+                }));
+
+                // Update master stat cards
+                syncStatCounters(liveSubsData);
+
+                // PRESERVE FILTERS: Use unified filters to render so current user search isn't wiped!
+                applyUnifiedFilters();
+
+            } catch (error) {
+                console.error('[SubsConsole] Retrieval catastrophic failure:', error);
+                tbody.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty-state" style="color:var(--danger);">
+                        <i data-lucide="shield-alert"></i>
+                        <h3>Không thể kết nối CSDL</h3>
+                        <p>${error.message}. Hãy đảm bảo bạn đã đăng nhập quyền Admin.</p>
+                    </div>
+                </td>
+            </tr>
+          `;
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        function syncStatCounters(subs) {
+            const totalCount = subs.length;
+            // Non-free subs are paid tiers
+            const paidSubscribers = subs.filter(s => s.plan !== 'FREE');
+            const validActive = paidSubscribers.filter(s => s.status === 'active').length;
+
+            let totalCoins = 0;
+            let totalSpent = 0;
+            const spendingMap = {}; // To find top category
+
+            subs.forEach(s => {
+                totalCoins += (Number(s.coins) || 0);
+
+                // Get full record to access transactions
+                const fullUser = s.fullRecord;
+                if (fullUser && fullUser.transactions) {
+                    fullUser.transactions.forEach(t => {
+                        if (t.type === 'spend') {
+                            const amount = Number(t.amount) || 0;
+                            totalSpent += amount;
+
+                            // Category logic: simplify title
+                            // e.g., "Mua khung: Golden Glow" -> "Mua khung"
+                            let category = t.title || 'Khác';
+                            if (category.includes('Mua khung')) category = 'Mua Khung Avatar';
+                            else if (category.includes('Hành trình') || category.includes('Nâng cấp')) category = 'Hành trình / Cấp độ';
+                            else if (category.includes('Mua banner') || category.includes('Ảnh bìa')) category = 'Ảnh bìa';
+
+                            spendingMap[category] = (spendingMap[category] || 0) + amount;
+                        }
+                    });
+                }
+            });
+
+            // Determine top category
+            let topCat = 'Chưa có dữ liệu';
+            let maxSpent = 0;
+            for (const [cat, amt] of Object.entries(spendingMap)) {
+                if (amt > maxSpent) {
+                    maxSpent = amt;
+                    topCat = cat;
+                }
+            }
+
+            document.getElementById('totalSubs').textContent = totalCount.toLocaleString();
+            document.getElementById('activeSubs').textContent = validActive.toLocaleString();
+
+            // Aesthetic estimation for monthly revenue
+            const projectedRevenue = validActive * 220000;
+            document.getElementById('monthRevenue').textContent = projectedRevenue.toLocaleString('vi-VN') + 'đ';
+
+            if (document.getElementById('totalCirculatingCoins'))
+                document.getElementById('totalCirculatingCoins').textContent = totalCoins.toLocaleString('vi-VN') + ' Xu';
+
+            // NEW STATS
+            if (document.getElementById('totalSpentCoins'))
+                document.getElementById('totalSpentCoins').textContent = totalSpent.toLocaleString('vi-VN') + ' Xu';
+
+            if (document.getElementById('topSpentCategory'))
+                document.getElementById('topSpentCategory').textContent = topCat;
+
+            document.getElementById('premiumCount').textContent = subs.filter(s => s.plan === 'PREMIUM').length;
+            if (document.getElementById('familyCount')) document.getElementById('familyCount').textContent = subs.filter(s => s.plan === 'FAMILY').length;
+            document.getElementById('freeCount').textContent = subs.filter(s => s.plan === 'FREE').length;
+            if (document.getElementById('paidCount')) document.getElementById('paidCount').textContent = paidSubscribers.length;
+        }
+
+        function renderSubList(subsList) {
+            const tbody = document.getElementById('subsBody');
+            if (!subsList || !subsList.length) {
+                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>Không có tài khoản nào khớp bộ lọc</h3></div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = subsList.map(s => {
+                const initials = s.userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const badgeClass = planColorMatrix[s.plan] || 'badge-gray';
+                const isExpired = s.status !== 'active';
+
+                return `
+          <tr class="hover:bg-white/5 transition-colors">
+              <td>
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                      <div class="sub-avatar" style="background: linear-gradient(135deg, var(--primary), #a855f7); width: 36px; height: 36px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:13px; color:white; font-weight:700;">
+                          ${initials || '?'}
+                      </div>
+                      <div>
+                          <div style="font-size:13.5px; font-weight:600; color: var(--text-primary);">${s.userName}</div>
+                          <div style="font-size:11.5px; color: var(--text-muted);">${s.email}</div>
+                      </div>
+                  </div>
+              </td>
+              <td><span class="badge ${badgeClass}">${s.plan}</span></td>
+              <td><span style="font-size:13px; color: var(--text-secondary);">${s.startDate}</span></td>
+              <td><span style="font-size:13px; color: var(--text-secondary); font-weight:700;">${s.endDate}</span></td>
+              <td>
+                <div style="display:flex; gap: 4px; align-items:center;">
+                    <span style="font-size:14px; color:#eab308; font-weight:800;">${s.coins.toLocaleString('vi-VN')}</span>
+                    <span style="font-size:11px; color:#eab308; opacity: 0.8; font-weight:bold;">Xu</span>
+                </div>
+              </td>
+              <td>${!isExpired ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Hết hạn</span>'}</td>
+              <td style="text-align:center;">
+                  <div style="display:flex; gap:6px; justify-content:center;">
+                      <button onclick="viewUserDetail('${s.id}')" class="btn btn-primary btn-sm" title="Bật bảng điều khiển Gamification real-time" style="display:flex; align-items:center; gap:6px;">
+                          <i data-lucide="eye" style="width:14px; height:14px;"></i> Quản lý Xu/Khung
+                      </button>
+                  </div>
+              </td>
+          </tr>
+          `;
+            }).join('');
+
+            // Trigger Lucide icons reload on dynamic content creation
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function applyUnifiedFilters() {
+            const keyword = document.getElementById('subSearchInput').value.toLowerCase().trim();
+            const planVal = document.getElementById('planFilter').value.toUpperCase();
+            const statusVal = document.getElementById('subStatusFilter').value;
+            const coinsVal = document.getElementById('coinsFilter').value;
+
+            const result = liveSubsData.filter(s => {
+                // Match Search
+                const matchSearch = !keyword ||
+                    s.userName.toLowerCase().includes(keyword) ||
+                    s.email.toLowerCase().includes(keyword) ||
+                    s.id.toLowerCase().includes(keyword);
+
+                // Match Plan
+                const matchPlan = !planVal || s.plan === planVal;
+
+                // Match Status
+                const matchStatus = !statusVal || s.status === statusVal;
+
+                // Match Coins
+                let matchCoins = true;
+                if (coinsVal === 'has_coins') matchCoins = s.coins > 0;
+                if (coinsVal === 'no_coins') matchCoins = s.coins === 0;
+
+                return matchSearch && matchPlan && matchStatus && matchCoins;
+            });
+
+            renderSubList(result);
+        }
+
+        // Register unified listeners
+        document.getElementById('subSearchInput').addEventListener('input', applyUnifiedFilters);
+        document.getElementById('planFilter').addEventListener('change', applyUnifiedFilters);
+        document.getElementById('subStatusFilter').addEventListener('change', applyUnifiedFilters);
+        document.getElementById('coinsFilter').addEventListener('change', applyUnifiedFilters);
+
+        // Automatic bootstrap sequence
+        document.addEventListener('DOMContentLoaded', () => {
+            // Give short delay to ensure users-realtime.js?v=110 finished checking authorization
+            setTimeout(loadSubscriptions, 100);
+        });
+
+        window.showAnalyticsModal = (type, param) => {
+            if (!liveSubsData || !liveSubsData.length) return;
+
+            let title = "CHI TIẾT PHÂN TÍCH";
+            let htmlContent = "";
+            let icon = "pie-chart";
+            let color = "#38bdf8";
+
+            if (type === 'spending') {
+                title = "CHI TIẾT TIÊU XU CỦA NGƯỜI DÙNG";
+                icon = "shopping-cart";
+                color = "#ef4444";
+
+                let spendLogs = [];
+                liveSubsData.forEach(s => {
+                    if (s.fullRecord && s.fullRecord.transactions) {
+                        s.fullRecord.transactions.forEach(t => {
+                            if (t.type === 'spend') {
+                                spendLogs.push({
+                                    user: s.userName,
+                                    email: s.email,
+                                    amount: Number(t.amount) || 0,
+                                    title: t.title || 'Mua vật phẩm',
+                                    date: new Date(t.date).toLocaleString('vi-VN')
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Sort by date descending (latest first)
+                spendLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                if (spendLogs.length === 0) {
+                    htmlContent = "<div style='text-align:center; padding: 40px; color: rgba(255,255,255,0.4);'>Chưa có dữ liệu tiêu thụ Xu nào.</div>";
+                } else {
+                    htmlContent = `
+                  <div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:1px;">
+                      <table style="width:100%; border-collapse: collapse; text-align:left; font-size:13px;">
+                          <thead>
+                              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.4);">
+                                  <th style="padding:12px;">Người dùng</th>
+                                  <th style="padding:12px;">Hạng mục</th>
+                                  <th style="padding:12px;">Số Xu</th>
+                                  <th style="padding:12px;">Thời gian</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              ${spendLogs.map(l => `
+                              <tr style="border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                                  <td style="padding:12px;">
+                                      <div style="font-weight:700; color:#fff;">${l.user}</div>
+                                      <div style="font-size:11px; color:rgba(255,255,255,0.3);">${l.email}</div>
+                                  </td>
+                                  <td style="padding:12px; color:#e2e8f0;">${l.title}</td>
+                                  <td style="padding:12px; font-weight:800; color:#f87171;">-${l.amount.toLocaleString('vi-VN')} Xu</td>
+                                  <td style="padding:12px; color:rgba(255,255,255,0.4);">${l.date}</td>
+                              </tr>
+                              `).join('')}
+                          </tbody>
+                      </table>
+                  </div>
+              `;
+                }
+            } else if (type === 'plan' || type === 'revenue') {
+                const filterPlan = param; // PREMIUM, FAMILY, FREE
+                let titlePrefix = filterPlan ? `GÓI ${filterPlan}` : 'TỔNG DOANH THU ƯỚC TÍNH';
+                title = `CHI TIẾT ${titlePrefix}`;
+                icon = filterPlan === 'PREMIUM' ? 'crown' : filterPlan === 'FAMILY' ? 'users' : 'bar-chart-3';
+                color = filterPlan === 'PREMIUM' ? '#fbbf24' : filterPlan === 'FAMILY' ? '#a855f7' : '#10b981';
+
+                let targetUsers = liveSubsData;
+                if (filterPlan) {
+                    targetUsers = liveSubsData.filter(s => s.plan === filterPlan);
+                } else {
+                    targetUsers = liveSubsData.filter(s => s.plan !== 'FREE');
+                }
+
+                if (targetUsers.length === 0) {
+                    htmlContent = "<div style='text-align:center; padding: 40px; color: rgba(255,255,255,0.4);'>Chưa có dữ liệu cho hạng mục này.</div>";
+                } else {
+                    htmlContent = `
+                  <div style="display:flex; gap:16px; margin-bottom:20px;">
+                      <div style="flex:1; background:rgba(0,0,0,0.2); padding:16px; border-radius:12px; text-align:center;">
+                          <div style="font-size:11px; color:rgba(255,255,255,0.4); text-transform:uppercase; font-weight:800; margin-bottom:6px;">Số Lượng Đang Kích Hoạt</div>
+                          <div style="font-size:24px; font-weight:900; color:${color};">${targetUsers.length}</div>
+                      </div>
+                      ${!filterPlan || filterPlan !== 'FREE' ? `
+                      <div style="flex:1; background:rgba(0,0,0,0.2); padding:16px; border-radius:12px; text-align:center;">
+                          <div style="font-size:11px; color:rgba(255,255,255,0.4); text-transform:uppercase; font-weight:800; margin-bottom:6px;">Tổng Doanh Thu Quy Đổi</div>
+                          <div style="font-size:24px; font-weight:900; color:#10b981;">${(targetUsers.length * (filterPlan === 'FAMILY' ? 2400000 : 260000)).toLocaleString('vi-VN')}đ</div>
+                      </div>` : ''}
+                  </div>
+                  <div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:1px;">
+                      <table style="width:100%; border-collapse: collapse; text-align:left; font-size:13px;">
+                          <thead>
+                              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.4);">
+                                  <th style="padding:12px;">Khách hàng</th>
+                                  <th style="padding:12px;">Ngày bắt đầu</th>
+                                  <th style="padding:12px;">Hạn sử dụng</th>
+                                  <th style="padding:12px;">Trạng thái</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              ${targetUsers.map(u => `
+                              <tr style="border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                                  <td style="padding:12px;">
+                                      <div style="font-weight:700; color:#fff;">${u.userName}</div>
+                                      <div style="font-size:11px; color:rgba(255,255,255,0.3);">${u.email}</div>
+                                  </td>
+                                  <td style="padding:12px; color:rgba(255,255,255,0.7);">${u.startDate}</td>
+                                  <td style="padding:12px; font-weight:800; color:#fff;">${u.endDate}</td>
+                                  <td style="padding:12px;">
+                                      ${u.status === 'active' ? '<span style="color:#10b981; font-weight:800; font-size:11px;">Hoạt động</span>' : '<span style="color:#ef4444; font-weight:800; font-size:11px;">Hết hạn</span>'}
+                                  </td>
+                              </tr>
+                              `).join('')}
+                          </tbody>
+                      </table>
+                  </div>
+              `;
+                }
+            }
+
+            // Render Modal Layer
+            const overlay = document.createElement('div');
+            overlay.id = 'analyticsModalOverlay';
+            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:99999; display:flex; align-items:center; justify-content:center; animation: fadeIn 0.2s ease;';
+
+            overlay.innerHTML = `
+          <div style="background: rgba(16,16,28,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; width: 600px; max-width: 95vw; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 40px 80px rgba(0,0,0,0.8);">
+              <!-- Header -->
+              <div style="padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                  <h3 style="color:#fff; font-size:16px; font-weight:900; display:flex; align-items:center; gap:12px; margin:0;">
+                      <div style="width:36px; height:36px; border-radius:10px; background:${color}20; border: 1px solid ${color}40; display:flex; align-items:center; justify-content:center; color:${color};">
+                          <i data-lucide="${icon}" style="width:18px;"></i>
+                      </div>
+                      ${title}
+                  </h3>
+                  <button onclick="document.getElementById('analyticsModalOverlay').remove()" style="width:32px; height:32px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:rgba(255,255,255,0.6); cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">✕</button>
+              </div>
+              
+              <!-- Content -->
+              <div style="padding: 24px; overflow-y: auto;">
+                  ${htmlContent}
+              </div>
+          </div>
+      `;
+
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+
+            if (window.lucide) {
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+        };
+    </script>
+
+    <script>
+        // Tự động render Lucide Icons khi DOM thay đổi
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) lucide.createIcons();
+            let isUpdatingIcons = false;
+            const mutationObs = new MutationObserver(() => {
+                if (isUpdatingIcons) return;
+                isUpdatingIcons = true;
+                if (window.lucide) {
+                    try { lucide.createIcons(); } catch (e) { }
+                }
+                setTimeout(() => { isUpdatingIcons = false; }, 150);
+            });
+            mutationObs.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+
+</html>

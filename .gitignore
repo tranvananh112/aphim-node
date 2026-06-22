@@ -1,0 +1,122 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build files
+dist/
+build/
+
+# Documentation and notes (Markdown files)
+*.md
+!README.md
+
+# Batch files
+*.bat
+
+# Word documents
+*.doc
+*.docx
+
+# Temporary folders
+Yeu_Cau_Cung_Cap_Banner_Quang_Cao_files/
+
+# Stitch website templates
+stitch_website_xem_phim/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build files
+dist/
+build/
+
+# Documentation and notes (Markdown files)
+*.md
+!README.md
+
+# Batch files
+*.bat
+
+# Word documents
+*.doc
+*.docx
+
+# Temporary folders
+Yeu_Cau_Cung_Cap_Banner_Quang_Cao_files/
+
+# Stitch website templates
+stitch_website_xem_phim/
+
+# Test files (development only - not for production)
+test-*.html
+demo-*.html
+debug-*.html
+unregister-*.html
+
+*.xlsx
+# Recovery and Temp Files
+*.py
+*.bin
+*LOG*
+*RECOVER*
+*RESCUE*
+GIT_RAW*
+STAGED_VERSION*
+STASHED_VERSION*
+
+
+ABSOLUTE_*
+*_DUMP*
+old_profile.html
+frame-test.html
+stash_diff.txt
+EXTRACTED_GIT*
+
+
+ULTIMATE_*
+

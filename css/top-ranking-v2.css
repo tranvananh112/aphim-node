@@ -1,0 +1,187 @@
+/* ============================================================
+   A PHIM — Bảng Xếp Hạng Top Phim Hot (Premium Staggered Layout)
+   ============================================================ */
+
+.ranking-item {
+    flex: none;
+    width: 140px; /* Mobile */
+    scroll-snap-align: start;
+    transition: transform 0.2s ease-out, z-index 0.2s ease-out;
+    perspective: 1000px; /* Tạo không gian 3D */
+    padding: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .ranking-item {
+        width: 190px;
+    }
+}
+
+/* Lồi lõm (Staggered) Effect: So le cao thấp và nghiêng nhẹ */
+.ranking-item:nth-child(odd) {
+    transform: translateY(-8px) rotateZ(-1.5deg);
+}
+
+.ranking-item:nth-child(even) {
+    transform: translateY(8px) rotateZ(1.5deg);
+}
+
+/* Hover state: Fast, non-laggy lift */
+.ranking-item:hover {
+    transform: translateY(-15px) scale(1.05) rotateZ(0deg) !important;
+    z-index: 20;
+}
+
+.ranking-poster-w {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    background: #0f1016;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover border highlight */
+.ranking-item:hover .ranking-poster-w {
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+/* Badges at bottom */
+.ranking-badges-bottom {
+    position: absolute;
+    bottom: 8px;
+    left: 4px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.badge-pd, .badge-lt, .badge-tm {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 6px;
+    color: white;
+    text-transform: uppercase;
+}
+
+.badge-pd { background: #16a34a; border-radius: 4px; }
+.badge-lt { background: #2563eb; border-radius: 4px; }
+.badge-tm { background: #0ea5e9; border-radius: 4px; }
+
+/* Circle Icon bottom right */
+.ranking-icon-circle {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.ranking-icon-circle .material-icons-round {
+    font-size: 16px;
+    color: white;
+}
+
+/* Rank 1 Highlight - Much thicker */
+.ranking-item[data-rank="1"] .ranking-poster-w {
+    border: 3px solid #ffd700;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    transform: scale(1.02);
+}
+
+.ranking-poster-w img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-out;
+}
+
+/* Zoom image slightly on hover like other movie cards */
+.ranking-item:hover .ranking-poster-w img {
+    transform: scale(1.08);
+}
+
+/* Big Number Layout - horizontal with text */
+.ranking-info-w {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.5rem 0;
+}
+
+.rank-big-number {
+    font-size: 3rem;
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1;
+    color: #ffd700;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    font-family: 'Outfit', sans-serif;
+    min-width: 40px;
+    flex-shrink: 0;
+}
+
+.ranking-text-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.ranking-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.ranking-sub {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.ranking-extra {
+    font-size: 0.75rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Navigation arrows */
+.ranking-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    z-index: 30;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.top-movies-section:hover .ranking-nav {
+    opacity: 1;
+}

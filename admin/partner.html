@@ -1,0 +1,888 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner DT99 - A Phim Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* partner.html specific giữ nguyên class compatibility */
+        .badge-live {
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+
+        .session-row:hover {
+            background: var(--surface-2);
+        }
+
+        .stat-card {
+            transition: box-shadow .2s;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Inline partner content styles adaptốto dark theme */
+        #firebase-panel,
+        #session-table,
+        .stat-card {
+            color: var(--text-primary);
+        }
+
+        code {
+            background: var(--surface-3);
+            color: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Config inputs */
+        #cfg-pass,
+        #cfg-traffic,
+        #cfg-online,
+        #cfg-feedspeed {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        #cfg-pass:focus,
+        #cfg-traffic:focus,
+        #cfg-online:focus,
+        #cfg-feedspeed:focus {
+            border-color: var(--primary);
+        }
+
+        /* Override inline grid colors for firebase panel */
+        #firebase-panel .bg-yellow-50 {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.15);
+        }
+
+        #firebase-panel .bg-blue-50 {
+            background: var(--primary-10);
+            border-color: var(--primary-20);
+        }
+
+        #firebase-panel .bg-green-50 {
+            background: var(--success-bg);
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+
+        #firebase-panel .text-yellow-800 {
+            color: var(--warning);
+        }
+
+        #firebase-panel .text-blue-800 {
+            color: var(--primary-light);
+        }
+
+        #firebase-panel .text-green-800 {
+            color: var(--success);
+        }
+
+        /* cfg overlay */
+        #cfg-overlay {
+            background: rgba(var(--surface-1-rgb, 13, 15, 24), 0.85);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"
+                    style="background:transparent; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+                    <img src="../favicon.png" alt="A Phim"
+                        style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));" />
+                </div>
+                <div class="sidebar-logo-text">
+                    <h1 style="letter-spacing: 0.5px;">A Phim</h1>
+                    <p style="color: var(--primary);">Admin Panel</p>
+                </div>
+            </div>
+            <nav class="fixed top-0 w-full z-50 pt-safe" id="mainNav">
+        <div class="container mx-auto px-6 flex items-center justify-between" style="height:56px;">
+
+            <!-- ZONE 1: Logo -->
+            <a href="/" class="flex items-center gap-2.5 group flex-shrink-0" style="text-decoration:none;">
+                <div
+                    class="w-9 h-9 rounded-full border-2 border-primary flex items-center justify-center bg-black/40 group-hover:bg-primary/20 transition-colors duration-300 overflow-hidden">
+                    <img src="/apple-touch-icon.png" alt="A Phim Logo"
+                        class="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
+                </div>
+                <div class="flex flex-col leading-none">
+                    <span class="text-xl font-bold text-white tracking-wide">A <span
+                            class="text-primary">Phim</span></span>
+                    <span class="text-[9px] text-white/40 uppercase tracking-widest">Cinema</span>
+                </div>
+            </a>
+
+            <!-- Mobile Inline Search -->
+            <form action="search.html" method="GET" class="mobile-inline-search">
+                <span class="material-icons-round mobile-inline-search-icon">search</span>
+                <input type="text" name="q" placeholder="Tìm kiếm phim..." autocomplete="off"
+                    class="mobile-inline-search-input">
+            </form>
+
+            <!-- ZONE 2: Desktop Search + Links (hidden on mobile) -->
+            <div class="hidden lg:flex items-center flex-1 justify-center ml-14">
+                <!-- Dark pill wrapper (like SofaFlix) -->
+                <div id="desktopNavPill" class="desktop-nav-pill">
+
+                    <!-- Search Bar -->
+                    <form action="search.html" method="GET" class="nav-search-v2">
+                        <span class="material-icons-round search-icon">search</span>
+                        <input type="text" name="q" placeholder="Tìm kiếm phim, diễn viên..." autocomplete="off"
+                            required>
+                    </form>
+
+                    <!-- Divider -->
+                    <div
+                        style="width:1px; height:20px; background:rgba(255,255,255,0.12); margin:0 6px; flex-shrink:0;">
+                    </div>
+
+                    <!-- Nav Links — flat, no pill -->
+                    <nav-links class="flex items-center" style="gap:2px;">
+                        <a href="/" class="nav-flat-link active">Trang Chủ</a>
+
+                        <!-- Phim Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Phim
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" id="countryDropdown" style="min-width:680px;">
+                                <div class="p-4 text-center text-gray-400 text-sm">Đang tải...</div>
+                            </div>
+                        </div>
+
+                        <!-- Danh Sách Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Danh Sách
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" style="min-width:560px;">
+                                <div
+                                    style="background:#2b3a72;border-radius:12px;padding:6px;border:1px solid rgba(255, 255, 255, 0.15);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
+                                    <div class="grid grid-cols-3 gap-0">
+                                        <a href="/danh-sach?list=phim-moi"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Phim
+                                            Mới</a>
+                                        <a href="/danh-sach?list=phim-bo"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Phim
+                                            Bộ</a>
+                                        <a href="/danh-sach?list=phim-le"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Phim
+                                            Lẻ</a>
+                                        <a href="/danh-sach?list=tv-shows"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">TV
+                                            Shows</a>
+                                        <a href="/danh-sach?list=hoat-hinh"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Hoạt
+                                            Hình</a>
+                                        <a href="/danh-sach?list=phim-vietsub"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Phim
+                                            Vietsub</a>
+                                        <a href="/danh-sach?list=phim-thuyet-minh"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Thuyết
+                                            Minh</a>
+                                        <a href="/danh-sach?list=phim-long-tien"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Lồng
+                                            Tiếng</a>
+                                        <a href="/danh-sach?list=phim-bo-dang-chieu"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Phim
+                                            Bộ Đang Chiếu</a>
+                                        <a href="/danh-sach?list=phim-bo-hoan-thanh"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Bộ
+                                            Đã Xong</a>
+                                        <a href="/danh-sach?list=phim-sap-chieu"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Sắp
+                                            Chiếu</a>
+                                        <a href="/danh-sach?list=subteam"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.88)';">Subteam</a>
+                                        <a href="/danh-sach?list=phim-chieu-rap"
+                                            style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            onmouseout="this.style.background='-';this.style.color='rgba(255,255,255,0.95)';">🎬
+                                            Phim Chiếu Rạp</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thể Loại Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Thể Loại
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" id="categoryDropdown" style="min-width:680px;">
+                                <div class="p-4 text-center text-gray-400 text-sm">Đang tải...</div>
+                            </div>
+                        </div>
+
+                        <a href="/search" class="nav-flat-link">Khám Phá</a>
+                        <a href="/pricing" class="nav-flat-link">Gói Cước</a>
+                        <a href="/phim-x" class="nav-flat-link nav-flat-link--danger">🔞 Phim X</a>
+                    </nav-links>
+                </div>
+            </div>
+
+
+            <!-- ZONE 3: Right — Auth + Mobile Toggle -->
+            <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+                <!-- Auth Container (filled by auth.js / user-ui.js) -->
+                <div id="authContainer" class="flex items-center" style="overflow: visible !important;">
+                    <a href="/login"
+                        onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
+                        class="nav-auth-btn hidden lg:inline-flex">
+                        <span class="material-icons-round" style="font-size:16px;">person</span>
+                        Đăng Nhập
+                    </a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="lg:hidden text-white p-1">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </div>
+
+    </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" onclick="location.href = '/dashboard'">
+                    <i data-lucide="log-out" style="width: 1em; height: 1em;"></i><span>Đăng xuất</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="admin-main">
+
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Partner DT99</h2>
+                    <p>Quản lý &amp; giám sát trang Đối tác</p>
+                </div>
+                <div class="header-right">
+                    <div id="live-indicator" class="badge badge-success badge-live"
+                        style="animation: pulse-badge 2s infinite; padding: 5px 14px; font-size: 12px;">
+                        <span
+                            style="width:7px; height:7px; background: var(--success); border-radius:50%; display:inline-block; margin-right:5px;"></span>
+                        LIVE DATA
+                    </div>
+                    <button onclick="refreshAll()" class="btn btn-primary">
+                        <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i> Làm mới
+                    </button>
+                    <a href="/partner.html" target="_blank" class="btn btn-secondary">
+                        <i data-lucide="external-link" style="width: 1em; height: 1em;"></i> Mở trang Đối tác
+                    </a>
+                </div>
+            </header>
+
+            <div class="admin-content" style="display: flex; flex-direction: column; gap: 24px;">
+
+                <!-- ─ ─STATUS CARDSố ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─-->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+                    <div class="stat-card bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="log-in" class="text-blue-600 text-xl"
+                                    style="width: 1em; height: 1em;"></i>
+                            </div>
+                            <span id="login-status-badge"
+                                class="text-xs font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-500"> </span>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Lần ăng nhập gần nhất</p>
+                        <p id="last-login" class="text-base font-bold text-gray-900">Đang tải...</p>
+                        <p id="last-login-ago" class="text-xs text-gray-400 mt-0.5"></p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="eye" class="text-purple-600 text-xl"
+                                    style="width: 1em; height: 1em;"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Lần truy cập cu i</p>
+                        <p id="last-seen" class="text-base font-bold text-gray-900"> </p>
+                        <p id="last-seen-ago" class="text-xs text-gray-400 mt-0.5"></p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="bar-chart-2" class="text-green-600 text-xl"
+                                    style="width: 1em; height: 1em;"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Tổng phiên xem</p>
+                        <p id="total-sessions" class="text-3xl font-bold text-gray-900">0</p>
+                        <p class="text-xs text-gray-400 mt-0.5">login + resume</p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="mouse-pointer-click" class="text-yellow-600 text-xl"
+                                    style="width: 1em; height: 1em;"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Tổng Click (All-Time)</p>
+                        <p id="total-clicks" class="text-3xl font-bold text-gray-900"> </p>
+                        <p class="text-xs text-gray-400 mt-0.5">Firebase dt99_config</p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl p-6 border border-gray-200 col-span-full lg:col-span-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="map-pin" class="text-red-500 text-xl"
+                                    style="width: 1em; height: 1em;"></i>
+                            </div>
+                            <span id="loc-flag" class="text-2xl"> </span>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Vị trí ăng nhập gần nhất</p>
+                        <p id="loc-city" class="text-base font-bold text-gray-900"> </p>
+                        <p id="loc-detail" class="text-xs text-gray-400 mt-0.5"> </p>
+                    </div>
+                </div>
+
+                <!-- ─ ─PARTNER INFO + CONTROLSố ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─-->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- Info card -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+                        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="badge-check" class="text-primary text-xl"
+                                style="width: 1em; height: 1em;"></i>
+                            Thông tin Đối tác
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Mã Đối tác</span>
+                                <span class="font-semibold text-gray-900 text-sm">DT99</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">URL Dashboard</span>
+                                <a href="/partner.html" target="_blank"
+                                    class="text-primary text-sm font-medium hover:underline">/partner.html ─ </a>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Firebase key</span>
+                                <code class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">dt99_config</code>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">localStorage key</span>
+                                <code class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">dt99_data</code>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-gray-500">Trạng thái</span>
+                                <span
+                                    class="flex items-center gap-1.5 text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Đang hoạt động
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick actions -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2 mb-4">
+                            <i data-lucide="wrench" class="text-primary text-xl" style="width: 1em; height: 1em;"></i>
+                            Thao tác nhanh
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="clearLog()"
+                                class="w-full flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i data-lucide="trash" class="text-gray-400 text-lg"
+                                    style="width: 1em; height: 1em;"></i>
+                                Xóa Lịch sử phiên ăng nhập
+                            </button>
+                            <button onclick="copyPartnerLink()"
+                                class="w-full flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i data-lucide="link" class="text-gray-400 text-lg"
+                                    style="width: 1em; height: 1em;"></i>
+                                Copy link trang Đối tác
+                            </button>
+                            <a href="/partner.html" target="_blank"
+                                class="w-full flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-lg text-sm font-medium text-primary hover:bg-primary/10 transition-colors">
+                                <i data-lucide="eye" class="text-primary text-lg" style="width: 1em; height: 1em;"></i>
+                                Xem như Đối tác (preview)
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình Partner DT99 -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 relative">
+                        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2 mb-4">
+                            <i data-lucide="sliders" class="text-primary text-xl" style="width: 1em; height: 1em;"></i>
+                            Cấu hình Thông số (Remote)
+                        </h3>
+                        <div id="cfg-overlay"
+                            class="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl">
+                            <i data-lucide="refresh-cw" class="text-primary animate-spin"
+                                style="width: 1em; height: 1em;"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Mã ăng nhập (Mật
+                                    khẩu)</label>
+                                <input id="cfg-pass" type="text"
+                                    class="w-full border border-gray-200 rounded px-3 py-1.5 text-sm focus:border-primary outline-none"
+                                    placeholder="dt99">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">H! số Traffic</label>
+                                    <input id="cfg-traffic" type="number" step="0.1"
+                                        class="w-full border border-gray-200 rounded px-3 py-1.5 text-sm focus:border-primary outline-none"
+                                        title="1.0 = bình thường, < 1.0 = giảm, > 1.0 = tăng ảo">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">H! số Online</label>
+                                    <input id="cfg-online" type="number" step="0.1"
+                                        class="w-full border border-gray-200 rounded px-3 py-1.5 text-sm focus:border-primary outline-none"
+                                        title="1.0 = bình thường, 3.0 = X3 người online">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">a─T c ─ Feed Click
+                                    Realtime</label>
+                                <select id="cfg-feedspeed"
+                                    class="w-full border border-gray-200 rounded px-3 py-1.5 text-sm focus:border-primary outline-none bg-white">
+                                    <option value="0.3">x─Chậm dòng mới mỗi 20-60 giây</option>
+                                    <option value="1" selected>a ️ Bình thường theo giờ thực tế</option>
+                                    <option value="2.5">xa─Nhanh dòng mới mỗi 3-10 giây</option>
+                                    <option value="5">a─Rất nhanh dòng mới mỗi 1-4 giây</option>
+                                </select>
+                            </div>
+                            <button onclick="saveConfig()"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg py-2 transition-colors flex justify-center items-center gap-2 shadow-sm">
+                                <i data-lucide="cloud-upload" class="text-sm" style="width: 1em; height: 1em;"></i> Lưu
+                                & Áp dụng ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─ ─SESSION HISTORY ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─-->
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="history" class="text-primary text-xl" style="width: 1em; height: 1em;"></i>
+                            Lịch sử phiên ăng nhập (20 gần nhất)
+                        </h3>
+                        <span id="session-count-badge"
+                            class="text-xs font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full">0 phiên</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-100">
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide w-8">
+                                        #</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        Thời gian</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        Loại</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        x ─Vị trí</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        IP Address</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        ISP / Nhà mạng</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        Thiết bộ9</th>
+                                    <th
+                                        class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                        Cách ây</th>
+                                </tr>
+                            </thead>
+                            <tbody id="session-table">
+                                <tr>
+                                    <td colspan="8" class="text-center py-12 text-gray-400">
+                                        <i data-lucide="map-pin-off" class="text-3xl block mb-2 opacity-40"
+                                            style="width: 1em; height: 1em;"></i>
+                                        Chưa có dữ liệu Đối tác chưa ăng nhập lần nào từ trình duyệt này.<br>
+                                        <span class="text-xs">(Dữ liệu lưu trong localStorage của trình duyệt Đối tác,
+                                            IP lấy khi ăng nhập)</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ─ ─FIREBASE DAILY DATA ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─-->
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="cloud" class="text-primary text-xl" style="width: 1em; height: 1em;"></i>
+                            Dữ liệu Firebase dt99_config
+                        </h3>
+                        <span class="text-xs text-gray-400 font-mono" id="firebase-updated"> </span>
+                    </div>
+                    <div class="p-6" id="firebase-panel">
+                        <div class="text-center py-8 text-gray-400 text-sm">
+                            <i data-lucide="cloud-cog" class="text-3xl block mb-2 opacity-40"
+                                style="width: 1em; height: 1em;"></i>
+                            Đang kết nối Firebase...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toast (kept for partner JS) -->
+                <div id="toast"
+                    class="fixed bottom-6 right-6 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2"
+                    style="background: var(--surface-2); border: 1px solid var(--border);">
+                    <i data-lucide="check-circle" style="width: 1em; height: 1em;"></i>
+                    <span id="toast-msg">Done</span>
+                </div>
+
+            </div><!-- /admin-content -->
+        </main>
+    </div><!-- /admin-layout -->
+
+    <script>
+        // ─ ─HELPERSố ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+        function timeAgo(ts) {
+            if (!ts) return '-';
+            var diff = Date.now() - ts;
+            var s = Math.floor(diff / 1000);
+            if (s < 60) return s + 's trước';
+            var m = Math.floor(s / 60);
+            if (m < 60) return m + ' phútốtrước';
+            var h = Math.floor(m / 60);
+            if (h < 24) return h + ' giờ trước';
+            var d = Math.floor(h / 24);
+            return d + ' ngày trước';
+        }
+        function fmtTime(ts) {
+            if (!ts) return ' ';
+            var d = new Date(ts);
+            return d.toLocaleString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        function showToast(msg, icon) {
+            var t = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            document.getElementById('toast-icon').textContent = icon || 'check_circle';
+            t.style.transform = 'translateY(0)'; t.style.opacity = '1';
+            setTimeout(function () { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 3000);
+        }
+        function uaDevice(ua) {
+            if (/Mobile|Android|iPhone/i.test(ua)) return 'Mobile';
+            if (/Tablet|iPad/i.test(ua)) return 'Tablet';
+            return 'Desktop';
+        }
+
+        // ─ ─LOAD SESSION LOG (Firebase Firestore cross-device) ─ ─ ─ ─ ─ 
+        function loadLog() {
+            if (!window.PartnerFB) { setTimeout(loadLog, 300); return; }
+            PartnerFB.readSessions()
+                .then(function (sessions) {
+                    var logins = sessions.filter(function (s) { return s.type === 'login'; });
+                    renderLog({
+                        sessions: sessions,
+                        total: sessions.length,
+                        lastLogin: logins.length ? logins[0].t : null,
+                        lastSeen: sessions.length ? sessions[0].t : null
+                    });
+                })
+                .catch(function (e) {
+                    console.error('[Partner Admin] Firebase read error:', e);
+                    renderLog({ sessions: [], total: 0, lastLogin: null, lastSeen: null });
+                });
+        }
+
+        function renderLog(log) {
+            var lastLogin = log.lastLogin || null;
+            var lastSeen = log.lastSeen || null;
+            var sessions = log.sessions || [];
+            var total = log.total || 0;
+
+            // Last login
+            if (lastLogin) {
+                document.getElementById('last-login').textContent = fmtTime(lastLogin);
+                document.getElementById('last-login-ago').textContent = timeAgo(lastLogin);
+                var ago = Date.now() - lastLogin;
+                var badge = document.getElementById('login-status-badge');
+                if (ago < 3600000) { badge.textContent = '< 1 giờ ago'; badge.className = 'text-xs font-bold px-2 py-1 rounded-full bg-green-100 text-green-700'; }
+                else if (ago < 86400000) { badge.textContent = 'Hôm nay'; badge.className = 'text-xs font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700'; }
+                else { badge.textContent = Math.floor(ago / 86400000) + ' ngày trước'; badge.className = 'text-xs font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-500'; }
+            } else {
+                document.getElementById('last-login').textContent = 'Chưa có dữ liệu';
+                document.getElementById('last-login-ago').textContent = 'Đối tác chưa ăng nhập lần nào';
+                document.getElementById('login-status-badge').textContent = ' ';
+            }
+
+            // Last seen
+            document.getElementById('last-seen').textContent = lastSeen ? fmtTime(lastSeen) : ' ';
+            document.getElementById('last-seen-ago').textContent = lastSeen ? timeAgo(lastSeen) : '-';
+
+            // Total sessions
+            document.getElementById('total-sessions').textContent = total.toLocaleString('vi-VN');
+            document.getElementById('session-count-badge').textContent = sessions.length + ' phiên';
+
+            // Location stat card
+            var lastLoginSess = sessions.find(function (s) { return s.type === 'login' && s.ip && s.ip !== ' '; });
+            if (lastLoginSess) {
+                var cc = (lastLoginSess.countryCode || '-').toUpperCase();
+                var flagEmoji = cc.length === 2 ? String.fromCodePoint(cc.charCodeAt(0) + 127397) + String.fromCodePoint(cc.charCodeAt(1) + 127397) : 'xR';
+                document.getElementById('loc-flag').textContent = flagEmoji;
+                document.getElementById('loc-city').textContent = (lastLoginSess.city || ' ') + ', ' + (lastLoginSess.country || ' ');
+                document.getElementById('loc-detail').textContent = 'IP: ' + (lastLoginSess.ip || ' ') + ' · ' + (lastLoginSess.isp || ' ');
+            } else {
+                document.getElementById('loc-flag').textContent = 'xR';
+                document.getElementById('loc-city').textContent = 'Chưa có dữ liệu';
+                document.getElementById('loc-detail').textContent = 'Đợi Đối tác ăng nhập lần ầu';
+            }
+
+            // Session table
+            var tbody = document.getElementById('session-table');
+            if (!sessions.length) {
+                tbody.innerHTML = '<tr><td colspan="8"class="text-center py-12 text-gray-400"><i data-lucide="map-pin-off"class="text-3xl block mb-2 opacity-40"style="width: 1em; height: 1em;"></i>Chưa có dữ liệu Đối tác chưa ăng nhập.<br><span class="text-xs">(IP & Vị trí lấy tự động khi Đối tác ăng nhập từ bất kỳ thiết bị nào)</span></td></tr>';
+                return;
+            }
+            tbody.innerHTML = sessions.map(function (s, i) {
+                var isLogin = s.type === 'login';
+                var cc = (s.countryCode || '-').toUpperCase();
+                var flagEmoji = cc.length === 2 ? String.fromCodePoint(cc.charCodeAt(0) + 127397) + String.fromCodePoint(cc.charCodeAt(1) + 127397) : 'xR';
+                var loc = isLogin ? (s.city && s.city !== ' ' ? flagEmoji + ' <strong>' + s.city + '</strong>' + (s.country ? ' · ' + s.country : '-') : '<span class="text-gray-300"> </span>') : '<span class="text-gray-400 text-xs italic">Resume</span>';
+                var ipCell = isLogin && s.ip && s.ip !== ' ' ? '<code class="text-xs bg-gray-100 px-1.5 py-0.5 rounded text-gray-700">' + s.ip + '</code>' + (s.lat && s.lon ? ' <a href="https://maps.google.com/?q=' + s.lat + ',' + s.lon + '"target="_blank"class="text-blue-400 text-xs ml-1"title="Xem bản đồ">─ </a>' : '-') : '<span class="text-gray-300"> </span>';
+                var ispCell = isLogin && s.isp && s.isp !== ' ' ? '<span class="text-xs text-gray-600">' + s.isp + '</span>' : '<span class="text-gray-300"> </span>';
+                return '<tr class="session-row border-b border-gray-50 last:border-0">' +
+                    '<td class="px-4 py-3 text-gray-400 text-xs font-mono">' + (i + 1) + '</td>' +
+                    '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap text-sm">' + fmtTime(s.t) + '</td>' +
+                    '<td class="px-4 py-3"><span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ' + (isLogin ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700') + '">' + (isLogin ? 'Đăng nhập' : 'Resume') + '</span></td>' +
+                    '<td class="px-4 py-3 text-sm">' + loc + '</td>' +
+                    '<td class="px-4 py-3">' + ipCell + '</td>' +
+                    '<td class="px-4 py-3">' + ispCell + '</td>' +
+                    '<td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">' + uaDevice(s.ua || '-') + (s.screen ? ' <span class="text-gray-400">' + s.screen + '</span>' : '-') + '</td>' +
+                    '<td class="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">' + timeAgo(s.t) + '</td>' +
+                    '</tr>';
+            }).join('-');
+        }
+        // ─ ─FIREBASE DATA ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+        function loadFirebase() {
+            // Firebase SDK cần load dùng fetch REST API thay thế
+            var projectId = 'aphim-e07ac';
+            var url = 'https://firestore.googleapis.com/v1/projects/' + projectId + '/databases/(default)/documents/dt99_config/dt99';
+            fetch(url).then(function (r) { return r.json(); }).then(function (doc) {
+                if (!doc || !doc.fields) {
+                    document.getElementById('firebase-panel').innerHTML = '<p class="text-sm text-gray-400 text-center py-4">Không ọc ược dữ liệu (Firebase rules)</p>';
+                    return;
+                }
+                var f = doc.fields;
+                var total = f.total && f.total.integerValue ? parseInt(f.total.integerValue) : 0;
+                var today = f.today && f.today.integerValue ? parseInt(f.today.integerValue) : 0;
+                var dateKey = f.dateKey && f.dateKey.stringValue ? f.dateKey.stringValue : ' ';
+                var updatedAt = f.updatedAt && f.updatedAt.timestampValue ? new Date(f.updatedAt.timestampValue).toLocaleString('vi-VN') : ' ';
+
+                document.getElementById('total-clicks').textContent = total.toLocaleString('vi-VN');
+                document.getElementById('firebase-updated').textContent = 'Cập nhật: ' + updatedAt;
+
+                // Click stats mini
+                document.getElementById('click-stats').innerHTML =
+                    '<div class="flex justify-between items-center py-2 border-b border-gray-50"><span class="text-sm text-gray-500">Hôm nay (' + dateKey + ')</span><span class="font-bold text-gray-900">' + today.toLocaleString('vi-VN') + ' clicks</span></div>' +
+                    '<div class="flex justify-between items-center py-2 border-b border-gray-50"><span class="text-sm text-gray-500">Tổng All-Time</span><span class="font-bold text-gray-900">' + total.toLocaleString('vi-VN') + ' clicks</span></div>' +
+                    '<div class="flex justify-between items-center py-2"><span class="text-sm text-gray-500">Cập nhật lần cu i</span><span class="text-xs text-gray-500">' + updatedAt + '</span></div>';
+
+                // Firebase panel
+                var banners = f.banners && f.banners.mapValue && f.banners.mapValue.fields ? f.banners.mapValue.fields : {};
+                var bannerRows = Object.keys(banners).map(function (k) {
+                    var v = banners[k] && banners[k].integerValue ? parseInt(banners[k].integerValue) : 0;
+                    return '<tr class="border-b border-gray-50 last:border-0">' +
+                        '<td class="px-4 py-2 text-sm text-gray-700 font-mono">' + k + '</td>' +
+                        '<td class="px-4 py-2 text-sm font-semibold text-rightốtext-gray-900">' + v.toLocaleString('vi-VN') + '</td>' +
+                        '</tr>';
+                }).join('-');
+
+                document.getElementById('firebase-panel').innerHTML =
+                    '<div class="grid grid-cols-3 gap-4 mb-6">' +
+                    '<div class="bg-yellow-50 border border-yellow-100 rounded-xl p-4 text-center"><p class="text-xs text-yellow-600 font-semibold mb-1">ALL-TIME</p><p class="text-2xl font-bold text-yellow-800">' + total.toLocaleString('vi-VN') + '</p></div>' +
+                    '<div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center"><p class="text-xs text-blue-600 font-semibold mb-1">H M NAY (' + dateKey + ')</p><p class="text-2xl font-bold text-blue-800">' + today.toLocaleString('vi-VN') + '</p></div>' +
+                    '<div class="bg-green-50 border border-green-100 rounded-xl p-4 text-center"><p class="text-xs text-green-600 font-semibold mb-1">CẬP NHẬT</p><p class="text-sm font-bold text-green-800">' + updatedAt + '</p></div>' +
+                    '</div>' +
+                    (bannerRows ? '<h4 class="text-sm font-semibold text-gray-700 mb-3">Click theo banner</h4><table class="w-full"><thead><tr><th class="text-left px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Banner ID</th><th class="text-right px-4 py-2 text-xs font-semibold text-gray-500 uppercase">All-Time Click</th></tr></thead><tbody>' + bannerRows + '</tbody></table>' : '<p class="text-sm text-gray-400">Không có dữ liệu banner</p>');
+            }).catch(function () {
+                document.getElementById('firebase-panel').innerHTML = '<div class="flex items-center gap-3 p-4 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700"><i data-lucide="alert-circle"style="width: 1em; height: 1em;"></i>Không kết nối ược Firebase. KiỒm tra kết nối mạng.</div>';
+                document.getElementById('total-clicks').textContent = 'N/A';
+            });
+        }
+
+        // ─ ─LOAD / SAVE CONFIG ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+        function loadConfig() {
+            if (!window.PartnerFB) { setTimeout(loadConfig, 300); return; }
+            PartnerFB.readConfig().then(function (cfg) {
+                document.getElementById('cfg-overlay').style.display = 'none';
+                if (cfg) {
+                    document.getElementById('cfg-pass').value = cfg.password || 'dt99';
+                    document.getElementById('cfg-traffic').value = cfg.trafficMultiplier !== undefined ? cfg.trafficMultiplier : 0.42;
+                    document.getElementById('cfg-online').value = cfg.onlineMultiplier !== undefined ? cfg.onlineMultiplier : 1.0;
+                    var fsEl = document.getElementById('cfg-feedspeed');
+                    var fsVal = cfg.feedSpeed !== undefined ? String(cfg.feedSpeed) : '1';
+                    for (var i = 0; i < fsEl.options.length; i++) { if (fsEl.options[i].value === fsVal) { fsEl.selectedIndex = i; break; } }
+                } else {
+                    document.getElementById('cfg-pass').value = 'dt99';
+                    document.getElementById('cfg-traffic').value = 0.42;
+                    document.getElementById('cfg-online').value = 1.0;
+                }
+            }).catch(function (e) {
+                document.getElementById('cfg-overlay').style.display = 'none';
+                // Firebase lỗi 403 ─ vẫn hi!n form với giá trị mặc định Ồ admin có thể ghi lần ầu
+                document.getElementById('cfg-pass').value = 'dt99';
+                document.getElementById('cfg-traffic').value = 0.42;
+                document.getElementById('cfg-online').value = 1.0;
+                showToast('Chưa có cấu hình Firebase dùng giá trị mặc định', 'error');
+            });
+        }
+        function saveConfig() {
+            var btn = event.currentTarget;
+            var pass = document.getElementById('cfg-pass').value.trim() || 'dt99';
+            var tf = parseFloat(document.getElementById('cfg-traffic').value) || 1.0;
+            var onl = parseFloat(document.getElementById('cfg-online').value) || 1.0;
+            var fspeed = parseFloat(document.getElementById('cfg-feedspeed').value) || 1.0;
+
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            PartnerFB.writeConfig({
+                password: pass,
+                trafficMultiplier: tf,
+                onlineMultiplier: onl,
+                feedSpeed: fspeed
+            }).then(function () {
+                showToast('Đã áp dụng cấu hình mới', 'cloud_done');
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            }).catch(function () {
+                showToast('Lỗi khi lưu cấu hình', 'error');
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            });
+        }
+
+        // ─ ─ACTIONSố ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+        function clearLog() {
+            if (!confirm('Xoá toàn bộ"Lịch sử phiên ăng nhập? Không thể hoàn tác.')) return;
+            if (!window.PartnerFB) return;
+            PartnerFB.clearSessions().then(function () {
+                loadLog();
+                showToast('Đã xóa Lịch sử phiên', 'delete');
+            }).catch(function () {
+                showToast('Lỗi khi xóa log', 'error');
+            });
+        }
+        function copyPartnerLink() {
+            var url = location.origin + '/partner.html';
+            navigator.clipboard.writeText(url).then(function () { showToast('Đã copy: ' + url, 'link'); });
+        }
+        function refreshAll() {
+            loadLog();
+            loadFirebase();
+            loadConfig();
+            showToast('Đã làm mới dữ liệu', 'refresh');
+        }
+
+        // ─ ─INIT ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 
+        loadLog();
+        loadFirebase();
+        loadConfig();
+        // Auto-refresh every 30s
+        setInterval(loadLog, 30000);
+        setInterval(loadFirebase, 60000);
+    </script>
+    <script src="../js/partner-fb.js"></script>
+    <script>lucide.createIcons();</script>
+
+    <script>
+        // Tự động render Lucide Icons khi DOM thay đổi (tải dữ liệu bảng/động)
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) lucide.createIcons();
+            let isUpdating = false;
+            const observer = new MutationObserver(() => {
+                if (isUpdating) return;
+                isUpdating = true;
+                if (window.lucide) {
+                    try { lucide.createIcons(); } catch (e) { }
+                }
+                setTimeout(() => { isUpdating = false; }, 100);
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+
+</html>

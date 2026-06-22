@@ -1,0 +1,642 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QYK5R13WK2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-QYK5R13WK2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang xem phim - Phim X Premium</title>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <!-- High End Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="css/tailwind.min.css?v=13">
+    <script src="js/anti-devtools.js?v=10"></script>
+    
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --orange: #f97316;
+            --orange-glow: rgba(249, 115, 22, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Premium Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: #8b5cf6;
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: #ea580c;
+            bottom: -200px;
+            left: -100px;
+            animation-duration: 25s;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* Glassmorphism Header */
+        .site-header {
+            position: sticky;
+            top: 0;
+            height: 64px;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+            justify-content: space-between;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-orange {
+            color: var(--orange);
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--orange);
+            box-shadow: 0 0 15px rgba(249,115,22,0.2);
+        }
+
+        /* Main Watch Container */
+        .watch-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        @media (min-width: 1024px) {
+            .watch-container {
+                grid-template-columns: 3fr 1fr; /* Main theater and sidebar */
+            }
+        }
+
+        /* The Video Player Shell */
+        .theater-mode {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+
+        /* Pure Ambient Backlight */
+        .theater-glow {
+            position: absolute;
+            inset: -20px;
+            background: linear-gradient(45deg, #8b5cf6, #f97316);
+            filter: blur(60px);
+            opacity: 0.4;
+            z-index: 1;
+            border-radius: 30px;
+            animation: breathe 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe {
+            0% { opacity: 0.2; transform: scale(0.98); }
+            100% { opacity: 0.4; transform: scale(1.02); }
+        }
+
+        .player-container {
+            position: relative;
+        }
+
+        .theater-mode iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Minimalist Meta Header Section */
+        .meta-layout-clean {
+            margin-top: 28px;
+            padding: 0 4px;
+        }
+
+        .meta-flex-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .mv-title {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .meta-info-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            color: #a1a1aa;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .meta-dot {
+            width: 4px;
+            height: 4px;
+            background: #4b5563;
+            border-radius: 50%;
+        }
+
+        .quality-tag {
+            color: var(--orange);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--orange);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .icon-text-pair {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .mv-title { font-size: 22px; }
+        }
+
+        /* Recommendation Sidebar */
+        .sidebar-section {
+            position: sticky;
+            top: 88px;
+            align-self: start;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .accent-bar {
+            width: 4px;
+            height: 20px;
+            background: var(--orange);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--orange);
+        }
+
+        .recommendation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rec-card {
+            display: flex;
+            gap: 12px;
+            padding: 8px;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .rec-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--border);
+            transform: translateX(4px);
+        }
+
+        .rec-thumb {
+            width: 120px;
+            aspect-ratio: 16/9;
+            flex-shrink: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .rec-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rec-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .rec-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #eee;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .rec-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Loading Overlay */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            transition: opacity 0.5s;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(249, 115, 22, 0.1);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient VFX -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <span class="text-sm text-gray-400 font-medium tracking-wider">CHUẨN BỊ TRÌNH CHIẾU...</span>
+    </div>
+
+    <!-- Header Navbar -->
+    <header class="site-header">
+        <a href="phim-x.html" class="logo-link">
+            <div class="w-8 h-8 bg-black border border-orange-500/50 rounded-full flex items-center justify-center">
+                <img src="/apple-touch-icon.png" alt="Logo" class="w-5 h-5" onerror="this.style.display='none'">
+            </div>
+            <span class="logo-text">A <span class="logo-orange">Phim X</span></span>
+        </a>
+        
+        <a href="phim-x.html" class="back-btn">
+            <span class="material-icons-round text-sm">arrow_back</span>
+            <span>Quay về Danh sách</span>
+        </a>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="watch-container">
+        
+        <!-- LEFT COLUMN: Theater & Details -->
+        <section>
+            <!-- The Cinema Player Container with Backlight Glow -->
+            <div class="player-container">
+                <div class="theater-glow"></div>
+                <div class="theater-mode" id="player-wrapper">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <!-- Details Card -->
+            <!-- Ultramodern Detail Container -->
+            <div class="meta-layout-clean">
+                <h1 id="movieTitle" class="mv-title">Tải tiêu đề phim...</h1>
+                
+                <!-- Top Inline Stats & Feedback Row -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:16px;">
+                    <div class="meta-info-row" id="cleanMetaFlow">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <!-- Mock Social Interaction (Pro Visual) -->
+                    <div style="display:flex; align-items:center; gap:16px; color:#a1a1aa;">
+                        <div style="display:flex; align-items:center; gap:6px; cursor:pointer; transition:0.2s;" class="hover:text-white">
+                            <span class="material-icons-round" style="font-size:20px;">thumb_up</span>
+                            <span style="font-weight:700; font-size:13px;">94%</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:6px; cursor:pointer; transition:0.2s;" class="hover:text-white">
+                            <span class="material-icons-round" style="font-size:20px;">share</span>
+                            <span style="font-weight:700; font-size:13px; display:none;">Chia sẻ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Massive Upgrade: Cinema Info Card & Description -->
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:20px; margin-bottom:32px; position:relative; overflow:hidden;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                        <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, #f97316, #8b5cf6); display:flex; align-items:center; justify-content:center; font-weight:800; color:white; border:2px solid rgba(255,255,255,0.1);">X</div>
+                        <div>
+                            <div style="color:#fff; font-weight:700; font-size:15px;">Phim X Uploader</div>
+                            <div style="color:var(--orange); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px;">
+                                <span class="material-icons-round" style="font-size:14px;">verified</span> Đã xác minh
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="color:#d4d4d8; font-size:14px; line-height:1.6; margin-bottom:16px;" id="videoDescriptionBox">
+                        Đang tổng hợp thông tin...
+                    </div>
+
+                    <!-- Tags Ecosystem -->
+                    <div style="display:flex; flex-wrap:wrap; gap:8px;" id="videoTagsBox">
+                        <!-- Dynamically Injected -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Suggestions Sidebar -->
+        <aside class="sidebar-section">
+            <h2 class="section-title">
+                <div class="accent-bar"></div>
+                Đề xuất cho bạn
+            </h2>
+            <div class="recommendation-list" id="recList">
+                <!-- Filled Dynamically -->
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // Load data from safe session storage instantly
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentVideoRaw = sessionStorage.getItem('phimX_CurrentVideo');
+            const relatedPoolRaw = sessionStorage.getItem('phimX_RelatedPool');
+            const returnURL = sessionStorage.getItem('phimX_ReturnURL') || 'phim-x.html';
+
+            // Apply persistent deep-link back to list buttons
+            document.querySelectorAll('.back-btn, .logo-link').forEach(el => el.href = returnURL);
+
+            if (!currentVideoRaw) {
+                // No video selected? Send back to list
+                window.location.href = 'phim-x.html';
+                return;
+            }
+
+            const video = JSON.parse(currentVideoRaw);
+            let relatedPool = [];
+            try {
+                relatedPool = JSON.parse(relatedPoolRaw || '[]');
+            } catch(e) {}
+
+            // 1. Inject Main Video Data
+            document.title = video.title + ' - Phim X Premium';
+            document.getElementById('movieTitle').innerText = video.title || 'Không tên';
+            
+            // Set up source iframe
+            const playerWrapper = document.getElementById('player-wrapper');
+            if (video.embed) {
+                playerWrapper.innerHTML = `
+                    <iframe 
+                        src="${video.embed}" 
+                        allow="autoplay; fullscreen; picture-in-picture" 
+                        referrerpolicy="no-referrer"
+                        sandbox="allow-scripts allow-same-origin allow-presentation"
+                    ></iframe>
+                `;
+            } else {
+                playerWrapper.innerHTML = `
+                    <div class="w-full h-full flex flex-col items-center justify-center bg-neutral-900 text-center px-6">
+                        <span class="material-icons-round text-6xl text-orange-500 mb-4">error_outline</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Không thể nhúng video</h3>
+                        <p class="text-gray-400 mb-6">Nguồn phát này không cho phép xem trực tiếp. Vui lòng nhấn nút bên dưới để xem trên web gốc.</p>
+                        <a href="${video.url}" target="_blank" class="px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl shadow-lg transition-colors">Xem trên Web Gốc</a>
+                    </div>
+                `;
+            }
+
+            // Setup Dynamic Meta Data Flow
+            const metaHTML = `
+                <span class="quality-tag">FULL HD</span>
+                <div class="meta-dot"></div>
+                <div class="icon-text-pair">
+                    <span class="material-icons-round text-[16px]">schedule</span>
+                    <span>${video.duration || 'N/A'}</span>
+                </div>
+                <div class="meta-dot"></div>
+                <div class="icon-text-pair">
+                    <span class="material-icons-round text-[16px]">visibility</span>
+                    <span>${video.views || '0'} views</span>
+                </div>
+                <div class="meta-dot"></div>
+                <div class="icon-text-pair text-yellow-400">
+                    <span class="material-icons-round text-[16px]">star</span>
+                    <span>${video.rating || '5.0'}/5</span>
+                </div>
+                <div class="meta-dot"></div>
+                <div class="icon-text-pair text-xs opacity-70">
+                    <span class="material-icons-round text-[14px]">dns</span>
+                    <span>Server ${video.server || 2}</span>
+                </div>
+            `;
+            document.getElementById('cleanMetaFlow').innerHTML = metaHTML;
+
+            // Massive Upgrade: Generate Dynamic Cinematic Description
+            const descEl = document.getElementById('videoDescriptionBox');
+            const tagsEl = document.getElementById('videoTagsBox');
+            
+            // Descriptive text generator
+            const descTemplate = `
+                Chào mừng bạn đến với chuyên mục Phim X. Video <strong>"${video.title || 'N/A'}"</strong> hiện đang phát sóng với chất lượng Full HD tuyệt hảo, tải liên tục không giật lag. 
+                Thời lượng ${video.duration || 'mới cập nhật'}, thu hút hơn ${video.views || '0'} lượt xem trên nền tảng. Hãy thưởng thức trọn vẹn từng khoảnh khắc!
+            `;
+            descEl.innerHTML = descTemplate;
+
+            // Dynamic Tag Logic: Pick words from title & generic categories
+            const words = (video.title || '').split(' ').filter(w => w.length > 4).slice(0,3);
+            const standardTags = ['18+', 'Phim Mới', 'HOT', 'Full HD', 'Premium'];
+            const combinedTags = [...new Set([...words, ...standardTags])].slice(0, 6);
+
+            tagsEl.innerHTML = combinedTags.map(tag => `
+                <span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:#a1a1aa; font-size:11px; font-weight:700; padding:6px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; transition:0.2s;" class="hover:border-orange-500 hover:text-white">#${tag}</span>
+            `).join('');
+
+            // 2. Populate Recommendations
+            const recList = document.getElementById('recList');
+            if (relatedPool.length > 1) {
+                // Exclude current, shuffle a few, take 8
+                const subset = relatedPool
+                    .filter(v => v.id !== video.id)
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 8);
+
+                recList.innerHTML = subset.map(item => {
+                    return `
+                        <div class="rec-card" onclick="changeVideo(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                            <div class="rec-thumb">
+                                <img src="${item.thumbnail || 'https://placehold.co/160x90'}" alt="" 
+                                     referrerpolicy="no-referrer" 
+                                     loading="lazy" 
+                                     onerror="this.src='https://placehold.co/160x90?text=X'">
+                            </div>
+                            <div class="rec-info">
+                                <div class="rec-title">${item.title}</div>
+                                <div class="rec-meta">
+                                    <span><span class="material-icons-round text-[11px] mr-1 align-middle">schedule</span>${item.duration}</span>
+                                    <span><span class="material-icons-round text-[11px] mr-1 align-middle">visibility</span>${item.views}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                recList.innerHTML = '<p class="text-sm text-gray-500 italic p-4">Đang tải dữ liệu liên quan...</p>';
+            }
+
+            // Hide loader
+            setTimeout(() => {
+                const loader = document.getElementById('loadingOverlay');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 600);
+        });
+
+        // Dynamic redirection function triggered from recommending clicks
+        function changeVideo(newVideoObj) {
+            // Instantly update storage and reload current page to initiate refresh cycle
+            sessionStorage.setItem('phimX_CurrentVideo', JSON.stringify(newVideoObj));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            location.reload(); // Reload pulls new data instantly
+        }
+    </script>
+    <!-- System Backend Infrastructure for Real-time Notifications & Auth -->
+    <script src="js/config.js?v=15"></script>
+    <script src="js/auth.js?v=38"></script>
+    <script src="js/premium-ad-blocker.js?v=1"></script>
+    <script src="js/user-ui.js?v=37"></script>
+    <script src="js/realtime-sync.js?v=13"></script>
+</body>
+</html>
+
+
+
+

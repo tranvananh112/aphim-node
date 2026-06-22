@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/avatar-frames.css?v=15">
+    <link rel="stylesheet" href="/css/pricing-premium.css?v=15">
+    <link rel="stylesheet" href="/css/profile-shop.css?v=36">
+    <link rel="stylesheet" href="/css/profile-progress.css?v=18">
+    <style>
+        /* ── Profile v2: Facebook-style Cover ── */
+        .profile-cover {
+            position: relative;
+            height: 220px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 40%, #12122a 70%, #0a0a1a 100%);
+            border-radius: 16px 16px 0 0;
+            overflow: hidden;
+        }
+
+        @media(min-width:768px) {
+            .profile-cover {
+                height: 280px;
+            }
+        }
+
+        .profile-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s;
+        }
+
+        .profile-cover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+        }
+
+        .profile-cover-edit-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .profile-cover-edit-btn:hover {
+            background: rgba(232, 185, 79, 0.2);
+            border-color: #e8b94f;
+            color: #e8b94f;
+        }
+
+        /* ── Identity bar ── */
+        .profile-identity {
+            position: relative;
+            padding: 0 24px 20px;
+            background: #13131f;
+            border-radius: 0 0 16px 16px;
+            /* enough top padding so avatar (which has negative margin) doesn't clip outside */
+            padding-top: 0;
+        }
+
+        /* Row that holds avatar + edit button */
+        .profile-avatar-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            /* Give room for avatar that is pulled up via negative margin-top */
+            padding-top: 16px;
+            min-height: 70px;
+        }
+
+        /* ── Avatar wrap ── */
+        .profile-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+            margin-top: -60px;
+            /* pull up over cover border */
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #13131f;
+            background: #2a2a3a;
+            box-shadow: 0 0 0 2.5px #e8b94f, 0 8px 28px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media(min-width:768px) {
+            .profile-avatar-wrap {
+                width: 124px;
+                height: 124px;
+                margin-top: -70px;
+            }
+        }
+
+        .profile-avatar-wrap:hover {
+            box-shadow: 0 0 0 2.5px #e8b94f, 0 0 28px rgba(232, 185, 79, 0.45);
+        }
+
+        /* Khi có khung v8, xóa border và shadow mặc định của FB-style wrap */
+        .profile-avatar-wrap.shop-frame-wrap {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 32px;
+            height: 32px;
+            background: #e8b94f;
+            border: 3px solid #13131f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            /* High z-index to stay above frames */
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            color: #000;
+        }
+
+        .avatar-edit-badge:hover {
+            background: #fff;
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 0 20px rgba(232, 185, 79, 0.4);
+        }
+
+        .profile-info-block {
+            flex: 1;
+            padding-top: 8px;
+        }
+
+        .profile-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 12px;
+        }
+
+        .profile-username {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .profile-badges {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .badge-pill.gold {
+            background: rgba(232, 185, 79, 0.15);
+            border-color: rgba(232, 185, 79, 0.3);
+            color: #e8b94f;
+        }
+
+        .badge-pill.green {
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.25);
+            color: #4ade80;
+        }
+
+        .badge-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.5;
+        }
+
+        .edit-profile-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: rgba(232, 185, 79, 0.12);
+            border-color: #e8b94f;
+            color: #e8b94f;
+        }
+
+        /* ── Horizontal tab bar ── */
+        .profile-tab-bar {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 4px;
+            margin-top: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .profile-tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 16px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            color: #e8b94f;
+            border-bottom-color: #e8b94f;
+        }
+
+        /* ── Sidebar specific active state ── */
+        .sidebar-menu-card .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
+            border-bottom: none !important;
+        }
+
+        .sidebar-menu-card .tab-btn.active .material-icons-round {
+            color: #fff !important;
+        }
+
+        /* ── Content panels ── */
+        /* Use !important to beat Tailwind's .hidden and any inline style */
+        .tab-content {
+            display: none !important;
+        }
+
+        .tab-content.active-tab {
+            display: block !important;
+        }
+
+        /* welcomeTab shows by default until a tab is clicked */
+        #welcomeTab {
+            display: block !important;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 28px;
+        }
+
+        #coverPickerModal.open {
+            display: flex;
+        }
+
+        /* ── Responsive Mobile Optimizations ── */
+        .profile-main-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-main-layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .profile-sidebar {
+                position: relative !important;
+                top: 0 !important;
+            }
+
+            .profile-hero-card {
+                min-height: 280px !important;
+            }
+
+            .profile-avatar-wrap {
+                width: 90px !important;
+                height: 90px !important;
+                margin-top: -45px !important;
+            }
+
+            .profile-username {
+                font-size: 1.35rem !important;
+            }
+
+            .profile-badges {
+                gap: 4px !important;
+            }
+
+            .badge-pill {
+                padding: 2px 8px !important;
+                font-size: 9px !important;
+            }
+
+            .edit-profile-btn,
+            .profile-cover-edit-btn {
+                padding: 6px 12px !important;
+                font-size: 11px !important;
+                border-radius: 8px !important;
+            }
+
+            .profile-card {
+                padding: 20px !important;
+            }
+
+            /* Remove duplicate/redundant titles inside tab contents on mobile to maximize vertical space */
+            .tab-content .profile-card > h2:first-of-type,
+            .tab-content .profile-card > div:first-child > h2:first-of-type {
+                display: none !important;
+            }
+
+            .profile-info-block {
+                padding-top: 4px !important;
+            }
+
+            .sidebar-menu-card p {
+                padding: 12px 16px 4px !important;
+                font-size: 9px !important;
+            }
+
+            .sidebar-menu-card .tab-btn {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+            }
+
+            .shop-categories {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                gap: 8px;
+                scrollbar-width: none;
+            }
+
+            .shop-categories::-webkit-scrollbar {
+                display: none;
+            }
+
+            .shop-cat-btn {
+                flex-shrink: 0;
+                padding: 8px 14px !important;
+                font-size: 11px !important;
+            }
+
+            .rarity-filters {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                gap: 6px;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+            }
+
+            .rarity-filters::-webkit-scrollbar {
+                display: none;
+            }
+
+            .rarity-btn {
+                flex-shrink: 0;
+                padding: 4px 10px !important;
+                font-size: 10px !important;
+            }
+
+            .journey-container {
+                padding: 16px !important;
+            }
+
+            .progress-stats-top {
+                font-size: 12px !important;
+            }
+        }
+    </style>
+
+</head>
+<body class="bg-background-dark text-gray-100 font-display min-h-screen profile-page">
+    <%- include('partials/header') %>
+
+    <main id="profileMain" style="padding-top:80px;padding-bottom:80px;">
+        <div style="max-width:1100px;margin:0 auto;padding:0 16px;">
+
+            <!-- ══ HERO CARD: full width above 2-col grid ══ -->
+            <div class="profile-hero-card"
+                style="position:relative; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); margin-bottom:24px; min-height: 350px; overflow: visible;">
+
+                <!-- Full-height Cover Photo & Overlay -->
+                <img id="profileCoverImg" src="" alt=""
+                    style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; display:none; border-radius:16px;" />
+                <!-- Fallback gradient if no cover image -->
+                <div
+                    style="position:absolute; inset:0; background:linear-gradient(135deg, #0f0f23 0%, #1a1a3e 40%, #12122a 70%, #0a0a1a 100%); z-index:-1; border-radius:16px;">
+                </div>
+                <!-- Gradient to make text readable -->
+                <div
+                    style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent 0%, rgba(19,19,31,0.6) 50%, rgba(19,19,31,0.95) 100%); z-index:1; pointer-events:none; border-radius:16px;">
+                </div>
+
+                <!-- Twinkle effect -->
+                <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none; z-index:1;">
+                    <div
+                        style="position:absolute;top:20%;left:15%;width:2px;height:2px;background:#e8b94f;border-radius:50%;opacity:0.6;animation:twinkle 3s infinite;">
+                    </div>
+                    <div
+                        style="position:absolute;top:40%;left:60%;width:1px;height:1px;background:#fff;border-radius:50%;opacity:0.4;animation:twinkle 2s infinite 0.5s;">
+                    </div>
+                    <div
+                        style="position:absolute;top:70%;left:30%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0.3;animation:twinkle 4s infinite 1s;">
+                    </div>
+                    <div
+                        style="position:absolute;top:25%;left:80%;width:1px;height:1px;background:#e8b94f;border-radius:50%;opacity:0.5;animation:twinkle 2.5s infinite 0.2s;">
+                    </div>
+                </div>
+
+                <!-- Spacer for the top part -->
+                <div style="position:relative; z-index:2; height: 160px;">
+                    <style>
+                        @keyframes twinkle {
+
+                            0%,
+                            100% {
+                                opacity: 0.2
+                            }
+
+                            50% {
+                                opacity: 0.8
+                            }
+                        }
+                    </style>
+                    <button class="profile-cover-edit-btn" onclick="openCoverPicker()"
+                        style="position:absolute; top:14px; right:14px; display:flex; align-items:center; gap:6px; padding:8px 14px; background:rgba(0,0,0,0.55); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.15); border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                        <span class="material-icons-round" style="font-size:15px;">add_photo_alternate</span>
+                        Thay ảnh bìa
+                    </button>
+                </div>
+
+                <!-- Identity bar -->
+                <div style="position:relative; z-index:2; padding:0 24px 20px;">
+
+                    <!-- Row: avatar + edit btn -->
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                        <!-- Avatar pulled up -->
+                        <div class="profile-avatar-wrap" id="profileAvatarSection" onclick="toggleAvatarSelect(event)"
+                            title="Đổi ảnh đại diện" style="position:relative; overflow:visible;">
+                            <div id="userAvatar" class="shop-frame-wrap size-lg"
+                                style="width:100%; height:100%; border:none; background:transparent;"></div>
+                            <div id="avatarSelectDropdown"
+                                style="display:none;position:absolute;top:calc(100% - 20px);left:0;z-index:100;background:#1a1a2e;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:12px;box-shadow:0 16px 40px rgba(0,0,0,0.6);width:210px;animation: avatarFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);"
+                                onclick="event.stopPropagation()">
+                                <p
+                                    style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">
+                                    Chọn ảnh đại diện</p>
+                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="avatarGrid">
+                                </div>
+                            </div>
+                            <style>
+                                @keyframes avatarFadeIn {
+                                    from {
+                                        opacity: 0;
+                                        transform: translateY(10px) scale(0.95);
+                                    }
+
+                                    to {
+                                        opacity: 1;
+                                        transform: translateY(0) scale(1);
+                                    }
+                                }
+                            </style>
+                            <div class="avatar-edit-badge"
+                                onclick="event.stopPropagation(); document.getElementById('epAvatarUploadMain').click();"
+                                title="Tải ảnh lên">
+                                <span class="material-icons-round" style="font-size:16px; color:#111;">camera_alt</span>
+                            </div>
+                            <input type="file" id="epAvatarUploadMain" accept="image/*" style="display:none;"
+                                onchange="handleEpAvatarUpload(event)" />
+                        </div>
+                        <!-- Edit btn top-right -->
+                        <button class="edit-profile-btn" onclick="openEditProfileModal()"
+                            style="margin-top:16px;flex-shrink:0;">
+                            <span class="material-icons-round" style="font-size:16px;">edit_note</span>
+                            Sửa hồ sơ
+                        </button>
+                    </div>
+
+                    <!-- Name + badges -->
+                    <div style="margin-top:10px;">
+                        <div class="profile-username" id="userName" style="
+                            background: linear-gradient(135deg, #e8b94f 0%, #fff 50%, #e8b94f 100%);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                            text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                            filter: drop-shadow(0 2px 4px rgba(232,185,79,0.3));
+                        ">Người dùng</div>
+                        <div class="profile-badges"
+                            style="margin-top:7px; display:flex; align-items:center; gap:6px; flex-wrap: wrap;">
+                            <span id="heroRankPill" class="badge-pill"
+                                style="background:#e8b94f; color:#111; padding:2px 10px; border-radius:20px; font-size:10px; font-weight:800; display:flex; align-items:center; gap:4px; box-shadow: 0 2px 8px rgba(232,185,79,0.3);"><i
+                                    class="material-icons-round" style="font-size:12px;">visibility</i>Khán Giả</span>
+                            <span style="color:rgba(255,255,255,0.3); font-size:10px;">●</span>
+                            <span id="heroSubRankPill" class="badge-pill"
+                                style="background:rgba(255,255,255,0.1); color:#fff; padding:2px 10px; border-radius:20px; font-size:10px; font-weight:600;">Tập
+                                sự</span>
+                            <span style="color:rgba(255,255,255,0.3); font-size:10px;">●</span>
+                            <span id="heroPlanBadge" class="badge-pill"
+                                style="background:rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3); color:#a78bfa; padding:2px 12px; border-radius:20px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:4px;">
+                                <i class="material-icons-round" style="font-size:12px;">workspace_premium</i>
+                                <span>Khán Giả</span>
+                            </span>
+                            <span style="color:rgba(255,255,255,0.3); font-size:10px;">●</span>
+                            <span id="heroLevelPill" class="badge-pill"
+                                style="background:rgba(255,255,255,0.1); color:#fff; padding:2px 10px; border-radius:20px; font-size:10px; font-weight:600;">Cấp
+                                1</span>
+                            <span style="color:rgba(255,255,255,0.3); font-size:10px;">●</span>
+                            <span id="heroCoinPill" class="badge-pill"
+                                style="background:rgba(255,255,255,0.1); color:#fff; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; display:flex; align-items:center; gap:4px;">
+                                <div
+                                    style="width:12px; height:12px; background:#e8b94f; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000; font-size:8px; font-weight:800;">
+                                    $</div> <span id="heroXuBalance">0</span>
+                            </span>
+                        </div>
+                        <p id="userEmail"
+                            style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:5px;display:none; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- END HERO CARD -->
+
+            <!-- ══ 2-col grid BELOW hero ══ -->
+            <div class="profile-main-layout">
+
+                <!-- LEFT sidebar -->
+                <div class="profile-sidebar"
+                    style="display:flex;flex-direction:column;gap:12px;position:sticky;top:90px;z-index:10;">
+
+                    <!-- Nav menu -->
+                    <div class="sidebar-menu-card"
+                        style="background:#13131f;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;">
+                        <p
+                            style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;padding:16px 16px 8px;">
+                            Quản lý tài khoản</p>
+                        <div style="padding:0 8px 12px;display:flex;flex-direction:column;gap:2px;">
+                            <button class="tab-btn" data-tab="journey" onclick="showTab('journey')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">person</span>Thông tin cá
+                                nhân
+                            </button>
+                            <button class="tab-btn" data-tab="shop" onclick="showTab('shop')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">storefront</span>Cửa hàng
+                            </button>
+                            <button class="tab-btn" data-tab="subscription" onclick="showTab('subscription')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">card_membership</span>Gói
+                                thành viên
+                            </button>
+                            <button class="tab-btn" data-tab="favorites" onclick="showTab('favorites')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">favorite</span>Phim yêu thích
+                            </button>
+                            <button class="tab-btn" data-tab="history" onclick="showTab('history')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">history</span>Lịch sử xem
+                            </button>
+                            <button class="tab-btn" data-tab="transactions" onclick="showTab('transactions')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">receipt_long</span>Giao dịch
+                            </button>
+                            <button class="tab-btn" data-tab="playlists" onclick="showTab('playlists')"
+                                style="display:flex;align-items:center;gap:10px;justify-content:flex-start;padding:10px 12px;border-radius:10px;width:100%;border:none;border-bottom:none;background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;margin-bottom:0;">
+                                <span class="material-icons-round" style="font-size:18px;">playlist_play</span>Danh sách
+                            </button>
+                        </div>
+                        <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 12px;"></div>
+                        <div style="padding:8px;">
+                            <button onclick="authService.logout()"
+                                style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s;"
+                                onmouseover="this.style.background='rgba(248,113,113,0.1)'"
+                                onmouseout="this.style.background='transparent'">
+                                <span class="material-icons-round" style="font-size:18px;">logout</span>Đăng xuất
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- User footer card -->
+                    <div
+                        style="background:#13131f; border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:14px; position:relative; overflow:hidden;">
+                        <!-- Mini cover background -->
+                        <div id="sidebarMiniCover"
+                            style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0.15; filter:blur(10px); pointer-events:none; z-index:0; transition:all 0.4s;">
+                        </div>
+
+                        <div style="display:flex; align-items:center; gap:12px; position:relative; z-index:1;">
+                            <div id="sidebarAvatarWrap"
+                                style="position:relative; width:40px; height:40px; flex-shrink:0;">
+                                <div id="sidebarAvatar" class="shop-frame-wrap size-sm"
+                                    style="width:100%; height:100%; border:none; background:transparent;"></div>
+                            </div>
+                            <div style="min-width:0;">
+                                <div id="sidebarName"
+                                    style="font-size:14px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.01em;">
+                                    Người dùng</div>
+                                <div id="sidebarEmail"
+                                    style="font-size:11px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Xu Balance Widget (luôn hiển thị ở mọi tab) -->
+                    <div
+                        style="background:#13131f;border:1px solid rgba(232,185,79,0.18);border-radius:14px;padding:12px 14px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-size:18px;line-height:1;">🪙</span>
+                                <div>
+                                    <div
+                                        style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1px;">
+                                        Số dư</div>
+                                    <div style="font-size:15px;font-weight:800;color:#e8b94f;line-height:1;"><span
+                                            id="sidebarXuBalance">0</span> Xu</div>
+                                </div>
+                            </div>
+                            <button onclick="openXuModal()"
+                                style="padding:5px 12px;background:rgba(232,185,79,0.12);border:1px solid rgba(232,185,79,0.4);border-radius:20px;color:#e8b94f;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;"
+                                onmouseover="this.style.background='#e8b94f';this.style.color='#000';"
+                                onmouseout="this.style.background='rgba(232,185,79,0.12)';this.style.color='#e8b94f';">+
+                                Nạp Xu</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT content -->
+                <div style="min-width:0;">
+                    <!-- Mobile View Header (Back to Menu) -->
+                    <div id="mobileContentHeader" class="mobile-view-header hidden"
+                        style="display:none; align-items:center; gap:16px; margin-top:-20px; margin-bottom:20px; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px;">
+                        <button onclick="goBackToMenu()"
+                            style="width:36px; height:36px; border-radius:50%; background: #e8b94f; border:none; color:#000; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: 0 4px 12px rgba(232,185,79,0.3);">
+                            <span class="material-icons-round">arrow_back</span>
+                        </button>
+                        <div>
+                            <p
+                                style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">
+                                Quay lại menu</p>
+                            <h3 id="mobileViewTitle" style="font-size:16px; font-weight:800; color:#fff; margin:0;">
+                                Thông tin</h3>
+                        </div>
+                    </div>
+
+                    <div id="profileTab" class="tab-content hidden" style="display:none;">
+                        <div class="profile-card">
+                            <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:24px;">Thông tin cá nhân</h2>
+                            <form id="profileForm" style="display:flex; flex-direction:column; gap:20px;">
+                                <div
+                                    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">Họ và tên</label>
+                                        <input type="text" id="profileName"
+                                            class="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg focus:ring-2 focus:ring-primary text-white" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                        <input type="email" id="profileEmail" disabled
+                                            class="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-gray-400" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">Số điện
+                                            thoại</label>
+                                        <input type="tel" id="profilePhone"
+                                            class="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg focus:ring-2 focus:ring-primary text-white" />
+                                    </div>
+                                </div>
+                                <div style="margin-top: 4px;">
+                                    <button type="submit"
+                                        class="px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors">Cập
+                                        nhật thông tin</button>
+                                </div>
+                            </form>
+                            <hr class="border-white/5 my-8" />
+                            <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:16px;">Đổi mật khẩu</h3>
+                            <form id="passwordForm" style="display:flex; flex-direction:column; gap:16px;">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Mật khẩu cũ</label>
+                                    <input type="password" id="oldPassword"
+                                        class="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg focus:ring-2 focus:ring-primary text-white" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Mật khẩu mới</label>
+                                    <input type="password" id="newPassword"
+                                        class="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg focus:ring-2 focus:ring-primary text-white" />
+                                </div>
+                                <div style="margin-top: 4px;">
+                                    <button type="submit"
+                                        class="px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors">Đổi
+                                        mật khẩu</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="shopTab" class="tab-content hidden">
+                        <div class="shop-container">
+                            <div class="shop-header">
+                                <div class="shop-title">
+                                    <span class="material-icons-round" style="color:#a855f7;">storefront</span>
+                                    Cửa hàng
+                                </div>
+                                <div class="user-balance">
+                                    <span style="font-size:16px;">🪙</span>
+                                    <span id="shopBalance">0</span> Xu
+                                    <button onclick="openXuModal()"
+                                        style="margin-left:12px; padding:4px 14px; background:rgba(232,185,79,0.12); border:1px solid #e8b94f; border-radius:20px; color:#e8b94f; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:4px;"
+                                        onmouseover="this.style.background='#e8b94f'; this.style.color='#000';"
+                                        onmouseout="this.style.background='rgba(232,185,79,0.12)'; this.style.color='#e8b94f';"><span
+                                            style="font-size:13px;">+</span> Nạp Xu</button>
+                                </div>
+                            </div>
+
+                            <div
+                                style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+                                <div class="shop-categories">
+                                    <button class="shop-cat-btn active" onclick="setShopCategory('frame')"
+                                        id="catFrameBtn">
+                                        <span class="material-icons-round" style="font-size:18px;">portrait</span>
+                                        Khung avatar <span class="count" id="frameCount">43</span>
+                                    </button>
+                                    <button class="shop-cat-btn" onclick="setShopCategory('banner')" id="catBannerBtn">
+                                        <span class="material-icons-round" style="font-size:18px;">image</span>
+                                        Banner <span class="count" id="bannerCount">9</span>
+                                    </button>
+                                </div>
+
+                                <div class="rarity-filters">
+                                    <button class="rarity-btn active" onclick="setShopRarity('all')"
+                                        data-rarity="all">Tất cả</button>
+                                    <button class="rarity-btn" onclick="setShopRarity('common')"
+                                        data-rarity="common">Phổ thông</button>
+                                    <button class="rarity-btn" onclick="setShopRarity('rare')"
+                                        data-rarity="rare">Hiếm</button>
+                                    <button class="rarity-btn" onclick="setShopRarity('epic')" data-rarity="epic">Sử
+                                        thi</button>
+                                    <button class="rarity-btn" onclick="setShopRarity('legendary')"
+                                        data-rarity="legendary">Huyền thoại</button>
+                                    <button class="rarity-btn" onclick="setShopRarity('mythic')"
+                                        data-rarity="mythic">Thần thoại</button>
+                                </div>
+                            </div>
+
+                            <div id="shopGrid" class="shop-grid">
+                                <!-- Items will be injected by profile-shop.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="journeyTab" class="tab-content hidden">
+                        <div class="journey-container">
+
+                            <!-- Tiên trình Section -->
+                            <div class="journey-section">
+                                <div class="journey-label">
+                                    Tiến trình
+                                    <button id="attendanceBtn" class="attendance-btn" onclick="handleAttendance()">
+                                        <span class="material-icons-round">event_available</span>
+                                        Điểm danh nhận XP
+                                    </button>
+                                </div>
+                                <div class="progress-stats-top">
+                                    <div class="xp-current"><span id="currentXP">0</span> XP</div>
+                                    <div class="xp-next"><span id="neededXP">0/30</span> → Lv <span
+                                            id="nextLevel">2</span></div>
+                                </div>
+                                <div class="progress-bar-wrap">
+                                    <div id="xpProgressBar" class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Stats Grid -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-icon-box icon-xp">
+                                        <span class="material-icons-round">bolt</span>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div id="statXP" class="stat-value">0</div>
+                                        <div class="stat-label">Điểm XP</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon-box icon-lv">
+                                        <span class="material-icons-round">stars</span>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div id="statLevel" class="stat-value">1</div>
+                                        <div class="stat-label">Cấp</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon-box icon-eye">
+                                        <span class="material-icons-round">history</span>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div id="statWatched" class="stat-value">0</div>
+                                        <div class="stat-label">Phim đã xem</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon-box icon-heart">
+                                        <span class="material-icons-round">favorite</span>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div id="statFav" class="stat-value">0</div>
+                                        <div class="stat-label">Yêu thích</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hành trình Section -->
+                            <div class="journey-section">
+                                <div class="journey-label">
+                                    Hành trình
+                                    <div class="timeline-controls">
+                                        <button class="control-btn" onclick="scrollJourney(-200)"><span
+                                                class="material-icons-round">chevron_left</span></button>
+                                        <button class="control-btn" onclick="scrollJourney(200)"><span
+                                                class="material-icons-round">chevron_right</span></button>
+                                    </div>
+                                </div>
+                                <p
+                                    style="font-size:13px; color:rgba(255,255,255,0.4); margin-bottom:20px; margin-top:-10px;">
+                                    Còn <span id="xpToNextLv" style="color:#a855f7; font-weight:700;">30</span> XP để
+                                    lên cấp
+                                </p>
+
+                                <div class="journey-timeline-wrap" id="journeyScrollWrap">
+                                    <div class="journey-timeline" id="journeyTimeline">
+                                        <!-- Journey steps injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div id="subscriptionTab" class="tab-content hidden">
+                        <div class="profile-card">
+                            <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:24px;">Gói thành viên</h2>
+                            <div id="subscriptionInfo"></div>
+                            <a href="pricing.html"
+                                class="inline-block mt-6 px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors">Nâng
+                                cấp gói</a>
+                        </div>
+                    </div>
+
+                    <div id="favoritesTab" class="tab-content active-tab">
+                        <div class="profile-card" style="padding:20px 16px;">
+                            <h2
+                                style="font-size:1.25rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                                <span class="material-icons-round" style="color:#e8b94f;font-size:22px;">favorite</span>
+                                Phim yêu thích
+                            </h2>
+                            <!-- Netflix-style Grid Container -->
+                            <div id="favoritesList" class="space-y-4 pr-2"
+                                style="max-height: 600px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(232,185,79,0.4) transparent;">
+                                <!-- Will be filled by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="historyTab" class="tab-content hidden">
+                        <div class="profile-card">
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+                                <h2 style="font-size:1.25rem;font-weight:700;">Lịch sử xem</h2>
+                                <button onclick="clearHistory()"
+                                    style="font-size:13px;color:#f87171;background:none;border:none;cursor:pointer;">Xóa
+                                    tất cả</button>
+                            </div>
+                            <div id="historyList" class="space-y-4 pr-2"
+                                style="max-height: 600px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(232,185,79,0.4) transparent;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="transactionsTab" class="tab-content hidden">
+                        <div class="profile-card">
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <div
+                                        style="width:40px;height:40px;border-radius:12px;background:rgba(232,185,79,0.1);display:flex;align-items:center;justify-content:center;color:#e8b94f;">
+                                        <span class="material-icons-round">receipt_long</span>
+                                    </div>
+                                    <h2 style="font-size:1.25rem;font-weight:700;">Lịch sử giao dịch</h2>
+                                </div>
+                                <span style="font-size:12px;color:rgba(255,255,255,0.4);font-weight:500;">Bao gồm nạp Xu
+                                    & nâng cấp gói</span>
+                            </div>
+                            <div id="transactionsList" class="space-y-3"
+                                style="max-height: 600px; overflow-y: auto; padding-right: 8px;">
+                                <!-- Will be filled by js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách / Playlists tab -->
+                    <div id="playlistsTab" class="tab-content hidden">
+                        <div class="profile-card">
+                            <div id="playlistsHeader"
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; transition: all 0.3s ease;">
+                                <h2 style="font-size:1.25rem;font-weight:700;">Danh sách của tôi</h2>
+                                <button onclick="openCreatePlaylistDialog()" style="
+                                    display:inline-flex;align-items:center;gap:6px;
+                                    padding:8px 16px;border-radius:20px;
+                                    background:linear-gradient(135deg,#e8b94f,#d4a017);
+                                    border:none;color:#000;font-size:13px;font-weight:700;
+                                    cursor:pointer;font-family:inherit;transition:opacity 0.2s;
+                                " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                    <span class="material-icons-round" style="font-size:16px;">add</span>Tạo mới
+                                </button>
+                            </div>
+                            <style>
+                                .playlist-animate-in {
+                                    animation: plFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                                }
+
+                                @keyframes plFadeIn {
+                                    from {
+                                        opacity: 0;
+                                        transform: translateY(10px);
+                                    }
+
+                                    to {
+                                        opacity: 1;
+                                        transform: translateY(0);
+                                    }
+                                }
+                            </style>
+                            <div id="playlistsList"
+                                style="display:flex;flex-direction:column;gap:10px;max-height: 600px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(232,185,79,0.4) transparent; padding-right: 8px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END 2-col grid -->
+
+        </div>
+</main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/chat') %>
+
+    <script src="/js/profile.js?v=21"></script>
+    <script src="/js/profile-progress.js"></script>
+    <script src="/js/profile-shop.js"></script>
+    <script src="/js/profile-promo.js"></script>
+</body>
+</html>

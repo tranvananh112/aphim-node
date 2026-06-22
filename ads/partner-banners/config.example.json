@@ -1,0 +1,58 @@
+{
+    "banners": {
+        "banner1": {
+            "filename": "banner1.jpg",
+            "size": {
+                "width": 728,
+                "height": 90
+            },
+            "type": "leaderboard",
+            "position": "top-sticky",
+            "closeable": true,
+            "close_button": "circle",
+            "close_duration": "24h",
+            "link": "https://example.com",
+            "target": "_blank",
+            "enabled": true,
+            "priority": 1
+        },
+        "banner2": {
+            "filename": "banner2.gif",
+            "size": {
+                "width": 300,
+                "height": 250
+            },
+            "type": "medium_rectangle",
+            "position": "sidebar-right",
+            "closeable": false,
+            "link": "https://example.com",
+            "target": "_blank",
+            "enabled": true,
+            "priority": 2
+        },
+        "banner3": {
+            "filename": "banner3.png",
+            "size": {
+                "width": 320,
+                "height": 100
+            },
+            "type": "mobile_banner",
+            "position": "mobile-sticky",
+            "closeable": true,
+            "close_button": "minimal",
+            "close_duration": "12h",
+            "link": "https://example.com",
+            "target": "_blank",
+            "enabled": true,
+            "priority": 3,
+            "mobile_only": true
+        }
+    },
+    "settings": {
+        "auto_detect": true,
+        "lazy_load": true,
+        "tracking_enabled": true,
+        "animation": "fade",
+        "show_delay": 1000
+    }
+}

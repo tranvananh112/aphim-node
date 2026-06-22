@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html> 
+<html class="dark"lang="vi"> 
+ 
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." /> 
+  
+ <meta name="viewport"content="width=device-width, initial-scale=1.0"/> 
+ <title>Quản lý Người dùng - Simple</title> 
+ <script src="https://cdn.tailwindcss.com"></script> 
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet"/> 
+ <script> 
+ tailwind.config = { 
+ darkMode: "class", 
+ theme: { 
+ extend: { 
+  colors: { 
+  "primary": "#f2f20d", 
+  "background-dark": "#1a1a0f", 
+  "surface-dark": "#2c2c1e", 
+  } 
+ } 
+ } 
+ } 
+ </script> 
+ <link rel="icon"type="image/png"href="../favicon.png"> 
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head> 
+ 
+<body class="bg-background-dark text-gray-200"> 
+ <div class="container mx-auto p-8"> 
+ <h1 class="text-3xl font-bold text-white mb-6">Quản lý Người dùng</h1> 
+ 
+ <div class="mb-4"> 
+ <button onclick="loadUsers()"class="px-4 py-2 bg-primary text-black font-bold rounded"> 
+ Load Users 
+ </button> 
+ <button onclick="createDemoUsers()"class="px-4 py-2 bg-green-600 text-white font-bold rounded ml-2"> 
+ Create Demo Users 
+ </button> 
+ <button onclick="clearUsers()"class="px-4 py-2 bg-red-600 text-white font-bold rounded ml-2"> 
+ Clear All 
+ </button> 
+ </div> 
+ 
+ <div id="status"class="mb-4 p-4 bg-surface-dark rounded"></div> 
+ 
+ <div class="bg-surface-dark rounded-lg overflow-hidden"> 
+ <table class="w-full"> 
+ <thead class="bg-white/5"> 
+  <tr> 
+  <th class="p-4 text-left">ID</th> 
+  <th class="p-4 text-left">Tên</th> 
+  <th class="p-4 text-left">Email</th> 
+  <th class="p-4 text-left">Gói</th> 
+  <th class="p-4 text-left">Trạng thái</th> 
+  <th class="p-4 text-left">Thao tác</th> 
+  </tr> 
+ </thead> 
+ <tbody id="usersTable"> 
+  <tr> 
+  <td colspan="6"class="p-4 text-center text-gray-400"> 
+  Click "Load Users"Ồ tải danh sách 
+  </td> 
+  </tr> 
+ </tbody> 
+ </table> 
+ </div> 
+ </div> 
+ 
+ <script> 
+ console.log('Script loaded'); 
+ 
+ function showStatus(message, type = 'info') { 
+ const status = document.getElementById('status'); 
+ status.textContent = message; 
+ status.className = `mb-4 p-4 rounded ${type === 'success' ? 'bg-green-600' : 
+  type === 'error' ? 'bg-red-600' : 
+  'bg-surface-dark' 
+ }`; 
+ } 
+ 
+ function createDemoUsers() { 
+ console.log('Creating demo users...'); 
+ 
+ const demoUsers = [ 
+ { 
+  id: 'user_' + Date.now() + '_1', 
+  name: 'Nguyễn Văn An', 
+  email: 'an@example.com', 
+  phone: '0912345678', 
+  password: btoa('password123'), 
+  subscription: { plan: 'PREMIUM' }, 
+  status: 'active', 
+  createdAt: new Date().toISOString(), 
+  lastActive: new Date().toISOString() 
+ }, 
+ { 
+  id: 'user_' + Date.now() + '_2', 
+  name: 'Trần Thị Bình', 
+  email: 'binh@example.com', 
+  phone: '0987654321', 
+  password: btoa('password123'), 
+  subscription: { plan: 'FREE' }, 
+  status: 'active', 
+  createdAt: new Date().toISOString(), 
+  lastActive: new Date().toISOString() 
+ }, 
+ { 
+  id: 'user_' + Date.now() + '_3', 
+  name: 'Lê Hoàng Cường', 
+  email: 'cuong@example.com', 
+  phone: '0901234567', 
+  password: btoa('password123'), 
+  subscription: { plan: 'FAMILY' }, 
+  status: 'blocked', 
+  createdAt: new Date().toISOString(), 
+  lastActive: new Date().toISOString() 
+ } 
+ ]; 
+ 
+ localStorage.setItem('A Phim_all_users', JSON.stringify(demoUsers)); 
+ showStatus('Đã tạo ' + demoUsers.length + ' demo users', 'success'); 
+ loadUsers(); 
+ } 
+ 
+ function loadUsers() { 
+ console.log('Loading users...'); 
+ 
+ const usersStr = localStorage.getItem('A Phim_all_users'); 
+ 
+ if (!usersStr) { 
+ showStatus('Không có user nào. Click "Create Demo Users"Ồ tạo.', 'error'); 
+ return; 
+ } 
+ 
+ const users = JSON.parse(usersStr); 
+ console.log('Found users:', users); 
+ 
+ showStatus('Đã tải ' + users.length + ' users', 'success'); 
+ 
+ const tbody = document.getElementById('usersTable'); 
+ tbody.innerHTML = users.map(user => ` 
+ <tr class="border-t border-white/5 hover:bg-white/5"> 
+  <td class="p-4">${user.id.substring(0, 10)}...</td> 
+  <td class="p-4">${user.name}</td> 
+  <td class="p-4">${user.email}</td> 
+  <td class="p-4"> 
+  <span class="px-2 py-1 rounded text-xs ${user.subscription.plan === 'PREMIUM' ? 'bg-primary text-black' : 
+  user.subscription.plan === 'FAMILY' ? 'bg-purple-600' : 
+  'bg-gray-600' 
+ }"> 
+  ${user.subscription.plan} 
+  </span> 
+  </td> 
+  <td class="p-4"> 
+  <span class="px-2 py-1 rounded text-xs ${user.status === 'active' ? 'bg-green-600' : 'bg-red-600' 
+ }"> 
+  ${user.status === 'active' ? 'Hoạt động' : 'Bị khóa'} 
+  </span> 
+  </td> 
+  <td class="p-4"> 
+  <button onclick="toggleStatus('${user.id}')"class="px-3 py-1 bg-blue-600 rounded text-sm"> 
+  ${user.status === 'active' ? 'Khóa' : 'M✖khóa'} 
+  </button> 
+  <button onclick="deleteUser('${user.id}')"class="px-3 py-1 bg-red-600 rounded text-sm ml-2"> 
+  Xóa 
+  </button> 
+  </td> 
+ </tr> 
+ `).join(''); 
+ } 
+ 
+ function toggleStatus(userId) { 
+ const usersStr = localStorage.getItem('A Phim_all_users'); 
+ const users = JSON.parse(usersStr); 
+ 
+ const user = users.find(u => u.id === userId); 
+ if (user) { 
+ user.status = user.status === 'active' ? 'blocked' : 'active'; 
+ localStorage.setItem('A Phim_all_users', JSON.stringify(users)); 
+ showStatus('Đã cập nhậtốtrạng thái user: ' + user.name, 'success'); 
+ loadUsers(); 
+ } 
+ } 
+ 
+ function deleteUser(userId) { 
+ if (!confirm('Bạn có chắc mu n xóa user này?')) return; 
+ 
+ const usersStr = localStorage.getItem('A Phim_all_users'); 
+ const users = JSON.parse(usersStr); 
+ 
+ const filtered = users.filter(u => u.id !== userId); 
+ localStorage.setItem('A Phim_all_users', JSON.stringify(filtered)); 
+ showStatus('Đã xóa user', 'success'); 
+ loadUsers(); 
+ } 
+ 
+ function clearUsers() { 
+ if (!confirm('Bạn có chắc mu n xóa tất cả users?')) return; 
+ 
+ localStorage.removeItem('A Phim_all_users'); 
+ showStatus('Đã xóa tất cả users', 'success'); 
+ document.getElementById('usersTable').innerHTML = ` 
+ <tr> 
+  <td colspan="6"class="p-4 text-center text-gray-400"> 
+  Không có user nào 
+  </td> 
+ </tr> 
+ `; 
+ } 
+ 
+ // Auto load on page load 
+ window.onload = function () { 
+ console.log('Page loaded'); 
+ showStatus('Trang đã sẵn sàng. Click "Load Users"hoặc "Create Demo Users"'); 
+ 
+ // Try to auto load if users exist 
+ const usersStr = localStorage.getItem('A Phim_all_users'); 
+ if (usersStr) { 
+ loadUsers(); 
+ } 
+ }; 
+ </script> 
+</body> 
+ 
+</html> 
+ 
+

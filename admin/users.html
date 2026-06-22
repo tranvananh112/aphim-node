@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Người dùng - A Phim Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    /* ─── users-specific ─── */
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .plan-badge-free {
+      background: rgba(100, 116, 139, 0.12);
+      color: var(--text-muted);
+    }
+
+    .plan-badge-premium {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .plan-badge-family {
+      background: var(--primary-10);
+      color: var(--primary-light);
+    }
+
+    .checkbox-cell {
+      padding: 12px 16px !important;
+      width: 40px;
+    }
+
+    .table-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-row .filter-search {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .pag-info {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .pag-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─ Form elements (modal forms in users-realtime.js) ─ */
+    .form-control-dark {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .form-control-dark:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-10);
+    }
+  </style>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <!-- ───SIDEBAR ───-->
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon"
+          style="background:transparent; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+          <img src="../favicon.png" alt="A Phim"
+            style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));" />
+        </div>
+        <div class="sidebar-logo-text">
+          <h1 style="letter-spacing: 0.5px;">A Phim</h1>
+          <p style="color: var(--primary);">Admin Panel</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <p class="sidebar-nav-label">Tổng quan</p>
+          <a href="/dashboard" class="sidebar-nav-item">
+            <i data-lucide="layout-dashboard" style="width: 1em; height: 1em;"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+        <div class="sidebar-nav-section">
+          <p class="sidebar-nav-label">nội dung</p>
+          <a href="/movies" class="sidebar-nav-item">
+            <i data-lucide="film" style="width: 1em; height: 1em;"></i>
+            <span>Quản lý phim</span>
+          </a>
+          <a href="/categories" class="sidebar-nav-item">
+            <i data-lucide="list-tree" style="width: 1em; height: 1em;"></i>
+            <span>Danh mục</span>
+          </a>
+          <a href="/banners" class="sidebar-nav-item">
+            <i data-lucide="image" style="width: 1em; height: 1em;"></i>
+            <span>Banner &amp; Ads</span>
+          </a>
+        </div>
+        <div class="sidebar-nav-section">
+          <p class="sidebar-nav-label">Người dùng</p>
+          <a href="/users" class="sidebar-nav-item active">
+            <i data-lucide="users" style="width: 1em; height: 1em;"></i>
+            <span>Người dùng</span>
+          </a>
+          <a href="/chat" class="sidebar-nav-item">
+            <i data-lucide="message-square" style="width: 1em; height: 1em;"></i>
+            <span>Quản lý Chat</span>
+          </a>
+          <a href="/comments" class="sidebar-nav-item">
+            <i data-lucide="message-circle" style="width: 1em; height: 1em;"></i>
+            <span>Bình luận</span>
+          </a>
+          <a href="/subscriptions" class="sidebar-nav-item">
+            <i data-lucide="credit-card" style="width: 1em; height: 1em;"></i>
+            <span>Gói thành viên</span>
+          </a>
+        </div>
+        <div class="sidebar-nav-section">
+          <p class="sidebar-nav-label">Tài chính</p>
+          <a href="/payments" class="sidebar-nav-item">
+            <i data-lucide="circle-dollar-sign" style="width: 1em; height: 1em;"></i>
+            <span>Thanh toán</span>
+          </a>
+          <a href="/supporters" class="sidebar-nav-item">
+            <i data-lucide="heart" style="width: 1em; height: 1em;"></i>
+            <span>Ủng hộ</span>
+          </a>
+        </div>
+        <div class="sidebar-nav-section">
+          <p class="sidebar-nav-label">hệ thống</p>
+          <a href="/settings" class="sidebar-nav-item">
+            <i data-lucide="settings" style="width: 1em; height: 1em;"></i>
+            <span>Cài đặt</span>
+          </a>
+          <a href="/partner" class="sidebar-nav-item">
+            <i data-lucide="handshake" style="width: 1em; height: 1em;"></i>
+            <span>Partner DT99</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="logout ? logout() : (location.href = '/dashboard')">
+          <i data-lucide="log-out" style="width: 1em; height: 1em;"></i>
+          <span>Đăng xuất</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───MAIN ───-->
+    <main class="admin-main">
+
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <h2>Quản lý Người dùng</h2>
+          <p>
+            <span id="totalUsers">0</span> người dùng ⬢
+            <span id="totalCount">0</span> kết quả
+          </p>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-secondary" onclick="openBroadcastModal()"
+            style="background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.2); font-weight: bold; margin-right: 8px;">
+            <i data-lucide="megaphone" style="width: 1em; height: 1em;"></i>
+            Phát thông báo
+          </button>
+          <button class="btn btn-primary" onclick="loadUsers()">
+            <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i>
+            Làm mới
+          </button>
+          <div class="header-separator"></div>
+          <div class="header-admin">
+            <div class="header-admin-avatar">A</div>
+            <div class="header-admin-info">
+              <p>Admin</p>
+              <span>Quản trị viên</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="admin-content">
+
+        <!-- Stat cards -->
+        <div class="stats-grid" style="margin-bottom: 24px;">
+          <div class="stat-card indigo">
+            <div class="stat-card-header">
+              <div class="stat-card-icon indigo"><i data-lucide="users" style="width: 1em; height: 1em;"></i></div>
+            </div>
+            <div class="stat-number" id="statTotalUsers"> </div>
+            <div class="stat-label">Tổng người dùng</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-card-header">
+              <div class="stat-card-icon green"><i data-lucide="user" style="width: 1em; height: 1em;"></i></div>
+            </div>
+            <div class="stat-number" id="statFreeUsers"> </div>
+            <div class="stat-label">Tài khoản Free</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-card-header">
+              <div class="stat-card-icon amber"><i data-lucide="star" style="width: 1em; height: 1em;"></i></div>
+            </div>
+            <div class="stat-number" id="statPremiumUsers"> </div>
+            <div class="stat-label">Tài khoản Premium</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-card-header">
+              <div class="stat-card-icon red"><i data-lucide="ban" style="width: 1em; height: 1em;"></i></div>
+            </div>
+            <div class="stat-number" id="statBlockedUsers"> </div>
+            <div class="stat-label">Tài khoản bị khóa</div>
+          </div>
+        </div>
+
+        <!-- Filter row -->
+        <div class="filter-row">
+          <div class="filter-search">
+            <i data-lucide="search" class="search-icon" style="width: 1em; height: 1em;"></i>
+            <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên, email, ID hoặc 5 mã cuối...">
+          </div>
+          <select id="planFilter" class="form-select" style="width: auto;" onchange="applyFilters()">
+            <option value="">Tất cả gói</option>
+            <option value="FREE">Free</option>
+            <option value="PREMIUM">Premium</option>
+            <option value="FAMILY">Family</option>
+          </select>
+          <select id="statusFilter" class="form-select" style="width: auto;" onchange="applyFilters()">
+            <option value="">Tất cả trạng thái</option>
+            <option value="active">Hoạt động</option>
+            <option value="blocked">Bị khóa</option>
+          </select>
+          <select id="coinsFilter" class="form-select" style="width: auto; border-color:#eab308; color:#eab308;"
+            onchange="applyFilters()">
+            <option value="" style="color:#fff">Tất cả Ví Xu</option>
+            <option value="has_coins" style="color:#fff">Chỉ hiển thị User CÓ XU (> 0)</option>
+            <option value="no_coins" style="color:#fff">User HẾT XU (= 0)</option>
+          </select>
+          <button class="btn btn-secondary" onclick="resetFilters()" title="Xóa bộ lọc">
+            <i data-lucide="filter-x" style="width: 1em; height: 1em;"></i>
+          </button>
+        </div>
+
+        <!-- Table card -->
+        <div class="admin-card">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th class="checkbox-cell">
+                    <input type="checkbox" id="selectAll" class="table-checkbox">
+                  </th>
+                  <th>Người dùng</th>
+                  <th>Số điện thoại</th>
+                  <th>Gói</th>
+                  <th>Số dư Xu</th>
+                  <th>Ngày tạo</th>
+                  <th>Hoạt động</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr>
+                  <td colspan="8">
+                    <div class="loading-spinner">
+                      <div class="spinner"></div>
+                      <p>Đang tải dữ liệu...</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State (controlled by users-realtime.js) -->
+          <div id="emptyState" class="hidden">
+            <div class="empty-state">
+              <i data-lucide="users" style="width: 1em; height: 1em;"></i>
+              <h3>Không tìm thấy người dùng</h3>
+              <p>Thử thay đổi bộ lọc hoặc tìm kiếm</p>
+            </div>
+          </div>
+
+          <!-- Pagination row -->
+          <div class="pag-wrap" style="padding: 14px 20px;">
+            <div class="pag-info">
+              Hiển thị <span id="showingFrom">0</span> <span id="showingTo">0</span>
+              của <span id="totalCountPag">0</span>
+            </div>
+            <div id="pagination" class="pagination"></div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts GIỮ NGUY`N NGUY`N VẸN -->
+  <script src="../js/config.js"></script>
+  <script src="../js/admin/config.js"></script>
+  <script>
+    // Define STORAGE_KEYS if not already defined
+    if (typeof STORAGE_KEYS === 'undefined') {
+      const STORAGE_KEYS = {
+        USER: 'A Phim_user',
+        TOKEN: 'A Phim_token',
+        FAVORITES: 'A Phim_favorites',
+        WATCH_HISTORY: 'A Phim_watch_history'
+      };
+    }
+  </script>
+  <script src="../js/admin/users-realtime.js?v=110"></script>
+  <!-- Stats are now updated correctly from users-realtime.js using allUsers data -->
+  <script>
+    // Tự động render Lucide Icons khi DOM thay đổi (tải dữ liệu bảng/động)
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) lucide.createIcons();
+      let isUpdating = false;
+      const observer = new MutationObserver(() => {
+        if (isUpdating) return;
+        isUpdating = true;
+        if (window.lucide) {
+          try { lucide.createIcons(); } catch (e) { }
+        }
+        setTimeout(() => { isUpdating = false; }, 100);
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  </script>
+</body>
+
+</html>

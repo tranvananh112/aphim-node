@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-white">
+    <%- include('partials/header') %>
+
+    <main class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 pt-24 pb-20 min-h-[80vh]">
+        <div class="mb-8">
+            <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white mb-4 w-fit group">
+                <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
+                    <span class="material-icons-round text-[14px]">chevron_left</span>
+                </div>
+                <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
+            </button>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Bộ Lọc Phim</h1>
+            <p class="text-gray-400 text-lg">Tìm phim theo thể loại, quốc gia, năm phát hành</p>
+        </div>
+
+        <div class="bg-surface-dark rounded-xl p-6 mb-8 border border-white/10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Danh sách</label>
+                    <select id="filterList" class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
+                        <option value="">-- Chọn danh sách --</option>
+                        <option value="phim-moi-cap-nhat">Phim mới cập nhật</option>
+                        <option value="phim-bo">Phim bộ</option>
+                        <option value="phim-le">Phim lẻ</option>
+                        <option value="hoat-hinh">Hoạt hình</option>
+                        <option value="tv-shows">TV Shows</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Thể loại</label>
+                    <select id="filterCategory" class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
+                        <option value="">-- Chọn thể loại --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Quốc gia</label>
+                    <select id="filterCountry" class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
+                        <option value="">-- Chọn quốc gia --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Năm phát hành</label>
+                    <select id="filterYear" class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
+                        <option value="">-- Chọn năm --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-4 mt-6">
+                <button id="applyFilter" class="flex-1 bg-primary text-black font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors">
+                    <span class="material-icons-round align-middle mr-2">filter_alt</span>
+                    Áp dụng bộ lọc
+                </button>
+                <button id="resetFilter" class="bg-white/10 text-white font-bold py-3 px-6 rounded-lg hover:bg-white/20 transition-colors">
+                    <span class="material-icons-round align-middle mr-2">refresh</span>
+                    Đặt lại
+                </button>
+            </div>
+        </div>
+
+        <div id="resultsInfo" class="mb-6 hidden">
+            <p class="text-gray-400">Tìm thấy <span id="totalResults" class="text-primary font-bold">0</span> kết quả <span id="currentFilter" class="text-white"></span></p>
+        </div>
+
+        <div id="loading" class="hidden text-center py-20">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-gray-400">Đang tải...</p>
+        </div>
+
+        <div id="moviesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <!-- Movies will be loaded here -->
+        </div>
+
+        <div id="pagination" class="hidden mt-12 flex justify-center gap-2">
+            <!-- Pagination buttons will be loaded here -->
+        </div>
+
+        <div id="emptyState" class="text-center py-20">
+            <span class="material-icons-round text-6xl text-gray-600 mb-4">movie_filter</span>
+            <p class="text-gray-400 text-lg">Chọn bộ lọc để tìm phim</p>
+        </div>
+
+        <div id="error" class="hidden text-center py-20">
+            <span class="material-icons-round text-6xl text-red-400 mb-4">error_outline</span>
+            <p class="text-red-400 text-lg" id="errorMessage">Không thể tải dữ liệu</p>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/chat') %>
+
+    <script src="/js/filter.js?v=21"></script>
+</body>
+</html>

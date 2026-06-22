@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-gray-100 font-display min-h-screen">
+    <!-- ==============================================
+         SPLASH LOADER (NEW DESIGN)
+         ============================================== -->
+    <div id="splashLoader">
+        <div class="flex flex-col items-center justify-center w-full max-w-lg px-4 gap-5 relative z-10">
+            <!-- Logo & Title Row -->
+            <div class="flex items-center justify-center gap-4 mb-2">
+                <!-- Icon -->
+                <div class="rounded-full border-4 flex items-center justify-center bg-black/60 overflow-hidden backdrop-blur-md relative" style="width: 100px; height: 100px; border-color: #f2f20d; box-shadow: 0 0 40px rgba(242,242,13,0.3);">
+                    <!-- Glowing pulse -->
+                    <div class="absolute inset-0 rounded-full border animate-ping opacity-20" style="border-color: #f2f20d;"></div>
+                    <img src="/apple-touch-icon.png" alt="A Phim Logo" class="object-contain relative z-10" style="width: 55px; height: 55px;" />
+                </div>
+                <!-- Text -->
+                <div class="flex flex-col text-left justify-center">
+                    <span class="font-black text-white tracking-tight leading-none mb-1" style="font-size: 3.2rem;">A <span style="color: #f2f20d; filter: drop-shadow(0 0 10px rgba(242,242,13,0.5));">Phim</span></span>
+                    <span class="font-bold uppercase opacity-90" style="color: #f2f20d; font-size: 1.2rem; letter-spacing: 0.2em;">Thế Giới Điện Ảnh</span>
+                </div>
+            </div>
+            
+            <!-- Tagline -->
+            <div class="text-gray-300 font-medium tracking-wide mt-2 text-center leading-relaxed max-w-lg" style="font-size: 1.1rem;">
+                Xem Phim Miễn Phí Cực Nhanh, Chất Lượng Cao Và Cập Nhật Liên Tục
+            </div>
+            
+            <!-- Loading Progress -->
+            <div class="mt-8 w-full max-w-xs sm:max-w-sm flex flex-col items-center">
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative backdrop-blur-sm">
+                    <div id="splashProgressBar" class="h-full rounded-full transition-all duration-100 ease-linear" style="width: 0%; background: linear-gradient(to right, #f2f20d, #ffaa00); box-shadow: 0 0 15px rgba(242,242,13,0.5);"></div>
+                </div>
+                <div class="mt-4 font-bold flex items-center gap-2" style="color: #f2f20d; font-size: 0.95rem; letter-spacing: 0.1em; filter: drop-shadow(0 0 10px rgba(242,242,13,0.3));">
+                    ĐANG TẢI DỮ LIỆU <span id="splashProgressText" class="w-8 text-right font-black">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Ambient Background (7 Orbs for Full Coverage) -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+        <div class="ambient-orb ambient-orb-4"></div>
+        <div class="ambient-orb ambient-orb-5"></div>
+        <div class="ambient-orb ambient-orb-6"></div>
+        <div class="ambient-orb ambient-orb-7"></div>
+        <div class="ambient-noise"></div>
+        <div class="ambient-grain"></div>
+    </div>
+    <!-- Navigation -->
+    <%- include('partials/header') %>
+
+    <!-- Categories/Countries Dropdown logic -->
+    <script src="/js/categories-dropdown.js?v=16"></script>
+    <script src="/js/countries-dropdown.js?v=16"></script>
+    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+    <script src="/js/mobile-menu-modern.js?v=42"></script>
+    <script src="/js/nav-instant-suggest.js?v=7"></script>
+
+    <!-- Sticky Navigation -->
+    <script src="/js/sticky-nav.js?v=19"></script>
+    <script src="/js/nav-active-indicator.js?v=15"></script>
+
+
+    <!-- Hero Section -->
+    <main class="relative h-screen w-full overflow-hidden">
+        <!-- Background Image with Loading State -->
+        <div class="absolute inset-0 z-0 bg-background-dark w-full max-w-[1600px] mx-auto hero-mask-fade">
+            <!-- Dedicated Placeholder Removed -->
+            
+            <!-- The Real Hero Image (Starts Hidden, becomes 100% bright when loaded) -->
+            <img id="heroImage" alt="Hero Movie Background"
+                class="absolute inset-0 w-full h-full object-cover object-center scale-105 transition-opacity duration-700 z-10"
+                style="opacity:0;"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+
+        </div>
+
+        <!-- Content -->
+        <div id="heroContent"
+            class="relative w-full max-w-[1600px] mx-auto z-20 h-full flex flex-col justify-center pb-[180px] md:pb-[230px] px-4 md:px-6 lg:px-8 pt-safe-main transition-opacity duration-700"
+            style="opacity:0;">
+            <div class="max-w-3xl space-y-6">
+                <!-- Title -->
+                <div class="space-y-3">
+                    <h1 id="heroTitle"
+                        class="text-4xl md:text-5xl lg:text-[54px] font-sans font-black text-white leading-tight tracking-tight" style="text-shadow: 0 4px 16px rgba(0,0,0,0.6);">
+                         Đang tải...
+                    </h1>
+                    <h2 id="heroSubtitle" class="text-[#e8b94f] text-lg md:text-xl font-medium tracking-wide" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);"></h2>
+                </div>
+
+                <!-- Badges -->
+                <div id="heroBadges" class="flex flex-wrap gap-3 items-center text-sm font-medium text-gray-200">
+                    <span
+                        class="border border-primary text-primary px-3 py-1 rounded bg-black/40 backdrop-blur-sm">Loading...</span>
+                </div>
+
+                <!-- Genres -->
+                <div id="heroGenres" class="flex flex-wrap gap-2">
+                    <!-- Will be loaded dynamically -->
+                </div>
+
+                <!-- Description -->
+                <p id="heroDescription"
+                    class="text-gray-100 text-[15px] md:text-base leading-relaxed max-w-2xl line-clamp-3 font-medium">
+                    Đang tải thông tin phim...
+                </p>
+
+                <!-- Play Button - Positioned at bottom left -->
+                <div class="pt-4 flex items-center gap-6">
+                    <a id="heroPlayBtn" href="#" class="group inline-block relative">
+                        <div class="relative">
+                            <!-- Pulse Animation Rings -->
+                            <div class="absolute inset-0 rounded-full animate-ping bg-[#fcd576]/60 play-btn-circle" style="width: 68px; height: 68px;"></div>
+                            <div class="absolute inset-0 rounded-full animate-pulse bg-[#fcd576]/40 play-btn-circle" style="width: 68px; height: 68px;"></div>
+
+                            <!-- Main Button -->
+                            <div
+                                class="relative bg-[#fcd576] rounded-full flex items-center justify-center gold-heartbeat-glow group-hover:scale-110 transition-all duration-300 play-btn-circle"
+                                style="width: 68px; height: 68px;">
+                                
+                                <!-- Play Icon (Rounded Modern SVG Triangle) -->
+                                <svg class="relative z-10 translate-x-[1.5px]" 
+                                     viewBox="0 0 24 24" 
+                                     fill="#000000" 
+                                     stroke="#000000" 
+                                     stroke-width="3" 
+                                     stroke-linejoin="round" 
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     style="width: 24px; height: 24px; color: #000000 !important; fill: #000000 !important; stroke: #000000 !important;">
+                                    <path d="M8 5v14l11-7z" fill="#000000" stroke="#000000" style="fill: #000000 !important; stroke: #000000 !important;" />
+                                </svg>
+
+                                <!-- Hover Ring -->
+                                <div
+                                    class="absolute inset-0 border-2 border-[#fcd576]/50 rounded-full scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Text Label -->
+                        <span
+                            class="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap mt-2 text-center text-primary font-bold uppercase tracking-widest text-[10px] opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 drop-shadow-[0_2px_8px_rgba(252,211,77,0.5)]">
+                            Xem Ngay
+                        </span>
+                    </a>
+
+                    <!-- Favorite & Info Capsule Buttons -->
+                    <div class="flex items-center rounded-full border-white/20 bg-white/5 backdrop-blur-md overflow-hidden" style="border: 1.5px solid rgba(255,255,255,0.2);">
+                        <button id="heroFavBtn"
+                            class="w-16 h-12 hover:bg-white/15 transition-all flex items-center justify-center group">
+                            <!-- Use HTML Entity &#xe87d; instead of 'favorite' to prevent text flashing on load -->
+                            <span class="material-icons-round text-white text-xl group-hover:scale-110 transition-transform">&#xe87d;</span>
+                        </button>
+                        <div style="width: 1.5px; height: 24px; background-color: rgba(255,255,255,0.3); flex-shrink: 0;"></div>
+                        <a id="heroInfoBtn" href="#"
+                            class="w-16 h-12 hover:bg-white/15 transition-all flex items-center justify-center group">
+                            <!-- Use HTML Entity &#xe001; instead of 'error_outline' to prevent text flashing -->
+                            <span class="material-icons-round text-white text-xl group-hover:scale-110 transition-transform">&#xe001;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thumbnails - Bottom Right (Positioned above categories) -->
+        <div class="hero-thumbnails-container absolute z-30 left-0 right-0 pointer-events-none" style="bottom: 275px;">
+            <style>
+                @media (min-width: 768px) {
+                    .hero-thumbnails-container {
+                        bottom: 320px !important;
+                    }
+                }
+                @media (max-width: 767px) {
+                    .hero-thumbnails-container {
+                        bottom: 190px !important; /* Hạ xuống một chút cho vào giữa khoảng trống */
+                    }
+                    .mobile-thumb-wrapper {
+                        justify-content: center !important;
+                        padding-left: 24px !important;
+                        padding-right: 24px !important;
+                    }
+                    #heroThumbnails {
+                        justify-content: center !important;
+                        max-width: 280px !important;
+                        padding-left: 8px !important;
+                        padding-right: 8px !important;
+                    }
+                }
+            </style>
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 mobile-thumb-wrapper" style="display:flex; justify-content:flex-end; pointer-events:auto;">
+                <div style="max-width:600px; width: max-content; flex-shrink:0;">
+                    <div id="heroThumbnails"
+                        style="display:flex; align-items:flex-end; gap:10px; overflow-x:auto; padding:16px 0 16px 16px; scrollbar-width:none; -ms-overflow-style:none; scroll-snap-type:x mandatory;">
+                        <!-- Thumbnails will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Section positioned at the bottom of Hero Banner -->
+        <section class="interests-section absolute left-0 right-0 z-40 bg-transparent pt-4 pb-0 mb-0" style="position: absolute !important; background: transparent !important; background-color: transparent !important; padding-top: 1rem; padding-bottom: 0px !important; margin-bottom: 0px !important; bottom: 20px !important;">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <!-- Title Header matching Screenshot 1 -->
+                <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                    Bạn đang quan tâm gì?
+                </h3>
+                <div class="interests-wrapper scrollbar-hide px-4 -mx-4 pt-4 pb-0 mb-0 items-end">
+                    <!-- 1. Phim Bộ -->
+                    <div class="interest-card" style="--card-color: #8b5cf6" data-api="danh-sach/phim-bo"
+                        onclick="location.href = '/danh-sach?list=phim-bo'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-phim-bo"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Phim Bộ</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Phim Mới -->
+                    <div class="interest-card" style="--card-color: #ef4444" data-api="danh-sach/phim-moi-cap-nhat"
+                        onclick="location.href = '/danh-sach?list=phim-moi-cap-nhat'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-phim-moi"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Phim Mới</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Hành Động -->
+                    <div class="interest-card" style="--card-color: #f97316" data-api="the-loai/hanh-dong"
+                        onclick="location.href = '/categories?category=hanh-dong'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-hanh-dong"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Hành Động</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Tình Cảm -->
+                    <div class="interest-card" style="--card-color: #ec4899" data-api="the-loai/tinh-cam"
+                        onclick="location.href = '/categories?category=tinh-cam'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-tinh-cam"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Tình Cảm</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Hài Hước -->
+                    <div class="interest-card" style="--card-color: #eab308" data-api="the-loai/hai-huoc"
+                        onclick="location.href = '/categories?category=hai-huoc'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-hai-huoc"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Hài Hước</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Hoạt Hình -->
+                    <div class="interest-card" style="--card-color: #10b981" data-api="danh-sach/hoat-hinh"
+                        onclick="location.href = '/danh-sach?list=hoat-hinh'">
+                        <div class="interest-bg-img"></div>
+                        <div class="interest-lottie-circle"><div id="lottie-hoat-hinh"></div></div>
+                        <div class="interest-content">
+                            <h3 class="interest-title">Hoạt Hình</h3>
+                            <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Category Lottie Icons script -->
+        <script>
+        (function () {
+            // Màu chính cho từng icon (định dạng Lottie normalized 0-1)
+            var ICONS = [
+                { id: 'lottie-phim-bo',   path: '/icon-phim-bo.json',   color: [1.000, 1.000, 1.000] },  // #FFFFFF
+                { id: 'lottie-phim-moi',  path: '/icon-phim-moi.json',  color: [1.000, 1.000, 1.000] },  // #FFFFFF
+                { id: 'lottie-hanh-dong', path: '/icon-hanh-dong.json', color: [1.000, 1.000, 1.000] },  // #FFFFFF
+                { id: 'lottie-tinh-cam',  path: '/icon-tinh-cam.json',  color: [1.000, 1.000, 1.000] },  // #FFFFFF
+                { id: 'lottie-hai-huoc',  path: '/icon-hai-huoc.json',  color: [1.000, 1.000, 1.000] },  // #FFFFFF
+                { id: 'lottie-hoat-hinh', path: '/icon-hoat-hinh.json', color: [1.000, 1.000, 1.000] },  // #FFFFFF
+            ];
+
+            function initOne(icon) {
+                var el = document.getElementById(icon.id);
+                if (!el) return;
+                fetch(icon.path + '?v=' + Date.now())
+                    .then(function (r) { return r.text(); })
+                    .then(function (rawText) {
+                        var whiteText = rawText.replace(
+                            /"k":\[\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*1\s*\]/g,
+                            '"k":[1,1,1,1]'
+                        );
+                        var animData = JSON.parse(whiteText);
+                        var anim = lottie.loadAnimation({
+                            container: el,
+                            renderer: 'svg',
+                            loop: false,
+                            autoplay: true,
+                            animationData: animData
+                        });
+                        anim.addEventListener('complete', function () {
+                            setTimeout(function () { anim.goToAndPlay(0, true); }, 1000);
+                        });
+                    })
+                    .catch(function (e) {
+                        console.warn('[Lottie] Không tải được:', icon.path, e);
+                    });
+            }
+
+            function initLottieIcons() {
+                if (typeof lottie === 'undefined') { setTimeout(initLottieIcons, 150); return; }
+                ICONS.forEach(initOne);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLottieIcons);
+            } else {
+                initLottieIcons();
+            }
+        })();
+        </script>
+    </main>
+
+    <!-- Consolidated Main Content Area Starts Higher -->
+    <div class="bg-void pb-12">
+        <!-- Top Movies Hot Section -->
+        <section class="py-2 md:py-3 top-movies-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="hidden md:inline"><span class="text-white">Bảng Xếp Hạng</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
+                            <span class="md:hidden"><span class="text-white">BXH</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button id="topMoviesScrollLeft"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button id="topMoviesScrollRight"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="topMoviesLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải top phim hot...</p>
+                </div>
+
+                <!-- Movies Container -->
+                <div id="topMoviesContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Cười Vui Khóc Chung (Tình Cảm) -->
+        <section class="py-2 ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Cười Vui</span> <span class="text-gradient-pink">Khóc Chung</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button onclick="scrollSection('romanceContainer', 'left')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button onclick="scrollSection('romanceContainer', 'right')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="romanceLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
+                </div>
+                <div id="romanceContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                </div>
+            </div>
+        </section>
+        <!-- Thế Giới Hoạt Hình Section -->
+        <style>
+            .anime-card {
+                flex: 0 0 150px;
+                scroll-snap-align: start;
+                transition: transform 0.3s ease;
+            }
+
+            @media (min-width: 768px) {
+                .anime-card {
+                    flex: 0 0 200px;
+                }
+            }
+
+            .anime-poster-wrapper {
+                position: relative;
+                aspect-ratio: 2/3;
+                border-radius: 12px;
+                overflow: hidden;
+                background: #0f1016;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            }
+
+            .anime-badge-container {
+                position: absolute;
+                bottom: 10px;
+                left: 8px;
+                display: flex;
+                gap: 5px;
+                z-index: 10;
+            }
+
+            .anime-pill {
+                font-size: 9px;
+                font-weight: 800;
+                padding: 3px 8px;
+                border-radius: 4px;
+                color: white;
+                text-transform: uppercase;
+                backdrop-filter: blur(4px);
+            }
+
+            .anime-pill-dark {
+                background: rgba(30, 41, 59, 0.9);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .anime-pill-blue {
+                background: #0ea5e9;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        </style>
+    <!-- Premium ads disabled -->
+        <section class="py-2 md:py-3 !bg-transparent" id="animation-section">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Thế Giới</span> <span class="text-gradient-blue">Hoạt Hình</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button onclick="scrollSection('animationContainer', 'left')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button onclick="scrollSection('animationContainer', 'right')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="animationLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim hoạt hình...</p>
+                </div>
+
+                <!-- Movies Container -->
+                <div id="animationContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Comments Community Dashboard -->
+        <section class="py-2 md:py-3 !bg-transparent" id="top-comments-section">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="tc-container">
+                    <!-- Header -->
+                    <div class="tc-header">
+                        <span class="material-icons-round" style="color:#ffd700; font-size:24px;">emoji_events</span>
+                        <h2 class="tc-title">Top Bình Luận</h2>
+                    </div>
+
+                    <!-- Top Row: Featured Comments -->
+                    <div class="relative group">
+                        <button id="tc-scroll-left"
+                            class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity -ml-4 hover:bg-black/80">
+                            <span class="material-icons-round text-sm">chevron_left</span>
+                        </button>
+                        <div class="tc-featured-wrapper" id="tc-featured-container">
+                            <!-- Loaded dynamically via js -->
+                        </div>
+                        <button id="tc-scroll-right"
+                            class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity -mr-4 hover:bg-black/80">
+                            <span class="material-icons-round text-sm">chevron_right</span>
+                        </button>
+                    </div>
+
+                    <div class="tc-divider"></div>
+
+                    <!-- Bottom Grid: 4 Columns -->
+                    <div class="tc-grid">
+                        <!-- Column 1: Sôi Nổi Nhất -->
+                        <div>
+                            <div class="tc-col-header">
+                                <span class="material-icons-round" style="color:#ffd700;">movie</span>
+                                <h3>Sôi Nổi Nhất</h3>
+                            </div>
+                            <div class="tc-list" id="tc-soi-noi">
+                                <div class="text-sm text-gray-500">Đang tải...</div>
+                            </div>
+                            <div class="mt-4"><a href="/search"
+                                    class="text-xs text-gray-500 hover:text-white transition-colors">Xem thêm</a></div>
+                        </div>
+
+                        <!-- Column 2: Yêu Thích Nhất -->
+                        <div>
+                            <div class="tc-col-header">
+                                <span class="material-icons-round" style="color:#ffd700;">favorite</span>
+                                <h3>Yêu Thích Nhất</h3>
+                            </div>
+                            <div class="tc-list" id="tc-yeu-thich">
+                                <div class="text-sm text-gray-500">Đang tải...</div>
+                            </div>
+                            <div class="mt-4"><a href="/search"
+                                    class="text-xs text-gray-500 hover:text-white transition-colors">Xem thêm</a></div>
+                        </div>
+
+                        <!-- Column 3: Thể Loại Hot -->
+                        <div>
+                            <div class="tc-col-header">
+                                <span class="material-icons-round" style="color:#ffd700;">folder_special</span>
+                                <h3>Thể Loại Hot</h3>
+                            </div>
+                            <div class="tc-genre-list" id="tc-the-loai">
+                                <!-- Loaded via js -->
+                            </div>
+                            <div class="mt-4"><a href="/search"
+                                    class="text-xs text-gray-500 hover:text-white transition-colors">Xem thêm</a></div>
+                        </div>
+
+                        <!-- Column 4: Bình Luận Mới (Virtual) -->
+                        <div>
+                            <div class="tc-col-header">
+                                <span class="material-icons-round" style="color:#ffd700;">bolt</span>
+                                <h3>Bình Luận Mới</h3>
+                            </div>
+                            <div class="tc-realtime-area">
+                                <div class="tc-realtime-overlay"></div>
+                                <div id="tc-realtime-comments" class="flex flex-col gap-2 relative z-10 w-full h-full">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Movies Section -->
+
+        <section class="py-1.5 ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Phim</span> <span class="text-gradient-red">Hành Động</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button id="actionScrollLeft"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button id="actionScrollRight"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="actionLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim hành ��"ng...</p>
+                </div>
+
+                <!-- Movies Container - Horizontal Scroll -->
+                <div id="actionMoviesContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        
+
+
+<!-- Adventure Movies Section (Phim Phiêu Lưu) -->
+        <section class="py-2 md:py-3 !bg-transparent" id="adventure-section">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Phim</span> <span class="text-gradient-green">Phiêu Lưu</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button onclick="scrollSection('adventureContainer', 'left')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button onclick="scrollSection('adventureContainer', 'right')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="adventureLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim phiêu lưu...</p>
+                </div>
+
+                <!-- Movies Container -->
+                <div id="adventureContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Mythology Ranking Section (Phim Thần Thoại) -->
+        <section class="py-2 !bg-transparent overflow-hidden" id="mythology-ranking-section">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito flex items-center gap-2 uppercase -ml-2 md:-ml-4 lg:-ml-5">
+                        <span class="text-white">TOP PHIM</span>
+                        <span class="text-gradient-purple">THẦN THOẠI</span>
+                    </h2>
+                    <span class="text-gray-600 font-bold text-xs uppercase tracking-[0.2em] ml-4 opacity-50">| KHÁM PHÁ
+                        HUYỬN THOẠI</span>
+                </div>
+
+                <!-- Loading -->
+                <div id="mythologyLoading" class="text-center py-24">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-3"></div>
+                </div>
+
+                <!-- Ranking Horizontal Scroll -->
+                <div id="mythologyRankingContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Content will be injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Vietnamese Movies Section -->
+        <section class="py-2 ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Phim</span> <span class="text-gradient-crimson">Việt Nam</span>
+                        </h2>
+                    <a href="/phim-theo-quoc-gia?country=viet-nam"
+                        class="text-white md:text-primary font-semibold hover:text-white transition-colors flex items-center gap-1 group">
+                        <span class="hidden md:inline text-sm">Xem tất cả</span>
+                        <span
+                            class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </a>
+                </div>
+
+                <!-- Loading -->
+                <div id="vietnamLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim Vi�!t Nam...</p>
+                </div>
+
+                <!-- Movies Horizontal Scroll -->
+                <div id="vietnamMoviesGrid"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Coming Soon Movies Section - Top 10 Style -->
+        <section class="py-2 coming-soon-section ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Phim</span> <span class="text-gradient-orange">Chiếu Rạp</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button id="comingSoonScrollLeft"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button id="comingSoonScrollRight"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="comingSoonLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim chiếu rạp...</p>
+                </div>
+
+                <div id="comingSoonContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Content will be injected here via coming-soon.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Updates Section -->
+        <section class="py-2 ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Phim Mới</span> <span class="text-gradient-purple">Cập Nhật</span>
+                        </h2>
+                    <div class="flex items-center gap-4">
+                        <div class="flex gap-2">
+                            <button id="latestScrollLeft"
+                                class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                                <span class="material-icons-round text-xl">chevron_left</span>
+                            </button>
+                            <button id="latestScrollRight"
+                                class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                                <span class="material-icons-round text-xl">chevron_right</span>
+                            </button>
+                        </div>
+                        <a href="/search"
+                            class="text-white md:text-primary font-semibold hover:text-white transition-colors flex items-center gap-2 group">
+                            <span class="hidden md:inline text-sm whitespace-nowrap">Xem tất cả</span>
+                            <span
+                                class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="latestLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim m�:i...</p>
+                </div>
+
+                <!-- Movies Horizontal Scroll -->
+                <div id="latestMoviesGrid"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <!-- Horror Section -->
+        <section class="py-2 horror-section ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Xem Cho</span> <span class="text-gradient-green">Biết Thêm</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button onclick="scrollSection('comedyContainer', 'left')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button onclick="scrollSection('comedyContainer', 'right')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="comedyLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+                </div>
+                <div id="comedyContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Drama Căng Đét (Short Drama) -->
+        <section class="py-2 ambient-section !bg-transparent">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">Drama</span> <span class="text-gradient-gold">Căng Đét</span>
+                        </h2>
+                    <div class="flex gap-3">
+                        <button onclick="scrollSection('dramaContainer', 'left')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_left</span>
+                        </button>
+                        <button onclick="scrollSection('dramaContainer', 'right')"
+                            class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <span class="material-icons-round text-xl">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="dramaLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+                </div>
+                <div id="dramaContainer"
+                    class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                </div>
+            </div>
+
+            <!-- TOP 10 SOFAFLIX -->
+            <style>
+                .sofaflix-section {
+                    background: #0f1016;
+                    padding-top: 5rem;
+                    padding-bottom: 7rem;
+                }
+
+                .sofaflix-section {
+                    background: #0f1016;
+                    padding-top: 1.5rem;
+                    padding-bottom: 2.5rem;
+                }
+
+                .sofaflix-title-main {
+                    font-family: 'Inter', sans-serif;
+                    font-weight: 950;
+                    font-style: italic;
+                    letter-spacing: -2px;
+                }
+            </style>
+            <!-- TOP 10 A PHIM -->
+            <section class="py-2 sofaflix-section !bg-transparent overflow-hidden">
+                <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <h2 class="text-3xl md:text-4xl sofaflix-title-main text-white uppercase -ml-2 md:-ml-4 lg:-ml-5">
+                            <span class="text-white">TOP 10</span> <span class="text-primary">A PHIM</span>
+                        </h2>
+                        <span class="text-gray-600 font-bold text-xs uppercase tracking-[0.2em] ml-4 opacity-50">| THỊNH HÀNH HÔM NAY</span>
+                    </div>
+
+                    <!-- Loading -->
+                    <div id="sofaflixLoading" class="text-center py-24">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-3"></div>
+                    </div>
+
+                    <!-- Ranking Horizontal Scroll -->
+                    <div id="sofaflixContainer"
+                        class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory items-end px-4 -mx-4 py-4 -my-4">
+                        <!-- Content will be injected via JS -->
+                    </div>
+                </div>
+            </section>
+    </div>
+
+
+
+    <!-- Footer -->
+                    <%- include('partials/footer') %>
+    <!-- App Guide Popup -->
+    <div id="aphim-guide-overlay" onclick="if(event.target===this)aphimCloseGuide()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:460px;background:#0d0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.8);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.25);">
+                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hư�:ng dẫn cài �ặt A Phim</span>
+                <button onclick="aphimCloseGuide()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:#aaa;font-size:1rem;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">�✕</button>
+            </div>
+            <div style="padding:14px;overflow-y:auto;max-height:78vh;">
+                <img src="/quangcao/HD_cai_app.png" alt="Huong dan cai dat" style="width:100%;height:auto;border-radius:8px;display:block;"/>
+            </div>
+        </div>
+    </div>
+    <script>
+        function aphimOpenGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='flex';document.body.style.overflow='hidden';}}
+        function aphimCloseGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='none';document.body.style.overflow='';}}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')aphimCloseGuide();});
+    </script>
+
+    <!-- Scripts - Optimized loading (config/auth/modal/user-ui da defer trong head) -->
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/data-cache.js?v=15"></script>
+    <script src="/js/api-optimization.js?v=15"></script>
+    <script src="/js/image-optimization.js?v=15"></script>
+    <script src="/js/user.js?v=40"></script>
+    <script src="/js/rating.js?v=15"></script>
+    <script src="/js/home.js?v=15"></script>
+    <script src="/js/home-sections.js?v=15"></script>
+    <script src="/js/horror-section.js?v=15"></script>
+    <script src="/js/hero-banner.js?v=1781923891358"></script>
+    <script src="/js/top-movies.js?v=15"></script>
+    <script src="/js/coming-soon.js?v=15"></script>
+    <script src="/js/interests-dynamic.js?v=15"></script>
+
+    <script>
+        // Preload critical data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start preloading in background
+            preloadCriticalData().catch(err => console.warn('Preload error:', err));
+        });
+
+
+        // Fallback function - load Vietnamese movies
+        async function loadVietnameseMoviesHome() {
+            const grid = document.getElementById('vietnamMoviesGrid');
+
+            // Exit if element doesn't exist on this page
+            if (!grid) {
+                console.log('Vietnamese movies section not on this page');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://ophim1.com/v1/api/quoc-gia/viet-nam?page=1', {
+                    method: 'GET',
+                    headers: { 'accept': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 10);
+                    renderVietnameseMovies(movies);
+                }
+            } catch (error) {
+                console.error('Error loading Vietnamese movies:', error);
+                const loading = document.getElementById('vietnamLoading');
+                if (loading) {
+                    loading.innerHTML = `<p class="text-red-400">Không thể tải phim Vi�!t Nam</p>`;
+                }
+            }
+        }
+
+        function renderVietnameseMovies(movies) {
+            const loading = document.getElementById('vietnamLoading');
+            const grid = document.getElementById('vietnamMoviesGrid');
+
+            // Null check - exit if elements don't exist
+            if (!loading || !grid) {
+                console.warn('Vietnamese movies section not found on this page');
+                return;
+            }
+
+            loading.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            // Get movie links from localStorage
+            const movieLinks = JSON.parse(localStorage.getItem('movieLinks') || '{}');
+
+            grid.innerHTML = movies.map(movie => {
+                const hasCustomLink = !!movieLinks[movie.slug];
+                const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+                const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
+
+                const thumb = movie.thumb_url || '';
+                const poster = movie.poster_url || '';
+
+                const finalImgUrl = (typeof imageOptimizer !== 'undefined') ?
+                    imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
+                    (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) :
+                        (poster ? (poster.startsWith('http') ? poster : `https://img.ophim.live/uploads/movies/${poster}`) : ''));
+
+                return `
+                    <div class="portrait-card group ${hiddenUI.containerClass}">
+                        <a href="${linkUrl}">
+                            <div class="portrait-poster-w">
+                                <img src="${finalImgUrl}" 
+                                     alt="${movie.name}" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                     onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                                     loading="lazy"
+                                     decoding="async" />
+                                
+                                ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
+                                ${movie.episode_current ? `<div class="portrait-episode">${movie.episode_current}</div>` : ''}
+                                
+                                <!-- Play Icon Overlay -->
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform">
+                                        <span class="material-icons-round text-black text-2xl">play_arrow</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="portrait-info">
+                                <h3 class="portrait-title">${movie.name}</h3>
+                                <p class="portrait-subtitle">${movie.origin_name || movie.name}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load latest movies
+        async function loadLatestMovies() {
+            const loading = document.getElementById('latestLoading');
+            const grid = document.getElementById('latestMoviesGrid');
+
+            try {
+                // Use ophim1.com API to get latest movies
+                const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1', {
+                    method: 'GET',
+                    headers: { 'accept': 'application/json' }
+                });
+
+                const data = await response.json();
+                console.log('Latest movies data:', data);
+
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 10);
+                    renderLatestMovies(movies);
+                } else {
+                    loading.innerHTML = '<p class="text-gray-400">Không thể tải phim m�:i</p>';
+                }
+            } catch (error) {
+                console.error('Error loading latest movies:', error);
+                loading.innerHTML = '<p class="text-red-400">L�i khi tải phim m�:i</p>';
+            }
+        }
+
+        function renderLatestMovies(movies) {
+            const loading = document.getElementById('latestLoading');
+            const grid = document.getElementById('latestMoviesGrid');
+
+            loading.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            const movieLinks = JSON.parse(localStorage.getItem('movieLinks') || '{}');
+
+            grid.innerHTML = movies.map(movie => {
+                const hasCustomLink = !!movieLinks[movie.slug];
+                const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+                const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
+
+                return `
+                <div class="portrait-card group ${hiddenUI.containerClass}">
+                    <a href="${linkUrl}">
+                        <div class="portrait-poster-w">
+                            <img alt="${movie.name}"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
+                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : `https://img.ophim.live/uploads/movies/${movie.thumb_url}`}"
+                                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                                fetchpriority="high"
+                                decoding="async" />
+                            
+                            ${hiddenUI.badge}
+                            
+                            ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
+                            ${movie.episode_current ? `<div class="portrait-episode">${movie.episode_current}</div>` : ''}
+                            
+                            <!-- Play Overlay -->
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform">
+                                    <span class="material-icons-round text-black text-2xl">play_arrow</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Movie Info -->
+                        <div class="portrait-info">
+                            <h3 class="portrait-title">
+                                ${movie.name}
+                            </h3>
+                            <p class="portrait-subtitle">
+                                ${movie.origin_name || 'Đang cập nhật...'}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Load action movies
+        async function loadActionMovies() {
+            const loading = document.getElementById('actionLoading');
+            const container = document.getElementById('actionMoviesContainer');
+
+            try {
+                console.log('Loading action movies for homepage...');
+
+                // Load movies from category "hanh-dong"
+                const response = await fetch('https://ophim1.com/v1/api/the-loai/hanh-dong?page=1', {
+                    method: 'GET',
+                    headers: { 'accept': 'application/json' }
+                });
+
+                const data = await response.json();
+                console.log('Action movies data:', data);
+
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 10); // Get 10 movies
+                    renderActionMovies(movies);
+                } else {
+                    loading.innerHTML = '<p class="text-gray-400">Không thể tải phim hành ��"ng</p>';
+                }
+            } catch (error) {
+                console.error('Error loading action movies:', error);
+                loading.innerHTML = '<p class="text-red-400">L�i khi tải phim hành ��"ng</p>';
+            }
+        }
+
+        function renderActionMovies(movies) {
+            const loading = document.getElementById('actionLoading');
+            const container = document.getElementById('actionMoviesContainer');
+
+            if (loading) loading.classList.add('hidden');
+            if (container) container.classList.remove('hidden');
+
+            const movieLinks = JSON.parse(localStorage.getItem('movieLinks') || '{}');
+
+            container.innerHTML = movies.map(movie => {
+                const hasCustomLink = !!movieLinks[movie.slug];
+                const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+
+                // OPhim: thumb_url is portrait, poster_url is landscape
+                const thumb = movie.thumb_url || '';
+                const poster = movie.poster_url || '';
+
+                // Backdrop prioritized for landscape (poster_url)
+                const backdropUrl = poster || thumb;
+                const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
+                    imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
+                    (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophim.live/uploads/movies/${backdropUrl}`);
+
+                // Poster prioritized for portrait (thumb_url)
+                const posterUrl = thumb || poster;
+                const finalPoster = (typeof imageOptimizer !== 'undefined') ?
+                    imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
+                    (posterUrl.startsWith('http') ? posterUrl : `https://img.ophim.live/uploads/movies/${posterUrl}`);
+
+                return `
+                <div class="action-premium-card group">
+                    <a href="${linkUrl}">
+                        <!-- Backdrop -->
+                        <div class="action-backdrop-w">
+                            <img src="${finalBackdrop}" 
+                                 alt="${movie.name}" 
+                                 class="group-hover:scale-105 transition-transform duration-500" 
+                                 onerror="this.src='https://via.placeholder.com/600x338?text=${encodeURIComponent(movie.name)}'" />
+                            ${window.renderMovieBadges(movie.lang, movie.episode_current)}
+                        </div>
+                        
+                        <!-- Small Mini Poster Overlay -->
+                        <div class="action-small-poster">
+                            <img src="${finalPoster}" 
+                                 alt="Mini ${movie.name}" 
+                                 onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'" />
+                        </div>
+                        
+                        <!-- Text Info next to mini poster -->
+                        <div class="action-info-overlay">
+                            <h3 class="action-title-p group-hover:text-amber-500 transition-colors">${movie.name}</h3>
+                            <p class="action-subtitle-p">${movie.origin_name || movie.name}</p>
+                            <div class="action-meta-p font-bold text-primary/80">
+                                <span class="mr-2">${movie.year || ''}</span>
+                                <span>${movie.quality || ''}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                `;
+            }).join('');
+
+            // Setup scroll buttons
+            setupActionScrollButtons();
+        }
+
+        // Setup scroll buttons for action movies
+        function setupActionScrollButtons() {
+            const container = document.getElementById('actionMoviesContainer');
+            const leftBtn = document.getElementById('actionScrollLeft');
+            const rightBtn = document.getElementById('actionScrollRight');
+
+            if (!container || !leftBtn || !rightBtn) return;
+
+            leftBtn.addEventListener('click', () => {
+                container.scrollBy({ left: -350, behavior: 'smooth' });
+            });
+
+            rightBtn.addEventListener('click', () => {
+                container.scrollBy({ left: 350, behavior: 'smooth' });
+            });
+        }
+
+        // Load on page load - try home API first
+        // Sequential Loading to prioritize Above-The-Fold content
+        async function loadAllSequentially() {
+            try {
+                await loadLatestMovies();
+                await loadActionMovies();
+                if (typeof loadHomeMovies === 'function') await loadHomeMovies();
+                if (typeof loadTopMovies === 'function') loadTopMovies();
+                if (typeof loadComingSoonMovies === 'function') loadComingSoonMovies();
+            } catch (e) {
+                console.error("L�i trong quá trình load tuần tự:", e);
+            }
+        }
+        
+        loadAllSequentially();
+
+        // Setup scroll for Latest section
+        const lContainer = document.getElementById('latestMoviesGrid');
+        const lLeft = document.getElementById('latestScrollLeft');
+        const lRight = document.getElementById('latestScrollRight');
+        if (lContainer && lLeft && lRight) {
+            lLeft.onclick = () => lContainer.scrollBy({ left: -lContainer.clientWidth * 0.8, behavior: 'smooth' });
+            lRight.onclick = () => lContainer.scrollBy({ left: lContainer.clientWidth * 0.8, behavior: 'smooth' });
+        }
+
+        // --- NEW SECTIONS LOGIC ---
+        window.scrollSection = (id, dir) => {
+            const el = document.getElementById(id);
+            if (el) el.scrollBy({ left: dir === 'right' ? 800 : -800, behavior: 'smooth' });
+        };
+
+        async function loadCategoryToContainer(slug, containerId, loadingId) {
+            const loading = document.getElementById(loadingId);
+            const container = document.getElementById(containerId);
+            try {
+                // TĒng lên 18 phim �Ồ load "�ủ" hình cho scroll ngang
+                const response = await fetch(`https://ophim1.com/v1/api/the-loai/${slug}?page=1`);
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 18);
+                    if (loading) loading.classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('hidden');
+                        container.innerHTML = movies.map(movie => {
+                            const thumb = movie.thumb_url || '';
+                            const poster = movie.poster_url || '';
+
+                            // Đảo lại logic: Backdrop ưu tiên poster_url (ngang), Poster ưu tiên thumb_url (dọc)
+                            const backdropUrl = poster || thumb;
+                            const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
+                                (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophim.live/uploads/movies/${backdropUrl}`);
+
+                            const posterUrl = thumb || poster;
+                            const finalPoster = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
+                                (posterUrl.startsWith('http') ? posterUrl : `https://img.ophim.live/uploads/movies/${posterUrl}`);
+
+                            return `
+                            <div class="action-premium-card group">
+                                <a href="/phim/${movie.slug}">
+                                    <div class="action-backdrop-w">
+                                        <img src="${finalBackdrop}" 
+                                             alt="${movie.name}" 
+                                             class="group-hover:scale-105 transition-transform duration-500" 
+                                             onerror="this.src='https://via.placeholder.com/600x338?text=${encodeURIComponent(movie.name)}'" />
+                                        ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
+                                    </div>
+                                    <div class="action-small-poster">
+                                        <img src="${finalPoster}" 
+                                             alt="Mini ${movie.name}" 
+                                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'" />
+                                    </div>
+                                    <div class="action-info-overlay">
+                                        <h3 class="action-title-p group-hover:text-amber-500 transition-colors">${movie.name}</h3>
+                                        <p class="action-subtitle-p">${movie.origin_name || movie.name}</p>
+                                        <div class="action-meta-p text-primary/80 font-bold">
+                                            <span class="mr-2">${movie.year || ''}</span>
+                                            <span>${movie.quality || ''}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (err) { console.error(`Error loading ${slug}:`, err); }
+        }
+
+        // Call them
+        loadCategoryToContainer('hai-huoc', 'comedyContainer', 'comedyLoading');
+        loadCategoryToContainer('tinh-cam', 'romanceContainer', 'romanceLoading');
+        loadCategoryToContainer('short-drama', 'dramaContainer', 'dramaLoading');
+
+        // Load Animation Movies (Hoạt Hình)
+        async function loadAnimationMovies() {
+            const loading = document.getElementById('animationLoading');
+            const container = document.getElementById('animationContainer');
+            try {
+                const response = await fetch('https://ophim1.com/v1/api/danh-sach/hoat-hinh?page=1');
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 18);
+                    if (loading) loading.classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('hidden');
+                        container.innerHTML = movies.map(movie => {
+                            const thumb = movie.thumb_url || '';
+                            const poster = movie.poster_url || '';
+                            const finalImg = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+
+                            return `
+                            <div class="anime-card group">
+                                <a href="/phim/${movie.slug}" class="block">
+                                    <div class="anime-poster-wrapper group-hover:scale-[1.03] transition-transform duration-500">
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                        
+                                        <!-- Dynamic Badges -->
+                                        ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
+
+                                        <!-- Simple Play Overlay -->
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                                <span class="material-icons-round text-black text-xl">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 text-center px-1">
+                                        <h3 class="text-white font-bold text-xs md:text-sm line-clamp-2 leading-snug group-hover:text-primary transition-colors h-9 md:h-10 flex items-center justify-center">${movie.name}</h3>
+                                        <p class="text-gray-500 text-[10px] md:text-xs mt-0.5 line-clamp-1 uppercase tracking-tight opacity-70">${movie.origin_name || ''}</p>
+                                    </div>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (err) { console.error('Animation error:', err); }
+        }
+        loadAnimationMovies();
+
+        // Load Adventure Movies (Phiêu Lưu)
+        async function loadAdventureMovies() {
+            const loading = document.getElementById('adventureLoading');
+            const container = document.getElementById('adventureContainer');
+            try {
+                const response = await fetch('https://ophim1.com/v1/api/the-loai/phieu-luu?page=1');
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 18);
+                    if (loading) loading.classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('hidden');
+                        container.innerHTML = movies.map(movie => {
+                            const thumb = movie.thumb_url || '';
+                            const poster = movie.poster_url || '';
+                            const finalImg = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+
+                            return `
+                            <div class="anime-card group">
+                                <a href="/phim/${movie.slug}" class="block">
+                                    <div class="anime-poster-wrapper group-hover:scale-[1.03] transition-transform duration-500">
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                        
+                                        <div class="anime-badge-container">
+                                            <div class="anime-pill anime-pill-dark">PĐ. ${movie.lang || 'VS'}</div>
+                                            <div class="anime-pill anime-pill-blue">TM. ${movie.quality || 'FHD'}</div>
+                                        </div>
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                                <span class="material-icons-round text-black text-xl">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 text-center px-1">
+                                        <h3 class="text-white font-bold text-xs md:text-sm line-clamp-2 leading-snug group-hover:text-primary transition-colors h-9 md:h-10 flex items-center justify-center">${movie.name}</h3>
+                                        <p class="text-gray-500 text-[10px] md:text-xs mt-0.5 line-clamp-1 uppercase tracking-tight opacity-70">${movie.origin_name || ''}</p>
+                                    </div>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (err) { console.error('Adventure error:', err); }
+        }
+        loadAdventureMovies();
+
+
+        // TOP 10 SOFAFLIX Logic
+        async function loadSofaflixRanking() {
+            const container = document.getElementById('sofaflixContainer');
+            const loading = document.getElementById('sofaflixLoading');
+            try {
+                const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-bo-dang-chieu?page=1');
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 10);
+                    if (loading) loading.classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('hidden');
+                        container.innerHTML = movies.map((movie, index) => {
+                            const rank = index + 1;
+                            const thumb = movie.thumb_url || '';
+                            const poster = movie.poster_url || '';
+                            const finalImg = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+
+                            return `
+                            <div class="ranking-item group" data-rank="${rank}">
+                                <a href="/phim/${movie.slug}">
+                                    <div class="ranking-poster-w">
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                                        ${window.renderMovieBadges(movie.lang, movie.episode_current)}
+                                        <div class="ranking-icon-circle"><span class="material-icons-round">local_fire_department</span></div>
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                                <span class="material-icons-round text-black text-2xl">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ranking-info-w">
+                                        <div class="rank-big-number">${rank}</div>
+                                        <div class="ranking-text-content">
+                                            <h3 class="ranking-title">${movie.name}</h3>
+                                            <p class="ranking-sub">${movie.origin_name || ''}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (err) { console.error('Sofaflix error:', err); }
+        }
+        loadSofaflixRanking();
+
+        // Mythology Ranking Logic
+        async function loadMythologyRanking() {
+            const container = document.getElementById('mythologyRankingContainer');
+            const loading = document.getElementById('mythologyLoading');
+            try {
+                const response = await fetch('https://ophim1.com/v1/api/the-loai/than-thoai?page=1');
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.items) {
+                    const movies = data.data.items.slice(0, 10);
+                    if (loading) loading.classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('hidden');
+                        container.innerHTML = movies.map((movie, index) => {
+                            const rank = index + 1;
+                            const thumb = movie.thumb_url || '';
+                            const poster = movie.poster_url || '';
+                            const finalImg = (typeof imageOptimizer !== 'undefined') ?
+                                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+
+                            return `
+                            <div class="ranking-item group" data-rank="${rank}">
+                                <a href="/phim/${movie.slug}">
+                                    <div class="ranking-poster-w">
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                                        ${window.renderMovieBadges(movie.lang, movie.episode_current)}
+                                        <div class="ranking-icon-circle"><span class="material-icons-round">auto_awesome</span></div>
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                                <span class="material-icons-round text-black text-2xl">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ranking-info-w">
+                                        <div class="rank-big-number">${rank}</div>
+                                        <div class="ranking-text-content">
+                                            <h3 class="ranking-title">${movie.name}</h3>
+                                            <p class="ranking-sub">${movie.origin_name || ''}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (err) { console.error('Mythology ranking error:', err); }
+        }
+        loadMythologyRanking();
+
+    </script>
+
+    <!-- Notification Modal -->
+    <script defer src="/js/notification-modal.js?v=15"></script>
+    <script src="/js/search-icon-enhance.js?v=15"></script>
+
+
+    <script src="/js/top-comments.js?v=15"></script>
+
+    <!-- PWA Service Worker + Auto Update Detection (toast DISABLED) -->
+    <!-- DISABLED: sw-updater.js � �ã tắt thông báo "Phiên bản m�:i �ã có!" -->
+
+
+
+
+    <!-- ====== Chat Widget A Phim ====== -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/chat-room.css?v=65">
+    <link rel="stylesheet" href="/css/chat-mobile-fixed.css?v=65">
+    <!-- FAB Button -->
+    <button id="chatFab" class="chat-fab" aria-label="Mở chat cộng đồng" title="Chat Cộng Đồng">
+        <span class="fab-icon material-icons">forum</span>
+        <span class="chat-fab-badge" id="chatFabBadge">0</span>
+    </button>
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window" role="dialog" aria-label="Chat c�"ng ��ng A Phim">
+        <!-- HEADER -->
+        <div class="chat-header" id="chatHeader">
+            <div class="chat-header-info">
+                <div class="chat-header-avatar">
+                    <span class="material-icons">forum</span>
+                </div>
+                <div class="chat-header-text">
+                    <div class="chat-header-title">C�"ng Đ�ng A Phim</div>
+                    <div class="chat-header-status">
+                        <div class="online-dot"></div>
+                        <span class="chat-header-online-text" id="headerOnlineCount">42 người trực tuyến</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-btn" id="chatMinimizeBtn" title="Thu nhỏ"><span
+                        class="material-icons">remove</span></button>
+                <button class="chat-header-btn" id="chatCloseBtn" title="Đóng"><span
+                        class="material-icons">close</span></button>
+            </div>
+        </div>
+        <!-- BODY -->
+        <div class="chat-body" id="chatBody">
+            <!-- SCREEN 1: WELCOME -->
+            <div class="chat-screen chat-screen-welcome active" id="screenWelcome">
+                <div class="welcome-glow"><img src="/apple-touch-icon.png" alt="A Phim"
+                        style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15));">
+                </div>
+                <div>
+                    <h2 class="welcome-title">Chào mừng �ến <span>Kênh A Phim</span></h2>
+                    <p class="welcome-desc" style="margin-top:8px;">Kết n�i, thảo luận và tận hư�xng �i�!n ảnh cùng hàng
+                        ngàn tín �� phim ảnh.</p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num" id="welcomeOnline">1,284</div>
+                        <div class="welcome-stat-label">Trực tuyến</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">50K+</div>
+                        <div class="welcome-stat-label">Thành viên</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">24/7</div>
+                        <div class="welcome-stat-label">Hoạt ��"ng</div>
+                    </div>
+                </div>
+                <div class="welcome-features">
+                    <div class="welcome-feature"><span class="material-icons">movie</span>
+                        <div class="welcome-feature-text"><strong>Thảo luận phim</strong><span>Review, rating và khám
+                                phá phim m�:i</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">groups</span>
+                        <div class="welcome-feature-text"><strong>C�"ng ��ng sôi n�"i</strong><span>Kết n�i v�:i người xem
+                                cùng s�x thích</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">bolt</span>
+                        <div class="welcome-feature-text"><strong>Chat thời gian thực</strong><span>Nhắn tin ngay lập
+                                tức, không ��" tr�&</span></div>
+                    </div>
+                </div>
+                <button class="welcome-start-btn" id="welcomeStartBtn">Bắt �ầu chat ngay <span
+                        class="material-icons">arrow_forward</span></button>
+            </div>
+            <!-- SCREEN 2: ENTER NAME -->
+            <div class="chat-screen chat-screen-name" id="screenEnterName">
+                <div class="enter-name-header">
+                    <button class="enter-name-back-btn" id="enterNameBackBtn"><span
+                            class="material-icons">arrow_back</span></button>
+                    <div class="enter-name-title-wrap">
+                        <h2>Tạo h� sơ</h2>
+                        <p>Chọn bi�!t danh và màu sắc của bạn</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="name-color-label">Màu �ại di�!n</span>
+                    <div class="color-picker-row" id="colorPickerRow">
+                        <div class="color-option selected" data-color="#ffd709" style="background:#ffd709"></div>
+                        <div class="color-option" data-color="#22c55e" style="background:#22c55e"></div>
+                        <div class="color-option" data-color="#3b82f6" style="background:#3b82f6"></div>
+                        <div class="color-option" data-color="#ef4444" style="background:#ef4444"></div>
+                        <div class="color-option" data-color="#a855f7" style="background:#a855f7"></div>
+                        <div class="color-option" data-color="#f97316" style="background:#f97316"></div>
+                        <div class="color-option" data-color="#06b6d4" style="background:#06b6d4"></div>
+                        <div class="color-option" data-color="#ec4899" style="background:#ec4899"></div>
+                    </div>
+                </div>
+                <div class="name-input-group">
+                    <div class="name-input-label">
+                        <span>Bi�!t danh của bạn</span>
+                        <span class="name-char-count" id="nameCharCount">0 / 20</span>
+                    </div>
+                    <div class="name-input-wrapper">
+                        <input type="text" id="chatNameInput" class="name-input" placeholder="VD: MovieLover_99"
+                            maxlength="20" autocomplete="off">
+                        <span class="name-input-icon material-icons">person</span>
+                    </div>
+                    <div class="name-error-msg" id="nameErrorMsg">Tên phải từ 3�20 ký tự, không chứa ký tự �ặc bi�!t.
+                    </div>
+                </div>
+                <div class="name-preview">
+                    <div class="name-preview-avatar" id="previewAvatar" style="background:#ffd709;">A</div>
+                    <div class="name-preview-info"><strong id="previewName">Bi�!t danh của bạn</strong><span>Thành viên
+                            m�:i · Hôm nay</span></div>
+                </div>
+                <div class="online-preview">
+                    <div class="online-avatars">
+                        <div class="online-avatar-mini" style="background:#ffd709;color:#1a1200;font-weight:700;">K
+                        </div>
+                        <div class="online-avatar-mini" style="background:#22c55e;color:#fff;font-weight:700;">L</div>
+                        <div class="online-avatar-mini" style="background:#3b82f6;color:#fff;font-weight:700;">M</div>
+                        <div class="online-avatar-mini more">+39</div>
+                    </div>
+                    <div class="online-info"><strong><span
+                                style="display:inline-block;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>42
+                            trực tuyến</strong><span>Đang thảo luận sôi n�"i</span></div>
+                </div>
+                <button class="join-btn" id="chatJoinBtn" disabled><span class="material-icons">login</span>Tham gia
+                    phòng chat</button>
+            </div>
+            <!-- SCREEN 3: CHAT ROOM -->
+            <div class="chat-screen chat-screen-room" id="screenRoom">
+                <div class="messages-area" id="messagesArea">
+                    <div class="date-separator"><span>Hôm Nay</span></div>
+                    <div class="sys-msg"><span>�x}� Chào mừng �ến v�:i Kênh A Phim!</span></div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#3b82f6;color:#fff;">M</div>
+                        <div class="msg-content">
+                            <div class="msg-name">MovieFan</div>
+                            <div class="msg-bubble">Mọi người thấy Dune: Part Two thế nào? Hình ảnh choáng ngợp luôn! �x��
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:20</span></div>
+                        </div>
+                    </div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#22c55e;color:#fff;">L</div>
+                        <div class="msg-content">
+                            <div class="msg-name">LinhChi</div>
+                            <div class="msg-bubble">Nhạc phim của Hans Zimmer nữa, nghe mà rung ��"ng cả phòng chiếu �x}�
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:21</span></div>
+                        </div>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-avatar" style="background:#a855f7;border-radius:50%;"></div>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-reactions" id="quickReactions">
+                    <button class="quick-react-btn" data-text="�x� Tuy�!t vời!">�x� Tuy�!t vời</button>
+                    <button class="quick-react-btn" data-text="�x� Quá ��0nh!">�x� Quá ��0nh</button>
+                    <button class="quick-react-btn" data-text="�x�� Đang xem">�x�� Đang xem</button>
+                    <button class="quick-react-btn" data-text="⭐ 10/10">⭐ 10/10</button>
+                    <button class="quick-react-btn" data-text="�x}� Rất ngh�!">�x}� Rất ngh�!</button>
+                    <button class="quick-react-btn" data-text="�x܍ Cực hay!">�x܍ Cực hay</button>
+                </div>
+            </div>
+            <!-- SCREEN 4: H� TRỢ -->
+            <div class="chat-screen chat-screen-support" id="screenSupport">
+                <div class="support-inner">
+                    <div class="support-icon-wrap">
+                        <span class="material-icons">support_agent</span>
+                    </div>
+                    <h3 class="support-title">H� trợ trực tuyến</h3>
+                    <p class="support-desc">Đ�"i ngũ h� trợ của A Phim luôn sẵn sàng giải �áp mọi thắc mắc của bạn.</p>
+                    <div class="support-info-cards">
+                        <div class="support-info-card">
+                            <span class="material-icons">schedule</span>
+                            <div><strong>Giờ hoạt ��"ng</strong><span>24/7 � Phản h�i nhanh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">translate</span>
+                            <div><strong>Ngôn ngữ</strong><span>Tiếng Vi�!t � Tiếng Anh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">verified</span>
+                            <div><strong>Chuyên nghi�!p</strong><span>Được �ào tạo bài bản</span></div>
+                        </div>
+                    </div>
+                    <button class="support-start-btn" id="supportStartTawk">
+                        <span class="material-icons">chat</span>
+                        Bắt �ầu chat h� trợ
+                    </button>
+                    <p class="support-note">Nhấn �Ồ m�x cửa s�" chat v�:i nhân viên h� trợ</p>
+                </div>
+            </div>
+        </div>
+        <!-- INPUT AREA -->
+        <div class="chat-input-area" id="chatInputArea">
+            <div class="chat-tabs-bar">
+                <button class="chat-tab active" data-tab="general" id="tabGeneral"><span
+                        class="material-icons">public</span>Chung</button>
+                <button class="chat-tab" data-tab="movies" id="tabMovies"><span
+                        class="material-icons">movie</span>Phim</button>
+                <button class="chat-tab" data-tab="support" id="tabSupport"><span class="material-icons">help</span>H�
+                    trợ</button>
+            </div>
+            <div class="input-row">
+                <button class="input-icon-btn" id="emojiToggleBtn" title="Emoji"><span
+                        class="material-icons">mood</span></button>
+                <textarea id="chatMessageInput" placeholder="Viết tin nhắn..." rows="1" maxlength="1000"></textarea>
+                <button class="send-btn" id="chatSendBtn" disabled><span class="material-icons">send</span></button>
+            </div>
+            <div class="input-footer">
+                <div class="current-user-tag">
+                    <div class="current-user-avatar" id="currentUserAvatar" style="background:#ffd709;">A</div>
+                    <span id="currentUserName">Khách</span>
+                </div>
+                <span class="change-name-link" id="changeNameLink">Đ�"i tên</span>
+            </div>
+        </div>
+        <!-- Emoji picker -->
+        <div class="emoji-picker-panel" id="emojiPickerPanel">
+            <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+    </div>
+
+    <!-- ====== Firebase SDK (Compat CDN) ====== -->
+    <!-- Firebase Analytics �ã b�9 loại bỏ �Ồ tránh l�i Tracking Prevention làm bẩn Console -->
+
+    <!-- Firebase Chat Service -->
+    <script src="/js/firebase-chat.js?v=42"></script>
+    <!-- Chat Widget Logic -->
+
+
+
+
+
+
+    <!-- ====== End Chat Widget ====== -->
+
+    <!-- Movie Slider: Drag-to-scroll + Wheel-to-horizontal -->
+    <script src="/js/movie-slider.js?v=3"></script>
+
+    <!-- Catfish banner disabled -->
+
+
+<%- include('partials/chat') %>
+</body>
+
+</html>
+
+
+
+
+
+
+
+

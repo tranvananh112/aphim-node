@@ -1,0 +1,42 @@
+<!-- Phim Dropdown Component -->
+<div class="relative group">
+    <button
+        class="nav-item px-6 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-colors duration-200 text-white flex items-center gap-1">
+        Phim
+        <span
+            class="material-icons-round text-sm group-hover:rotate-180 transition-transform duration-300">expand_more</span>
+    </button>
+    <div
+        class="absolute top-full left-0 mt-2 w-64 bg-black/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden z-50">
+        <div class="grid grid-cols-1 gap-0">
+            <a href="/phim-theo-quoc-gia"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5 font-semibold">
+                🌍 Tất Cả Quốc Gia
+            </a>
+            <a href="/phim-theo-quoc-gia?country=viet-nam"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5">
+                🇻🇳 Phim Việt Nam
+            </a>
+            <a href="/phim-theo-quoc-gia?country=han-quoc"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5">
+                🇰🇷 Phim Hàn Quốc
+            </a>
+            <a href="/phim-theo-quoc-gia?country=trung-quoc"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5">
+                🇨🇳 Phim Trung Quốc
+            </a>
+            <a href="/phim-theo-quoc-gia?country=nhat-ban"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5">
+                🇯🇵 Phim Nhật Bản
+            </a>
+            <a href="/phim-theo-quoc-gia?country=thai-lan"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all border-b border-white/5">
+                🇹🇭 Phim Thái Lan
+            </a>
+            <a href="/phim-theo-quoc-gia?country=au-my"
+                class="block px-5 py-3 text-gray-300 hover:text-primary hover:bg-white/5 transition-all">
+                🇺🇸 Phim Âu Mỹ
+            </a>
+        </div>
+    </div>
+</div>

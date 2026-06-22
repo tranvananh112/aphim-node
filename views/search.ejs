@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-gray-100 font-display min-h-screen">
+    <!-- Ambient Background (7 Orbs for Full Coverage) -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+        <div class="ambient-orb ambient-orb-4"></div>
+        <div class="ambient-orb ambient-orb-5"></div>
+        <div class="ambient-orb ambient-orb-6"></div>
+        <div class="ambient-orb ambient-orb-7"></div>
+        <div class="ambient-noise"></div>
+        <div class="ambient-grain"></div>
+    </div>
+    <!-- Page Loader -->
+    <div id="page-loader" class="page-loader">
+        <div class="page-loader__spinner">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                y="0px" width="60px" height="60px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;"
+                xml:space="preserve">
+                <path fill="#f2f20d"
+                    d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
+                    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25"
+                        to="360 25 25" dur="0.6s" repeatCount="indefinite" />
+                </path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <%- include('partials/header') %>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+
+
+
+
+    <!-- ===== SEARCH PAGE UI ===== -->
+    <style>
+    /* ─── Mobile PWA gap fix ─── */
+    @media (max-width: 767px) {
+        /* Padding-top main: nav (~56px) + safe area + 8px thở */
+        main.pt-safe-main {
+            padding-top: calc(64px + env(safe-area-inset-top, 0px)) !important;
+        }
+        /* Khoảng cách từ nav đến nút Quay Lại: thêm margin-top để thoáng hơn (như ảnh 2) */
+        main.pt-safe-main > div:first-child {
+            margin-top: 14px !important;
+        }
+        /* Đảm bảo sidebar HOÀN TOÀN collapsed trên mobile */
+        .sp-sidebar.sp-filter-drawer:not(.open) {
+            max-height: 0 !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+        }
+        /* Không có margin-top thừa trên sp-layout mobile */
+        .sp-layout { margin-top: 0 !important; }
+    }
+
+    /* ─── Layout wrapper ─── */
+    .sp-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* ─── Search bar ─── */
+    .sp-search-row { padding: 10px 0 0; }
+    .sp-search-box {
+        display: flex; align-items: center; gap: 10px;
+        background: #181a22;
+        border: 1.5px solid rgba(255,255,255,0.10);
+        border-radius: 50px;
+        padding: 7px 8px 7px 22px;
+        box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .sp-search-box:focus-within {
+        border-color: rgba(255,255,255,0.22);
+        box-shadow: none;
+    }
+    .sp-search-box .sp-ic { color: #666; font-size: 22px; flex-shrink: 0; }
+    #searchInput {
+        flex: 1; background: none; border: none; outline: none; box-shadow: none;
+        -webkit-appearance: none; appearance: none;
+        color: #fff; font-size: 1.05rem; font-family: inherit;
+        padding: 7px 0; min-width: 0;
+    }
+    #searchInput:focus { outline: none; box-shadow: none; }
+    #searchInput::placeholder { color: #555; }
+    .sp-search-btn {
+        background: #f2c94c; color: #1a1200;
+        font-weight: 800; font-size: 1.05rem;
+        border: none; border-radius: 12px;
+        padding: 10px 24px; cursor: pointer; flex-shrink: 0;
+        font-family: inherit; letter-spacing: 0.01em;
+        margin-right: 4px;   /* khoảng cách với cạnh phải ô search */
+        transition: background 0.15s, transform 0.12s;
+    }
+    .sp-search-btn:hover { background: #ffd84d; transform: scale(1.03); }
+    .sp-search-btn:active { transform: scale(0.97); }
+
+    /* ─── Tabs row ─── */
+    .sp-tabs {
+        display: flex; flex-direction: column;
+        margin: 18px 0 0;
+    }
+    .sp-tab-btn {
+        display: flex; align-items: center; gap: 14px;
+        color: #fff; font-weight: 700; font-size: 1.05rem;
+        padding: 10px 0;   /* padding-left: 0 → canh đều trái với kết quả */
+        cursor: pointer;
+        border: none; background: none; font-family: inherit;
+        text-align: left; width: 100%;
+        transition: color 0.15s;
+    }
+    .sp-tab-btn .material-icons-round { opacity: 0.65; font-size: 20px; transition: opacity 0.15s; }
+    .sp-tab-btn:hover { color: #f2c94c; }
+    .sp-tab-btn:hover .material-icons-round { opacity: 1; }
+    .sp-tab-btn.active { color: #f2c94c; }
+    .sp-tab-btn.active .material-icons-round { opacity: 1; color: #f2c94c; }
+
+    /* ─── Filter drawer ─── */
+    .sp-filter-drawer {
+        overflow: hidden;
+        max-height: 0; opacity: 0; pointer-events: none;
+        transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.28s;
+    }
+    .sp-filter-drawer.open {
+        max-height: 700px; opacity: 1; pointer-events: auto;
+    }
+    .sp-filter-card {
+        background: #13151e;
+        border: 1.5px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 18px 20px 14px;
+        margin-top: 6px;
+        box-shadow: 0 8px 36px rgba(0,0,0,0.5);
+    }
+    @media (min-width: 768px) {
+        .sp-filter-card { max-width: 820px; }
+    }
+
+
+    /* Desktop: 2-column grid for selects */
+    @media (min-width: 768px) {
+        .sp-filter-selects { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+    }
+    @media (max-width: 767px) {
+        .sp-filter-selects { display: flex; flex-direction: column; gap: 14px; }
+    }
+
+    .sp-filter-group label {
+        display: block; font-size: 0.78rem; font-weight: 700;
+        color: rgba(255,255,255,0.45); margin-bottom: 7px;
+        letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    /* ─── Custom Select Dropdown ─── */
+    .sp-csel {
+        position: relative; width: 100%; user-select: none;
+    }
+    .sp-csel-btn {
+        display: flex; align-items: center; justify-content: space-between;
+        width: 100%; background: #0c0e17;
+        border: 1.5px solid rgba(255,255,255,0.09);
+        border-radius: 10px; color: #fff;
+        font-size: 0.88rem; font-family: inherit;
+        padding: 9px 12px; cursor: pointer;
+        transition: border-color 0.18s;
+        text-align: left;
+    }
+    .sp-csel-btn:focus { outline: none; }
+    .sp-csel.open .sp-csel-btn {
+        border-color: rgba(255,255,255,0.25);
+        /* giữ border-radius đầy đủ vì list tách rời bằng margin */
+    }
+    .sp-csel-arrow {
+        font-size: 16px; color: #888; flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+    .sp-csel.open .sp-csel-arrow { transform: rotate(180deg); }
+    .sp-csel-list {
+        display: none;
+        position: fixed;            /* thoát khỏi overflow:hidden của cha */
+        z-index: 9999;
+        background: #13151e;
+        border: 1.5px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        margin-top: 5px;
+        max-height: 300px; overflow-y: auto;
+        box-shadow: 0 10px 32px rgba(0,0,0,0.65);
+    }
+    @media (min-width: 768px) {
+        .sp-csel-list { max-height: 480px; }
+    }
+
+    .sp-csel-list::-webkit-scrollbar { width: 4px; }
+    .sp-csel-list::-webkit-scrollbar-track { background: transparent; }
+    .sp-csel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+    .sp-csel.open .sp-csel-list { display: block; }
+    .sp-csel-opt {
+        padding: 11px 14px; cursor: pointer; font-size: 0.9rem; color: #ddd;
+        transition: background 0.12s, color 0.12s;
+        border-radius: 8px; margin: 3px 4px;
+    }
+    .sp-csel-opt:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sp-csel-opt.selected { color: #f2c94c; background: rgba(242,201,76,0.09); }
+
+    /* ─── Filter action buttons ─── */
+    .sp-filter-actions {
+        display: flex; gap: 10px; margin-top: 20px;
+    }
+    .sp-btn-apply {
+        flex: 1; background: #f2c94c; color: #1a1200;
+        font-weight: 800; font-size: 1rem; border: none;
+        border-radius: 16px; padding: 12px 20px; cursor: pointer;
+        font-family: inherit; display: flex; align-items: center;
+        justify-content: center; gap: 6px;
+        transition: background 0.15s, transform 0.12s;
+        box-shadow: 0 4px 18px rgba(242,201,76,0.25);
+    }
+    .sp-btn-apply:hover { background: #ffd84d; transform: translateY(-1px); }
+    .sp-btn-apply:active { transform: translateY(0); }
+    .sp-btn-close {
+        background: rgba(255,255,255,0.05); color: #ccc;
+        font-weight: 700; font-size: 1rem;
+        border: 1.5px solid rgba(255,255,255,0.13);
+        border-radius: 50px; padding: 14px 28px;
+        cursor: pointer; font-family: inherit;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+    .sp-btn-close:hover { background: rgba(255,255,255,0.11); color: #fff; }
+
+    /* ─── Mobile: thu nhỏ search + action buttons ─── */
+    @media (max-width: 767px) {
+        .sp-search-box {
+            padding: 5px 6px 5px 14px;
+        }
+        .sp-search-box .sp-ic { font-size: 18px; }
+        #searchInput { font-size: 0.93rem; padding: 5px 0; }
+        .sp-search-btn {
+            font-size: 0.88rem;
+            padding: 8px 16px;
+            border-radius: 10px;   /* slightly smaller radius on mobile */
+        }
+        .sp-btn-apply {
+            font-size: 0.88rem;
+            padding: 11px 14px;
+        }
+        .sp-btn-close {
+            font-size: 0.88rem;
+            padding: 11px 18px;
+        }
+        .sp-filter-actions { margin-top: 14px; gap: 8px; }
+    }
+
+
+    /* ─── Results header ─── */
+    .sp-results-head { margin: 10px 0 16px; }
+
+    /* ─── Movie grid ─── */
+    #resultsGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+    @media (min-width: 640px)  { #resultsGrid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+    @media (min-width: 900px)  { #resultsGrid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+    @media (min-width: 1200px) { #resultsGrid { grid-template-columns: repeat(5, 1fr); gap: 22px; } }
+
+    /* ─── Desktop 2-column layout ─── */
+    .sp-layout { display: block; }
+    .sp-mobile-toggle { display: flex; }  /* visible on mobile */
+
+    @media (min-width: 768px) {
+        /* Wrap back+search stays full width (outside sp-layout) */
+        .sp-layout {
+            display: grid;
+            grid-template-columns: 230px 1fr;
+            gap: 0 28px;
+            align-items: start;
+            margin-top: 16px;
+        }
+        /* Sidebar always visible on desktop - override drawer animation */
+        .sp-sidebar {
+            display: block !important;
+            max-height: none !important;
+            opacity: 1 !important;
+            overflow: visible !important;
+            pointer-events: auto !important;
+            position: sticky;
+            top: 76px;
+            transition: none !important;
+        }
+        /* Filter card: no max-width, full sidebar width */
+        .sp-sidebar .sp-filter-card {
+            max-width: none;
+            padding: 16px 14px;
+        }
+        /* Single-column selects in sidebar */
+        .sp-sidebar .sp-filter-selects {
+            display: flex !important;
+            flex-direction: column;
+            gap: 14px;
+        }
+        /* Action buttons stacked in sidebar */
+        .sp-sidebar .sp-filter-actions {
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sp-sidebar .sp-btn-apply {
+            width: 100%;
+            padding: 9px 12px;
+            font-size: 0.88rem;
+        }
+        /* Đặt lại as text link, hide Đóng */
+        .sp-btn-reset {
+            width: 100%; background: none; border: none;
+            color: #888; cursor: pointer;
+            font-size: 0.88rem; font-family: inherit;
+            padding: 6px 0; text-align: center;
+            transition: color 0.15s;
+        }
+        .sp-btn-reset:hover { color: #fff; }
+        .sp-btn-close-mobile { display: none !important; }
+        /* Hide mobile toggle on desktop */
+        .sp-mobile-toggle { display: none !important; }
+        /* Search bar inside sp-main on desktop: no extra top margin */
+        .sp-main .sp-search-row { margin-top: 0; margin-bottom: 12px; }
+        /* Shrink search box slightly on desktop */
+        @media (min-width: 768px) {
+            .sp-search-box {
+                padding: 5px 6px 5px 18px;
+            }
+            #searchInput { font-size: 0.97rem; }
+            .sp-search-btn {
+                font-size: 0.82rem;
+                padding: 5px 10px;
+                border-radius: 8px;
+            }
+        }
+        /* Results head no top margin on desktop (sidebar handles spacing) */
+        .sp-results-head { margin: 0 0 16px; }
+        /* Override search row margin on desktop (inside sp-main) */
+        .sp-main .sp-search-row { margin-bottom: 10px; }
+        .sp-main .sp-back-row { padding-top: 0; }
+    }
+    </style>
+
+
+    <main class="pt-safe-main pb-24 min-h-[80vh]">
+        <!-- Nút Quay Lại: đồng bộ với categories.html dùng container chuẩn -->
+        <div style="max-width:1400px;margin:0 auto;padding:0 24px;" class="mb-2">
+            <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white w-fit group">
+                <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
+                    <span class="material-icons-round text-[14px]">chevron_left</span>
+                </div>
+                <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
+            </button>
+        </div>
+
+        <div class="sp-wrap">
+
+
+            <!-- BODY: 2-col on desktop, 1-col on mobile -->
+            <div class="sp-layout">
+
+                <!-- LEFT SIDEBAR: Filter (luôn mở trên desktop, toggle trên mobile) -->
+                <aside class="sp-sidebar sp-filter-drawer" id="spFilterDrawer">
+                    <div class="sp-filter-card">
+                        <div class="flex items-center gap-2 mb-5">
+                            <span class="material-icons-round" style="color:#f2c94c;font-size:22px;">tune</span>
+                            <span style="font-weight:800;font-size:1.1rem;">Bộ lọc</span>
+                        </div>
+
+                        <div class="sp-filter-selects">
+                            <!-- Thể loại -->
+                            <div class="sp-filter-group">
+                                <label>Thể loại</label>
+                                <div class="sp-csel" id="csel-category">
+                                    <button type="button" class="sp-csel-btn">
+                                        <span class="sp-csel-val">Tất cả</span>
+                                        <span class="material-icons-round sp-csel-arrow">expand_more</span>
+                                    </button>
+                                    <div class="sp-csel-list">
+                                        <div class="sp-csel-opt selected" data-value="">Tất cả</div>
+                                        <div class="sp-csel-opt" data-value="hanh-dong">Hành động</div>
+                                        <div class="sp-csel-opt" data-value="tinh-cam">Tình cảm</div>
+                                        <div class="sp-csel-opt" data-value="hai-huoc">Hài hước</div>
+                                        <div class="sp-csel-opt" data-value="kinh-di">Kinh dị</div>
+                                        <div class="sp-csel-opt" data-value="khoa-hoc-vien-tuong">Khoa học viễn tưởng</div>
+                                        <div class="sp-csel-opt" data-value="hoat-hinh">Hoạt hình</div>
+                                        <div class="sp-csel-opt" data-value="vo-thuat">Võ thuật</div>
+                                        <div class="sp-csel-opt" data-value="tam-ly">Tâm lý</div>
+                                        <div class="sp-csel-opt" data-value="bi-an">Bí ẩn</div>
+                                        <div class="sp-csel-opt" data-value="phieu-luu">Phiêu lưu</div>
+                                        <div class="sp-csel-opt" data-value="lich-su">Lịch sử</div>
+                                        <div class="sp-csel-opt" data-value="chien-tranh">Chiến tranh</div>
+                                        <div class="sp-csel-opt" data-value="am-nhac">Âm nhạc</div>
+                                        <div class="sp-csel-opt" data-value="than-thoai">Thần thoại</div>
+                                    </div>
+                                    <input type="hidden" id="categoryFilter" value="">
+                                </div>
+                            </div>
+                            <!-- Quốc gia -->
+                            <div class="sp-filter-group">
+                                <label>Quốc gia</label>
+                                <div class="sp-csel" id="csel-country">
+                                    <button type="button" class="sp-csel-btn">
+                                        <span class="sp-csel-val">Tất cả</span>
+                                        <span class="material-icons-round sp-csel-arrow">expand_more</span>
+                                    </button>
+                                    <div class="sp-csel-list">
+                                        <div class="sp-csel-opt selected" data-value="">Tất cả</div>
+                                        <div class="sp-csel-opt" data-value="viet-nam">Việt Nam</div>
+                                        <div class="sp-csel-opt" data-value="han-quoc">Hàn Quốc</div>
+                                        <div class="sp-csel-opt" data-value="trung-quoc">Trung Quốc</div>
+                                        <div class="sp-csel-opt" data-value="my">Mỹ</div>
+                                        <div class="sp-csel-opt" data-value="nhat-ban">Nhật Bản</div>
+                                        <div class="sp-csel-opt" data-value="thai-lan">Thái Lan</div>
+                                        <div class="sp-csel-opt" data-value="anh">Anh</div>
+                                        <div class="sp-csel-opt" data-value="phap">Pháp</div>
+                                        <div class="sp-csel-opt" data-value="hong-kong">Hồng Kông</div>
+                                        <div class="sp-csel-opt" data-value="an-do">Ấn Độ</div>
+                                    </div>
+                                    <input type="hidden" id="countryFilter" value="">
+                                </div>
+                            </div>
+                            <!-- Năm -->
+                            <div class="sp-filter-group">
+                                <label>Năm</label>
+                                <div class="sp-csel" id="csel-year">
+                                    <button type="button" class="sp-csel-btn">
+                                        <span class="sp-csel-val">Tất cả</span>
+                                        <span class="material-icons-round sp-csel-arrow">expand_more</span>
+                                    </button>
+                                    <div class="sp-csel-list">
+                                        <div class="sp-csel-opt selected" data-value="">Tất cả</div>
+                                        <div class="sp-csel-opt" data-value="2026">2026</div>
+                                        <div class="sp-csel-opt" data-value="2025">2025</div>
+                                        <div class="sp-csel-opt" data-value="2024">2024</div>
+                                        <div class="sp-csel-opt" data-value="2023">2023</div>
+                                        <div class="sp-csel-opt" data-value="2022">2022</div>
+                                        <div class="sp-csel-opt" data-value="2021">2021</div>
+                                        <div class="sp-csel-opt" data-value="2020">2020</div>
+                                        <div class="sp-csel-opt" data-value="2019">2019</div>
+                                        <div class="sp-csel-opt" data-value="2018">2018</div>
+                                    </div>
+                                    <input type="hidden" id="yearFilter" value="">
+                                </div>
+                            </div>
+                            <!-- Sắp xếp -->
+                            <div class="sp-filter-group">
+                                <label>Sắp xếp</label>
+                                <div class="sp-csel" id="csel-sort">
+                                    <button type="button" class="sp-csel-btn">
+                                        <span class="sp-csel-val">Mới nhất</span>
+                                        <span class="material-icons-round sp-csel-arrow">expand_more</span>
+                                    </button>
+                                    <div class="sp-csel-list">
+                                        <div class="sp-csel-opt selected" data-value="latest">Mới nhất</div>
+                                        <div class="sp-csel-opt" data-value="rating">Đánh giá cao</div>
+                                        <div class="sp-csel-opt" data-value="views">Xem nhiều</div>
+                                        <div class="sp-csel-opt" data-value="year">Năm phát hành</div>
+                                    </div>
+                                    <input type="hidden" id="sortFilter" value="latest">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="sp-filter-actions">
+                            <button class="sp-btn-apply" onclick="spApplyFilter()">
+                                Lọc kết quả &nbsp;→
+                            </button>
+                            <!-- Đóng: chỉ hiện trên mobile -->
+                            <button class="sp-btn-close sp-btn-close-mobile" onclick="spToggleFilter()">Đóng</button>
+                            <!-- Đặt lại: hiện cả 2 platform -->
+                            <button class="sp-btn-reset" onclick="resetFilters()">Đặt lại</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- RIGHT MAIN: Mobile toggle + Search + Results -->
+                <div class="sp-main">
+                    <!-- Search Bar (nằm trong cột phải trên desktop) -->
+                    <div class="sp-search-row">
+                        <div class="sp-search-box">
+                            <span class="material-icons-round sp-ic">search</span>
+                            <input type="text" id="searchInput" placeholder="Tìm phim, diễn viên..." autocomplete="off">
+                            <button class="sp-search-btn" onclick="spDoSearch()">Tìm</button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile only: Bộ lọc toggle -->
+                    <div class="sp-tabs sp-mobile-toggle">
+                        <button class="sp-tab-btn active" id="tabFilter" onclick="spToggleFilter()">
+                            <span class="material-icons-round">filter_list</span>
+                            Bộ lọc
+                        </button>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="sp-results-head">
+                        <h2 id="resultsTitle" class="text-2xl font-bold">Kết quả tìm kiếm</h2>
+                        <p id="resultsCount" class="text-gray-400 mt-1 text-sm">Đang tải...</p>
+                    </div>
+
+                    <div id="resultsGrid">
+                        <div style="grid-column:1/-1;text-align:center;padding:80px 0;">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                            <p class="text-gray-400 mt-4">Đang tải...</p>
+                        </div>
+                    </div>
+
+                    <div id="pagination" class="mt-12 flex justify-center gap-2"></div>
+                </div>
+
+            </div><!-- /.sp-layout -->
+
+        </div><!-- /.sp-wrap -->
+
+
+        <script>
+        // ── Filter toggle ──
+        function spToggleFilter() {
+            var drawer = document.getElementById('spFilterDrawer');
+            var btn = document.getElementById('tabFilter');
+            var isOpen = drawer.classList.toggle('open');
+            if (btn) btn.classList.toggle('active', isOpen);
+        }
+
+        // ── Search ──
+        function spDoSearch() {
+            var q = document.getElementById('searchInput').value.trim();
+            if (q) window.location.href = '/search?q=' + encodeURIComponent(q);
+        }
+
+        // ── Apply filter ──
+        // Gọi trực tiếp search.js performSearch() - không reload trang
+        function spApplyFilter() {
+            if (typeof window.applyFilters === 'function') {
+                window.applyFilters();
+            }
+            // Đóng drawer sau khi lọc
+            spToggleFilter();
+        }
+
+        function resetFilters() {
+            if (typeof window.resetFilters === 'function') {
+                window.resetFilters();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+
+            // Custom select init
+            function positionDropdown(sel) {
+                var btn  = sel.querySelector('.sp-csel-btn');
+                var list = sel.querySelector('.sp-csel-list');
+                var rect = btn.getBoundingClientRect();
+                list.style.top   = (rect.bottom + 5) + 'px';
+                list.style.left  = rect.left + 'px';
+                list.style.width = rect.width + 'px';
+            }
+
+            document.querySelectorAll('.sp-csel').forEach(function(sel) {
+                var btn  = sel.querySelector('.sp-csel-btn');
+                var val  = sel.querySelector('.sp-csel-val');
+                var inp  = sel.querySelector('input[type=hidden]');
+                var opts = sel.querySelectorAll('.sp-csel-opt');
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var wasOpen = sel.classList.contains('open');
+                    document.querySelectorAll('.sp-csel.open').forEach(function(s) { s.classList.remove('open'); });
+                    if (!wasOpen) {
+                        positionDropdown(sel);
+                        sel.classList.add('open');
+                    }
+                });
+                opts.forEach(function(opt) {
+                    opt.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        inp.value = opt.dataset.value;
+                        val.textContent = opt.textContent;
+                        opts.forEach(function(o){ o.classList.remove('selected'); });
+                        opt.classList.add('selected');
+                        sel.classList.remove('open');
+                        // Dispatch change event để search.js bắt được
+                        inp.dispatchEvent(new Event('change'));
+                    });
+                });
+            });
+            // Reposition on scroll/resize
+            window.addEventListener('scroll', function() {
+                document.querySelectorAll('.sp-csel.open').forEach(function(s) { positionDropdown(s); });
+            }, true);
+            window.addEventListener('resize', function() {
+                document.querySelectorAll('.sp-csel.open').forEach(function(s) { positionDropdown(s); });
+            });
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.sp-csel.open').forEach(function(s){ s.classList.remove('open'); });
+            });
+
+            // Sync URL params into custom selects
+            var urlMap = { category:'csel-category', country:'csel-country', year:'csel-year', sort:'csel-sort' };
+            Object.keys(urlMap).forEach(function(k) {
+                var v = params.get(k); if (!v) return;
+                var csel = document.getElementById(urlMap[k]); if (!csel) return;
+                var inp = csel.querySelector('input[type=hidden]');
+                var val = csel.querySelector('.sp-csel-val');
+                csel.querySelectorAll('.sp-csel-opt').forEach(function(opt) {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.value === v) { opt.classList.add('selected'); if(inp) inp.value=v; if(val) val.textContent=opt.textContent; }
+                });
+            });
+
+            // Search input from URL
+            var q = params.get('q') || '';
+            var sinp = document.getElementById('searchInput');
+            if (sinp) {
+                sinp.value = q;
+                sinp.addEventListener('keydown', function(e) { if (e.key === 'Enter') spDoSearch(); });
+            }
+
+            // Auto-open drawer if filter params present
+            if (params.get('category') || params.get('country') || params.get('year')) {
+                var drawer = document.getElementById('spFilterDrawer');
+                var tabBtn = document.getElementById('tabFilter');
+                if (drawer) drawer.classList.add('open');
+                if (tabBtn) tabBtn.classList.add('active');
+            }
+        });
+                </script>
+    </main>
+
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- [INLINE-AD] APhim Partner Banners -->
+    <!-- Ads disabled -->
+                    <%- include('partials/footer') %>
+    <!-- App Guide Popup -->
+    <div id="aphim-guide-overlay" onclick="if(event.target===this)aphimCloseGuide()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:460px;background:#0d0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.8);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.25);">
+                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hướng dẫn cài đặt A Phim</span>
+                <button onclick="aphimCloseGuide()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:#aaa;font-size:1rem;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">✕</button>
+            </div>
+            <div style="padding:14px;overflow-y:auto;max-height:78vh;">
+                <img src="/quangcao/HD_cai_app.png" alt="Huong dan cai dat" style="width:100%;height:auto;border-radius:8px;display:block;"/>
+            </div>
+        </div>
+    </div>
+    <script>
+        function aphimOpenGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='flex';document.body.style.overflow='hidden';}}
+        function aphimCloseGuide(){var e=document.getElementById('aphim-guide-overlay');if(e){e.style.display='none';document.body.style.overflow='';}}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')aphimCloseGuide();});
+    </script>
+
+
+    <!-- Scripts -->
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/data-cache.js?v=15"></script>
+    <script src="/js/api-optimization.js?v=15"></script>
+    <script src="/js/image-optimization.js?v=15"></script>
+    <script src="/js/premium-ad-blocker.js?v=3"></script>
+    <script src="/js/auth-modal.js?v=15"></script>
+    <script src="/js/user.js?v=40"></script>
+    <script src="/js/search.js?v=17"></script>
+    <script src="/js/categories-dropdown.js?v=17"></script>
+    <script src="/js/countries-dropdown.js?v=17"></script>
+
+    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+
+    <!-- Defer ads -->
+    <script defer src="/js/analytics.js?v=15"></script>
+    <!-- <script src="/js/navigation-danh-sach.js?v=17"></script> -->
+    <script src="/js/mobile-menu-modern.js?v=42"></script>
+    <script src="/js/nav-instant-suggest.js?v=7"></script>
+
+    <!-- Sticky Navigation -->
+    <script src="/js/sticky-nav.js?v=19"></script>
+
+    <!-- Page Loader Script -->
+    <script src="/js/page-loader.js?v=15"></script>
+
+    <!-- ====== Chat Widget A Phim ====== -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/chat-room.css?v=65">
+    <link rel="stylesheet" href="/css/chat-mobile-fixed.css?v=65">
+    <!-- FAB Button -->
+    <button id="chatFab" class="chat-fab" aria-label="Mở chat cộng đồng" title="Chat Cộng Đồng">
+        <span class="fab-icon material-icons">forum</span>
+        <span class="chat-fab-badge" id="chatFabBadge">0</span>
+    </button>
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window" role="dialog" aria-label="Chat cộng đồng A Phim">
+        <!-- HEADER -->
+        <div class="chat-header" id="chatHeader">
+            <div class="chat-header-info">
+                <div class="chat-header-avatar">
+                    <span class="material-icons">forum</span>
+                </div>
+                <div class="chat-header-text">
+                    <div class="chat-header-title">Cộng Đồng A Phim</div>
+                    <div class="chat-header-status">
+                        <div class="online-dot"></div>
+                        <span class="chat-header-online-text" id="headerOnlineCount">42 người trực tuyến</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-btn" id="chatMinimizeBtn" title="Thu nhỏ"><span
+                        class="material-icons">remove</span></button>
+                <button class="chat-header-btn" id="chatCloseBtn" title="Đóng"><span
+                        class="material-icons">close</span></button>
+            </div>
+        </div>
+        <!-- BODY -->
+        <div class="chat-body" id="chatBody">
+            <!-- SCREEN 1: WELCOME -->
+            <div class="chat-screen chat-screen-welcome active" id="screenWelcome">
+                <div class="welcome-glow"><img src="/apple-touch-icon.png" alt="A Phim"
+                        style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.15));">
+                </div>
+                <div>
+                    <h2 class="welcome-title">Chào mừng đến <span>Kênh A Phim</span></h2>
+                    <p class="welcome-desc" style="margin-top:8px;">Kết nối, thảo luận và tận hưởng điện ảnh cùng hàng
+                        ngàn tín đồ phim ảnh.</p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num" id="welcomeOnline">1,284</div>
+                        <div class="welcome-stat-label">Trực tuyến</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">50K+</div>
+                        <div class="welcome-stat-label">Thành viên</div>
+                    </div>
+                    <div class="welcome-stat">
+                        <div class="welcome-stat-num">24/7</div>
+                        <div class="welcome-stat-label">Hoạt động</div>
+                    </div>
+                </div>
+                <div class="welcome-features">
+                    <div class="welcome-feature"><span class="material-icons">movie</span>
+                        <div class="welcome-feature-text"><strong>Thảo luận phim</strong><span>Review, rating và khám
+                                phá phim mới</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">groups</span>
+                        <div class="welcome-feature-text"><strong>Cộng đồng sôi nổi</strong><span>Kết nối với người xem
+                                cùng sở thích</span></div>
+                    </div>
+                    <div class="welcome-feature"><span class="material-icons">bolt</span>
+                        <div class="welcome-feature-text"><strong>Chat thời gian thực</strong><span>Nhắn tin ngay lập
+                                tức, không độ trễ</span></div>
+                    </div>
+                </div>
+                <button class="welcome-start-btn" id="welcomeStartBtn">Bắt đầu chat ngay <span
+                        class="material-icons">arrow_forward</span></button>
+            </div>
+            <!-- SCREEN 2: ENTER NAME -->
+            <div class="chat-screen chat-screen-name" id="screenEnterName">
+                <div class="enter-name-header">
+                    <button class="enter-name-back-btn" id="enterNameBackBtn"><span
+                            class="material-icons">arrow_back</span></button>
+                    <div class="enter-name-title-wrap">
+                        <h2>Tạo hồ sơ</h2>
+                        <p>Chọn biệt danh và màu sắc của bạn</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="name-color-label">Màu đại diện</span>
+                    <div class="color-picker-row" id="colorPickerRow">
+                        <div class="color-option selected" data-color="#ffd709" style="background:#ffd709"></div>
+                        <div class="color-option" data-color="#22c55e" style="background:#22c55e"></div>
+                        <div class="color-option" data-color="#3b82f6" style="background:#3b82f6"></div>
+                        <div class="color-option" data-color="#ef4444" style="background:#ef4444"></div>
+                        <div class="color-option" data-color="#a855f7" style="background:#a855f7"></div>
+                        <div class="color-option" data-color="#f97316" style="background:#f97316"></div>
+                        <div class="color-option" data-color="#06b6d4" style="background:#06b6d4"></div>
+                        <div class="color-option" data-color="#ec4899" style="background:#ec4899"></div>
+                    </div>
+                </div>
+                <div class="name-input-group">
+                    <div class="name-input-label">
+                        <span>Biệt danh của bạn</span>
+                        <span class="name-char-count" id="nameCharCount">0 / 20</span>
+                    </div>
+                    <div class="name-input-wrapper">
+                        <input type="text" id="chatNameInput" class="name-input" placeholder="VD: MovieLover_99"
+                            maxlength="20" autocomplete="off">
+                        <span class="name-input-icon material-icons">person</span>
+                    </div>
+                    <div class="name-error-msg" id="nameErrorMsg">Tên phải từ 3–20 ký tự, không chứa ký tự đặc biệt.
+                    </div>
+                </div>
+                <div class="name-preview">
+                    <div class="name-preview-avatar" id="previewAvatar" style="background:#ffd709;">A</div>
+                    <div class="name-preview-info"><strong id="previewName">Biệt danh của bạn</strong><span>Thành viên
+                            mới · Hôm nay</span></div>
+                </div>
+                <div class="online-preview">
+                    <div class="online-avatars">
+                        <div class="online-avatar-mini" style="background:#ffd709;color:#1a1200;font-weight:700;">K
+                        </div>
+                        <div class="online-avatar-mini" style="background:#22c55e;color:#fff;font-weight:700;">L</div>
+                        <div class="online-avatar-mini" style="background:#3b82f6;color:#fff;font-weight:700;">M</div>
+                        <div class="online-avatar-mini more">+39</div>
+                    </div>
+                    <div class="online-info"><strong><span
+                                style="display:inline-block;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-right:5px;vertical-align:middle;"></span>42
+                            trực tuyến</strong><span>Đang thảo luận sôi nổi</span></div>
+                </div>
+                <button class="join-btn" id="chatJoinBtn" disabled><span class="material-icons">login</span>Tham gia
+                    phòng chat</button>
+            </div>
+            <!-- SCREEN 3: CHAT ROOM -->
+            <div class="chat-screen chat-screen-room" id="screenRoom">
+                <div class="messages-area" id="messagesArea">
+                    <div class="date-separator"><span>Hôm Nay</span></div>
+                    <div class="sys-msg"><span>🎬 Chào mừng đến với Kênh A Phim!</span></div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#3b82f6;color:#fff;">M</div>
+                        <div class="msg-content">
+                            <div class="msg-name">MovieFan</div>
+                            <div class="msg-bubble">Mọi người thấy Dune: Part Two thế nào? Hình ảnh choáng ngợp luôn! 🤩
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:20</span></div>
+                        </div>
+                    </div>
+                    <div class="msg-group">
+                        <div class="msg-avatar" style="background:#22c55e;color:#fff;">L</div>
+                        <div class="msg-content">
+                            <div class="msg-name">LinhChi</div>
+                            <div class="msg-bubble">Nhạc phim của Hans Zimmer nữa, nghe mà rung động cả phòng chiếu 🎵
+                            </div>
+                            <div class="msg-meta"><span class="msg-time">20:21</span></div>
+                        </div>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-avatar" style="background:#a855f7;border-radius:50%;"></div>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-reactions" id="quickReactions">
+                    <button class="quick-react-btn" data-text="👍 Tuyệt vời!">👍 Tuyệt vời</button>
+                    <button class="quick-react-btn" data-text="🔥 Quá đỉnh!">🔥 Quá đỉnh</button>
+                    <button class="quick-react-btn" data-text="🍿 Đang xem">🍿 Đang xem</button>
+                    <button class="quick-react-btn" data-text="⭐ 10/10">⭐ 10/10</button>
+                    <button class="quick-react-btn" data-text="🎬 Rất nghệ">🎬 Rất nghệ</button>
+                    <button class="quick-react-btn" data-text="😍 Cực hay!">😍 Cực hay</button>
+                </div>
+            </div>
+            <!-- SCREEN 4: HỖ TRỢ -->
+            <div class="chat-screen chat-screen-support" id="screenSupport">
+                <div class="support-inner">
+                    <div class="support-icon-wrap">
+                        <span class="material-icons">support_agent</span>
+                    </div>
+                    <h3 class="support-title">Hỗ trợ trực tuyến</h3>
+                    <p class="support-desc">Đội ngũ hỗ trợ của A Phim luôn sẵn sàng giải đáp mọi thắc mắc của bạn.</p>
+                    <div class="support-info-cards">
+                        <div class="support-info-card">
+                            <span class="material-icons">schedule</span>
+                            <div><strong>Giờ hoạt động</strong><span>24/7 — Phản hồi nhanh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">translate</span>
+                            <div><strong>Ngôn ngữ</strong><span>Tiếng Việt — Tiếng Anh</span></div>
+                        </div>
+                        <div class="support-info-card">
+                            <span class="material-icons">verified</span>
+                            <div><strong>Chuyên nghiệp</strong><span>Được đào tạo bài bản</span></div>
+                        </div>
+                    </div>
+                    <button class="support-start-btn" id="supportStartTawk">
+                        <span class="material-icons">chat</span>
+                        Bắt đầu chat hỗ trợ
+                    </button>
+                    <p class="support-note">Nhấn để mở cửa sổ chat với nhân viên hỗ trợ</p>
+                </div>
+            </div>
+        </div>
+        <!-- INPUT AREA -->
+        <div class="chat-input-area" id="chatInputArea">
+            <div class="chat-tabs-bar">
+                <button class="chat-tab active" data-tab="general" id="tabGeneral"><span
+                        class="material-icons">public</span>Chung</button>
+                <button class="chat-tab" data-tab="movies" id="tabMovies"><span
+                        class="material-icons">movie</span>Phim</button>
+                <button class="chat-tab" data-tab="support" id="tabSupport"><span class="material-icons">help</span>Hỗ
+                    trợ</button>
+            </div>
+            <div class="input-row">
+                <button class="input-icon-btn" id="emojiToggleBtn" title="Emoji"><span
+                        class="material-icons">mood</span></button>
+                <textarea id="chatMessageInput" placeholder="Viết tin nhắn..." rows="1" maxlength="1000"></textarea>
+                <button class="send-btn" id="chatSendBtn" disabled><span class="material-icons">send</span></button>
+            </div>
+            <div class="input-footer">
+                <div class="current-user-tag">
+                    <div class="current-user-avatar" id="currentUserAvatar" style="background:#ffd709;">A</div>
+                    <span id="currentUserName">Khách</span>
+                </div>
+                <span class="change-name-link" id="changeNameLink">Đổi tên</span>
+            </div>
+        </div>
+        <!-- Emoji picker -->
+        <div class="emoji-picker-panel" id="emojiPickerPanel">
+            <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+    </div>
+
+    <!-- ====== Firebase SDK (Compat CDN) ====== -->
+    <!-- Firebase Chat Service -->
+    <script src="/js/firebase-chat.js?v=42"></script>
+    <!-- Chat Widget Logic -->
+
+
+
+
+
+    <!-- ====== End Chat Widget ====== -->
+    <script src="/js/nav-active-indicator.js?v=15"></script>
+
+    <!-- Catfish banner disabled -->
+<%- include('partials/chat') %>
+</body>
+
+</html>
+
+
+
+

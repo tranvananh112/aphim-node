@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Ủng hộ - A Phim Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Keep supporters.js status classes compatibility */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .status-verified {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+    </style>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"
+                    style="background:transparent; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+                    <img src="../favicon.png" alt="A Phim"
+                        style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));" />
+                </div>
+                <div class="sidebar-logo-text">
+                    <h1 style="letter-spacing: 0.5px;">A Phim</h1>
+                    <p style="color: var(--primary);">Admin Panel</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="/dashboard" class="sidebar-nav-item"><i data-lucide="layout-dashboard"
+                            style="width: 1em; height: 1em;"></i><span>Dashboard</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">nội dung</p>
+                    <a href="/movies" class="sidebar-nav-item"><i data-lucide="film"
+                            style="width: 1em; height: 1em;"></i><span>Quản lý phim</span></a>
+                    <a href="/categories" class="sidebar-nav-item"><i data-lucide="list-tree"
+                            style="width: 1em; height: 1em;"></i><span>Danh mục</span></a>
+                    <a href="/banners" class="sidebar-nav-item"><i data-lucide="image"
+                            style="width: 1em; height: 1em;"></i><span>Banner &amp; Ads</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Người dùng</p>
+                    <a href="/users" class="sidebar-nav-item"><i data-lucide="users"
+                            style="width: 1em; height: 1em;"></i><span>Người dùng</span></a>
+                    <a href="/chat" class="sidebar-nav-item"><i data-lucide="message-square"
+                            style="width: 1em; height: 1em;"></i><span>Quản lý Chat</span></a>
+                    <a href="/comments" class="sidebar-nav-item"><i data-lucide="message-circle"
+                            style="width: 1em; height: 1em;"></i><span>Bình luận</span></a>
+                    <a href="/subscriptions" class="sidebar-nav-item"><i data-lucide="credit-card"
+                            style="width: 1em; height: 1em;"></i><span>Gói thành viên</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">Tài chính</p>
+                    <a href="/payments" class="sidebar-nav-item"><i data-lucide="circle-dollar-sign"
+                            style="width: 1em; height: 1em;"></i><span>Thanh toán</span></a>
+                    <a href="/supporters" class="sidebar-nav-item active"><i data-lucide="heart"
+                            style="width: 1em; height: 1em;"></i><span>Ủng hộ</span></a>
+                </div>
+                <div class="sidebar-nav-section">
+                    <p class="sidebar-nav-label">hệ thống</p>
+                    <a href="/settings" class="sidebar-nav-item"><i data-lucide="settings"
+                            style="width: 1em; height: 1em;"></i><span>Cài đặt</span></a>
+                    <a href="/partner" class="sidebar-nav-item"><i data-lucide="handshake"
+                            style="width: 1em; height: 1em;"></i><span>Partner DT99</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" onclick="location.href = '/dashboard'">
+                    <i data-lucide="log-out" style="width: 1em; height: 1em;"></i><span>Đăng xuất</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Quản lý Ủng hộ</h2>
+                    <p>Danh sách người ủng hộ và thống kê</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <i data-lucide="plus" style="width: 1em; height: 1em;"></i>
+                        Thêm người ủng hộ
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadSupporters()">
+                        <i data-lucide="refresh-cw" style="width: 1em; height: 1em;"></i>
+                    </button>
+                    <div class="header-separator"></div>
+                    <div class="header-admin">
+                        <div class="header-admin-avatar">A</div>
+                        <div class="header-admin-info">
+                            <p>Admin</p><span>Quản trị viên</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+
+                <!-- Stats IDs preserved for supporters.js -->
+                <div class="stats-grid" style="margin-bottom: 24px;">
+                    <div class="stat-card blue">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon blue"><i data-lucide="heart-handshake"
+                                    style="width: 1em; height: 1em;"></i></div>
+                            <span class="stat-badge positive">Tổng</span>
+                        </div>
+                        <div class="stat-number" id="stat-total">0</div>
+                        <div class="stat-label">Tổng ủng hộ</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon green"><i data-lucide="check-circle"
+                                    style="width: 1em; height: 1em;"></i></div>
+                            <span class="stat-badge positive">OK</span>
+                        </div>
+                        <div class="stat-number" id="stat-verified">0</div>
+                        <div class="stat-label">Đã xác nhận</div>
+                    </div>
+                    <div class="stat-card amber">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon amber"><i data-lucide="calendar-clock"
+                                    style="width: 1em; height: 1em;"></i></div>
+                            <span class="stat-badge"
+                                style="background: var(--warning-bg); color: var(--warning);">Chờ</span>
+                        </div>
+                        <div class="stat-number" id="stat-pending">0</div>
+                        <div class="stat-label">Chờ xác nhận</div>
+                    </div>
+                    <div class="stat-card violet">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon violet"><i data-lucide="circle-dollar-sign"
+                                    style="width: 1em; height: 1em;"></i></div>
+                            <span class="stat-badge positive">VNĐ</span>
+                        </div>
+                        <div class="stat-number" id="stat-amount">0đ </div>
+                        <div class="stat-label">Tổng số tiền</div>
+                    </div>
+                </div>
+
+                <!-- Filter bar -->
+                <div class="filter-bar" style="margin-bottom: 20px;">
+                    <select id="status-filter" class="form-select" style="width: auto;">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="verified">Đã xác nhận</option>
+                        <option value="rejected">Từ chối</option>
+                    </select>
+                </div>
+
+                <!-- Supporters Table tbody ID preserved for supporters.js -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">Danh sách người ủng hộ</span>
+                    </div>
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Số tiền</th>
+                                    <th>Lời nhắn</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supporters-table">
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="loading-spinner">
+                                            <div class="spinner"></div>
+                                            <p>Đang tải...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination all IDs preserved for supporters.js -->
+                    <div id="pagination"
+                        style="padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+                        <div style="font-size: 12.5px; color: var(--text-muted);">
+                            Hiển thị <span id="showing-from">0</span> <span id="showing-to">0</span>
+                            trong tổng số <span id="total-records">0</span>
+                        </div>
+                        <div id="pagination-buttons" class="pagination"></div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal GIỮ NGUY`N cấu trúc và IDs cho supporters.js -->
+    <div id="supporter-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title">Thêm người ủng hộ</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i data-lucide="x" style="width: 1em; height: 1em;"></i>
+                </button>
+            </div>
+            <formỗid="supporter-form"class="modal-body"style="padding: 24px;">
+                <input type="hidden" id="supporter-id">
+
+                <div class="form-group">
+                    <label class="form-label">Tên người ủng hộ *</label>
+                    <input type="text" id="supporter-name" class="form-input" placeholder="Nguyễn Văn A" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Số tiền (VNĐ) *</label>
+                    <input type="number" id="supporter-amount" class="form-input" placeholder="50000" min="0"
+                        step="1000" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lời nhắn</label>
+                    <textarea id="supporter-message" class="form-textarea" placeholder="Ủng hộ admin..."
+                        rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="supporter-status" class="form-select">
+                        <option value="verified">Đã xác nhận</option>
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="rejected">Từ chối</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ghi chú</label>
+                    <textarea id="supporter-notes" class="form-textarea" placeholder="Ghi chú nội bộ"
+                        ..."rows="2"></textarea>
+                </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">Hủy</button>
+                    <button type="submit" form="supporter-form" class="btn btn-primary">
+                        <i data-lucide="save" style="width: 1em; height: 1em;"></i> Lưu
+                    </button>
+                </div>
+        </div>
+    </div>
+
+    <!-- Scripts GIỮ NGUY`N -->
+    <script src="../js/config.js"></script>
+    <script src="../js/admin/supporters.js"></script>
+    <script>lucide.createIcons();</script>
+
+    <script>
+        // Tự động render Lucide Icons khi DOM thay đổi (tải dữ liệu bảng/động)
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) lucide.createIcons();
+            let isUpdating = false;
+            const observer = new MutationObserver(() => {
+                if (isUpdating) return;
+                isUpdating = true;
+                if (window.lucide) {
+                    try { lucide.createIcons(); } catch (e) { }
+                }
+                setTimeout(() => { isUpdating = false; }, 100);
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+
+</html>

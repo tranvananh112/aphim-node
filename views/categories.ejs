@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <%- include('partials/head') %>
+</head>
+
+<body class="bg-background-dark text-white">
+    <%- include('partials/header') %>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 pt-safe-main pb-20 min-h-[80vh]">
+        <!-- Header -->
+        <div class="mb-6">
+            <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white mb-4 w-fit group">
+                <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
+                    <span class="material-icons-round text-[14px]">chevron_left</span>
+                </div>
+                <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
+            </button>
+            <h1 id="pageTitle" class="text-4xl md:text-5xl font-bold mb-2">Thể Loại Phim</h1>
+            <p id="pageSubtitle" class="text-gray-400 text-lg">Khám phá phim theo thể loại yêu thích của bạn</p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="text-center py-20">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-gray-400">Đang tải...</p>
+        </div>
+
+        <!-- Categories Grid (Default View) -->
+        <div id="categoriesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 hidden">
+            <!-- Categories will be loaded here -->
+        </div>
+
+        <!-- Movies Grid (Category View) -->
+        <div id="moviesSection" class="hidden">
+            <div id="moviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+                <!-- Movies will be loaded here -->
+            </div>
+            <div id="pagination" class="mt-8">
+                <!-- Pagination will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="hidden text-center py-20">
+            <span class="material-icons-round text-6xl text-red-400 mb-4">error_outline</span>
+            <p class="text-red-400 text-lg">Không thể tải dữ liệu</p>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/chat') %>
+
+    <script src="/js/image-optimization.js?v=15"></script>
+    <script src="/js/api.js?v=17"></script>
+    <script src="/js/premium-ad-blocker.js?v=3"></script>
+    <script src="/js/auth-modal.js?v=15"></script>
+    <script src="/js/mobile-menu-modern.js?v=42"></script>
+    <script src="/js/nav-instant-suggest.js?v=7"></script>
+    <script src="/js/categories-dropdown.js?v=17"></script>
+    <script src="/js/countries-dropdown.js?v=17"></script>
+
+    <script src="/js/sticky-nav.js?v=19"></script>
+    <script src="/js/categories.js?v=21"></script>
+    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+</body>
+</html>

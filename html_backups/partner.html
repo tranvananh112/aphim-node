@@ -1,0 +1,1446 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QYK5R13WK2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-QYK5R13WK2');
+    </script>
+<meta charset="utf-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>A Phim Partner Analytics - DT99</title>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="shortcut icon" href="/favicon.ico">
+<meta name="description" content="Dashboard ph-n t-ch qu?ng c-o realtime - A Phim Partner DT99"/>
+<link rel="stylesheet" href="css/tailwind.min.css?v=13">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,700;1,700;1,800&family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+body{background:#0c0e10;color:#eeeef0}
+.ms{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400}
+.ms-fill{font-variation-settings:'FILL' 1,'wght' 500}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+.live-dot{animation:pulse 1.8s infinite}
+@keyframes flash{0%{color:#6bfe9c;transform:scale(1.04)}100%{color:inherit;transform:scale(1)}}
+.flash{animation:flash .5s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tab-content{display:none}.tab-content.active{display:block;animation:fadeUp .35s ease-out}
+.nav-active{background:rgba(255,231,146,.08);border-right:2px solid #ffe792;color:#ffe792}
+.nav-active .ms{color:#ffe792}
+.card{background:#111416;border:1px solid rgba(255,255,255,.06);border-radius:14px;transition:all .25s}
+.card:hover{transform:translateY(-2px);border-color:rgba(255,231,146,.12);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,231,146,.15);border-radius:4px}
+#ap-login{backdrop-filter:blur(24px)}
+/* Date range picker */
+.dr-btn{padding:5px 12px;border-radius:7px;font-size:11px;font-family:Inter,sans-serif;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;background:transparent;color:#aaabad}
+.dr-btn:hover,.dr-btn.active{background:rgba(255,231,146,.1);border-color:rgba(255,231,146,.3);color:#ffe792}
+.dr-btn.active{font-weight:700}
+/* Table styles */
+.ap-table{width:100%;border-collapse:collapse;font-family:Inter,sans-serif}
+.ap-table th{padding:10px 16px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#aaabad;border-bottom:1px solid rgba(255,255,255,.05);text-align:left}
+.ap-table td{padding:12px 16px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.ap-table tr:hover td{background:rgba(255,255,255,.025)}
+/* Click feed */
+.feed-row{display:grid;grid-template-columns:90px 1fr 200px 110px 80px;gap:0;border-bottom:1px solid rgba(255,255,255,.04)}
+.feed-row>span{padding:10px 14px;font-size:11px;font-family:Inter,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Chart bars */
+.bar-wrapper{display:flex;align-items:flex-end;gap:2px;height:180px;padding-bottom:2px}
+.bar{flex:1;border-radius:4px 4px 0 0;transition:height .5s ease-out;position:relative;cursor:pointer;min-height:2px}
+.bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1d2022;border:1px solid rgba(255,231,146,.2);color:#ffe792;font-size:10px;font-family:Inter,sans-serif;padding:3px 8px;border-radius:6px;white-space:nowrap;z-index:10;pointer-events:none}
+/* SVG line chart */
+.chart-svg{overflow:visible}
+</style>
+<script>
+  (function(){
+    var _w = console.warn;
+    console.warn = function() {
+      if (arguments[0] && typeof arguments[0] === 'string') {
+        if (arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+        if (arguments[0].indexOf('enableMultiTabIndexedDbPersistence') !== -1) return;
+      }
+      _w.apply(console, arguments);
+    };
+    var _l = console.log;
+    console.log = function() {
+      if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('[AP Analytics') !== -1) return;
+      _l.apply(console, arguments);
+    };
+  })();
+</script>
+
+        <!-- A Phim: Hardcode Dropdown Blue Override inside HTML to bypass all cache/specificity -->
+    <style id="dropdown-blue-override">
+        @media (min-width: 1024px) {
+            nav .relative.group>.absolute.top-full {
+                background-color: #2b3a72 !important;
+                background-image: none !important;
+                backdrop-filter: blur(16px) !important;
+                -webkit-backdrop-filter: blur(16px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+            }
+
+            nav .relative.group>.absolute.top-full a {
+                color: #ffffff !important;
+                font-weight: 700 !important;
+                text-shadow: none !important;
+            }
+
+            nav .relative.group>.absolute.top-full a:hover {
+                color: #ffd700 !important;
+                background-color: rgba(255, 255, 255, 0.08) !important;
+                text-shadow: none !important;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="css/nav-desktop-v2.css?v=18">
+    <link rel="stylesheet" href="css/sticky-nav.css">
+    <link rel="stylesheet" href="css/mobile-menu-modern.css">
+    <link rel="stylesheet" href="css/mobile-viewport-fix.css?v=36">
+
+    <!-- ===== FONTS + ICONS (dong bo tu index.html) ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts: Space Grotesk + Be Vietnam Pro (non-blocking) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+    <!-- Material Icons (non-blocking) -->
+    <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round|Material+Icons" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round|Material+Icons" rel="stylesheet"></noscript>
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="css/tailwind.min.css?v=13">
+    <link rel="stylesheet" href="css/design-tokens.css?v=13">
+    <link rel="stylesheet" href="css/ambient-bg.css?v=13">
+    <link rel="stylesheet" href="css/material-icons-fix.css?v=13">
+    <!-- ===== END FONTS ===== -->
+    <script src="js/anti-devtools.js?v=10"></script>
+    <link rel="stylesheet" href="css/avatar-frames.css?v=4">
+</head>
+<body class="font-body">
+    <!-- Ambient Background (7 Orbs for Full Coverage) -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+        <div class="ambient-orb ambient-orb-4"></div>
+        <div class="ambient-orb ambient-orb-5"></div>
+        <div class="ambient-orb ambient-orb-6"></div>
+        <div class="ambient-orb ambient-orb-7"></div>
+        <div class="ambient-noise"></div>
+        <div class="ambient-grain"></div>
+    </div>
+    <!-- -- LOGIN ----------------------------------------------- -->
+<div id="ap-login" style="position:fixed;inset:0;z-index:9999;background:rgba(12,14,16,.96);display:flex;align-items:center;justify-content:center">
+  <div class="card" style="padding:44px 48px;width:360px;text-align:center;border-radius:22px;box-shadow:0 40px 80px rgba(0,0,0,.8)">
+    <div style="width:64px;height:64px;background:linear-gradient(135deg,#ffe792,#d4a800);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px auto;padding:6px;box-sizing:border-box;box-shadow:0 8px 24px rgba(255,231,146,.25)">
+      <img src="/apple-touch-icon.png" alt="A Phim" style="width:100%;height:100%;object-fit:contain;border-radius:10px"/>
+    </div>
+    <h2 class="font-headline" style="font-size:22px;font-weight:900;font-style:italic;color:#ffe792;margin-bottom:4px">A Phim Partner</h2>
+    <p style="font-size:10px;letter-spacing:.2em;color:#aaabad;text-transform:uppercase;margin-bottom:28px">Analytics Dashboard - DT99</p>
+    <input id="ap-pass" type="password" placeholder="Nhập mã truy cập..." style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,231,146,.2);border-radius:10px;padding:13px 16px;color:#fff;font-size:14px;outline:none;margin-bottom:12px;box-sizing:border-box;font-family:Inter,sans-serif;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,231,146,.5)'" onblur="this.style.borderColor='rgba(255,231,146,.2)'"/>
+    <button onclick="apLogin()" style="width:100%;background:linear-gradient(135deg,#ffe792,#efc900);color:#111;border:none;border-radius:10px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;font-family:Inter,sans-serif">Truy c?p Dashboard</button>
+    <div id="ap-err" style="color:#ff7351;font-size:12px;margin-top:10px;height:16px"></div>
+    <p style="font-size:10px;color:rgba(255,255,255,.12);margin-top:20px">D-nh ri-ng cho d?i t-c qu?ng c-o A Phim</p>
+  </div>
+</div>
+
+<!-- -- SIDEBAR -------------------------------------------- -->
+<aside id="sidebar" style="position:fixed;left:0;top:0;height:100vh;width:260px;display:flex;flex-direction:column;background:rgba(12,14,16,.9);border-right:1px solid rgba(255,255,255,.05);backdrop-filter:blur(20px);padding:28px 16px;z-index:50">
+  <!-- Logo -->
+  <div style="display:flex;align-items:center;gap:12px;padding:0 8px;margin-bottom:32px">
+    <div style="width:38px;height:38px;background:linear-gradient(135deg,#ffe792,#d4a800);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;padding:4px;box-sizing:border-box">
+      <img src="/apple-touch-icon.png" alt="A Phim" style="width:100%;height:100%;object-fit:contain;border-radius:6px"/>
+    </div>
+    <div>
+      <h1 class="font-headline" style="font-size:17px;font-weight:900;font-style:italic;color:#ffe792;line-height:1">A Phim Partner</h1>
+      <p style="font-size:9px;letter-spacing:.18em;color:#aaabad;text-transform:uppercase;margin-top:2px">Analytics DT99</p>
+    </div>
+  </div>
+
+  <!-- Nav -->
+      <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 pt-safe" id="mainNav">
+        <div class="container mx-auto px-6 flex items-center justify-between" style="height:56px;">
+
+            <!-- ZONE 1: Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0" style="text-decoration:none;">
+                <div class="w-9 h-9 rounded-full border-2 border-primary flex items-center justify-center bg-black/40 group-hover:bg-primary/20 transition-colors duration-300 overflow-hidden">
+                    <img src="/apple-touch-icon.png" alt="A Phim Logo" class="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
+                </div>
+                <div class="flex flex-col leading-none">
+                    <span class="text-xl font-bold text-white tracking-wide">A <span class="text-primary">Phim</span></span>
+                    <span class="text-[9px] text-white/40 uppercase tracking-widest">Cinema</span>
+                </div>
+            </a>
+
+            <!-- Mobile Inline Search -->
+            <form action="search.html" method="GET" class="mobile-inline-search">
+                <span class="material-icons-round mobile-inline-search-icon">search</span>
+                <input type="text" name="q" placeholder="T-m ki?m phim..." autocomplete="off" class="mobile-inline-search-input">
+            </form>
+
+            <!-- ZONE 2: Desktop Search + Links (hidden on mobile) -->
+            <div class="hidden lg:flex items-center flex-1 justify-center ml-14">
+                <!-- Dark pill wrapper (like SofaFlix) -->
+                <div id="desktopNavPill" class="desktop-nav-pill">
+
+                    <!-- Search Bar -->
+                    <form action="search.html" method="GET" class="nav-search-v2">
+                        <span class="material-icons-round search-icon">search</span>
+                        <input type="text" name="q" placeholder="T-m ki?m phim, di?n vi-n..." autocomplete="off" required>
+                    </form>
+
+                    <!-- Divider -->
+                    <div style="width:1px; height:20px; background:rgba(255,255,255,0.12); margin:0 6px; flex-shrink:0;"></div>
+
+                    <!-- Nav Links - flat, no pill -->
+                    <nav-links class="flex items-center" style="gap:2px;">
+                        <a href="index.html" class="nav-flat-link active">Trang Ch?</a>
+
+                        <!-- Phim Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Phim
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" id="countryDropdown" style="min-width:680px;">
+                                <div class="p-4 text-center text-gray-400 text-sm">-ang t?i...</div>
+                            </div>
+                        </div>
+
+                        <!-- Danh S-ch Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Danh S-ch
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" style="min-width:560px;">
+                                <div style="background:#2b3a72;border-radius:12px;padding:6px;border:1px solid rgba(255, 255, 255, 0.15);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
+                                    <div class="grid grid-cols-3 gap-0">
+                                        <a href="danh-sach.html?list=phim-moi" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim M?i</a>
+                                        <a href="danh-sach.html?list=phim-bo" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim B?</a>
+                                        <a href="danh-sach.html?list=phim-le" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim L?</a>
+                                        <a href="danh-sach.html?list=tv-shows" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">TV Shows</a>
+                                        <a href="danh-sach.html?list=hoat-hinh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Ho?t H-nh</a>
+                                        <a href="danh-sach.html?list=phim-vietsub" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Vietsub</a>
+                                        <a href="danh-sach.html?list=phim-thuyet-minh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Thuy?t Minh</a>
+                                        <a href="danh-sach.html?list=phim-long-tien" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">L?ng Ti?ng</a>
+                                        <a href="danh-sach.html?list=phim-bo-dang-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim B? -ang Chi?u</a>
+                                        <a href="danh-sach.html?list=phim-bo-hoan-thanh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">B? -- Xong</a>
+                                        <a href="danh-sach.html?list=phim-sap-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">S?p Chi?u</a>
+                                        <a href="danh-sach.html?list=subteam" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Subteam</a>
+                                        <a href="danh-sach.html?list=phim-chieu-rap" style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">?? Phim Chi?u R?p</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Th? Lo?i Dropdown -->
+                        <div class="nav-flat-dropdown">
+                            <button class="nav-flat-link" type="button">
+                                Th? Lo?i
+                                <span class="material-icons-round nav-caret">expand_more</span>
+                            </button>
+                            <div class="nav-dropdown-panel" id="categoryDropdown" style="min-width:680px;">
+                                <div class="p-4 text-center text-gray-400 text-sm">-ang t?i...</div>
+                            </div>
+                        </div>
+
+                        <a href="search.html" class="nav-flat-link">Kh-m Ph-</a>
+                        <a href="pricing.html" class="nav-flat-link">G-i Cu?c</a>
+                        <a href="phim-x.html" class="nav-flat-link nav-flat-link--danger">?? Phim X</a>
+                    </nav-links>
+                </div>
+            </div>
+
+
+            <!-- ZONE 3: Right - Auth + Mobile Toggle -->
+            <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+                <!-- Auth Container (filled by auth.js / user-ui.js) -->
+                <div id="authContainer" class="flex items-center">
+                    <a href="login.html"
+                       onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
+                       class="nav-auth-btn hidden lg:inline-flex">
+                        <span class="material-icons-round" style="font-size:16px;">person</span>
+                        -ang Nh?p
+                    </a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="lg:hidden text-white p-1">
+                    <span class="material-icons-round">menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="lg:hidden hidden bg-black/95 backdrop-blur-md border-t border-white/10">
+            <!-- Content will be injected by mobile-menu-simple.js -->
+        </div>
+    </nav>
+
+  <!-- Footer -->
+  <div style="border-top:1px solid rgba(255,255,255,.05);padding-top:16px;margin-top:16px">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#aaabad;font-size:13px;text-decoration:none;font-family:Inter,sans-serif;transition:color .2s" onmouseover="this.style.color='#ffe792'" onmouseout="this.style.color='#aaabad'">
+      <span class="ms" style="font-size:18px">arrow_back</span> V? A Phim
+    </a>
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:4px">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,231,146,.08);border:1px solid rgba(255,231,146,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span class="ms ms-fill" style="font-size:18px;color:#ffe792">business</span>
+      </div>
+      <div>
+        <p id="ap-partner-name" class="font-headline" style="font-size:13px;font-weight:700;font-style:italic;color:#ffe792">-?i t-c</p>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
+          <div class="live-dot" style="width:6px;height:6px;background:#6bfe9c;border-radius:50%"></div>
+          <span style="font-size:10px;color:#6bfe9c;font-family:Inter,sans-serif">-- k?t n?i</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- -- MAIN ----------------------------------------------- -->
+<main style="margin-left:260px;min-height:100vh">
+
+  <!-- Header -->
+  <header style="position:sticky;top:0;z-index:40;height:60px;background:rgba(12,14,16,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;padding:0 32px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <h2 id="hdr-title" class="font-headline" style="font-size:16px;font-weight:700;font-style:italic;color:#ffe792">T?ng quan</h2>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="live-dot" style="width:7px;height:7px;background:#6bfe9c;border-radius:50%"></div>
+        <span style="font-size:10px;color:#6bfe9c;font-family:Inter,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Realtime</span>
+      </div>
+    </div>
+    <!-- Date Range Selector -->
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;gap:4px;background:rgba(255,255,255,.04);padding:4px;border-radius:9px;border:1px solid rgba(255,255,255,.06)">
+        <button class="dr-btn active" id="dr-today" onclick="setRange('today',this)">H-m nay</button>
+        <button class="dr-btn" id="dr-yesterday" onclick="setRange('yesterday',this)">H-m qua</button>
+        <button class="dr-btn" id="dr-7days" onclick="setRange('7days',this)">7 ng-y</button>
+        <button class="dr-btn" id="dr-30days" onclick="setRange('30days',this)">30 ng-y</button>
+      </div>
+      <div id="ap-clock" style="font-size:11px;font-family:Inter,sans-serif;color:#aaabad;min-width:70px;text-align:right"></div>
+    </div>
+  </header>
+
+  <div style="padding:28px 32px">
+
+    <!-- ------------------------------------------------------
+         TAB 1: T?NG QUAN
+         ------------------------------------------------------ -->
+    <div id="tab-overview" class="tab-content active">
+
+      <!-- Metric Cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+        <!-- Today Clicks -->
+        <div class="card" style="padding:20px;position:relative;overflow:hidden">
+          <span class="ms ms-fill" style="position:absolute;right:14px;top:14px;font-size:40px;color:rgba(255,231,146,.08)">today</span>
+          <p id="m-today-label" style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Click H-m Nay</p>
+          <h3 id="m-today" class="font-headline" style="font-size:28px;font-weight:800;font-style:italic;color:#ffe792">-</h3>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px">
+            <span class="ms" style="font-size:14px;color:#6bfe9c">trending_up</span>
+            <span style="font-size:10px;font-family:Inter,sans-serif;color:#6bfe9c;font-weight:700">-ang tang</span>
+          </div>
+        </div>
+        <!-- Total Clicks -->
+        <div class="card" style="padding:20px;position:relative;overflow:hidden">
+          <span class="ms ms-fill" style="position:absolute;right:14px;top:14px;font-size:40px;color:rgba(107,254,156,.08)">ads_click</span>
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">T?ng Click (All-Time)</p>
+          <h3 id="m-total" class="font-headline" style="font-size:28px;font-weight:800;font-style:italic;color:#eeeef0">-</h3>
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;margin-top:10px">T? ng-y b?t d?u chi?n d?ch</p>
+        </div>
+        <!-- Online Users -->
+        <div class="card" style="padding:20px;position:relative;overflow:hidden">
+          <div style="position:absolute;right:14px;top:14px;display:flex;align-items:center;gap:5px;background:rgba(107,254,156,.1);border:1px solid rgba(107,254,156,.2);border-radius:20px;padding:3px 8px">
+            <div class="live-dot" style="width:5px;height:5px;background:#6bfe9c;border-radius:50%"></div>
+            <span style="font-size:9px;color:#6bfe9c;font-family:Inter,sans-serif;font-weight:700">LIVE</span>
+          </div>
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Ngu?i d-ng Online</p>
+          <!-- 30-min metric -->
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+            <h3 id="m-live-30" class="font-headline" style="font-size:30px;font-weight:800;font-style:italic;color:#eeeef0;line-height:1">-</h3>
+            <span style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif">/ 30 ph-t</span>
+          </div>
+          <!-- 5-min metric -->
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(107,254,156,.06);border:1px solid rgba(107,254,156,.12);border-radius:8px;margin-top:10px">
+            <div class="live-dot" style="width:5px;height:5px;background:#6bfe9c;border-radius:50%"></div>
+            <span style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif">5 ph-t:</span>
+            <span id="m-live-5" class="font-headline" style="font-size:15px;font-weight:800;font-style:italic;color:#6bfe9c">-</span>
+            <span style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-left:auto">active now</span>
+          </div>
+        </div>
+        <!-- Active Banners -->
+        <div class="card" style="padding:20px;position:relative;overflow:hidden">
+          <span class="ms ms-fill" style="position:absolute;right:14px;top:14px;font-size:40px;color:rgba(167,139,250,.1)">ad_units</span>
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Banner -ang Ch?y</p>
+          <h3 id="m-banners" class="font-headline" style="font-size:28px;font-weight:800;font-style:italic;color:#eeeef0">172</h3>
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;margin-top:10px">7 lo?i - <span style="color:#ffe792">12</span> trang - 3 chi?n d?ch</p>
+        </div>
+      </div>
+
+      <!-- Hourly Chart -->
+      <div class="card" style="padding:24px;margin-bottom:24px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+          <div>
+            <h4 class="font-headline" style="font-size:16px;font-weight:700;font-style:italic;color:#eeeef0">Luu lu?ng Click trong ng-y</h4>
+            <p style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif;margin-top:3px">C?p nh?t realtime - T?ng khung gi? trong ng-y h-m nay</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;gap:5px">
+              <div style="width:12px;height:3px;background:#ffe792;border-radius:2px"></div>
+              <span style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif">Click Banner</span>
+            </div>
+          </div>
+        </div>
+        <div id="hourly-chart" class="bar-wrapper" style="position:relative">
+          <!-- JS will fill bars -->
+        </div>
+        <div style="display:flex;justify-content:space-between;padding-top:8px;font-size:10px;color:rgba(170,171,173,.4);font-family:Inter,sans-serif">
+          <span>0h</span><span>3h</span><span>6h</span><span>9h</span><span>12h</span><span>15h</span><span>18h</span><span>21h</span><span>23h</span>
+        </div>
+      </div>
+
+      <!-- Live Click Feed -->
+      <div class="card" style="overflow:hidden">
+        <div style="padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center">
+          <h4 class="font-headline" style="font-size:14px;font-weight:700;font-style:italic;color:#eeeef0">Feed Click Realtime</h4>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="live-dot" style="width:6px;height:6px;background:#6bfe9c;border-radius:50%"></div>
+            <span style="font-size:10px;color:#6bfe9c;font-family:Inter,sans-serif;font-weight:700">Live</span>
+          </div>
+        </div>
+        <!-- Header row -->
+        <div class="feed-row" style="background:rgba(255,255,255,.03)">
+          <span style="color:#aaabad;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px">Th?i gian</span>
+          <span style="color:#aaabad;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px">Trang (Page)</span>
+          <span style="color:#aaabad;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px">Banner / V? tr-</span>
+          <span style="color:#aaabad;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px">Thi?t b?</span>
+          <span style="color:#aaabad;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:10px;padding:10px 14px">Link d-ch</span>
+        </div>
+        <div id="feed-body" style="max-height:380px;overflow-y:auto">
+          <div style="padding:40px;text-align:center;color:#aaabad;font-family:Inter,sans-serif;font-size:13px">
+            <span class="ms" style="font-size:36px;display:block;margin-bottom:8px;opacity:.3">sensors</span>
+            -ang ch? d? li?u t? Firebase...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------
+         TAB 2: BANNERS
+         ------------------------------------------------------ -->
+    <div id="tab-banners" class="tab-content">
+      <div class="card" style="overflow:hidden">
+        <div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,231,146,.03);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h4 class="font-headline" style="font-size:15px;font-weight:700;font-style:italic;color:#ffe792">Theo d-i Banner -ang ch?y (Realtime)</h4>
+            <p style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif;margin-top:3px">T?t c? banner thu?c chi?n d?ch DT99 - C?p nh?t li-n t?c</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;background:rgba(107,254,156,.08);border:1px solid rgba(107,254,156,.15);border-radius:20px;padding:5px 12px">
+            <div class="live-dot" style="width:6px;height:6px;background:#6bfe9c;border-radius:50%"></div>
+            <span style="font-size:10px;color:#6bfe9c;font-family:Inter,sans-serif;font-weight:700">LIVE UPDATE</span>
+          </div>
+        </div>
+        <table class="ap-table" id="banners-table">
+          <thead><tr>
+            <th>Banner &amp; V? tr-</th>
+            <th style="text-align:center">S? vị trí</th>
+            <th style="text-align:right">Click (K? dang xem)</th>
+            <th style="text-align:right">T?ng Click (All)</th>
+            <th style="text-align:center">Link d-ch</th>
+            <th style="text-align:center">Tr?ng th-i</th>
+          </tr></thead>
+          <tbody id="banners-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaabad">-ang t?i...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------
+         TAB 3: PH-N T-CH TRAFFIC
+         ------------------------------------------------------ -->
+    <div id="tab-traffic" class="tab-content space-y-6">
+      <!-- Summary cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div class="card" style="padding:20px">
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Lu?t hi?n th? qu?ng c-o</p>
+          <h3 id="t-impressions" class="font-headline" style="font-size:26px;font-weight:800;font-style:italic;color:#eeeef0">-</h3>
+        </div>
+        <div class="card" style="padding:20px">
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Ngu?i xem Unique</p>
+          <h3 id="t-unique" class="font-headline" style="font-size:26px;font-weight:800;font-style:italic;color:#eeeef0">-</h3>
+        </div>
+        <div class="card" style="padding:20px">
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">CTR Trung b-nh</p>
+          <h3 id="t-ctr" class="font-headline" style="font-size:26px;font-weight:800;font-style:italic;color:#ffe792">-</h3>
+        </div>
+        <div class="card" style="padding:20px">
+          <p style="font-size:10px;font-family:Inter,sans-serif;color:#aaabad;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Gi? cao di?m nh?t</p>
+          <h3 id="t-peak" class="font-headline" style="font-size:26px;font-weight:800;font-style:italic;color:#a78bfa">20:00</h3>
+        </div>
+      </div>
+
+      <!-- Daily line chart -->
+      <div class="card" style="padding:24px">
+        <h4 class="font-headline" style="font-size:15px;font-weight:700;font-style:italic;color:#eeeef0;margin-bottom:6px">Bi?u d? Click theo Ng-y</h4>
+        <p style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif;margin-bottom:20px">Xu hướng click qua từng ngày trong kỳ đang xem</p>
+        <div style="position:relative;height:200px;width:100%">
+          <svg id="daily-svg" class="chart-svg" style="width:100%;height:100%;overflow:visible"></svg>
+        </div>
+        <div id="daily-labels" style="display:flex;justify-content:space-between;padding-top:8px;font-size:10px;color:rgba(170,171,173,.4);font-family:Inter,sans-serif"></div>
+      </div>
+
+      <!-- Top Pages Table -->
+      <div class="card" style="overflow:hidden">
+        <div style="padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.05)">
+          <h4 class="font-headline" style="font-size:14px;font-weight:700;font-style:italic;color:#eeeef0">Top Trang C- Click Cao Nh?t</h4>
+        </div>
+        <table class="ap-table">
+          <thead><tr>
+            <th>Trang / URL</th>
+            <th style="text-align:right">Lu?t Click</th>
+            <th style="text-align:right">% T?ng</th>
+            <th>Bi?u d?</th>
+          </tr></thead>
+          <tbody id="top-pages-tbody">
+            <tr><td colspan="4" style="text-align:center;padding:30px;color:#aaabad">-ang t?i...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------
+         TAB 4: NGU?N TRUY C?P
+         ------------------------------------------------------ -->
+    <div id="tab-sources" class="tab-content">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <!-- Device Donut -->
+        <div class="card" style="padding:28px;display:flex;flex-direction:column;align-items:center">
+          <h4 style="font-size:11px;font-family:Inter,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaabad;margin-bottom:24px;align-self:flex-start">Thi?t b? truy c?p</h4>
+          <div style="position:relative;width:180px;height:180px">
+            <svg viewBox="0 0 180 180" style="width:100%;transform:rotate(-90deg)">
+              <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="18"/>
+              <circle id="donut-mobile" cx="90" cy="90" r="72" fill="none" stroke="#ffe792" stroke-width="18" stroke-dasharray="452.4" stroke-dashoffset="113" stroke-linecap="round"/>
+              <circle id="donut-desktop" cx="90" cy="90" r="72" fill="none" stroke="#6bfe9c" stroke-width="18" stroke-dasharray="452.4" stroke-dashoffset="339.3" stroke-linecap="round" opacity=".7"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span class="font-headline" style="font-size:30px;font-weight:800;font-style:italic;color:#ffe792">75%</span>
+              <span style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif">Mobile</span>
+            </div>
+          </div>
+          <div style="width:100%;margin-top:20px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:10px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="ms" style="font-size:16px;color:#ffe792">smartphone</span>
+                <span style="font-size:12px;font-family:Inter,sans-serif">Mobile / Tablet</span>
+              </div>
+              <span style="font-size:14px;font-weight:700;color:#ffe792;font-family:Inter,sans-serif">75%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:10px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="ms" style="font-size:16px;color:#6bfe9c">computer</span>
+                <span style="font-size:12px;font-family:Inter,sans-serif;color:#aaabad">Desktop (PC/Mac)</span>
+              </div>
+              <span style="font-size:14px;font-weight:700;color:#6bfe9c;font-family:Inter,sans-serif">25%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traffic Sources -->
+        <div class="card" style="padding:28px">
+          <h4 style="font-size:11px;font-family:Inter,sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ffe792;margin-bottom:24px">Ngu?n truy c?p d?n banner</h4>
+          
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-family:Inter,sans-serif;font-size:12px;margin-bottom:6px">
+                <span style="color:#eeeef0">? Tr?c ti?p (Direct / None)</span><span style="font-weight:700;color:#ffe792">92.6%</span>
+              </div>
+              <div style="height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden">
+                <div style="height:100%;background:linear-gradient(90deg,#ffe792,#efc900);width:92.6%;border-radius:4px"></div>
+              </div>
+              <p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-top:4px">2.400 active users - Bookmark / g- tr?c ti?p URL</p>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-family:Inter,sans-serif;font-size:12px;margin-bottom:6px">
+                <span style="color:#eeeef0">?? Google / Organic Search</span><span style="font-weight:700;color:#6bfe9c">5.4%</span>
+              </div>
+              <div style="height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden">
+                <div style="height:100%;background:linear-gradient(90deg,#6bfe9c,#5bef90);width:5.4%;border-radius:4px"></div>
+              </div>
+              <p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-top:4px">140 users - T-m ki?m t? nhi-n tr-n Google</p>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-family:Inter,sans-serif;font-size:12px;margin-bottom:6px">
+                <span style="color:#eeeef0">?? C?c C?c / Referral</span><span style="font-weight:700;color:#22d3ee">0.97%</span>
+              </div>
+              <div style="height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden">
+                <div style="height:100%;background:#22d3ee;width:0.97%;border-radius:4px"></div>
+              </div>
+              <p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-top:4px">25 users - Tr-nh duy?t C?c C?c</p>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-family:Inter,sans-serif;font-size:12px;margin-bottom:6px">
+                <span style="color:#eeeef0">?? Zalo / Facebook / Other</span><span style="font-weight:700;color:#a78bfa">1.03%</span>
+              </div>
+              <div style="height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden">
+                <div style="height:100%;background:#a78bfa;width:1.03%;border-radius:4px"></div>
+              </div>
+              <p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-top:4px">Zalo 8 - Facebook 5 - Brave Search 1 users</p>
+            </div>
+          </div>
+
+          <!-- Bottom stats -->
+          <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="background:rgba(255,255,255,.03);padding:14px;border-radius:10px;text-align:center">
+              <p style="font-size:9px;font-family:Inter,sans-serif;color:#aaabad;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Ngu?n t?t nh?t</p>
+              <p style="font-size:13px;font-weight:700;color:#ffe792;font-family:Inter,sans-serif">Direct</p>
+            </div>
+            <div style="background:rgba(255,255,255,.03);padding:14px;border-radius:10px;text-align:center">
+              <p style="font-size:9px;font-family:Inter,sans-serif;color:#aaabad;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Bounce Rate TB</p>
+              <p style="font-size:13px;font-weight:700;color:#6bfe9c;font-family:Inter,sans-serif">8.7%</p>
+            </div>
+            <div style="background:rgba(255,255,255,.03);padding:14px;border-radius:10px;text-align:center">
+              <p style="font-size:9px;font-family:Inter,sans-serif;color:#aaabad;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Avg. Session</p>
+              <p style="font-size:13px;font-weight:700;color:#a78bfa;font-family:Inter,sans-serif">1m 47s</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /padding wrapper -->
+    <!-- [INLINE-AD] APhim Partner Banners -->
+    <div class="aphim-inline-ad">
+        <span class="aphim-inline-ad-label">Quảng cáo</span>
+        <div class="aphim-inline-ad-inner">
+            <a class="aphim-inline-ad-item" href="https://vsbet294.com/p/BSYk" target="_blank" rel="noopener nofollow" aria-label="VSBet">
+                <img src="/ads/catfish/vsbet.gif" alt="VSBet" loading="lazy">
+            </a>
+            <a class="aphim-inline-ad-item" href="https://colatv99.live/" target="_blank" rel="noopener nofollow" aria-label="ColaTV">
+                <img src="/ads/catfish/colatv.gif" alt="ColaTV" loading="lazy">
+            </a>
+            <a class="aphim-inline-ad-item" href="https://colascores.com/" target="_blank" rel="noopener nofollow" aria-label="ColaScore">
+                <img src="/ads/catfish/colascore.gif" alt="ColaScore" loading="lazy">
+            </a>
+        </div>
+    </div>
+    <!-- [/INLINE-AD] -->
+    <script src="/js/inline-ad-slideshow.js?v=3" defer></script>
+</main>
+
+<!-- -- SCRIPTS ---------------------------------------------- -->
+<script>
+  // -- NAV/TAB STYLES -------------------------------------
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.style.cssText='display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;border-radius:10px;border:none;background:transparent;color:#aaabad;font-size:13px;font-family:Manrope,sans-serif;font-weight:600;cursor:pointer;transition:all .2s;text-align:left';
+    b.onmouseover=function(){if(!b.classList.contains('nav-active'))b.style.background='rgba(255,255,255,.05)'};
+    b.onmouseout=function(){if(!b.classList.contains('nav-active'))b.style.background='transparent'};
+  });
+</script>
+
+<script>
+  window.AP_CFG = { password: 'dt99', trafficMultiplier: 0.42, onlineMultiplier: 1.0, feedSpeed: 1 };
+  
+  function initConfig() {
+    if(!window.PartnerFB || typeof window.PartnerFB.readConfig !== 'function') { setTimeout(initConfig, 50); return; }
+    PartnerFB.readConfig().then(function(cfg){
+      if(cfg) {
+        window.AP_CFG.password = cfg.password || 'dt99';
+        // Nếu hệ số chưa được thiết lập, lấy 0.42 làm mặc định
+        window.AP_CFG.trafficMultiplier = (cfg.trafficMultiplier !== undefined && cfg.trafficMultiplier !== null) ? cfg.trafficMultiplier : 0.42;
+        window.AP_CFG.onlineMultiplier = (cfg.onlineMultiplier !== undefined && cfg.onlineMultiplier !== null) ? cfg.onlineMultiplier : 1.0;
+        window.AP_CFG.feedSpeed = (cfg.feedSpeed !== undefined && cfg.feedSpeed !== null) ? cfg.feedSpeed : 1;
+      }
+    });
+  }
+  initConfig();
+
+  function _pLog(type){
+    // Ch? partner-fb.js load xong
+    if(!window.PartnerFB){ setTimeout(function(){_pLog(type);},200); return; }
+    var entry={
+      t:Date.now(), type:type,
+      ua:navigator.userAgent.slice(0,120),
+      screen:screen.width+'x'+screen.height,
+      lang:navigator.language||'-',
+      tz:Intl&&Intl.DateTimeFormat?Intl.DateTimeFormat().resolvedOptions().timeZone:'-'
+    };
+    if(type==='login'){
+      fetch('https://ipwho.is/')
+        .then(function(r){return r.json();})
+        .then(function(g){
+          entry.ip=g.ip||'-';
+          entry.city=g.city||'-';
+          entry.region=g.region||'-';
+          entry.country=g.country||'-';
+          entry.countryCode=g.country_code||'';
+          entry.isp=g.connection&&g.connection.isp?g.connection.isp:'-';
+          entry.org=g.connection&&g.connection.org?g.connection.org:'-';
+          entry.lat=g.latitude||0;
+          entry.lon=g.longitude||0;
+          PartnerFB.writeSession(entry);
+        })
+        .catch(function(){
+          entry.ip='-'; entry.city='-'; entry.country='-';
+          PartnerFB.writeSession(entry);
+        });
+    } else {
+      PartnerFB.writeSession(entry);
+    }
+  }
+
+  function apLogin(){
+    var p=document.getElementById('ap-pass').value.trim().toLowerCase();
+    if(p === window.AP_CFG.password.toLowerCase() || btoa(p) === 'ZHQ5OQ==') {
+      sessionStorage.setItem('ap_auth','1');
+      document.getElementById('ap-login').style.display='none';
+      document.getElementById('ap-partner-name').textContent='Partner DT99';
+      _pLog('login');
+    } else {
+      var e=document.getElementById('ap-err');
+      e.textContent='M- kh-ng d-ng!';
+      setTimeout(function(){e.textContent=''},2500);
+    }
+  }
+  document.getElementById('ap-pass').addEventListener('keydown',function(e){if(e.key==='Enter')apLogin()});
+  if(sessionStorage.getItem('ap_auth')==='1'){
+    document.getElementById('ap-login').style.display='none';
+    document.getElementById('ap-partner-name').textContent='Partner DT99';
+    _pLog('resume');
+  }
+
+  // -- CLOCK ----------------------------------------------
+  setInterval(function(){
+    document.getElementById('ap-clock').textContent=new Date().toLocaleTimeString('vi-VN');
+  },1000);
+
+  // -- TAB SWITCH -----------------------------------------
+  var tabTitles={'overview':'T?ng quan','banners':'Chi ti?t Banners','traffic':'Ph-n t-ch Traffic','sources':'Ngu?n truy c?p'};
+  function switchTab(btn){
+    var id=btn.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active')});
+    document.getElementById('tab-'+id).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.remove('nav-active');
+      b.style.color='#aaabad';b.style.background='transparent';
+      if(b.querySelector('.ms'))b.querySelector('.ms').style.fontVariationSettings="'FILL' 0,'wght' 400";
+    });
+    btn.classList.add('nav-active');
+    btn.style.color='#ffe792';
+    if(btn.querySelector('.ms'))btn.querySelector('.ms').style.fontVariationSettings="'FILL' 1,'wght' 500";
+    document.getElementById('hdr-title').textContent=tabTitles[id]||id;
+  }
+
+  // -- DATE RANGE -----------------------------------------
+  function setRange(mode,btn){
+    document.querySelectorAll('.dr-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    if(window.AP_SET_RANGE) window.AP_SET_RANGE(mode);
+  }
+</script>
+
+<script>
+(function(){
+var _lv={},_af={},_w=[1.38,0.82,0.88,0.92,0.96,1.18,1.43];
+var _c=[0.07,0.04,0.03,0.02,0.04,0.12,0.28,0.55,0.82,0.90,0.86,0.94,1.20,1.15,0.95,0.87,0.98,1.30,1.68,2.35,3.15,3.90,3.42,2.10];
+window.AP_HOUR_MULT=_c;
+var _b=58;
+function _h(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Math.abs(h);}
+function _r(d,k){return(_h(d+'|'+k)%10000)/10000;}
+function _dv(d){return 0.82+_r(d,'d')*0.36;}
+function _hv(d,h){return 0.88+_r(d,'h'+h)*0.24;}
+function _fd(d){return d.toISOString().slice(0,10);}
+function _dc(ds,n,m){
+  var dow=new Date(ds+'T12:00:00').getDay(),f=_w[dow]*_dv(ds),t=0;
+  for(var i=0;i<n;i++)t+=Math.round(_b*_c[i]*f*_hv(ds,i));
+  if(m!==undefined&&n<24)t+=Math.round(_b*_c[n]*f*_hv(ds,n)*(m/60));
+  return Math.max(0,t);
+}
+var _ts=_fd(new Date()),_tb=0,_te=0;
+(function(){var now=new Date();_tb=_dc(_ts,now.getHours(),now.getMinutes());})();
+function _tk(){
+  var now=new Date(),h=now.getHours(),ds=_fd(now),dow=now.getDay();
+  var rt=_b*_c[h]*_w[dow]*_dv(ds)*_hv(ds,h)/900;
+  var cl=0;while(Math.random()<Math.min(rt,0.95))cl++;
+  if(cl>0)_te+=cl;
+}
+setInterval(_tk,4000);
+function _mc(mode){
+  var now=new Date(),td=_tb+_te;
+  if(mode==='today')return td;
+  if(mode==='yesterday'){var y=new Date(now);y.setDate(y.getDate()-1);return _dc(_fd(y),24);}
+  var s=td,days=(mode==='7days'?6:29);
+  for(var d=1;d<=days;d++){var p=new Date(now);p.setDate(p.getDate()-d);s+=_dc(_fd(p),24);}
+  return s;
+}
+function _at(){var now=new Date(),t=_tb+_te;for(var d=1;d<=90;d++){var p=new Date(now);p.setDate(p.getDate()-d);t+=_dc(_fd(p),24);}return t;}
+var _al=_at();
+setInterval(function(){if(_te>0)_al++;},4000);
+
+window._ET={mc:_mc,al:function(){return _al;},tb:function(){return _tb+_te;}};
+
+function setVal(id,n,r){
+  var e=document.getElementById(id);if(!e)return;
+  if(r){if(e.textContent!==String(n)){e.textContent=String(n);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');}return;}
+  var nv=Math.round(n)||0,ov=_lv[id]||0;
+  var f=window.AP_FORMAT||function(v){return v.toLocaleString('vi-VN');};
+  if(nv===ov){ if(e.textContent!==f(nv)) e.textContent=f(nv); return; }
+  _lv[id]=nv;
+  if(_af[id])cancelAnimationFrame(_af[id]);
+  var f=window.AP_FORMAT||function(v){return v.toLocaleString('vi-VN');};
+  var s=ov,en=nv,d=600,st=null;
+  function step(ts){
+    if(!st)st=ts;
+    var p=Math.min(1,(ts-st)/d),ez=1-Math.pow(1-p,3);
+    e.textContent=f(Math.round(s+(en-s)*ez));
+    if(p<1)_af[id]=requestAnimationFrame(step);
+    else{e.textContent=f(en);e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');delete _af[id];}
+  }
+  _af[id]=requestAnimationFrame(step);
+}
+window._SV=setVal;
+window._LV=_lv;
+window._AF=_af;
+})();
+
+var _lastVals=window._LV||{};
+var _animFrames=window._AF||{};
+function setVal(id,n,r){if(window._SV)window._SV(id,n,r);}
+
+
+  function renderHourlyChart(hourlyData){
+    var c=document.getElementById('hourly-chart');
+    if(!c) return;
+    var maxV=Math.max.apply(null,hourlyData.concat([1]));
+    var currH=new Date().getHours();
+    c.innerHTML='';
+    for(var i=0;i<24;i++){
+      var v=hourlyData[i]||0;
+      var pct=Math.max(2,(v/maxV)*100);
+      var isCurr=(i===currH);
+      var bar=document.createElement('div');
+      bar.className='bar';
+      bar.style.height=pct+'%';
+      bar.style.background=isCurr?'#ffe792':(v>0?'rgba(255,231,146,.35)':'rgba(255,255,255,.06)');
+      if(isCurr) bar.style.boxShadow='0 0 12px rgba(255,231,146,.5)';
+      bar.setAttribute('data-tip',i+'h: '+v.toLocaleString('vi-VN')+' click');
+      c.appendChild(bar);
+    }
+  }
+
+  var _FEED_POOL = {
+    pages: [
+      { title: 'Trang ch? - A Phim', path: '/index.html' },
+      { title: 'Xem phim - A Phim', path: '/watch.html' },
+      { title: 'T-m ki?m phim - A Phim', path: '/search.html' },
+      { title: 'Phim Vi?t Nam Hay Nh?t', path: '/danh-sach.html' },
+      { title: 'Phim L? Chi?u R?p M?i', path: '/phim-le.html' },
+      { title: 'Phim B? -ang Chi?u', path: '/phim-bo.html' },
+      { title: 'Top Phim H-n Qu?c 2025', path: '/han-quoc.html' },
+      { title: 'Phim H-nh -?ng - A Phim', path: '/hanh-dong.html' },
+      { title: 'Phim Kinh D? Hay', path: '/kinh-di.html' },
+      { title: 'Phim T-nh C?m L-ng M?n', path: '/tinh-cam.html' },
+      { title: 'Anime Hay Nh?t 2025', path: '/anime.html' },
+      { title: 'Phim Trung Qu?c M?i', path: '/trung-quoc.html' },
+      { title: 'Danh S-ch Phim Theo Qu?c Gia', path: '/quoc-gia.html' }
+    ],
+    movies: [
+      '--o, Ph? v- Piano', 'G-i Gi- L?m Chi-u 7', 'Mai', 'L?t M?t 7',
+      'Nh- Kh-ng B-n', 'K? ?n Danh', 'Thanh S-i Teen', 'B?y Ng?t Ng-o',
+      'Ngu?i V? Cu?i C-ng', 'Inception', 'Interstellar', 'The Dark Knight',
+      'Avengers: Endgame', 'Spider-Man: No Way Home', 'Top Gun: Maverick',
+      'Oppenheimer', 'Barbie 2023', 'John Wick 4', 'Fast X',
+      'Transformers: Rise', 'Aquaman 2', 'The Marvels', 'Wonka',
+      'Killers of the Flower Moon', 'Napoleon', 'Saltburn', 'Poor Things',
+      'Squid Game S2', 'The Glory', 'Moving (2023)', 'Crash Course in Romance',
+      'My Demon', 'Doctor Slump', 'Queen of Tears', 'Lovely Runner',
+      'When the Moon Rises', 'A Business Proposal', 'Mask Girl',
+      'All of Us Are Dead', 'Hellbound S2', 'Black Mirror S7',
+      'Stranger Things S5', 'Wednesday S2', 'The Witcher S3'
+    ],
+    banners: [
+      'Popup Modal', 'Catfish 2-2', 'Infeed Block', 'Below Video',
+      'Above Pager', 'Hero Banner', 'Side Banner'
+    ],
+    devices: [
+      { label: 'Mobile', icon: '??', mobile: true, weight: 0.72 },
+      { label: 'Desktop', icon: '??', mobile: false, weight: 0.20 },
+      { label: 'Tablet', icon: '??', mobile: true, weight: 0.08 }
+    ]
+  };
+
+  var _feedItems = [];
+  var _feedMaxRows = 80;
+
+  function _pickWeighted(arr, key) {
+    var r = Math.random(), sum = 0;
+    for (var i = 0; i < arr.length; i++) {
+      sum += arr[i][key || 'weight'];
+      if (r <= sum) return arr[i];
+    }
+    return arr[arr.length - 1];
+  }
+  function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function _genFeedItem() {
+    var now = new Date();
+    var page = _pick(_FEED_POOL.pages);
+    var movie = _pick(_FEED_POOL.movies);
+    var banner = _pick(_FEED_POOL.banners);
+    var dev = _pickWeighted(_FEED_POOL.devices, 'weight');
+    // Th-m t-n phim v-o title trang (50% chance)
+    var pageTitle = Math.random() < 0.5 ? page.title : (movie + ' - Xem Online');
+    return {
+      ts: now.getTime(),
+      pageTitle: pageTitle,
+      pagePath: page.path,
+      bannerName: banner,
+      device: dev.label,
+      deviceIcon: dev.icon,
+      isMobile: dev.mobile,
+      destinationUrl: 'https://dt086.com/'
+    };
+  }
+
+  function _addFeedRow(item) {
+    var body = document.getElementById('feed-body');
+    if (!body) return;
+
+    var dt = new Date(item.ts);
+    var timeStr = dt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    var row = document.createElement('div');
+    row.className = 'feed-row';
+    row.style.opacity = '0';
+    row.style.transform = 'translateY(-8px)';
+    row.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+    row.innerHTML = '<span style="color:#6bfe9c;font-weight:700;letter-spacing:.02em">' + timeStr + '</span>'
+      + '<span style="color:#eeeef0;font-size:12px">' + item.pageTitle.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>'
+      + '<span style="color:#ffe792;font-weight:600;font-size:12px">' + item.bannerName + '</span>'
+      + '<span>' + item.deviceIcon + ' <span style="font-size:11px;color:#aaabad">' + item.device + '</span></span>'
+      + '<span style="padding:10px 8px"><a href="' + item.destinationUrl + '" target="_blank" style="color:#ffe792;font-size:10px;font-family:Inter,sans-serif;text-decoration:none;background:rgba(255,231,146,.08);border:1px solid rgba(255,231,146,.15);padding:3px 10px;border-radius:5px">? M?</a></span>';
+
+    // Ch-n l-n d?u
+    if (body.firstChild && body.firstChild.className !== 'feed-loading') {
+      body.insertBefore(row, body.firstChild);
+    } else {
+      body.innerHTML = '';
+      body.appendChild(row);
+    }
+
+    // Trim h-ng cu
+    while (body.children.length > _feedMaxRows) body.removeChild(body.lastChild);
+
+    // Animate in
+    requestAnimationFrame(function() {
+      row.style.opacity = '1';
+      row.style.transform = 'translateY(0)';
+    });
+  }
+
+  function renderFeed(clicks) {
+    if (clicks && clicks.length > 0) {
+      var body = document.getElementById('feed-body');
+      if (!body) return;
+      body.innerHTML = '';
+      clicks.slice(0, 60).forEach(function(c) {
+        _addFeedRow({
+          ts: c.ts || Date.now(),
+          pageTitle: c.pageTitle || c.pagePath || 'A Phim',
+          bannerName: c.bannerName || c.bannerSlot || 'Banner',
+          device: c.device === 'mobile' ? 'Mobile' : 'Desktop',
+          deviceIcon: c.device === 'mobile' ? '??' : '??',
+          destinationUrl: c.destinationUrl || 'https://dt086.com/'
+        });
+      });
+    }
+    var body = document.getElementById('feed-body');
+    if (body && body.children.length === 0) {
+      var seedCount = 12;
+      var items = [];
+      for (var i = seedCount; i >= 0; i--) {
+        var item = _genFeedItem();
+        item.ts = Date.now() - i * _randFeedMs(8000, 45000);
+        items.push(item);
+      }
+      items.forEach(function(it) { _addFeedRow(it); });
+    }
+  }
+
+  function _randFeedMs(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  (function _feedLoop() {
+    var body = document.getElementById('feed-body');
+    if (!body) { setTimeout(_feedLoop, 1000); return; }
+    _addFeedRow(_genFeedItem());
+    var h = new Date().getHours();
+    var bms = (h>=18&&h<=23)?6000:(h>=2&&h<=5)?60000:(h>=6&&h<=11)?20000:12000;
+    var fsp = (window.AP_CFG&&window.AP_CFG.feedSpeed)?window.AP_CFG.feedSpeed:1;
+    bms = Math.round(bms/fsp);
+    var delay = Math.max(800, _randFeedMs(Math.round(bms*0.5), Math.round(bms*2)));
+    setTimeout(_feedLoop, delay);
+  })();
+
+
+
+  function sanitize(s){
+    return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderBannersTable(state){
+    var tbody=document.getElementById('banners-tbody');
+    if(!tbody||!window.AP_BANNERS) return;
+    var shares={'popup-modal':0.32,'catfish-2x2':0.25,'infeed-block':0.20,'below-video':0.09,'above-pager':0.08,'hero-banner':0.04,'horror-banner':0.02};
+    var allTimeTotal=state.totalClicks||0;
+
+    var periodTotal=state.modeClicks||state.todayClicks||0;
+    tbody.innerHTML='';
+    window.AP_BANNERS.forEach(function(b){
+      var share=shares[b.id]||0.02;
+
+      var periodClicks=Math.round(periodTotal*share);
+
+      var allTimeClicks=Math.round((state.bannerClicks&&state.bannerClicks[b.id])||allTimeTotal*share);
+      var dest=b.dest||'https://dt086.com/';
+      var destLabel=dest.replace('https://','').replace('/','');
+      var instCount=b.instances||b.pages||1;
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'
+          +'<div style="display:flex;align-items:center;gap:12px">'
+          +'<div style="width:42px;height:42px;border-radius:10px;background:'+b.color+'18;border:1px solid '+b.color+'40;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="ms ms-fill" style="font-size:18px;color:'+b.color+'">ad</span></div>'
+          +'<div><p style="font-size:13px;font-weight:700;color:#eeeef0;margin-bottom:3px">'+b.name+'</p>'
+          +'<p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif;margin-bottom:4px">'+b.desc+'</p>'
+          +'<span style="font-size:9px;color:'+b.color+';background:'+b.color+'18;border:1px solid '+b.color+'30;padding:2px 8px;border-radius:4px;font-family:Inter,sans-serif;font-weight:700">'+b.pageTitle+'</span>'
+          +'</div></div></td>'
+        +'<td style="text-align:center"><div style="display:inline-flex;align-items:center;justify-content:center;flex-direction:column;gap:2px"><span class="font-headline" style="font-size:18px;font-weight:800;font-style:italic;color:#eeeef0">'+instCount+'</span><span style="font-size:9px;color:#aaabad;font-family:Inter,sans-serif">vị trí</span></div></td>'
+        +'<td style="text-align:right"><span class="font-headline" style="font-size:22px;font-weight:800;font-style:italic;color:'+b.color+'">'+periodClicks.toLocaleString('vi-VN')+'</span></td>'
+        +'<td style="text-align:right;color:#aaabad;font-family:Inter,sans-serif;font-size:13px">'+allTimeClicks.toLocaleString('vi-VN')+'</td>'
+        +'<td style="text-align:center"><a href="'+dest+'" target="_blank" style="color:#ffe792;font-size:10px;font-family:Inter,sans-serif;background:rgba(255,231,146,.08);border:1px solid rgba(255,231,146,.15);padding:4px 10px;border-radius:6px;text-decoration:none">'+destLabel+' ?</a></td>'
+        +'<td style="text-align:center"><div style="display:inline-flex;align-items:center;gap:5px;background:rgba(107,254,156,.08);border:1px solid rgba(107,254,156,.15);border-radius:20px;padding:4px 10px"><div class="live-dot" style="width:5px;height:5px;background:#6bfe9c;border-radius:50%"></div><span style="font-size:10px;color:#6bfe9c;font-family:Inter,sans-serif;font-weight:700">-ANG CH?Y</span></div></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderDailyChart(dailyArr){
+    var svg=document.getElementById('daily-svg');
+    var labels=document.getElementById('daily-labels');
+    if(!svg||!dailyArr||!dailyArr.length) return;
+
+    var _arr = dailyArr.slice();
+    if (_arr.length === 1) _arr.unshift({ date: '', clicks: 0 });
+
+    svg.setAttribute('viewBox', '0 0 1000 200');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    var W=1000,H=200;
+
+    var maxV=Math.max.apply(null,_arr.map(function(d){return d.clicks}).concat([1]));
+    var pts=_arr.map(function(d,i){
+      var x=(i/(_arr.length-1||1))*W;
+      var y=H-(d.clicks/maxV)*H*0.85;
+      return [x,y];
+    });
+
+    var pathD='M'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' L');
+    var fillD=pathD+' L'+W+','+H+' L0,'+H+' Z';
+
+    svg.innerHTML='<defs>'
+      +'<linearGradient id="lgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe792" stop-opacity=".25"/><stop offset="100%" stop-color="#ffe792" stop-opacity="0"/></linearGradient>'
+      +'<filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+      +'</defs>'
+      +'<path d="'+fillD+'" fill="url(#lgrad)"/>'
+      +'<path d="'+pathD+'" fill="none" stroke="#ffe792" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>'
+      +pts.map(function(p,i){ return i%Math.ceil(pts.length/8)===0?'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4" fill="#ffe792" opacity=".8"/>':''; }).join('');
+
+    if(labels){
+      labels.innerHTML='';
+      var step=Math.ceil(_arr.length/7);
+      _arr.forEach(function(d,i){
+        if(d.date && (i%step===0||i===_arr.length-1)){
+          var s=document.createElement('span');
+          s.textContent=d.date.slice(5);
+          labels.appendChild(s);
+        }
+      });
+    }
+  }
+
+  var _gp = [
+    { title:'Aphim - Tr?i nghi?m di?n ?nh d?nh cao', path:'/index.html',    gaViews:6800, gaUsers:2500, bounceRate:4.0  },
+    { title:'Xem phim - A Phim',                   path:'/watch.html',    gaViews:903,  gaUsers:337,  bounceRate:19.2 },
+    { title:'T-m ki?m phim - Aphim',               path:'/search.html',   gaViews:500,  gaUsers:252,  bounceRate:12.3 },
+    { title:'Phim Vi?t Nam - A Phim',              path:'/danh-sach.html',gaViews:361,  gaUsers:176,  bounceRate:10.5 },
+    { title:'Phim Theo Qu?c Gia - A Phim',         path:'/phim-theo-quoc-gia.html', gaViews:230, gaUsers:40, bounceRate:0.0 },
+    { title:'Danh S-ch Phim - A Phim',             path:'/danh-sach.html',gaViews:168,  gaUsers:50,  bounceRate:10.7 },
+    { title:'-ang nh?p - A Phim',                   path:'/login.html',    gaViews:71,   gaUsers:54,  bounceRate:6.9  }
+  ];
+  var _gtv = 9033;
+
+  function renderTopPages(state){
+    var tbody=document.getElementById('top-pages-tbody');
+    if(!tbody) return;
+    var modeTotal = state.modeClicks || state.todayClicks || 1;
+    tbody.innerHTML='';
+    _gp.forEach(function(p){
+
+      var share = p.gaViews / _gtv;
+      var clicks = Math.round(modeTotal * share);
+      var pct = ((p.gaViews / _gtv)*100).toFixed(1);
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'
+        +'<p style="font-size:12px;font-weight:600;color:#eeeef0;margin-bottom:2px">'+p.title+'</p>'
+        +'<p style="font-size:10px;color:#aaabad;font-family:Inter,sans-serif">aphim.io.vn'+p.path+'</p>'
+        +'<span style="font-size:9px;color:#6bfe9c;font-family:Inter,sans-serif">?? '+p.gaUsers.toLocaleString('vi-VN')+' users - '+p.gaViews.toLocaleString('vi-VN')+' views - bounce '+p.bounceRate+'%</span>'
+        +'</td>'
+        +'<td style="text-align:right;font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#ffe792">'+clicks.toLocaleString('vi-VN')+'</td>'
+        +'<td style="text-align:right;font-family:Inter,sans-serif;font-size:12px;color:#aaabad">'+pct+'%</td>'
+        +'<td style="padding-right:20px"><div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,#ffe792,#efc900);width:'+pct+'%;border-radius:2px;transition:width .8s"></div></div></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  // CTR = banner_clicks / impressions = 2000/46000 - 4.3%
+
+  function renderTrafficCards(state){
+    var modeTotal = state.modeClicks || state.todayClicks || 0;
+
+    setVal('t-impressions', Math.round(modeTotal * 23));
+    // Unique visitors - modeTotal - 1.3 (one person clicks ~0.77 banners avg)
+    setVal('t-unique', Math.round(modeTotal * 1.3));
+
+    setVal('t-ctr', '4.32%', true);
+
+    if(state.hourlyData){
+      var maxH=state.hourlyData.indexOf(Math.max.apply(null,state.hourlyData));
+      document.getElementById('t-peak').textContent=(maxH||21)+'h:00';
+    }
+  }
+
+  var _currentMode = null;
+  var _modeJustChanged = false;
+  var _orgState = {
+    live30: 0, live5: 0, waitTicks: 0,
+    displayedToday: 0, displayedTotal: 0, lastRawToday: 0,
+    pendingClicks: 0, currentMode: 'today'
+  };
+  window._orgState = _orgState;
+
+  window.AP_RENDER = function(state){
+    if(!state) return;
+
+    _modeJustChanged = (state.mode !== _currentMode);
+    _orgState.currentMode = state.mode;
+    if(_modeJustChanged){
+      _currentMode = state.mode;
+      ['m-today','m-total','t-impressions','t-unique'].forEach(function(id){
+        delete _lastVals[id];
+        if(_animFrames[id]){cancelAnimationFrame(_animFrames[id]);delete _animFrames[id];}
+      });
+      _orgState.displayedToday = 0;
+      _orgState.displayedTotal = 0;
+      _orgState.lastRawToday = 0;
+      _orgState.pendingClicks = 0;
+    }
+
+    var modeLabels={today:'Click H-m Nay',yesterday:'Click H-m Qua','7days':'Click 7 Ng-y','30days':'Click 30 Ng-y'};
+    var lbl=document.getElementById('m-today-label');
+    if(lbl) lbl.textContent=modeLabels[state.mode]||'Click H-m Nay';
+
+    // -- Metric cards (Organic Burst & History Filter) -----------------
+    var iDate = (window.AP_CFG && window.AP_CFG.installDate) ? window.AP_CFG.installDate : "2026-04-05";
+    var tMult = window.AP_CFG ? window.AP_CFG.trafficMultiplier : 0.45;
+    var oMult = window.AP_CFG ? window.AP_CFG.onlineMultiplier : 1.0;
+
+    var curDateStr = new Date().toISOString().slice(0,10);
+
+    // -- DAILY SNAPSHOT CACHE (localStorage) ------------------------------
+    // -?c cache ng-y t? localStorage
+    var _snapKey = 'ap_snap';
+    var _snapCache = {};
+    try { _snapCache = JSON.parse(localStorage.getItem(_snapKey) || '{}'); } catch(e) { _snapCache = {}; }
+
+    // -- Số đại diện hôm nay (ngu?n duy nh?t d-ng tin) --------------
+    var todayRep = (_orgState.displayedToday > 0)
+      ? _orgState.displayedToday
+      : Math.round((state.todayClicks || 0) * tMult);
+
+    // -- H-m u?c t-nh s? click cho 1 ng-y trong qu- kh? -------------
+    // D-ng s? ng-y c-ch h-m nay d? decay nh?, th-m random seed t? dateString
+    function _estDay(dateStr) {
+      if (_snapCache[dateStr]) return _snapCache[dateStr]; // cache l- uu ti-n 1
+      if (dateStr < iDate) return 0;                        // tru?c ng-y c-i th- = 0
+      // T-nh s? ng-y c-ch h-m nay
+      var diff = Math.round((new Date(curDateStr) - new Date(dateStr)) / 86400000);
+      // Decay nh? m?i ng-y, max -30%, seed t? hash ng-y d? ?n d?nh qua c-c render
+      var hash = dateStr.split('').reduce(function(h,c){ return h*31+c.charCodeAt(0); }, 1);
+      var jitter = 0.82 + (Math.abs(hash) % 100) / 333; // 0.82 - 1.12
+      var decay  = Math.max(0.7, 1 - diff * 0.04);       // gi?m 4%/ng-y t?i da 30%
+      return Math.round(todayRep * decay * jitter);
+    }
+
+    // -- T-nh mClicks cho t?ng mode ----------------------------------
+    if (state.mode === 'today' || _modeJustChanged) {
+      if (state.mode === 'today') {
+        var rawToday = Math.round((state.modeClicks !== undefined ? state.modeClicks : state.todayClicks || 0) * tMult);
+        if (_modeJustChanged || _orgState.displayedToday === 0) {
+          _orgState.displayedToday = rawToday;
+          _orgState.displayedTotal = rawToday; // realTotal s? du?c t-nh l?i sau
+          _orgState.lastRawToday = rawToday;
+        } else {
+          if (rawToday > _orgState.lastRawToday) {
+            _orgState.pendingClicks = (_orgState.pendingClicks || 0) + (rawToday - _orgState.lastRawToday);
+            _orgState.lastRawToday = rawToday;
+          }
+        }
+
+        // T-nh t?ng to-n th?i gian: to-n b? ng-y trong cache + h-m nay
+        var _allTimeTotal = _orgState.displayedToday;
+        Object.keys(_snapCache).forEach(function(d){
+          if (d !== curDateStr && d >= iDate) _allTimeTotal += _snapCache[d];
+        });
+        _orgState.displayedTotal = _allTimeTotal;
+
+        setVal('m-today', _orgState.displayedToday);
+        setVal('m-total', _orgState.displayedTotal);
+      } else {
+        var mClicks = 0;
+        if (state.mode === 'yesterday') {
+          // Uu ti-n 1: t-m theo ng-y h-m qua t-nh b?ng local time
+          var dp = new Date(); dp.setDate(dp.getDate()-1);
+          var ystr = dp.toISOString().slice(0,10);
+          var yObj = scaledDaily.find(function(d){ return d.date === ystr && d.date !== curDateStr; });
+          if (yObj && yObj.clicks > 0) {
+            mClicks = yObj.clicks;
+          } else {
+            // Uu ti-n 2: t-m theo dateKeys[0] t? analytics-core (tr-nh l?ch timezone)
+            var yCk = state.dateKeys && state.dateKeys[0];
+            var yCkObj = yCk ? scaledDaily.find(function(d){ return d.date === yCk && d.date !== curDateStr; }) : null;
+            if (yCkObj && yCkObj.clicks > 0) {
+              mClicks = yCkObj.clicks;
+            } else {
+              // Uu ti-n 3: l?y t? state.modeClicks (analytics-core d- t-nh) - tMult
+              var rawMC = state.modeClicks || 0;
+              mClicks = rawMC > 0 ? Math.round(rawMC * tMult) : 0;
+              // Uu ti-n 4: fallback cu?i - l?y entry d?u ti-n trong scaledDaily kh-ng ph?i h-m nay
+              if (mClicks === 0) {
+                var anyPast = scaledDaily.find(function(d){ return d.date !== curDateStr; });
+                mClicks = anyPast ? anyPast.clicks : 0;
+              }
+            }
+          }
+        } else {
+          // -- Mode: H-m qua / 7 ng-y / 30 ng-y ----------------------
+          var mClicks = 0;
+
+          if (state.mode === 'yesterday') {
+            var _yd = new Date(curDateStr + 'T12:00:00');
+            _yd.setDate(_yd.getDate() - 1);
+            var _ydStr = _yd.toISOString().slice(0, 10);
+            mClicks = _estDay(_ydStr);
+            if (mClicks === 0) mClicks = Math.round((state.modeClicks || 0) * tMult);
+
+          } else if (state.mode === '7days') {
+            for (var _d7 = 0; _d7 < 7; _d7++) {
+              var _d7d = new Date(curDateStr + 'T12:00:00');
+              _d7d.setDate(_d7d.getDate() - _d7);
+              var _d7s = _d7d.toISOString().slice(0, 10);
+              if (_d7s < iDate) break;
+              mClicks += (_d7 === 0) ? todayRep : _estDay(_d7s);
+            }
+            if (mClicks === 0) mClicks = Math.round((state.modeClicks || 0) * tMult);
+
+          } else if (state.mode === '30days') {
+            for (var _d30 = 0; _d30 < 30; _d30++) {
+              var _d30d = new Date(curDateStr + 'T12:00:00');
+              _d30d.setDate(_d30d.getDate() - _d30);
+              var _d30s = _d30d.toISOString().slice(0, 10);
+              if (_d30s < iDate) break;
+              mClicks += (_d30 === 0) ? todayRep : _estDay(_d30s);
+            }
+            if (mClicks === 0) mClicks = Math.round((state.modeClicks || 0) * tMult);
+          }
+
+          // ALL-TIME total cho c-c mode l?ch s?
+          var _histTotal = todayRep;
+          Object.keys(_snapCache).forEach(function(d) {
+            if (d !== curDateStr && d >= iDate) _histTotal += _snapCache[d];
+          });
+
+          setVal('m-today', mClicks);
+          setVal('m-total', _histTotal);
+        }
+      }
+    }
+
+
+    // -- Online users (Organic Drift) -------------------------------
+    var mult = (window.AP_HOUR_MULT?window.AP_HOUR_MULT[new Date().getHours()]:1) * oMult;
+    if (!_orgState.live30) {
+      _orgState.live30=Math.max(1,Math.round(65*mult+(Math.random()-0.5)*mult*20));
+      _orgState.live5=Math.max(0,Math.round(_orgState.live30/5+(Math.random()-0.5)*3));
+    } else {
+      if (_orgState.waitTicks <= 0) {
+        if (Math.random() < 0.3) {
+          // Giữ nguyên số online trong 8-20s (2-5 ticks)
+          _orgState.waitTicks = Math.floor(Math.random()*4) + 2;
+        } else {
+          // B?t d?u nh?y s?
+          var drift = Math.round((Math.random() - 0.45) * 12 * mult);
+          var minL = Math.max(12, 40*mult);
+          var maxL = 150*mult;
+          _orgState.live30 = Math.max(minL, Math.min(maxL, _orgState.live30 + drift));
+          _orgState.live5 = Math.max(1, Math.round(_orgState.live30/5 + (Math.random() - 0.5) * 4));
+          _orgState.waitTicks = Math.floor(Math.random()*2);
+        }
+      } else {
+        _orgState.waitTicks--;
+      }
+    }
+    
+    var el30=document.getElementById('m-live-30');
+    var el5=document.getElementById('m-live-5');
+    if(el30&&el30.textContent!==String(_orgState.live30)){el30.textContent=_orgState.live30;el30.classList.remove('flash');void el30.offsetWidth;el30.classList.add('flash');}
+    if(el5&&el5.textContent!==String(_orgState.live5)){el5.textContent=_orgState.live5;el5.classList.remove('flash');void el5.offsetWidth;el5.classList.add('flash');}
+
+    // T-nh to-n ph-n b? bi?u d? gi? c?c k? t? nhi-n thay v- d-ng data cu chunky
+    var currentHour = new Date().getHours();
+    var hourlyMult = window.AP_HOUR_MULT || new Array(24).fill(1);
+    var weightSum = 0;
+    for (var h = 0; h <= currentHour; h++) { weightSum += hourlyMult[h]; }
+    
+    // D-ng s? click d- t-nh xong đang hiển thị ở thẻ m-today l-m target (d- lu?c b? d?nh d?ng d?u ph?y/ch?m)
+    var elToday = document.getElementById('m-today');
+    var targetModeClicks = elToday ? parseInt(elToday.textContent.replace(/\D/g, ''), 10) : 0;
+    if (isNaN(targetModeClicks)) targetModeClicks = 0;
+
+    var scaledHourly = new Array(24).fill(0);
+    var sumSoFar = 0;
+    for (var h = 0; h <= currentHour; h++) {
+      if (h === currentHour) {
+        scaledHourly[h] = Math.max(0, targetModeClicks - sumSoFar);
+      } else {
+        scaledHourly[h] = Math.round(targetModeClicks * (hourlyMult[h] / weightSum));
+        sumSoFar += scaledHourly[h];
+      }
+    }
+    
+    // Scale c-c thu?c t-nh trong state cho T?T C? c-c tab
+    var scaledState = Object.assign({}, state);
+    
+    function scaleObj(objName) {
+      if (state[objName]) {
+        scaledState[objName] = {};
+        Object.keys(state[objName]).forEach(function(k){
+          scaledState[objName][k] = Math.round(state[objName][k] * tMult);
+        });
+      }
+    }
+    scaleObj('bannerClicks');
+    scaleObj('sources');
+    scaleObj('devices');
+    scaleObj('browsers');
+    // topPages might be an array of objects or an object mapping page to views.
+    if (!Array.isArray(state.topPages)) scaleObj('topPages');
+
+    var elTotal = document.getElementById('m-total');
+    var targetModeTotal = elTotal ? parseInt(elTotal.textContent.replace(/\D/g, ''), 10) : 0;
+    if (isNaN(targetModeTotal)) targetModeTotal = 0;
+
+    scaledState.todayClicks = _orgState.displayedToday;
+    scaledState.modeClicks = targetModeClicks;
+    scaledState.totalClicks = targetModeTotal;
+    scaledState.hourlyData = scaledHourly;
+    if(state.tImp) scaledState.tImp = Math.round(state.tImp * tMult);
+
+    // Charts & tables - lu-n c?p nh?t cho m?i mode
+    renderHourlyChart(scaledHourly);
+    renderFeed(state.recentClicks||[]);
+    renderBannersTable(scaledState);
+    renderDailyChart(scaledDaily);
+    renderTopPages(scaledState);
+    renderTrafficCards(scaledState);
+  };
+</script>
+
+<script>
+(function(){
+  var _hw=[0.02,0.01,0.01,0.005,0.005,0.01,0.03,0.06,0.10,0.14,0.16,0.18,0.20,0.19,0.17,0.16,0.18,0.22,0.28,0.38,0.50,0.58,0.48,0.32];
+  function _gi(){return _hw[new Date().getHours()];}
+  function _gm(){return(window.AP_CFG&&window.AP_CFG.trafficMultiplier)?window.AP_CFG.trafficMultiplier:0.42;}
+  function _rms(a,b){return Math.floor(Math.random()*(b-a))+a;}
+  var _e={s:false,su:0,bl:0,nb:Date.now()+_rms(2000,8000)};
+  function _chk(){
+    var h=new Date().getHours();
+    if(h>=2&&h<=5)return Math.random()<0.60;
+    if(_gi()<0.08)return Math.random()<0.15;
+    return Math.random()<0.08;
+  }
+  function _tick(){
+    if(!window._orgState||window._orgState.currentMode!=='today'){setTimeout(_tick,3000);return;}
+    var now=Date.now();
+    if(_e.s){if(now<_e.su){setTimeout(_tick,Math.min(_e.su-now,5000));return;}_e.s=false;}
+    var iv=_gi();
+    if(_e.bl>0){
+      window._orgState.displayedToday=(window._orgState.displayedToday||0)+1;
+      window._orgState.displayedTotal=(window._orgState.displayedTotal||0)+1;
+      if(window._SV){window._SV('m-today',window._orgState.displayedToday);window._SV('m-total',window._orgState.displayedTotal);}
+      _e.bl--;
+      var nx=_rms(800,4000);
+      if(_e.bl===0){
+        if(_chk()){_e.s=true;_e.su=now+_rms(20000,90000);setTimeout(_tick,_e.su-now);return;}
+        var wb=_rms(5000,45000)/iv;
+        _e.nb=now+Math.min(wb,60000);setTimeout(_tick,_e.nb-now);return;
+      }
+      setTimeout(_tick,nx);return;
+    }
+    if(now<_e.nb){setTimeout(_tick,Math.min(_e.nb-now,5000));return;}
+    var mb=Math.max(1,Math.round(5*iv/0.5));
+    _e.bl=_rms(1,mb+1);
+    if(window._orgState.pendingClicks>0){_e.bl=Math.max(_e.bl,Math.min(window._orgState.pendingClicks,12));window._orgState.pendingClicks=0;}
+    setTimeout(_tick,50);
+  }
+  setTimeout(function(){if(window._orgState)window._orgState.pendingClicks=window._orgState.pendingClicks||0;_tick();},_rms(1000,3000));
+})();
+</script>
+
+<script src="js/partner-fb.js?v=13"></script>
+<script src="js/analytics-core.js?v=13"></script>
+<script src="js/nav-active-indicator.js?v=13"></script>
+    <script src="js/config.js?v=15"></script>
+    <script src="js/auth.js?v=38"></script>
+    <script src="js/premium-ad-blocker.js?v=1"></script>
+    <script src="js/auth-modal.js?v=13"></script>
+    <script src="js/user-ui.js?v=37"></script>
+    <script src="js/categories-dropdown.js?v=15"></script>
+    <script src="js/countries-dropdown.js?v=15"></script>
+    <script src="js/dropdown-hover-fix.js"></script>
+    <script src="js/sticky-nav.js"></script>
+    <script src="js/mobile-menu-modern.js?v=40"></script>
+    <script src="js/nav-instant-suggest.js?v=5"></script>
+
+    <!-- ====== APhim Catfish Banner + Popup ====== -->
+    <link rel="stylesheet" href="/css/catfish-banner.css?v=17">
+    <link rel="stylesheet" href="/css/inline-ad.css?v=15">
+    <script src="/js/catfish-banner.js?v=18" defer></script>
+    <!-- ====== End Catfish Banner ====== -->
+</body>
+</html>
+
