@@ -520,7 +520,75 @@
     </style>
 
     <style>
-        /* Watch page specific styles from old watch.html */
+        /* ══════════════════════════════════════════════════════
+           WATCH PAGE MOBILE: CHỐNG LỆCH NGANG (Horizontal Scroll Fix)
+           Cố định 2 bên, không cho trang shift trái/phải khi scroll
+           ══════════════════════════════════════════════════════ */
+        @media (max-width: 1023px) {
+            /* Main container: cứng 2 bên */
+            main#watchMain,
+            #watchMain > *,
+            #video-container,
+            #sidebar-col,
+            #comments-section,
+            #mobile-recommendations {
+                max-width: 100% !important;
+                width: 100% !important;
+                overflow-x: hidden !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Grid container: giữ trong viewport */
+            #watchMain > .grid {
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+            }
+
+            /* Player wrapper: giữ trong khung */
+            #player-and-controls,
+            #player-and-controls > *,
+            .relative.aspect-video {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+
+            /* Control bar: không được rộng hơn viewport */
+            #player-control-bar {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+
+            /* Episode list: clip overflow */
+            #episode-list {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+
+            /* Gallery: cho phép scroll ngang nhưng không làm lệch trang */
+            #movie-gallery-container {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+            #movie-gallery-scroll {
+                /* gallery scroll nội bộ vẫn hoạt động */
+                max-width: 100%;
+            }
+
+            /* Sidebar + recommendations: không bị tràn */
+            #sidebar-col > *,
+            #mobile-recommendations > * {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+
+            /* Breadcrumb: không wrap sai */
+            #watch-breadcrumb {
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
     </style>
 </head>
 
