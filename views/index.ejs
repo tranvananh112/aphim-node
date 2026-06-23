@@ -189,17 +189,22 @@
                         padding-right: 24px !important;
                     }
                     #heroThumbnails {
-                        justify-content: center !important;
-                        max-width: 280px !important;
-                        padding-left: 8px !important;
-                        padding-right: 8px !important;
+                        /* KHÔNG dùng justify-content: center trên container có overflow-x */
+                        /* vì sẽ hiển thị giữa danh sách thay vì đầu danh sách */
+                        justify-content: flex-start !important;
+                        align-items: center !important;
+                        max-width: 300px !important;
+                        padding: 6px 8px !important;
                     }
-                }
+                    /* Scroll về đầu khi init - đảm bảo item đầu tiên hiện trước */
+                    #heroThumbnails:not([data-scrolled]) {
+                        scroll-behavior: auto !important;
+                    }
             </style>
             <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 mobile-thumb-wrapper" style="display:flex; justify-content:flex-end; pointer-events:auto;">
                 <div style="max-width:600px; width: max-content; flex-shrink:0;">
                     <div id="heroThumbnails"
-                        style="display:flex; align-items:flex-end; gap:10px; overflow-x:auto; padding:16px 0 16px 16px; scrollbar-width:none; -ms-overflow-style:none; scroll-snap-type:x mandatory;">
+                        style="display:flex; align-items:center; gap:10px; overflow-x:auto; padding:8px 0 8px 16px; scrollbar-width:none; -ms-overflow-style:none; scroll-snap-type:x mandatory;">
                         <!-- Thumbnails will be loaded here -->
                     </div>
                 </div>

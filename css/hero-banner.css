@@ -269,6 +269,18 @@
     #heroThumbnails {
         -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
+        /* CANH GIỮA THEO CHIỀU DỌC - không bị lệch lên trên */
+        align-items: center !important;
+        /* BẮT ĐẦU TỪ ITEM ĐẦU TIÊN - không để flex-center làm lệch vị trí scroll */
+        justify-content: flex-start !important;
+        /* Padding đều 2 bên trên dưới */
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+
+    /* Wrapper ngoài: canh giữa chiều dọc */
+    .mobile-thumb-wrapper {
+        align-items: center !important;
     }
 }
 

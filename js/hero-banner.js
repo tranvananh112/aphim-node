@@ -605,6 +605,12 @@ function renderThumbnails(movies) {
         });
     });
 
+    // ── Cuộn về đầu: item đầu tiên luôn hiển thị trước ──────────
+    // Dùng setTimeout 0 để đảm bảo DOM đã render xong
+    setTimeout(() => {
+        container.scrollLeft = 0;
+    }, 0);
+
     // Hover preview removed per user request
 }
 
