@@ -93,21 +93,16 @@
             box-shadow: none !important;
         }
 
-        /* ── Comments: div.mt-8 giữ màu nền trang, .ap-cmt-wrapper (#23263a) do firebase-comments.js inject ── */
+        /* ── Comments: div.mt-0 giữ màu nền trang do firebase-comments.js inject ── */
         #comments-section > div {
             background-color: #1e2130 !important;
             background: #1e2130 !important;
             border: 1px solid rgba(255, 255, 255, 0.06) !important;
             box-shadow: none !important;
         }
-        .ap-cmt-wrapper {
-            background-color: #23263a !important;
-            background: #23263a !important;
-        }
 
         /* ── LỚP 3: Các thành phần con bên trong ── */
         .bg-layer-3,
-        .ap-cmt-guest,
         .comment-item,
         #comments-section div.bg-\[\#323447\],
         #comments-section .bg-\[\#282a3a\],
@@ -575,8 +570,7 @@
             }
 
             /* Sidebar + recommendations: không bị tràn */
-            #sidebar-col > *,
-            #mobile-recommendations > * {
+            #sidebar-col > * {
                 max-width: 100% !important;
                 overflow-x: hidden !important;
             }
@@ -590,6 +584,7 @@
             }
         }
     </style>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 </head>
 
 <body class="bg-background-dark text-gray-100 font-display min-h-screen flex flex-col watch-page">

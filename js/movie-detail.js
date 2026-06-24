@@ -264,7 +264,201 @@ function renderMovieDetail(movie) {
             alert('Phim chưa có trailer');
         });
     }
+
+    // Tích hợp Các bản chiếu
+    renderVersions(movie);
 }
+
+// Render "Các bản chiếu"
+function renderVersions(movie) {
+    const actionsContainer = document.querySelector('.movie-actions-container');
+    if (!actionsContainer) return;
+
+    let displayLang = 'Phụ đề / Vietsub'; // Mặc định
+    if (movie.lang) {
+        displayLang = movie.lang;
+    }
+
+    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80, true) : 'https://img.ophim.live/uploads/movies/' + (movie.thumb_url || movie.poster_url);
+
+    const currentDomain = window.location.hostname;
+    const isSvap1 = currentDomain.includes('aphim.top') || currentDomain === 'localhost' || currentDomain === '127.0.0.1';
+    const isSvap2 = currentDomain.includes('aphim1.io.vn');
+    const isSvap3 = currentDomain.includes('aphim.io.vn') && !isSvap2;
+
+    // Load Lottie web component script if not present
+    if (!document.getElementById('dotlottie-script')) {
+        const script = document.createElement('script');
+        script.id = 'dotlottie-script';
+        script.src = "https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js";
+        script.type = "module";
+        document.body.appendChild(script);
+    }
+
+    const versionsHTML = `
+        <div class="w-full mt-0 mb-8">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                Các bản chiếu
+            </h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+                <!-- SVAP1 -->
+                <button onclick="changeVersion('aphim.top')" style="flex: 1; min-width: 260px; background-color: #5a5d6a; ${isSvap1 ? 'border: 1px solid #fcd576;' : 'border: 1px solid transparent; hover:border-white/30;'}" class="relative overflow-hidden rounded-xl p-4 text-left shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3 group">
+                    <div id="svap-bg-1" style="position: absolute; top: 0; right: 0; bottom: 0; width: 65%; background-image: url('${imgUrl}'); background-size: cover; background-position: center; pointer-events: none; z-index: 0; opacity: 0.6; -webkit-mask-image: linear-gradient(to right, transparent 0%, black 70%); mask-image: linear-gradient(to right, transparent 0%, black 70%); transition: transform 0.5s ease, background-image 0.5s ease;" class="group-hover:scale-110"></div>
+                    
+                    <!-- Lottie Crown SVAP1 VIP -->
+                    <div style="position: absolute; top: -5px; right: -5px; z-index: 20; pointer-events: none; width: 60px; height: 60px; transform: rotate(10deg); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                        <dotlottie-wc src="https://lottie.host/3d743490-d86f-4cc7-9170-2fefdb01db16/8A8VL5a8T2.lottie" style="width: 100%; height: 100%;" autoplay loop></dotlottie-wc>
+                    </div>
+
+                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                        <span class="material-icons-round text-sm">closed_caption</span>
+                        <span class="text-[13px] font-medium">${displayLang} (SVAP1)</span>
+                    </div>
+                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap1 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
+                        ${isSvap1 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
+                    </div>
+                </button>
+                
+                <!-- SVAP2 -->
+                <button onclick="changeVersion('aphim1.io.vn')" style="flex: 1; min-width: 260px; background-color: #2b7a4b;" class="relative overflow-hidden rounded-xl ${isSvap2 ? 'border: 1px solid #fcd576;' : 'border: 1px solid transparent; hover:border-white/30;'} p-4 text-left shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3 group">
+                    <div id="svap-bg-2" style="position: absolute; top: 0; right: 0; bottom: 0; width: 65%; background-image: url('${imgUrl}'); background-size: cover; background-position: center; pointer-events: none; z-index: 0; opacity: 0.6; -webkit-mask-image: linear-gradient(to right, transparent 0%, black 70%); mask-image: linear-gradient(to right, transparent 0%, black 70%); transition: transform 0.5s ease, background-image 0.5s ease;" class="group-hover:scale-110"></div>
+
+                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                        <span class="material-icons-round text-sm">mic</span>
+                        <span class="text-[13px] font-medium">${displayLang} (SVAP2)</span>
+                    </div>
+                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap2 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
+                        ${isSvap2 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
+                    </div>
+                </button>
+
+                <!-- SVAP3 -->
+                <button onclick="changeVersion('aphim.io.vn')" style="flex: 1; min-width: 260px; background-color: #1e3a8a;" class="relative overflow-hidden rounded-xl ${isSvap3 ? 'border: 1px solid #fcd576;' : 'border: 1px solid transparent; hover:border-white/30;'} p-4 text-left shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3 group">
+                    <div id="svap-bg-3" style="position: absolute; top: 0; right: 0; bottom: 0; width: 65%; background-image: url('${imgUrl}'); background-size: cover; background-position: center; pointer-events: none; z-index: 0; opacity: 0.6; -webkit-mask-image: linear-gradient(to right, transparent 0%, black 70%); mask-image: linear-gradient(to right, transparent 0%, black 70%); transition: transform 0.5s ease, background-image 0.5s ease;" class="group-hover:scale-110"></div>
+
+                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                        <span class="material-icons-round text-sm">hd</span>
+                        <span class="text-[13px] font-medium">${displayLang} (SVAP3)</span>
+                    </div>
+                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap3 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
+                        ${isSvap3 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
+                    </div>
+                </button>
+            </div>
+        </div>
+    `;
+
+    const oldContainer = document.getElementById('versions-container');
+    if (oldContainer) oldContainer.remove();
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'versions-container';
+    wrapper.className = 'w-full block';
+    wrapper.innerHTML = versionsHTML;
+
+    actionsContainer.after(wrapper);
+}
+
+// Logic chuyển hướng linh hoạt giữa Node và HTML
+window.changeVersion = function(domain) {
+    const currentDomain = window.location.hostname;
+    
+    // Nếu domain mục tiêu trùng với domain hiện tại (hoặc đang test ở localhost mà chọn bản mặc định)
+    if (currentDomain.includes(domain) || (domain === 'aphim.top' && (currentDomain === 'localhost' || currentDomain === '127.0.0.1'))) {
+        if (typeof showToast === 'function') {
+            showToast('Bạn đang xem bản chiếu này rồi!', 'info');
+        } else {
+            alert('Bạn đang xem bản chiếu này rồi!');
+        }
+        return; // Ngừng thực hiện load lại trang
+    }
+
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+    const params = new URLSearchParams(currentSearch);
+    
+    let slug = '';
+    let episode = '';
+    let isWatchPage = false;
+    
+    // Ưu tiên đọc từ biến toàn cục nếu đang ở trang xem phim (bảo đảm luôn lấy đúng tập hiện tại)
+    if (typeof currentMovie !== 'undefined' && currentMovie && currentMovie.slug) {
+        slug = currentMovie.slug;
+        if (typeof currentEpisode !== 'undefined' && currentEpisode && currentEpisode.slug) {
+            episode = currentEpisode.slug;
+            isWatchPage = true;
+        } else if (currentPath.includes('/xem-phim/') || currentPath.includes('watch.html')) {
+            isWatchPage = true;
+        }
+    }
+    
+    // Fallback: Đọc từ URL nếu không có biến toàn cục
+    if (!slug) {
+        if (currentPath.includes('/phim/')) {
+            slug = currentPath.split('/phim/')[1].replace('/', '');
+        } else if (currentPath.includes('/xem-phim/')) {
+            isWatchPage = true;
+            const parts = currentPath.split('/xem-phim/')[1].split('/');
+            slug = parts[0];
+            if (parts.length > 1) {
+                episode = parts[1];
+            }
+        } else if (currentPath.includes('movie-detail.html')) {
+            slug = params.get('slug');
+        } else if (currentPath.includes('watch.html')) {
+            isWatchPage = true;
+            slug = params.get('slug');
+            episode = params.get('episode');
+        }
+    }
+    
+    // Chuẩn hóa biến tập phim (bỏ "tap-" đi để ghép lại cho chuẩn, tránh lỗi tap-tap-5)
+    if (episode) {
+        episode = episode.replace(/^tap-/, '');
+    }
+
+    if (!slug) {
+        window.location.href = "https://" + domain + currentPath + currentSearch;
+        return;
+    }
+    
+    // Xây dựng URL đích
+    const isNodeDomain = domain === 'aphim.top';
+    let newUrl = 'https://' + domain;
+    
+    if (isNodeDomain) {
+        if (isWatchPage) {
+            newUrl += '/xem-phim/' + slug;
+            if (episode) {
+                 if (episode.toLowerCase() === 'full') {
+                     newUrl += '/full';
+                 } else {
+                     newUrl += '/tap-' + episode;
+                 }
+            }
+        } else {
+            newUrl += '/phim/' + slug;
+        }
+    } else {
+        if (isWatchPage) {
+            newUrl += '/watch.html?slug=' + slug;
+            if (episode) {
+                 if (episode.toLowerCase() === 'full') {
+                     newUrl += '&episode=full';
+                 } else {
+                     newUrl += '&episode=tap-' + episode;
+                 }
+            }
+        } else {
+            newUrl += '/movie-detail.html?slug=' + slug;
+        }
+    }
+    
+    window.location.href = newUrl;
+};
 
 // Load movie gallery from API
 async function loadMovieGallery(movie) {
@@ -297,6 +491,28 @@ async function loadMovieGallery(movie) {
                 `).join('');
                 
                 setupGalleryScroll();
+                
+                // Di chuyển phần hình ảnh lên nằm ngay dưới danh sách tập phim
+                const mobileEpisodesWrapper = document.getElementById('episodes-mobile')?.parentElement;
+                if (mobileEpisodesWrapper) {
+                    mobileEpisodesWrapper.after(galleryContainer);
+                    console.log('✅ Gallery container moved below mobile episodes list');
+                }
+
+                // Update SVAP backgrounds with gallery images dynamically
+                const svapBg1 = document.getElementById('svap-bg-1');
+                const svapBg2 = document.getElementById('svap-bg-2');
+                const svapBg3 = document.getElementById('svap-bg-3');
+
+                if (svapBg1 && svapBg2 && svapBg3) {
+                    const img1 = backdrops[0]?.file_path;
+                    const img2 = backdrops[1]?.file_path || img1;
+                    const img3 = backdrops[2]?.file_path || img2;
+                    
+                    if (img1) svapBg1.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img1}')`;
+                    if (img2) svapBg2.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img2}')`;
+                    if (img3) svapBg3.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img3}')`;
+                }
             }
         }
     } catch (err) {
@@ -383,7 +599,7 @@ function addMovieMetadata(movie) {
 
     // Build metadata cards FIRST
     const metadataHTML = `
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mb-4 w-full">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mb-8 w-full">
             <!-- Thể Loại -->
             ${movie.category && movie.category.length > 0 ? `
             <div style="background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);" class="rounded-xl p-3 shadow-lg hover:bg-white/20 transition-all duration-300">
@@ -519,9 +735,9 @@ function addMovieMetadata(movie) {
         console.log('🎭 Rendering cast section for', movie.actor.length, 'actors:', movie.actor);
 
         const castHTML = `
-            <div class="mt-0 mb-10" id="cast-section">
-                <div class="relative">
-                    <div id="cast-container" class="flex gap-4 overflow-x-auto scrollbar-hide" style="scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 8px;">
+            <div class="mt-0 mb-8 w-full max-w-full overflow-hidden" id="cast-section">
+                <div class="relative w-full max-w-full">
+                    <div id="cast-container" class="flex gap-4 overflow-x-auto scrollbar-hide w-full max-w-full" style="scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 8px;">
                         ${movie.actor.slice(0, 10).map((actor, index) => {
             const colors = ['from-red-500 to-red-700', 'from-blue-500 to-blue-700', 'from-green-500 to-green-700', 'from-yellow-500 to-yellow-700', 'from-purple-500 to-purple-700', 'from-pink-500 to-pink-700', 'from-indigo-500 to-indigo-700', 'from-teal-500 to-teal-700'];
             const colorClass = colors[index % colors.length];

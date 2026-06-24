@@ -446,9 +446,179 @@ function renderMovieInfo(movie, episode) {
         sidebarCastSection.classList.add('hidden');
     }
 
+    // Tích hợp Các bản chiếu
+    renderVersions(movie);
+
     // Load movie gallery
     loadMovieGallery(movie);
 }
+
+// Render "Các bản chiếu" trên trang Xem Phim
+function renderVersions(movie) {
+    const episodeSection = document.getElementById('episode-list');
+    if (!episodeSection) return;
+    const parentContainer = episodeSection.parentElement;
+
+    let displayLang = 'Phụ đề / Vietsub';
+    if (movie && movie.lang) {
+        displayLang = movie.lang;
+    }
+
+    const currentDomain = window.location.hostname;
+    const isSvap1 = currentDomain.includes('aphim.top') || currentDomain === 'localhost' || currentDomain === '127.0.0.1';
+    const isSvap2 = currentDomain.includes('aphim1.io.vn');
+    const isSvap3 = currentDomain.includes('aphim.io.vn') && !isSvap2;
+
+    // Load Lottie web component script if not present
+    if (!document.getElementById('dotlottie-script')) {
+        const script = document.createElement('script');
+        script.id = 'dotlottie-script';
+        script.src = "https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js";
+        script.type = "module";
+        document.body.appendChild(script);
+    }
+
+    const versionsHTML = `
+        <div class="w-full mb-6 mt-2">
+            <!-- Banner Notification -->
+            <div style="background: linear-gradient(to right, #4f46e5, #d946ef);" class="rounded-xl p-4 mb-5 flex items-center gap-4 shadow-lg">
+                <div style="background-color: #1e3a8a;" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-inner">
+                    <span class="material-icons-round text-[#fcd576] text-xl">notifications_active</span>
+                </div>
+                <div>
+                    <p class="text-white font-bold text-sm leading-tight" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">Click chọn SVAP1, SVAP2 hoặc SVAP3 nếu phim không xem được.</p>
+                </div>
+            </div>
+
+            <!-- Server Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <button onclick="changeVersion('aphim.top')" style="background-color: #fcd576; color: black; box-shadow: ${isSvap1 ? '0 0 15px rgba(252,213,118,0.8)' : '0 4px 12px rgba(252,213,118,0.3)'}; ${isSvap1 ? 'transform: scale(1.05); border: 2px solid white;' : ''}" class="relative overflow-visible flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg transition-all text-sm font-bold hover:-translate-y-1 hover:brightness-95">
+                    ${isSvap1 ? '<span class="material-icons-round text-[16px]">check_circle</span><span>Đang xem (SVAP1)</span>' : '<span>' + displayLang + ' (SVAP1)</span>'}
+                    
+                    <!-- Lottie Crown SVAP1 VIP -->
+                    <div style="position: absolute; top: -14px; right: -14px; z-index: 20; pointer-events: none; width: 40px; height: 40px; transform: rotate(15deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                        <dotlottie-wc src="https://lottie.host/3d743490-d86f-4cc7-9170-2fefdb01db16/8A8VL5a8T2.lottie" style="width: 100%; height: 100%;" autoplay loop></dotlottie-wc>
+                    </div>
+                </button>
+                <button onclick="changeVersion('aphim1.io.vn')" style="background-color: #c8407a; color: white; box-shadow: ${isSvap2 ? '0 0 15px rgba(200,64,122,0.8)' : '0 4px 12px rgba(200,64,122,0.3)'}; ${isSvap2 ? 'transform: scale(1.05); border: 2px solid white;' : ''}" class="relative overflow-visible flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg transition-all text-sm font-bold hover:-translate-y-1 hover:brightness-110">
+                    ${isSvap2 ? '<span class="material-icons-round text-[16px]">check_circle</span><span>Đang xem (SVAP2)</span>' : '<span>' + displayLang + ' (SVAP2)</span>'}
+                </button>
+                <button onclick="changeVersion('aphim.io.vn')" style="background-color: #299573; color: white; box-shadow: ${isSvap3 ? '0 0 15px rgba(41,149,115,0.8)' : '0 4px 12px rgba(41,149,115,0.3)'}; ${isSvap3 ? 'transform: scale(1.05); border: 2px solid white;' : ''}" class="relative overflow-visible flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg transition-all text-sm font-bold hover:-translate-y-1 hover:brightness-110">
+                    ${isSvap3 ? '<span class="material-icons-round text-[16px]">check_circle</span><span>Đang xem (SVAP3)</span>' : '<span>' + displayLang + ' (SVAP3)</span>'}
+                </button>
+            </div>
+        </div>
+    `;
+
+    const oldVersions = document.getElementById('watch-versions-container');
+    if (oldVersions) oldVersions.remove();
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'watch-versions-container';
+    wrapper.className = 'w-full';
+    wrapper.innerHTML = versionsHTML;
+
+    // Chèn vào trước tiêu đề "Danh sách tập"
+    parentContainer.insertBefore(wrapper, parentContainer.firstChild);
+}
+
+// Logic chuyển hướng linh hoạt giữa Node và HTML
+window.changeVersion = function(domain) {
+    const currentDomain = window.location.hostname;
+    
+    // Nếu domain mục tiêu trùng với domain hiện tại
+    if (currentDomain.includes(domain) || (domain === 'aphim.top' && (currentDomain === 'localhost' || currentDomain === '127.0.0.1'))) {
+        if (typeof showToast === 'function') {
+            showToast('Bạn đang xem bản chiếu này rồi!', 'info');
+        } else {
+            alert('Bạn đang xem bản chiếu này rồi!');
+        }
+        return; // Ngừng thực hiện load lại trang
+    }
+
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+    const params = new URLSearchParams(currentSearch);
+    
+    let slug = '';
+    let episode = '';
+    let isWatchPage = false;
+    
+    // Ưu tiên đọc từ biến toàn cục nếu đang ở trang xem phim (bảo đảm luôn lấy đúng tập hiện tại)
+    if (typeof currentMovie !== 'undefined' && currentMovie && currentMovie.slug) {
+        slug = currentMovie.slug;
+        if (typeof currentEpisode !== 'undefined' && currentEpisode && currentEpisode.slug) {
+            episode = currentEpisode.slug;
+            isWatchPage = true;
+        } else if (currentPath.includes('/xem-phim/') || currentPath.includes('watch.html')) {
+            isWatchPage = true;
+        }
+    }
+    
+    // Fallback: Đọc từ URL nếu không có biến toàn cục
+    if (!slug) {
+        if (currentPath.includes('/phim/')) {
+            slug = currentPath.split('/phim/')[1].replace('/', '');
+        } else if (currentPath.includes('/xem-phim/')) {
+            isWatchPage = true;
+            const parts = currentPath.split('/xem-phim/')[1].split('/');
+            slug = parts[0];
+            if (parts.length > 1) {
+                episode = parts[1];
+            }
+        } else if (currentPath.includes('movie-detail.html')) {
+            slug = params.get('slug');
+        } else if (currentPath.includes('watch.html')) {
+            isWatchPage = true;
+            slug = params.get('slug');
+            episode = params.get('episode');
+        }
+    }
+    
+    // Chuẩn hóa biến tập phim (bỏ "tap-" đi để ghép lại cho chuẩn, tránh lỗi tap-tap-5)
+    if (episode) {
+        episode = episode.replace(/^tap-/, '');
+    }
+
+    if (!slug) {
+        window.location.href = "https://" + domain + currentPath + currentSearch;
+        return;
+    }
+    
+    // Xây dựng URL đích
+    const isNodeDomain = domain === 'aphim.top';
+    let newUrl = 'https://' + domain;
+    
+    if (isNodeDomain) {
+        if (isWatchPage) {
+            newUrl += '/xem-phim/' + slug;
+            if (episode) {
+                 if (episode.toLowerCase() === 'full') {
+                     newUrl += '/full';
+                 } else {
+                     newUrl += '/tap-' + episode;
+                 }
+            }
+        } else {
+            newUrl += '/phim/' + slug;
+        }
+    } else {
+        if (isWatchPage) {
+            newUrl += '/watch.html?slug=' + slug;
+            if (episode) {
+                 if (episode.toLowerCase() === 'full') {
+                     newUrl += '&episode=full';
+                 } else {
+                     newUrl += '&episode=tap-' + episode;
+                 }
+            }
+        } else {
+            newUrl += '/movie-detail.html?slug=' + slug;
+        }
+    }
+    
+    window.location.href = newUrl;
+};
 
 // Load movie gallery from API
 async function loadMovieGallery(movie) {

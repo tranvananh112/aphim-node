@@ -3,6 +3,7 @@
 
 <head>
     <%- include('partials/head') %>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 </head>
 
 <body class="bg-background-dark text-gray-100 font-display min-h-screen">
@@ -75,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-8 xl:col-span-9 flex flex-col justify-end items-center lg:items-start pb-4 text-center lg:text-left">
+                <div class="lg:col-span-8 xl:col-span-9 flex flex-col justify-end items-center lg:items-start pb-0 text-center lg:text-left">
                     <h1 class="text-4xl lg:text-7xl font-extrabold text-white mb-4 leading-tight tracking-tight">
                         Stranger Things: <br />
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Thế giới
@@ -96,7 +97,7 @@
                     </div>
 
                     <div
-                        class="movie-actions-container flex items-center justify-center lg:justify-start gap-2 sm:gap-3 lg:gap-4 mb-8 md:mb-10 w-full">
+                        class="movie-actions-container flex items-center justify-center lg:justify-start gap-2 sm:gap-3 lg:gap-4 mt-6 md:mt-8 mb-6 md:mb-10 w-full">
                         <a href="/watch" id="watchNowBtn"
                             class="group relative flex-none px-6 sm:px-8 lg:px-10 py-3 lg:py-4 bg-red-600 text-white font-bold rounded-full shadow-lg shadow-red-600/40 hover:shadow-red-600/60 hover:-translate-y-1 transition-all duration-300">
                             <div class="flex items-center justify-center gap-1 sm:gap-2 lg:gap-3">
@@ -114,7 +115,7 @@
                     </div>
 
                     <!-- MOBILE EPISODES (Hidden on desktop) -->
-                    <div class="block lg:hidden w-full mb-8">
+                    <div class="block lg:hidden w-full mt-4 mb-8">
                         <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1 h-6 bg-red-600 rounded-full shadow-[0_0_10px_rgba(236,19,19,0.5)]"></span>
                             Danh sách tập phim
@@ -125,7 +126,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-10 w-full text-left">
+                    <div class="mb-8 w-full text-left">
                         <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1 h-6 bg-red-600 rounded-full"></span>
                             Nội dung phim
@@ -139,7 +140,7 @@
                     </div>
 
                     <!-- THƯ VIỆN HÌNH ẢNH (GALLERY) -->
-                    <div id="movie-gallery-container" class="mb-10 max-w-full text-left w-full hidden">
+                    <div id="movie-gallery-container" class="mb-8 max-w-full text-left w-full hidden">
                         <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1 h-6 bg-red-600 rounded-full"></span>
                             Hình ảnh <span id="movie-gallery-count" class="text-gray-400 text-sm font-normal ml-1"></span>
@@ -172,7 +173,7 @@
                 /* Custom CSS cho Desktop 2-column layout (Dùng Grid để chống sập layout) */
                 .ap-comments-layout { display: grid; grid-template-columns: 1fr; width: 100%; gap: 32px; }
                 .ap-comments-main { min-width: 0; width: 100%; margin-top: 0; order: 2; }
-                .ap-top-sidebar { display: block; width: 100%; margin-top: 16px; overflow: hidden; order: 1; }
+                .ap-top-sidebar { display: block; width: 100%; margin-top: 0px; overflow: hidden; order: 1; }
                 @media (min-width: 1024px) {
                     .ap-comments-layout { grid-template-columns: 1fr 420px; align-items: flex-start; }
                     .ap-comments-main { order: 1; }
@@ -180,18 +181,14 @@
                     .ap-top-sidebar { width: 100%; margin-top: 32px; overflow: visible; order: 2; }
                 }
 
-                /* ── Comments: div.mt-8 giữ màu nền trang, .ap-cmt-wrapper (#23263a) do firebase-comments.js inject ── */
+                /* ── Comments: div.mt-0 giữ màu nền trang do firebase-comments.js inject ── */
                 #comments-section > div {
                     background-color: #1e2130 !important;
                     background: #1e2130 !important;
                     border: 1px solid rgba(255, 255, 255, 0.06) !important;
                     box-shadow: none !important;
                 }
-                .ap-cmt-wrapper {
-                    background-color: #23263a !important;
-                    background: #23263a !important;
-                }
-                .ap-cmt-guest,
+                /* Remove old .ap-cmt-wrapper background override */
                 .comment-item,
                 #comments-section div.bg-\[\#323447\],
                 #comments-section .bg-\[\#282a3a\],
@@ -204,8 +201,8 @@
             </style>
             <div class="ap-comments-layout">
             <!-- Cột trái: Bình luận -->
-            <div id="comments-section" class="ap-comments-main mb-16">
-                <div class="mt-8 bg-[#1e2130] border border-white/5 rounded-2xl p-4 md:p-8 text-white w-full">
+            <div id="comments-section" class="ap-comments-main mb-8">
+                <div class="mt-0 bg-[#1e2130] border border-white/5 rounded-2xl p-4 md:p-8 text-white w-full">
                     <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-white">
                         <span class="material-icons-round text-primary outline-none">sentiment_satisfied_alt</span>
                         Bình luận
