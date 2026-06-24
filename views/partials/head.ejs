@@ -253,7 +253,7 @@
     html.no-splash body > *:not(#splashLoader) { opacity: 1 !important; visibility: visible !important; }
     html, body { background-color: #0f1016 !important; }
     #splashLoader { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background-color: #0f1016 !important; background-image: url('https://beam-images.warnermediacdn.com/2026-05/image_3.png?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=2000') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; z-index: 99999 !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 1 !important; visibility: visible !important; transition: opacity 0.5s ease-out, visibility 0.5s ease-out, filter 0.5s ease-out; }
-    #splashLoader::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 11, 16, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 0; }
+    #splashLoader::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 11, 16, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 0; }
     #splashLoader.splash-fade-out { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; filter: blur(5px); }
     body:not(.splash-ready)>*:not(#splashLoader) { opacity: 0 !important; visibility: hidden !important; }
 </style>

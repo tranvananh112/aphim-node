@@ -223,21 +223,30 @@ function renderMovieDetail(movie) {
     loadMovieGallery(movie);
 
     // Update watch button
-    const watchBtn = document.querySelector('a[href="/watch"]');
+    const watchBtn = document.getElementById('watchNowBtn') || document.querySelector('a[href="/watch"]') || document.querySelector('a[href="watch.html"]');
     if (watchBtn) {
         // Check if admin has set a custom link
         const movieLinks = JSON.parse(localStorage.getItem('movieLinks') || '{}');
         const customLink = movieLinks[movie.slug];
 
         if (customLink) {
-            // Admin đã set link, cho phép xem
-            watchBtn.href = `/xem-phim/${movie.slug}`;
+            const isHtmlEnv = window.location.pathname.includes('.html');
+            if (isHtmlEnv) {
+                watchBtn.href = `/watch.html?slug=${movie.slug}`;
+            } else {
+                watchBtn.href = `/xem-phim/${movie.slug}`;
+            }
             watchBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             console.log('✅ Custom link found for movie:', movie.slug);
         } else if (movie.episodes && movie.episodes.length > 0) {
             // Có episodes từ API
             const firstEpisode = movie.episodes[0].server_data[0];
-            watchBtn.href = `/xem-phim/${movie.slug}/tap-${firstEpisode.slug}`;
+            const isHtmlEnv = window.location.pathname.includes('.html');
+            if (isHtmlEnv) {
+                watchBtn.href = `/watch.html?slug=${movie.slug}&episode=tap-${firstEpisode.slug}`;
+            } else {
+                watchBtn.href = `/xem-phim/${movie.slug}/tap-${firstEpisode.slug}`;
+            }
         } else {
             // Không có link
             watchBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -310,11 +319,11 @@ function renderVersions(movie) {
                         <dotlottie-wc src="https://lottie.host/3d743490-d86f-4cc7-9170-2fefdb01db16/8A8VL5a8T2.lottie" style="width: 100%; height: 100%;" autoplay loop></dotlottie-wc>
                     </div>
 
-                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                    <div class="relative z-10 flex items-center gap-2 ${isSvap1 ? 'text-[#fcd576]' : 'text-white/90'}">
                         <span class="material-icons-round text-sm">closed_caption</span>
                         <span class="text-[13px] font-medium">${displayLang} (SVAP1)</span>
                     </div>
-                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div class="relative z-10 ${isSvap1 ? 'text-[#fcd576]' : 'text-white/90'} font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
                     <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap1 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
                         ${isSvap1 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
                     </div>
@@ -324,11 +333,11 @@ function renderVersions(movie) {
                 <button onclick="changeVersion('aphim1.io.vn')" style="flex: 1; min-width: 260px; background-color: #2b7a4b;" class="relative overflow-hidden rounded-xl ${isSvap2 ? 'border: 1px solid #fcd576;' : 'border: 1px solid transparent; hover:border-white/30;'} p-4 text-left shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3 group">
                     <div id="svap-bg-2" style="position: absolute; top: 0; right: 0; bottom: 0; width: 65%; background-image: url('${imgUrl}'); background-size: cover; background-position: center; pointer-events: none; z-index: 0; opacity: 0.6; -webkit-mask-image: linear-gradient(to right, transparent 0%, black 70%); mask-image: linear-gradient(to right, transparent 0%, black 70%); transition: transform 0.5s ease, background-image 0.5s ease;" class="group-hover:scale-110"></div>
 
-                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                    <div class="relative z-10 flex items-center gap-2 ${isSvap2 ? 'text-[#fcd576]' : 'text-white/90'}">
                         <span class="material-icons-round text-sm">mic</span>
                         <span class="text-[13px] font-medium">${displayLang} (SVAP2)</span>
                     </div>
-                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div class="relative z-10 ${isSvap2 ? 'text-[#fcd576]' : 'text-white/90'} font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
                     <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap2 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
                         ${isSvap2 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
                     </div>
@@ -338,11 +347,11 @@ function renderVersions(movie) {
                 <button onclick="changeVersion('aphim.io.vn')" style="flex: 1; min-width: 260px; background-color: #1e3a8a;" class="relative overflow-hidden rounded-xl ${isSvap3 ? 'border: 1px solid #fcd576;' : 'border: 1px solid transparent; hover:border-white/30;'} p-4 text-left shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3 group">
                     <div id="svap-bg-3" style="position: absolute; top: 0; right: 0; bottom: 0; width: 65%; background-image: url('${imgUrl}'); background-size: cover; background-position: center; pointer-events: none; z-index: 0; opacity: 0.6; -webkit-mask-image: linear-gradient(to right, transparent 0%, black 70%); mask-image: linear-gradient(to right, transparent 0%, black 70%); transition: transform 0.5s ease, background-image 0.5s ease;" class="group-hover:scale-110"></div>
 
-                    <div class="relative z-10 flex items-center gap-2 text-white/90">
+                    <div class="relative z-10 flex items-center gap-2 ${isSvap3 ? 'text-[#fcd576]' : 'text-white/90'}">
                         <span class="material-icons-round text-sm">hd</span>
                         <span class="text-[13px] font-medium">${displayLang} (SVAP3)</span>
                     </div>
-                    <div class="relative z-10 text-white/90 font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
+                    <div class="relative z-10 ${isSvap3 ? 'text-[#fcd576]' : 'text-white/90'} font-medium text-[15px] line-clamp-1 leading-snug">${movie.name}</div>
                     <div style="align-self: flex-start; padding: 6px 14px; border-radius: 4px; z-index: 10; position: relative;" class="mt-1 ${isSvap3 ? 'bg-[#fcd576] text-black' : 'bg-white text-black'} text-[13px] font-bold shadow-sm group-hover:bg-gray-200 transition-colors">
                         ${isSvap3 ? '<span class="flex items-center gap-1"><span class="material-icons-round text-[14px]">check_circle</span> Đang xem bản này</span>' : 'Xem bản này'}
                     </div>
