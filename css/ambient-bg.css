@@ -20,8 +20,10 @@
 .ambient-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(150px);
-    transform: translateZ(0); /* Force GPU compositing without excessive memory */
+    /* Giảm blur từ 150px xuống 40px để cứu hiệu năng GPU trên màn hình lớn */
+    filter: blur(40px);
+    transform: translate3d(0,0,0); /* Force hardware compositing */
+    will-change: transform; /* Báo cho browser biết layer này sẽ chuyển động độc lập */
 }
 
 /* ── Orb 1: Brighter Slate ── */
@@ -64,7 +66,7 @@
     width: 80vw;
     height: 80vw;
     background: radial-gradient(circle, rgba(13, 15, 23, 0.4) 0%, transparent 70%);
-    filter: blur(200px);
+    filter: blur(50px);
     opacity: 0.3;
 }
 
@@ -289,3 +291,48 @@ section,
 }
 
 
+
+/* �?ng b? m�u n?n Footer v� t?t Logo ch�m tr�n m?i trang */
+footer, footer.bg-[#07080a], footer.bg-[#1e202c] { background-color: #1e2130 !important; background: #1e2130 !important; border-top: 1px solid rgba(255, 255, 255, 0.05) !important; }
+footer img[style*='opacity: 0.04'] { display: none !important; }
+footer img[src*='apple-touch-icon.png'][style*='absolute'] { display: none !important; }
+
+
+/* Dong bo mau nen Footer va tat Logo chim tren moi trang */
+
+footer img[style*='opacity: 0.04'] { display: none !important; }
+footer img[src*='apple-touch-icon.png'][style*='absolute'] { display: none !important; }
+
+
+/* Nền rồng cho Footer */
+footer {
+    background-color: #1e2130 !important;
+    background-image: url('https://beam-images.warnermediacdn.com/2024-03/leadimage_background_hotd_eng_0.jpg?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=1920') !important;
+    background-size: cover !important;
+    background-position: right 30% !important;
+    background-repeat: no-repeat !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Lớp phủ tối mờ lên trên nền rồng để chữ dễ đọc */
+footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(30, 33, 48, 0.7) !important;
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+/* Loại bỏ các lớp nền xám cũ */
+.bg-void, .sofaflix-section {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+
+/* --- OVERRIDES ĐẶC BIỆT CHO FOOTER VÀ LỀ --- */
+html, body { overflow-x: hidden !important; width: 100% !important; }
+.ambient-bg { width: 100% !important; }
+footer { width: 100vw !important; max-width: 100vw !important; margin-left: calc(-50vw + 50%) !important; margin-right: calc(-50vw + 50%) !important; position: relative; left: 50%; transform: translateX(-50%); }

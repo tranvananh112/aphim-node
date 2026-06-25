@@ -48,7 +48,7 @@
                     panel.style.opacity = '0';
                     panel.style.visibility = 'hidden';
                     panel.style.transform = 'translateY(-6px)';
-                }, 120);
+                }, 60);
             });
 
             panel.addEventListener('mouseleave', () => {
@@ -56,7 +56,7 @@
                     panel.style.opacity = '0';
                     panel.style.visibility = 'hidden';
                     panel.style.transform = 'translateY(-6px)';
-                }, 120);
+                }, 60);
             });
         });
 
@@ -93,14 +93,14 @@
                 hideTimeout = setTimeout(() => {
                     dropdown.classList.remove('opacity-100', 'visible');
                     dropdown.classList.add('opacity-0', 'invisible');
-                }, 150);
+                }, 80);
             });
 
             dropdown.addEventListener('mouseleave', () => {
                 hideTimeout = setTimeout(() => {
                     dropdown.classList.remove('opacity-100', 'visible');
                     dropdown.classList.add('opacity-0', 'invisible');
-                }, 150);
+                }, 80);
             });
         });
 
