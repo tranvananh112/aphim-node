@@ -11,7 +11,7 @@
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 600px; /* Tăng từ 520px để hiển thị to rõ hơn trên desktop */
+    width: 750px; /* Tăng từ 600px để hiển thị to rõ hơn trên desktop theo yêu cầu */
     max-width: 96vw;
     z-index: 9997;
     background: rgba(6, 6, 10, 0.97);
@@ -118,8 +118,18 @@
     z-index: 2;
 }
 .catfish-item img {
-    width: 100%; height: 80px; display: block; /* Tăng chiều cao lên 80px để cực kì rõ nét */
+    width: 100%; display: block;
     object-fit: fill;
+}
+
+/* Hàng trên (VSBet) giảm chiều dọc xuống một tý */
+.catfish-row:first-child .catfish-item img {
+    height: 70px;
+}
+
+/* Hàng dưới (ColaTV, ColaScore) bù lại cho cao lên một xíu */
+.catfish-row:last-child .catfish-item img {
+    height: 55px;
 }
 
 /* Thêm badge động thu hút tương tác cho đối tác */
