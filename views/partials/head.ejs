@@ -211,10 +211,17 @@
                         <span class="material-icons-round text-gray-400 text-xl md:text-2xl">arrow_back</span>
                     </button>
 
-                    <div class="h-12 md:h-14 rounded-full px-6 md:px-8 flex items-center justify-center gap-3 md:gap-4 shadow-sm" style="background-color: #31364a;">
+                    <div class="h-12 md:h-14 rounded-full px-4 md:px-6 flex items-center justify-center gap-3 md:gap-4 shadow-sm" style="background-color: #31364a;">
                         <span class="text-white text-[15px] md:text-[17px] font-medium whitespace-nowrap">Trang</span>
                         <div class="flex items-center gap-2">
-                            <span class="text-[#f2f20d] text-[16px] md:text-[18px] font-bold">${curPage}</span>
+                            <input type="number" 
+                                   value="${curPage}" 
+                                   min="1" max="${totalPgs}"
+                                   class="bg-transparent border border-gray-500 rounded-md text-center text-[#f2f20d] text-[16px] md:text-[18px] font-bold focus:border-[#f2f20d] focus:outline-none focus:ring-1 focus:ring-[#f2f20d]"
+                                   style="width: 3.5rem; height: 2.2rem; -moz-appearance: textfield;"
+                                   onkeypress="if(event.key === 'Enter') { this.blur(); }"
+                                   onchange="let p = parseInt(this.value); if(p >= 1 && p <= ${totalPgs} && p !== ${curPage}) { ${functionCallPattern.replace(/PAGE/g, 'p')} } else { this.value = ${curPage}; }"
+                                   title="Nhập số trang và nhấn Enter">
                             <span class="text-gray-400 mx-1">/</span>
                             <span class="text-gray-400">${totalPgs}</span>
                         </div>
