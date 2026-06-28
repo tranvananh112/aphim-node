@@ -1,0 +1,36 @@
+name: Auto Update Sitemap
+
+on:
+  schedule:
+    - cron: '23 3 * * *'   # Chạy mỗi ngày lúc 3:23 AM UTC (10:23 AM giờ VN)
+  workflow_dispatch:       # Cho phép chạy thủ công từ GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Generate sitemap.xml
+        run: node generate-sitemap.js
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git diff --staged --quiet || git commit -m "chore: auto-update sitemap.xml [$(date +'%Y-%m-%d')]"
+          git push
