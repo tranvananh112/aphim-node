@@ -23,8 +23,8 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'https://aphim.ddns.net',
-    'https://aphim.io.vn', // Production domain
-    'http://aphim.io.vn',  // HTTP version
+    'https://aphim.top', // Production domain
+    'http://aphim.top',  // HTTP version
     process.env.CLIENT_URL,
     process.env.CORS_ORIGIN
 ].filter(Boolean);

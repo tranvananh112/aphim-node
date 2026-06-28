@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const axios = require('axios');
+const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -53,8 +54,8 @@ app.get('/', async (req, res) => {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
             currentPage: 'home',
             movies: movies,
-            canonicalUrl: 'https://aphim.io.vn/',
-            ogUrl: 'https://aphim.io.vn/'
+            canonicalUrl: 'https://aphim.top/',
+            ogUrl: 'https://aphim.top/'
         });
     } catch (error) {
         console.error('Lỗi lấy dữ liệu trang chủ:', error.message);
@@ -62,7 +63,7 @@ app.get('/', async (req, res) => {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
             currentPage: 'home',
             movies: [],
-            canonicalUrl: 'https://aphim.io.vn/'
+            canonicalUrl: 'https://aphim.top/'
         });
     }
 });
@@ -102,8 +103,8 @@ app.get('/phim/:slug', async (req, res) => {
 
             const img = movie.thumb_url
                 ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophim.live/uploads/movies/' + movie.thumb_url)
-                : 'https://aphim.io.vn/android-chrome-512x512.png';
-            const pageUrl = `https://aphim.io.vn/phim/${slug}`;
+                : 'https://aphim.top/android-chrome-512x512.png';
+            const pageUrl = `https://aphim.top/phim/${slug}`;
 
             res.render('detail', {
                 title: title,
@@ -375,7 +376,7 @@ app.get('/sitemap-images.xml', async (req, res) => {
         const urlEntries = allMovies.map(function(movie) {
             const slug = movie.slug || '';
             const name = (movie.name || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-            const pageUrl = 'https://aphim.io.vn/phim/' + slug;
+            const pageUrl = 'https://aphim.top/phim/' + slug;
             const thumb = movie.thumb_url
                 ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophim.live/uploads/movies/' + movie.thumb_url)
                 : '';
@@ -414,13 +415,14 @@ app.get('/sitemap-images.xml', async (req, res) => {
 });
 
 app.get('/sitemap.xml', (req, res) => {
-    const staticPages = ['', 'search', 'pricing', 'danh-sach', 'login'];
-    const urls = staticPages.map(function(p) {
-        return '\n    <url><loc>https://aphim.io.vn/' + (p ? p : '') + '</loc><changefreq>daily</changefreq><priority>' + (p === '' ? '1.0' : '0.8') + '</priority></url>';
-    }).join('');
-    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n    <sitemap><loc>https://aphim.io.vn/sitemap-images.xml</loc></sitemap>\n    <sitemap><loc>https://aphim.io.vn/sitemap.xml</loc></sitemap>\n</sitemapindex>';
-    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-    res.send(xml);
+    try {
+        const sitemapPath = path.join(__dirname, 'sitemap.xml');
+        const xml = fs.readFileSync(sitemapPath, 'utf8');
+        res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+        res.send(xml);
+    } catch (e) {
+        res.status(500).send('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+    }
 });
 
 // ==========================================
