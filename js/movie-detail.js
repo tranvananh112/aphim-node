@@ -1036,12 +1036,20 @@ function loadRatingsAndComments(slug) {
 
 // Show error
 function showError(message) {
+    if (!document.getElementById('dotlottie-script')) {
+        const script = document.createElement('script');
+        script.id = 'dotlottie-script';
+        script.src = "https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js";
+        script.type = "module";
+        document.body.appendChild(script);
+    }
     const main = document.querySelector('main');
     if (main) {
         main.innerHTML = `
-            <div class="container mx-auto px-6 py-20 text-center">
-                <h2 class="text-2xl font-bold text-red-400 mb-4">${message}</h2>
-                <a href="/" class="inline-block px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors">
+            <div class="container mx-auto px-6 py-20 text-center flex flex-col items-center justify-center">
+                <dotlottie-wc src="/icons/404-cat.lottie" style="width: 240px; height: 240px; max-width: 100%; margin-bottom: -10px;" autoplay loop></dotlottie-wc>
+                <h2 class="text-2xl font-bold text-red-400 mb-4 mt-2">${message || 'Rất tiếc, không tìm thấy phim này!'}</h2>
+                <a href="/" class="inline-block px-6 py-3 bg-[#fcd576] text-black font-bold rounded-xl hover:bg-yellow-500 transition-all shadow-[0_4px_12px_rgba(252,213,118,0.3)] hover:-translate-y-1">
                     Về trang chủ
                 </a>
             </div>

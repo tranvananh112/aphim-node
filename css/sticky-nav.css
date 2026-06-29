@@ -24,6 +24,7 @@ nav {
     padding-right: env(safe-area-inset-right, 0px);
 
     overflow: visible;
+    will-change: transform, opacity;
 }
 
 nav > div {
@@ -43,12 +44,14 @@ nav.scrolled {
 nav.nav-hidden {
     transform: translateY(calc(-100% - env(safe-area-inset-top)));
     opacity: 0;
+    pointer-events: none;
 }
 
 /* Visible — hiện khi scroll lên */
 nav.nav-visible {
     transform: translateY(0);
     opacity: 1;
+    pointer-events: auto;
 }
 
 body {

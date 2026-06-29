@@ -4,36 +4,36 @@
 
 /* Override .backdrop-gradient (movie-detail.html) với gradient trải rộng 8 stop */
 .backdrop-gradient {
-    /* Mờ tối chân ảnh để chữ dễ đọc */
+    /* Mờ tối chân ảnh vừa phải để lộ ảnh nền phía sau sáng đẹp hơn nhưng vẫn đọc rõ chữ */
     background: linear-gradient(
         to top,
-        rgba(15, 17, 21, 0.95) 0%,
-        rgba(15, 17, 21, 0.8) 15%,
-        rgba(15, 17, 21, 0.4) 40%,
-        rgba(15, 17, 21, 0.0) 65%
+        rgba(15, 17, 21, 0.78) 0%,
+        rgba(15, 17, 21, 0.55) 20%,
+        rgba(15, 17, 21, 0.25) 45%,
+        rgba(15, 17, 21, 0.0) 75%
     ) !important;
 }
 
 /* Áp dụng mask-image để xóa bỏ hoàn toàn đường viền cứng ở đáy */
 .movie-content-zone > .absolute.top-0.left-0.w-full {
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
 }
 
 /* Lớp phủ gradient tối dần từ giữa màn hình xuống đáy để làm NỔI BẬT CHỮ, chống chói từ các quả cầu ánh sáng (orbs) */
 .movie-content-zone::before {
     content: '';
     position: absolute;
-    top: 50vh;
+    top: 60vh;
     left: 0;
     right: 0;
     bottom: 0;
     background: linear-gradient(
         to bottom,
         rgba(10, 12, 16, 0.00) 0%,
-        rgba(10, 12, 16, 0.80) 25%,
-        rgba(10, 12, 16, 0.96) 50%,
-        rgba(10, 12, 16, 1.00) 100%
+        rgba(10, 12, 16, 0.45) 30%,
+        rgba(10, 12, 16, 0.75) 65%,
+        rgba(10, 12, 16, 0.90) 100%
     );
     pointer-events: none;
     z-index: 0;
@@ -176,9 +176,9 @@ section.bg-background-dark {
     background: linear-gradient(
         to bottom,
         rgba(31, 34, 43, 0.00) 0%,
-        rgba(31, 34, 43, 0.55) 25%,
-        rgba(31, 34, 43, 0.78) 55%,
-        rgba(31, 34, 43, 0.88) 100%
+        rgba(31, 34, 43, 0.45) 30%,
+        rgba(31, 34, 43, 0.75) 65%,
+        rgba(31, 34, 43, 0.90) 100%
     );
     pointer-events: none;
     z-index: 0;
@@ -235,7 +235,7 @@ section.bg-background-dark {
     .ambient-section::before { height: 30px; }
 
     .movie-content-zone::before {
-        top: 50vh;
+        top: 55vh;
     }
 }
 

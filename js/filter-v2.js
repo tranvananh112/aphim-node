@@ -382,8 +382,22 @@ function hideLoading() {
 
 // Show Error
 function showError(message) {
-    errorMessage.textContent = message;
-    error.classList.remove('hidden');
+    if (!document.getElementById('dotlottie-script')) {
+        const script = document.createElement('script');
+        script.id = 'dotlottie-script';
+        script.src = "https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js";
+        script.type = "module";
+        document.body.appendChild(script);
+    }
+    if (error) {
+        error.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-10">
+                <dotlottie-wc src="/icons/404-cat.lottie" style="width: 240px; height: 240px; max-width: 100%; margin-bottom: -10px;" autoplay loop></dotlottie-wc>
+                <p class="text-red-400 text-lg mt-2 font-medium">${message || 'Không tìm thấy kết quả nào'}</p>
+            </div>
+        `;
+        error.classList.remove('hidden');
+    }
     loading.classList.add('hidden');
     moviesGrid.innerHTML = '';
     emptyState.classList.add('hidden');
@@ -395,4 +409,6 @@ function showError(message) {
 window.addEventListener('hiddenMoviesSynced', () => {
     console.log('Hidden movies synced, re-rendering filter-v2...');
     loadMovies();
+});
+
 });
