@@ -118,11 +118,20 @@
                 <!-- Play Button - Positioned at bottom left -->
                 <div class="pt-4 flex items-center gap-6">
                     <a id="heroPlayBtn" href="#" class="group inline-block relative flex flex-col items-center justify-center" style="width: 80px; height: 80px; text-decoration: none;">
-                        <div class="relative flex items-center justify-center rounded-full group-hover:scale-110 transition-transform duration-75 z-10" style="width: 100%; height: 100%;">
-                            <dotlottie-wc src="https://lottie.host/b6aa21df-5315-4db3-ac65-3e36bc67912a/dLNeR1IODi.lottie" style="width: 145%; height: 145%; max-width: none; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 0 15px rgba(252,211,77,0.8)) grayscale(100%) sepia(100%) hue-rotate(5deg) saturate(500%) brightness(1.1);" autoplay loop></dotlottie-wc>
-                            <div class="absolute inset-0 rounded-full z-20" style="pointer-events: auto;"></div>
+                        <div class="relative flex items-center justify-center">
+                            <!-- Pulse Animation Rings -->
+                            <div class="absolute inset-0 rounded-full animate-ping bg-[#fcd576]/60 play-btn-circle" style="width: 68px; height: 68px;"></div>
+                            <div class="absolute inset-0 rounded-full animate-pulse bg-[#fcd576]/40 play-btn-circle" style="width: 68px; height: 68px;"></div>
+
+                            <!-- Main Button -->
+                            <div class="relative bg-[#fcd576] rounded-full flex items-center justify-center gold-heartbeat-glow group-hover:scale-110 transition-all duration-300 play-btn-circle shadow-[0_0_25px_rgba(252,213,118,0.8)]" style="width: 68px; height: 68px;">
+                                <svg class="relative z-10 translate-x-[2px]" viewBox="0 0 24 24" fill="#000000" stroke="#000000" stroke-width="3" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="width: 26px; height: 26px; color: #000000 !important; fill: #000000 !important; stroke: #000000 !important;">
+                                    <path d="M8 5v14l11-7z" fill="#000000" stroke="#000000" style="fill: #000000 !important; stroke: #000000 !important;" />
+                                </svg>
+                                <div class="absolute inset-0 border-2 border-[#fcd576]/80 rounded-full scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"></div>
+                            </div>
                         </div>
-                        <span class="absolute top-[90%] left-1/2 -translate-x-1/2 whitespace-nowrap mt-2 text-center text-primary font-bold uppercase tracking-widest text-[10px] opacity-0 group-hover:opacity-100 transition-all duration-75 transform translate-y-2 group-hover:translate-y-0 drop-shadow-[0_2px_8px_rgba(252,211,77,0.5)] z-0">
+                        <span class="absolute top-[90%] left-1/2 -translate-x-1/2 whitespace-nowrap mt-2 text-center text-primary font-bold uppercase tracking-widest text-[11px] opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 drop-shadow-[0_2px_8px_rgba(252,211,77,0.8)]">
                             Xem Ngay
                         </span>
                     </a>
@@ -184,7 +193,7 @@
         <section class="interests-section absolute left-0 right-0 z-40 bg-transparent pt-4 pb-0 mb-0" style="position: absolute !important; background: transparent !important; background-color: transparent !important; padding-top: 1rem; padding-bottom: 0px !important; margin-bottom: 0px !important; bottom: 20px !important;">
             <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
                 <!-- Title Header matching Screenshot 1 -->
-                <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left -ml-2 md:-ml-4 lg:-ml-5" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
                     Bạn đang quan tâm gì?
                 </h3>
                 <div class="interests-wrapper scrollbar-hide px-4 -mx-4 pt-4 pb-0 mb-0 items-end">
@@ -876,7 +885,7 @@
     <script src="/js/horror-section.js?v=15"></script>
     <script src="/js/admin-tools.js?v=4"></script>
     <!-- Core Banner Logic -->
-    <script src="/js/hero-banner.js?v=1781923891358"></script>
+    <script src="/js/hero-banner.js?v=1781923891359"></script>
     <script src="/js/top-movies.js?v=15"></script>
     <script src="/js/coming-soon.js?v=15"></script>
     <script src="/js/interests-dynamic.js?v=15"></script>

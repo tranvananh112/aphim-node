@@ -333,8 +333,8 @@ function attachSwipeHandler() {
 
     // ── TOUCH (Mobile) ───────────────────────────────────
     heroEl.addEventListener('touchstart', (e) => {
-        // Bỏ qua nếu chạm vào thumbnail
-        if (e.target.closest('.hero-thumb-item')) return;
+        // Bỏ qua nếu chạm vào thumbnail hoặc mục quan tâm/section khác
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         swipeDir = null;
@@ -342,7 +342,7 @@ function attachSwipeHandler() {
     }, { passive: true });
 
     heroEl.addEventListener('touchmove', (e) => {
-        if (e.target.closest('.hero-thumb-item')) return;
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
 
@@ -362,7 +362,7 @@ function attachSwipeHandler() {
     }, { passive: true });
 
     heroEl.addEventListener('touchend', (e) => {
-        if (e.target.closest('.hero-thumb-item')) return;
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
         const dx = e.changedTouches[0].clientX - startX;
         const dy = e.changedTouches[0].clientY - startY;
 
@@ -390,7 +390,7 @@ function attachSwipeHandler() {
 
     // ── MOUSE (Desktop) ─────────────────────────────────
     heroEl.addEventListener('mousedown', (e) => {
-        if (e.target.closest('a, button, .hero-thumb-item')) return;
+        if (e.target.closest('a, button, .hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, section')) return;
         startX = e.clientX;
         startY = e.clientY;
         isDragging = true;

@@ -19,6 +19,9 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-snap-type: x mandatory;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .interests-wrapper::-webkit-scrollbar {
@@ -26,53 +29,78 @@
 }
 
 .interest-card {
-    flex: 0 0 220px;
+    flex: 0 0 240px;
     height: 140px;
     position: relative;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
     scroll-snap-align: start;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #0a0b12;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--card-color, #3b82f6);
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 767px) {
     .interest-card {
-        flex: 0 0 180px !important; /* Ngắn lại bề ngang một chút cho cân đối */
-        height: 80px !important; /* Thu nhỏ chiều dọc đáng kể */
-        border-radius: 8px !important;
+        flex: 0 0 190px !important;
+        height: 90px !important;
+        border-radius: 12px !important;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
     .interest-card {
-        flex: 1 1 0;
-        min-width: 140px;
-        max-width: 250px;
+        flex: 0 0 210px;
+        height: 120px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .interests-wrapper {
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+        overflow-x: visible !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: -1.25rem !important;
+        margin-right: -1.25rem !important;
+    }
+    .interest-card {
+        flex: none !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
         height: 140px;
     }
 }
 
 .interest-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-    border-color: rgba(232, 185, 79, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
 }
 
-/* Background Image with Tint Overlay */
+/* Background Image positioned on the right side with left fade mask (like SVAP in Screenshot 1) */
 .interest-bg-img {
     position: absolute;
-    inset: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 86%;
     background-size: cover;
     background-position: center;
-    transition: transform 0.8s ease;
+    transition: transform 0.8s ease, opacity 1s ease;
     z-index: 1;
+    opacity: 0.95;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 38%);
+    mask-image: linear-gradient(to right, transparent 0%, black 38%);
 }
 
 .interest-card:hover .interest-bg-img {
-    transform: scale(1.1);
+    transform: scale(1.08);
+    opacity: 1;
 }
 
 /* Overlay fade đáy - Disabled for brightness as requested */
@@ -80,7 +108,6 @@
     display: none;
 }
 
-/* Color Tint Overlay - Standardized GOLD tint */
 /* Color Tint Overlay - Disabled for brightness */
 .interest-card::before {
     display: none;
@@ -99,6 +126,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    max-width: 75%;
 }
 
 .interest-title {
@@ -106,7 +134,7 @@
     font-weight: 800;
     color: white;
     margin-bottom: 0.25rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95);
 }
 
 @media (max-width: 767px) {
@@ -122,11 +150,12 @@
 .interest-action {
     font-size: 0.65rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.95);
     display: flex;
     align-items: center;
     gap: 0.2rem;
     letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.85);
 }
 
 .interest-action .material-icons-round {
