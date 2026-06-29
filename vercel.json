@@ -3,7 +3,30 @@
     "builds": [
         {
             "src": "server.js",
-            "use": "@vercel/node"
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": [
+                    "views/**",
+                    "css/**",
+                    "js/**",
+                    "icons/**",
+                    "public/**",
+                    "components/**",
+                    "admin/**",
+                    "ads/**",
+                    "quangcao/**",
+                    "profile/**",
+                    "*.png",
+                    "*.ico",
+                    "*.txt",
+                    "*.xml",
+                    "*.html",
+                    "*.webmanifest",
+                    "manifest.json",
+                    "robots.txt",
+                    "service-worker.js"
+                ]
+            }
         }
     ],
     "routes": [
