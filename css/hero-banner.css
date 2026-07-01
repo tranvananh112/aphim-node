@@ -10,6 +10,19 @@
     min-height: 100svh;
 }
 
+/* ── Hero Title Logo Image — luôn hiển thị khi có ── */
+#heroTitleImg {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 75px !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.8));
+    opacity: 1 !important;
+    transition: opacity 0.3s ease;
+    margin-bottom: 4px;
+}
+
 /* ── Gradient overlay (bên trái → phải, học RoPhim) ── */
 .hero-content-gradient,
 .hero-left-gradient {
@@ -500,4 +513,25 @@ main.hero-grabbing * {
     #heroContent .space-y-6 > :not([hidden]) ~ :not([hidden]) {
         margin-top: 1.25rem !important;
     }
+}
+
+/* ── Mobile: Logo ảnh tên phim ── */
+@media (max-width: 767px) {
+    #heroTitleImg {
+        max-height: 70px !important;
+        width: auto !important;
+        display: block !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Missing Tailwind arbitrary classes for Hero Banner */
+.max-w-\[1600px\] { max-width: 1600px; }
+.pb-\[180px\] { padding-bottom: 180px; }
+@media (min-width: 768px) {
+  .md\:pb-\[230px\] { padding-bottom: 230px; }
+  .md\:text-\[72px\] { font-size: 72px !important; line-height: 1 !important; }
+}
+@media (min-width: 1024px) {
+  .lg\:text-\[84px\] { font-size: 84px !important; line-height: 1 !important; }
 }

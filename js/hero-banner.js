@@ -1,4 +1,4 @@
-﻿// ================================================================
+// ================================================================
 // A PHIM — Hero Banner v10
 // Interactive Slide System: Click Thumbnail + Swipe/Drag
 // + Auto-return to Admin Banner sau 6 giây không tương tác
@@ -158,8 +158,8 @@ async function loadHeroLogo(movie) {
         img.id = 'heroTitleImg';
         img.src = url;
         img.alt = movie.name || '';
-        img.className = 'w-auto h-auto max-h-[75px] md:max-h-[110px] lg:max-h-[130px] object-contain drop-shadow-2xl transition-opacity duration-300 opacity-0';
-        img.style.filter = 'drop-shadow(0px 4px 10px rgba(0,0,0,0.8))';
+        img.className = 'hero-logo-img';
+        img.style.cssText = 'display:block;width:auto;height:auto;max-height:75px;object-fit:contain;filter:drop-shadow(0px 4px 10px rgba(0,0,0,0.8));opacity:0;transition:opacity 0.3s ease;margin-bottom:4px;';
         img.fetchPriority = 'high';
         img.loading = 'eager';
 
@@ -170,7 +170,7 @@ async function loadHeroLogo(movie) {
                 heroTitle.parentNode.insertBefore(img, heroTitle);
                 heroTitle.style.display = 'none';
                 setTimeout(() => {
-                    if (loadId === currentLogoLoadId) img.classList.remove('opacity-0');
+                    if (loadId === currentLogoLoadId) img.style.opacity = '1';
                 }, 20);
             }
         };
@@ -186,7 +186,7 @@ async function loadHeroLogo(movie) {
             if (heroTitle.parentNode) {
                 heroTitle.parentNode.insertBefore(img, heroTitle);
                 heroTitle.style.display = 'none';
-                img.classList.remove('opacity-0');
+                img.style.opacity = '1';
             }
         }
     }
@@ -215,10 +215,14 @@ async function loadHeroLogo(movie) {
     // 3. Nếu chưa có thì tiến hành tìm trên TMDB
     const API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
 
-    // Robust proxy fetcher
+    // Robust proxy fetcher — tăng timeout trên mobile
+    const isMobileFetch = window.innerWidth < 768;
+    const FETCH_TIMEOUT = isMobileFetch ? 6000 : 3000;
+    const PROXY_TIMEOUT = isMobileFetch ? 7000 : 4000;
+
     async function secureFetch(target) {
         try {
-            const r = await fetch(target, { signal: AbortSignal.timeout(3000) });
+            const r = await fetch(target, { signal: AbortSignal.timeout(FETCH_TIMEOUT) });
             if (r.ok) return r;
         } catch (e) {}
         const proxies = [
@@ -227,7 +231,7 @@ async function loadHeroLogo(movie) {
         ];
         for (const p of proxies) {
             try {
-                const r = await fetch(p, { signal: AbortSignal.timeout(4000) });
+                const r = await fetch(p, { signal: AbortSignal.timeout(PROXY_TIMEOUT) });
                 if (r.ok) return r;
             } catch (e) {}
         }
