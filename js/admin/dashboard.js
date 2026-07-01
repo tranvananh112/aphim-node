@@ -61,7 +61,7 @@ function checkAdminAuth() {
     const tokenKey = (typeof ADMIN_STORAGE_KEYS !== 'undefined') ? ADMIN_STORAGE_KEYS.ADMIN_TOKEN : 'cinestream_admin_token';
     const token = localStorage.getItem(tokenKey) || sessionStorage.getItem(tokenKey) || localStorage.getItem('cinestream_admin_token');
     if (!token) {
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
         return false;
     }
     return true;

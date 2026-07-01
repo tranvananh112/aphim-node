@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Safely check auth early
     const backendToken = localStorage.getItem('cinestream_admin_token');
     if (!backendToken) {
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
         return; // Prevent further execution
     }
     
@@ -74,7 +74,7 @@ async function fetchBannersFromAPI() {
                 return adminAuthService.logout();
             }
             localStorage.removeItem('cinestream_admin_token');
-            window.location.href = '/login';
+            window.location.href = '/admin/login.html';
             return;
         }
 
@@ -175,6 +175,9 @@ function renderBanners() {
                         ? `<button onclick="activateBanner('${banner._id}')" class="btn btn-success btn-sm"><i data-lucide="play-circle"></i> Kích hoạt</button>`
                         : `<button onclick="deactivateBanner('${banner._id}')" class="btn btn-secondary btn-sm"><i data-lucide="pause-circle"></i> Tắt</button>`
                     }
+                    <button onclick="editBannerLogo('${banner._id}', '${banner.logoUrl || ''}')" class="btn btn-primary btn-sm btn-icon" title="Sửa Logo">
+                        <i data-lucide="image"></i>
+                    </button>
                     <button onclick="deleteBanner('${banner._id}')" class="btn btn-secondary btn-sm btn-icon hover:bg-danger hover:text-white" title="Xóa">
                         <i data-lucide="trash-2"></i>
                     </button>
@@ -538,6 +541,9 @@ async function addMovieToBanner(movie) {
             return;
         }
 
+        const logoUrl = prompt('Nhập link ảnh Logo tuỳ chọn (ví dụ link từ onflixcdn).\\nNếu không có, hãy để trống để hệ thống tự tìm trên TMDB:', '');
+        if (logoUrl === null) return; // User cancelled prompt
+
         const token = localStorage.getItem('cinestream_admin_token');
         const apiUrl = window.getBackendBaseURL();
 
@@ -556,7 +562,8 @@ async function addMovieToBanner(movie) {
             tmdb: movie.tmdb,
             imdb: movie.imdb,
             sourcePage: typeof currentOphimSearchPage !== 'undefined' ? currentOphimSearchPage : 1,
-            priority: 0
+            priority: 0,
+            logoUrl: logoUrl.trim()
         };
 
         const response = await fetch(`${apiUrl}/api/banners`, {
@@ -611,6 +618,38 @@ async function activateBanner(id) {
     } catch (error) {
         console.error('Error activating banner:', error);
         alert('Không thể kích hoạt banner: ' + error.message);
+    }
+}
+
+// Edit Custom Logo URL
+async function editBannerLogo(id, currentLogo) {
+    const newLogo = prompt('Nhập link ảnh Logo tuỳ chọn (để trống nếu muốn xoá và dùng tự động):', currentLogo || '');
+    if (newLogo === null) return; // cancelled
+    
+    try {
+        const token = localStorage.getItem('cinestream_admin_token');
+        const apiUrl = window.getBackendBaseURL();
+
+        const response = await fetch(`${apiUrl}/api/banners/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ logoUrl: newLogo.trim() })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Đã cập nhật Logo thành công!');
+            fetchBannersFromAPI(); // Refresh
+        } else {
+            throw new Error(data.message || 'Lỗi cập nhật Logo');
+        }
+    } catch (error) {
+        console.error('Error updating banner logo:', error);
+        alert('Không thể cập nhật Logo: ' + error.message);
     }
 }
 

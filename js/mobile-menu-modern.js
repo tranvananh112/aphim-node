@@ -56,7 +56,7 @@
             ? (savedAvatar
                 ? `<img src="${escHtml(savedAvatar)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=random'">`
                 : escHtml((user.name || user.email || 'U').charAt(0).toUpperCase()))
-            : icon('person', 'font-size:26px;color:rgba(255,255,255,0.3)');
+            : `<dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width:100%;height:100%;transform:scale(1.85);" loop autoplay></dotlottie-player>`;
 
         const userName = user ? escHtml(user.name || user.email || 'Người dùng') : 'Khách';
         const userBadge = user ? 'Thành viên Vàng' : 'Chưa đăng nhập';

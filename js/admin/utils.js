@@ -250,7 +250,7 @@ function logout() {
     confirmDialog('Bạn có chắc muốn đăng xuất?', () => {
         try { localStorage.removeItem('cinestream_admin_token'); } catch (e) { }
         try { sessionStorage.removeItem('cinestream_admin_token'); } catch (e) { }
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
     });
 }
 

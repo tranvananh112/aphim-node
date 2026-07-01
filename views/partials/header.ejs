@@ -157,7 +157,7 @@
                 <a href="/login"
                     onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
                     class="nav-auth-btn hidden lg:inline-flex">
-                    <span class="material-icons-round" style="font-size:16px;">person</span>
+                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
                     <span class="auth-btn-text">Đăng Nhập</span>
                 </a>
             </div>
@@ -168,6 +168,9 @@
         </div>
     </div>
 </nav>
+
+<!-- Lottie Player -->
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
 <!-- Dropdown scripts -->
 <script src="/js/categories-dropdown.js?v=17"></script>

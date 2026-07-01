@@ -138,3 +138,10 @@
 ::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.12);
                               border-radius: var(--radius-pill); }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
+
+/* Global alignment fix for max-w-[1600px] container */
+.max-w-\[1600px\] {
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

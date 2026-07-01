@@ -37,63 +37,102 @@
     pointer-events: none;
 }
 
-/* ─── CATFISH TOP STICKY BAR ────────────────────────────── */
+/* ─── CATFISH TOP STICKY BAR (8QBet) ────────────────────────────── */
 #aphim-catfish-top {
     position: fixed;
-    top: 0; /* Đưa lên sát mép trên cùng (trên cả thanh menu) */
+    top: 56px; /* Đưa xuống sát dưới mép thanh menu (thanh menu cao 56px) */
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 430px; /* Dài ra một tí xíu theo yêu cầu */
+    width: 600px;
     max-width: 96vw;
-    z-index: 10005; /* Dành ưu tiên cao nhất, nằm đè lên thanh menu (nav có z-index 9999) */
-    background: transparent;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 9998; /* Nằm dưới menu dropdown và search box */
+    background: rgba(6, 6, 10, 0.97);
+    border-bottom: 1px solid rgba(252, 211, 77, 0.25);
+    border-left: 1px solid rgba(252, 211, 77, 0.15);
+    border-right: 1px solid rgba(252, 211, 77, 0.15);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.75), 0 0 50px rgba(252, 211, 77, 0.08);
     transform: translateY(-150%);
     transition: transform 0.44s cubic-bezier(0.34, 1.4, 0.64, 1);
-}
-
-/* Ép chiều cao mảnh lại cho banner top (tránh bị bự chảng) */
-#aphim-catfish-top .catfish-item img {
-    height: auto !important;
-    width: 100%;
-    object-fit: contain;
-    border-radius: 12px;
-}
-
-@media (max-width: 768px) {
-    #aphim-catfish-top {
-        top: 0; /* Mobile cũng đưa lên sát mép trên cùng */
-    }
 }
 
 #aphim-catfish-top.visible {
     transform: translateY(0);
 }
 
+#aphim-catfish-top .catfish-item img {
+    height: 70px;
+    width: 100%;
+    object-fit: fill;
+}
+
+@media (max-width: 768px) {
+    #aphim-catfish-top {
+        top: 56px;
+        width: calc(100vw - 8px);
+        max-width: calc(100vw - 8px);
+        border-radius: 0 0 12px 12px;
+    }
+    #aphim-catfish-top .catfish-item img {
+        height: auto !important;
+        width: 100%;
+        object-fit: contain;
+    }
+}
+
 #aphim-catfish-top-close {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    transform: translate(30%, 30%); /* Ép sát vào góc hơn */
-    width: 24px;
-    height: 24px;
+    bottom: -12px;
+    right: -8px;
     background: #ffffff;
     color: #ff0000;
     border: 1px solid rgba(0,0,0,0.1);
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     font-size: 14px;
     font-weight: bold;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background 0.2s, transform 0.25s;
     z-index: 10;
     padding: 0;
-    line-height: 1;
+    font-family: sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+#aphim-catfish-top-close:hover {
+    background: #ff0000;
+    color: #ffffff;
+    border-color: #ff0000;
+    transform: scale(1.15) rotate(90deg);
+}
+
+#aphim-catfish-top .catfish-item[aria-label*="Thưởng"]::after {
+    content: 'HOT 8QBET';
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: 1px solid rgba(255,255,255,0.25);
+    animation: adPulseOrange 1.8s infinite;
+}
+#aphim-catfish-top .catfish-item[aria-label*="Hoàn Trả"]::after {
+    content: 'VIP PROMO';
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    border: 1px solid rgba(255,255,255,0.25);
+    animation: adPulseRed 1.8s infinite;
+}
+#aphim-catfish-top .catfish-item[aria-label*="Nạp Rút"]::after {
+    content: 'SIÊU TỐC';
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 1px solid rgba(255,255,255,0.25);
+    animation: adPulseGreen 1.8s infinite;
+}
+@keyframes adPulseOrange {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
 .catfish-inner { 

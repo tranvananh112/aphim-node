@@ -14,6 +14,13 @@ function updateUserUI() {
     const authContainer = document.getElementById('authContainer');
     if (!authContainer) return;
 
+    if (!document.querySelector('script[src*="dotlottie-player.mjs"]')) {
+        const s = document.createElement('script');
+        s.src = "https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs";
+        s.type = "module";
+        document.head.appendChild(s);
+    }
+
     if (user) {
         const userId = user._id || user.id || user.email;
         const avatarKey = userId ? `avatar_${userId}` : 'user_avatar';
@@ -137,6 +144,7 @@ function updateUserUI() {
         // 2. Cập nhật tất cả các container có ID là authContainer (phòng trường hợp trùng ID)
         const containers = document.querySelectorAll('#authContainer');
         containers.forEach(container => {
+            container.style.setProperty('overflow', 'visible', 'important');
             container.innerHTML = '';
             container.insertAdjacentHTML('afterbegin', profileLink);
         });
@@ -152,12 +160,13 @@ function updateUserUI() {
                onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
                class="nav-auth-btn" 
                style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px;">
-                <span class="material-icons-round" style="font-size:22px; display:flex; align-items:center; justify-content:center; line-height:1; margin-left:-4px;">person</span>
+                <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
                 <span class="auth-btn-text">Đăng Nhập</span>
             </a>
         `;
         const containers = document.querySelectorAll('#authContainer');
         containers.forEach(container => {
+            container.style.setProperty('overflow', 'visible', 'important');
             container.innerHTML = loginBtnHtml;
         });
     }
@@ -407,15 +416,18 @@ const TOAST_ICONS = {
                 box-shadow: none !important;
                 box-sizing: border-box !important;
             }
-            .nav-auth-btn .material-icons-round {
-                font-size: 1.25rem !important;
+            .nav-auth-btn .material-icons-round,
+            .nav-auth-btn dotlottie-player {
                 position: absolute !important;
                 top: 50% !important;
                 left: 50% !important;
-                transform: translate(-50%, -50%) !important;
+                transform: translate(-50%, -50%) scale(1.85) !important;
+                margin: 0 !important;
+            }
+            .nav-auth-btn .material-icons-round {
+                font-size: 1.25rem !important;
                 line-height: 1 !important;
                 color: #eab308 !important;
-                margin: 0 !important;
             }
             /* Search bar mở rộng khi button thu nhỏ */
             .mobile-inline-search,

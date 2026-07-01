@@ -141,7 +141,7 @@ function checkAdminAuth() {
         console.warn('⚠️ No admin token found, redirecting to login...');
         showToast('Vui lòng đăng nhập', 'error');
         setTimeout(() => {
-            window.location.href = '/login';
+            window.location.href = '/admin/login.html';
         }, 2000);
         return false;
     }
@@ -186,7 +186,7 @@ async function loadUsers(silent = false) {
     if (!token) {
         showToast('Vui lòng đăng nhập lại', 'error');
         setTimeout(() => {
-            window.location.href = '/login';
+            window.location.href = '/admin/login.html';
         }, 2000);
         return;
     }
@@ -208,7 +208,7 @@ async function loadUsers(silent = false) {
 
                 showToast('Token không hợp lệ. Đang chuyển đến trang đăng nhập...', 'error');
                 setTimeout(() => {
-                    window.location.href = '/login';
+                    window.location.href = '/admin/login.html';
                 }, 2000);
                 return;
             }
@@ -1519,7 +1519,7 @@ function logout() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
         try { sessionStorage.removeItem('cinestream_admin_token'); } catch (e) { }
         try { localStorage.removeItem('cinestream_admin_token'); } catch (e) { }
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
     }
 }
 

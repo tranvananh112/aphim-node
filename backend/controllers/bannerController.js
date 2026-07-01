@@ -2,6 +2,60 @@ const Banner = require('../models/Banner');
 const Setting = require('../models/Setting');
 const axios = require('axios');
 
+// ================================================================
+// TMDB Logo Fetcher — Server-side (không cần CORS proxy)
+// Gọi từ Node.js nên có thể call TMDB API trực tiếp
+// Chỉ chạy 1 lần khi thêm banner → lưu vào DB → frontend nhận ngay
+// ================================================================
+const TMDB_API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
+
+async function fetchTmdbLogoServerSide(movie) {
+    try {
+        let tmdbId = movie.tmdb?.id;
+        let type = (movie.tmdb?.type === 'tv') ? 'tv' : 'movie';
+
+        // Nếu chưa có TMDB ID, search theo tên gốc
+        if (!tmdbId) {
+            const query = encodeURIComponent(movie.originName || movie.name || '');
+            if (!query) return null;
+
+            const searchRes = await axios.get(
+                `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${query}&language=vi-VN`,
+                { timeout: 8000 }
+            );
+            const results = searchRes.data?.results || [];
+            const best = results.find(r => r.media_type === 'tv' || r.media_type === 'movie') || results[0];
+            if (best?.id) {
+                tmdbId = best.id;
+                type = best.media_type || 'movie';
+            }
+        }
+
+        if (!tmdbId) return null;
+
+        // Lấy danh sách logo từ TMDB images API
+        const imagesRes = await axios.get(
+            `https://api.themoviedb.org/3/${type}/${tmdbId}/images?api_key=${TMDB_API_KEY}`,
+            { timeout: 8000 }
+        );
+        const logos = imagesRes.data?.logos || [];
+        if (logos.length === 0) return null;
+
+        // Ưu tiên: logo Tiếng Việt > Tiếng Anh > bất kỳ
+        const viLogo = logos.find(l => l.iso_639_1 === 'vi');
+        const enLogo = logos.find(l => l.iso_639_1 === 'en');
+        const bestLogo = viLogo || enLogo || logos[0];
+
+        if (bestLogo?.file_path) {
+            return `https://image.tmdb.org/t/p/w300${bestLogo.file_path}`;
+        }
+        return null;
+    } catch (e) {
+        console.warn('[TMDB Logo] Fetch failed:', e.message);
+        return null;
+    }
+}
+
 // Helper to ensure a single settings document exists
 const getOrCreateSettings = async () => {
     let settings = await Setting.findOne();
@@ -216,7 +270,8 @@ exports.addBanner = async (req, res) => {
             tmdb,
             imdb,
             sourcePage,
-            priority = 0
+            priority = 0,
+            logoUrl
         } = req.body;
 
         // Check if banner already exists
@@ -226,6 +281,15 @@ exports.addBanner = async (req, res) => {
                 success: false,
                 message: 'Banner này đã tồn tại'
             });
+        }
+
+        // ✔️ Auto-fetch TMDB logo nếu chưa có (chạy server-side, không cần CORS proxy)
+        let finalLogoUrl = logoUrl || '';
+        if (!finalLogoUrl) {
+            try {
+                finalLogoUrl = await fetchTmdbLogoServerSide({ name, originName, tmdb }) || '';
+                if (finalLogoUrl) console.log(`[Banner] Auto-fetched logo for "${name}": ${finalLogoUrl}`);
+            } catch (e) { /* không có logo cũng được, hiển text thay thế */ }
         }
 
         const banner = await Banner.create({
@@ -244,13 +308,15 @@ exports.addBanner = async (req, res) => {
             imdb,
             sourcePage,
             priority,
+            logoUrl: finalLogoUrl,
             isActive: false,
             addedBy: req.user._id
         });
 
         res.status(201).json({
             success: true,
-            data: banner
+            data: banner,
+            logoFetched: !!finalLogoUrl
         });
     } catch (error) {
         console.error('Error adding banner:', error);
@@ -266,7 +332,7 @@ exports.addBanner = async (req, res) => {
 // @access  Private (Admin)
 exports.updateBanner = async (req, res) => {
     try {
-        const { isActive, priority } = req.body;
+        const { isActive, priority, logoUrl } = req.body;
         const banner = await Banner.findById(req.params.id);
 
         if (!banner) {
@@ -286,6 +352,7 @@ exports.updateBanner = async (req, res) => {
 
         if (isActive !== undefined) banner.isActive = isActive;
         if (priority !== undefined) banner.priority = priority;
+        if (logoUrl !== undefined) banner.logoUrl = logoUrl;
 
         await banner.save();
 
@@ -328,5 +395,81 @@ exports.deleteBanner = async (req, res) => {
             success: false,
             message: 'Không thể xóa banner'
         });
+    }
+};
+
+// ================================================================
+// LOGO ENDPOINTS — Fetch/backfill logo từ TMDB
+// ================================================================
+
+// @desc    Fetch & save TMDB logo cho 1 banner cụ thể
+// @route   POST /api/banners/:id/fetch-logo
+// @access  Private (Admin)
+exports.fetchBannerLogo = async (req, res) => {
+    try {
+        const banner = await Banner.findById(req.params.id);
+        if (!banner) return res.status(404).json({ success: false, message: 'Không tìm thấy banner' });
+
+        const logoUrl = await fetchTmdbLogoServerSide({
+            name: banner.name,
+            originName: banner.originName,
+            tmdb: banner.tmdb
+        });
+
+        if (logoUrl) {
+            banner.logoUrl = logoUrl;
+            await banner.save();
+            res.json({ success: true, logoUrl, data: banner });
+        } else {
+            res.json({ success: false, message: 'Không tìm thấy logo trên TMDB cho phim này' });
+        }
+    } catch (error) {
+        console.error('Error fetching banner logo:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Batch fetch logo cho tất cả banner chưa có logo
+// @route   POST /api/banners/fetch-all-logos
+// @access  Private (Admin)
+exports.fetchAllLogos = async (req, res) => {
+    try {
+        const banners = await Banner.find({ $or: [{ logoUrl: '' }, { logoUrl: null }, { logoUrl: { $exists: false } }] });
+        if (banners.length === 0) return res.json({ success: true, message: 'Tất cả banner đã có logo', updated: 0 });
+
+        let updated = 0;
+        const results = [];
+
+        for (const banner of banners) {
+            try {
+                const logoUrl = await fetchTmdbLogoServerSide({
+                    name: banner.name,
+                    originName: banner.originName,
+                    tmdb: banner.tmdb
+                });
+                if (logoUrl) {
+                    banner.logoUrl = logoUrl;
+                    await banner.save();
+                    updated++;
+                    results.push({ name: banner.name, logoUrl, status: 'found' });
+                } else {
+                    results.push({ name: banner.name, status: 'not_found' });
+                }
+                // Delay nhẹ giữa các request để tránh vượt rate limit TMDB
+                await new Promise(r => setTimeout(r, 300));
+            } catch (e) {
+                results.push({ name: banner.name, status: 'error', error: e.message });
+            }
+        }
+
+        res.json({
+            success: true,
+            total: banners.length,
+            updated,
+            results
+        });
+    } catch (error) {
+        console.error('Error batch fetching logos:', error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };

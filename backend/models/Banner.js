@@ -19,6 +19,7 @@ const BannerSchema = new mongoose.Schema({
     quality: String,
     lang: String,
     episodeCurrent: String,
+    logoUrl: String, // Custom Logo URL
 
     // Categories
     category: [{

@@ -1,4 +1,4 @@
-// ================================================================
+﻿// ================================================================
 // A PHIM — Hero Banner v10
 // Interactive Slide System: Click Thumbnail + Swipe/Drag
 // + Auto-return to Admin Banner sau 6 giây không tương tác
@@ -10,7 +10,7 @@ let heroSlides = [];     // [adminBanner, thumb1, thumb2, ...]
 let currentSlideIndex = 0;
 let isTransitioning = false;
 let autoReturnTimer = null;   // Timer tự động về index 0
-const AUTO_RETURN_DELAY = 6000;   // 6 giây sau khi không tương tác
+const AUTO_RETURN_DELAY = 3500;   // 3.5 giây sau khi không tương tác
 
 // ── Entry Point ─────────────────────────────────────────────────
 async function loadHeroBanner() {
@@ -96,8 +96,204 @@ function convertBannerToMovie(banner) {
         episode_current: banner.episodeCurrent || banner.episode_current,
         category: banner.category || [],
         tmdb: banner.tmdb || {},
-        imdb: banner.imdb || {}
+        imdb: banner.imdb || {},
+        logoUrl: banner.logoUrl // Custom logo
     };
+}
+
+// ── Smart Image Selector cho Desktop & Mobile ───────────────────
+function getHeroImageUrl(movie) {
+    if (!movie) return '';
+    const isMobile = window.innerWidth < 768;
+    const isAdminBanner = (movie === heroSlides[0]);
+    if (isMobile) {
+        return movie.thumb_url || movie.poster_url;
+    } else {
+        return isAdminBanner ? (movie.poster_url || movie.thumb_url) : (movie.thumb_url || movie.poster_url);
+    }
+}
+
+// ── State Logo Cache & ID chống xung đột (Race Condition Protection) ──
+let currentLogoLoadId = 0;
+const logoCache = new Map(); // slug/name -> logoUrl hoặc 'TEXT_ONLY'
+
+try {
+    const _s = localStorage.getItem('aphim_logo_cache_v2');
+    if (_s) Object.entries(JSON.parse(_s)).forEach(([k, v]) => logoCache.set(k, v));
+} catch (e) {}
+
+function _persistLogoCache() {
+    try {
+        const obj = {};
+        logoCache.forEach((v, k) => { if (v && v !== 'TEXT_ONLY') obj[k] = v; });
+        localStorage.setItem('aphim_logo_cache_v2', JSON.stringify(obj));
+    } catch (e) {}
+}
+
+// ── TMDB & Custom Logo Fetcher Siêu Tốc ──────────────────────────
+async function loadHeroLogo(movie) {
+    const heroTitle = document.getElementById('heroTitle');
+    if (!heroTitle) return;
+
+    // Tăng ID phiên tải logo hiện tại để loại bỏ ngay các request cũ đang chạy ngầm
+    const loadId = ++currentLogoLoadId;
+
+    // Ngay lập tức xóa sạch mọi logo cũ trên DOM để không bao giờ bị chồng chéo
+    document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
+
+    if (!movie) {
+        heroTitle.style.display = 'block';
+        return;
+    }
+
+    // Hàm phụ trợ hiển thị logo mượt mà, an toàn
+    function applyLogoToDOM(url) {
+        if (loadId !== currentLogoLoadId) return; // Nếu user chuyển slide khác -> hủy ngay
+        document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
+
+        // ✅ FIX: Ẩn heroTitle NGAY LẬP TỨC khi bắt đầu tải logo
+        heroTitle.style.display = 'none';
+
+        const img = new Image();
+        img.id = 'heroTitleImg';
+        img.src = url;
+        img.alt = movie.name || '';
+        img.className = 'w-auto h-auto max-h-[75px] md:max-h-[110px] lg:max-h-[130px] object-contain drop-shadow-2xl transition-opacity duration-300 opacity-0';
+        img.style.filter = 'drop-shadow(0px 4px 10px rgba(0,0,0,0.8))';
+        img.fetchPriority = 'high';
+        img.loading = 'eager';
+
+        img.onload = () => {
+            if (loadId !== currentLogoLoadId) return;
+            document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
+            if (heroTitle.parentNode) {
+                heroTitle.parentNode.insertBefore(img, heroTitle);
+                heroTitle.style.display = 'none';
+                setTimeout(() => {
+                    if (loadId === currentLogoLoadId) img.classList.remove('opacity-0');
+                }, 20);
+            }
+        };
+        img.onerror = () => {
+            if (loadId === currentLogoLoadId) {
+                document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
+                heroTitle.style.display = 'block';
+            }
+        };
+
+        if (img.complete && img.naturalWidth > 0) {
+            document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
+            if (heroTitle.parentNode) {
+                heroTitle.parentNode.insertBefore(img, heroTitle);
+                heroTitle.style.display = 'none';
+                img.classList.remove('opacity-0');
+            }
+        }
+    }
+
+    // 1. Ưu tiên tuyệt đối: Nếu có Custom Logo từ Admin thì dùng luôn (không gọi TMDB nữa)
+    if (movie.logoUrl && movie.logoUrl.trim() !== '') {
+        applyLogoToDOM(movie.logoUrl.trim());
+        return;
+    }
+
+    // 2. Kiểm tra bộ nhớ tạm (Cache): Nếu đã từng tải logo phim này rồi thì dùng ngay lập tức
+    const cacheKey = movie.slug || movie.name;
+    if (logoCache.has(cacheKey)) {
+        const cachedUrl = logoCache.get(cacheKey);
+        if (cachedUrl && cachedUrl !== 'TEXT_ONLY') {
+            applyLogoToDOM(cachedUrl);
+        } else {
+            heroTitle.style.display = 'block';
+        }
+        return;
+    }
+
+    // Hiển thị text title tạm thời trong lúc truy vấn TMDB lần đầu
+    heroTitle.style.display = 'block';
+
+    // 3. Nếu chưa có thì tiến hành tìm trên TMDB
+    const API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
+
+    // Robust proxy fetcher
+    async function secureFetch(target) {
+        try {
+            const r = await fetch(target, { signal: AbortSignal.timeout(3000) });
+            if (r.ok) return r;
+        } catch (e) {}
+        const proxies = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+            `https://corsproxy.io/?${encodeURIComponent(target)}`
+        ];
+        for (const p of proxies) {
+            try {
+                const r = await fetch(p, { signal: AbortSignal.timeout(4000) });
+                if (r.ok) return r;
+            } catch (e) {}
+        }
+        return null;
+    }
+
+    try {
+        let tmdbId = movie.tmdb?.id;
+        let type = movie.tmdb?.type === 'tv' ? 'tv' : 'movie';
+
+        // Search by origin_name or name if TMDB ID is missing
+        if (!tmdbId) {
+            const query = encodeURIComponent(movie.origin_name || movie.name);
+            const searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`;
+            const searchRes = await secureFetch(searchUrl);
+            if (loadId !== currentLogoLoadId) return; // Hủy nếu slide đã chuyển
+
+            if (searchRes) {
+                const searchData = await searchRes.json();
+                if (searchData.results && searchData.results.length > 0) {
+                    const bestResult = searchData.results.find(r => r.media_type === 'tv' || r.media_type === 'movie') || searchData.results[0];
+                    if (bestResult && bestResult.id) {
+                        tmdbId = bestResult.id;
+                        type = bestResult.media_type || 'movie';
+                    }
+                }
+            }
+        }
+
+        if (loadId !== currentLogoLoadId) return;
+        if (!tmdbId) {
+            logoCache.set(cacheKey, 'TEXT_ONLY');
+            return;
+        }
+
+        const url = `https://api.themoviedb.org/3/${type}/${tmdbId}/images?api_key=${API_KEY}`;
+        const res = await secureFetch(url);
+        if (loadId !== currentLogoLoadId) return;
+        if (!res) {
+            logoCache.set(cacheKey, 'TEXT_ONLY');
+            return;
+        }
+
+        const data = await res.json();
+        if (loadId !== currentLogoLoadId) return;
+
+        if (data.logos && data.logos.length > 0) {
+            const viLogo = data.logos.find(l => l.iso_639_1 === 'vi');
+            const enLogo = data.logos.find(l => l.iso_639_1 === 'en');
+            const bestLogo = viLogo || enLogo || data.logos[0];
+
+            if (bestLogo && bestLogo.file_path) {
+                const imgUrl = `https://image.tmdb.org/t/p/w300${bestLogo.file_path}`;
+                logoCache.set(cacheKey, imgUrl);
+                _persistLogoCache();
+                applyLogoToDOM(imgUrl);
+                return;
+            }
+        }
+        logoCache.set(cacheKey, 'TEXT_ONLY');
+    } catch (e) {
+        console.warn('TMDB logo load failed');
+        if (loadId === currentLogoLoadId) {
+            logoCache.set(cacheKey, 'TEXT_ONLY');
+        }
+    }
 }
 
 // ================================================================
@@ -143,8 +339,7 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
     const movie = heroSlides[newIndex];
 
     // Preload ảnh mới NGAY (song song với fade out)
-    const isMobile = window.innerWidth < 768;
-    const rawUrl = movie.poster_url || movie.thumb_url;
+    const rawUrl = getHeroImageUrl(movie);
     const optUrl = buildImageUrl(rawUrl, 1200);
     if (optUrl) {
         const preImg = new Image();
@@ -172,7 +367,7 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
         // Update placeholder background immediately
         const placeholder = document.getElementById('heroPlaceholder') || document.querySelector('.hero-placeholder-mask');
         if (placeholder && movie) {
-            const rawPlaceholderUrl = movie.poster_url || movie.thumb_url;
+            const rawPlaceholderUrl = getHeroImageUrl(movie);
             const optPlaceholderUrl = buildImageUrl(rawPlaceholderUrl, 600);
             if (optPlaceholderUrl) {
                 placeholder.style.backgroundImage = `url('${optPlaceholderUrl}')`;
@@ -242,8 +437,18 @@ function updateHeroBannerText(movie) {
     const heroGenres = document.getElementById('heroGenres');
     const heroDescription = document.getElementById('heroDescription');
 
-    if (heroTitle) heroTitle.textContent = movie.name || '';
+    if (heroTitle) {
+        heroTitle.textContent = movie.name || '';
+        // ✅ FIX: Chỉ hiện text title nếu chắc chắn không có logo
+        const cacheKeyCheck = movie.slug || movie.name;
+        const hasLogoReady = (movie.logoUrl && movie.logoUrl.trim() !== '') ||
+                             (logoCache.has(cacheKeyCheck) && logoCache.get(cacheKeyCheck) !== 'TEXT_ONLY');
+        heroTitle.style.display = hasLogoReady ? 'none' : 'block';
+    }
     if (heroSubtitle) heroSubtitle.textContent = movie.origin_name || '';
+
+    // Async load TMDB logo replacing title
+    loadHeroLogo(movie);
 
     if (heroBadges) {
         const rating = movie.tmdb?.vote_average ? movie.tmdb.vote_average.toFixed(1) : 'N/A';
@@ -257,12 +462,24 @@ function updateHeroBannerText(movie) {
         }
 
         heroBadges.innerHTML = `
-            <span class="bg-white text-black px-3 md:px-4 py-1.5 rounded-md font-bold text-[13px] md:text-sm">IMDb ${rating}</span>
-            <span class="border border-white/90 bg-transparent px-3 md:px-4 py-1.5 rounded-md text-white font-medium text-[13px] md:text-sm backdrop-blur-sm">${movie.year || '2024'}</span>
+            <span class="flex items-center gap-1.5 text-black px-3 py-1 rounded font-bold text-[13px] md:text-sm shadow-sm" style="background-color: #FFE28A;">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                IMDb ${rating}
+            </span>
+            <span class="flex items-center gap-1.5 text-black px-3 py-1 rounded font-bold text-[13px] md:text-sm shadow-sm" style="background-color: #A3E6D6;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                ${movie.year || '2024'}
+            </span>
             ${epText
-                ? `<span data-ep-badge class="border border-white/90 bg-transparent px-3 md:px-4 py-1.5 rounded-md text-white font-medium text-[13px] md:text-sm backdrop-blur-sm">${epText}</span>`
-                : `<span data-ep-badge class="border border-white/90 bg-transparent px-3 md:px-4 py-1.5 rounded-md text-white font-medium text-[13px] md:text-sm backdrop-blur-sm hidden"></span>`}
-            <span class="border border-white/90 bg-transparent px-3 md:px-4 py-1.5 rounded-md text-white font-medium text-[13px] md:text-sm backdrop-blur-sm">${movie.quality || 'HD'}</span>
+                ? `<span data-ep-badge class="flex items-center gap-1.5 text-black px-3 py-1 rounded font-bold text-[13px] md:text-sm shadow-sm" style="background-color: #FFD1E3;">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    ${epText}
+                   </span>`
+                : `<span data-ep-badge class="hidden"></span>`}
+            <span class="flex items-center gap-1.5 text-black px-3 py-1 rounded font-bold text-[13px] md:text-sm shadow-sm" style="background-color: #A8C7FA;">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                ${movie.quality || 'HD'}
+            </span>
         `;
     }
 
@@ -607,9 +824,18 @@ function renderThumbnails(movies) {
 
     // ── Cuộn về đầu: item đầu tiên luôn hiển thị trước ──────────
     // Dùng setTimeout 0 để đảm bảo DOM đã render xong
-    setTimeout(() => {
-        container.scrollLeft = 0;
-    }, 0);
+    setTimeout(() => { container.scrollLeft = 0; }, 0);
+
+    // 🔲 Thêm scroll listener cho thumbnails để reset auto return 🔲
+    let thumbScrollTimer = null;
+    container.addEventListener('scroll', () => {
+        if (currentSlideIndex !== 0) {
+            clearTimeout(thumbScrollTimer);
+            thumbScrollTimer = setTimeout(() => {
+                resetAutoReturn();
+            }, 100);
+        }
+    }, { passive: true });
 
     // Hover preview removed per user request
 }
@@ -621,9 +847,8 @@ function previewHeroPoster(movie) {
     const heroImage = document.getElementById('heroImage');
     if (!heroImage || !movie) return;
 
-    // Use poster_url (large cover image) NOT thumb_url
-    const isMobile = window.innerWidth < 768;
-    const posterUrl = movie.poster_url || movie.thumb_url;
+    // Smart selection cho Desktop & Mobile
+    const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
 
     const optUrl = buildImageUrl(posterUrl, 1200);
@@ -654,8 +879,7 @@ function returnToCurrentSlide(slideIndex) {
     const heroImage = document.getElementById('heroImage');
     if (!heroImage) return;
 
-    const isMobile = window.innerWidth < 768;
-    const posterUrl = movie.poster_url || movie.thumb_url;
+    const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
 
     const optUrl = buildImageUrl(posterUrl, 1200);
@@ -852,3 +1076,5 @@ window.switchHeroSlide = switchHeroSlide;
 document.addEventListener('DOMContentLoaded', () => {
     loadHeroBanner();
 });
+
+

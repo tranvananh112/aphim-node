@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Movie Slider - Drag to Scroll + Wheel to Horizontal
  * Works on all horizontal movie sliders across the site
  * Unified: distinguishes drag/swipe vs click for both Mouse and Touch, handles mouseup outside
@@ -34,8 +34,8 @@
             slider.classList.add('active');
 
             // Tạm thời tắt cuộn mượt và snap-scroll để kéo mượt mà 1:1 theo chuột
-            slider.style.scrollBehavior = 'auto';
-            slider.style.scrollSnapType = 'none';
+            if (!slider.hasAttribute('data-orig-behavior')) slider.setAttribute('data-orig-behavior', slider.style.scrollBehavior); slider.style.scrollBehavior = 'auto';
+            if (!slider.hasAttribute('data-orig-snap')) slider.setAttribute('data-orig-snap', slider.style.scrollSnapType); slider.style.scrollSnapType = 'none';
 
             startX = e.pageX - slider.offsetLeft;
             startY = e.pageY - slider.offsetTop;
@@ -59,8 +59,8 @@
             lockVertical = false;
 
             // Khôi phục thuộc tính CSS ban đầu
-            slider.style.scrollBehavior = '';
-            slider.style.scrollSnapType = '';
+            slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
+            slider.style.scrollSnapType = slider.getAttribute('data-orig-snap') || '';
 
             if (hasDragged) {
                 slider.setAttribute('data-dragged', 'true');
@@ -99,8 +99,8 @@
                     // Cử chỉ cuộn dọc -> Hủy kéo slider để trang cuộn dọc tự nhiên
                     isDown = false;
                     slider.classList.remove('active');
-                    slider.style.scrollBehavior = '';
-                    slider.style.scrollSnapType = '';
+                    slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
+                    slider.style.scrollSnapType = slider.getAttribute('data-orig-snap') || '';
                     return;
                 }
                 if (dx >= DRAG_THRESHOLD) {
@@ -184,7 +184,7 @@
     // ── INIT ALL SLIDERS ──
     function init() {
         // Select all horizontal sliders/scrollers
-        const sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide');
+        const sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide, #heroThumbnails');
 
         sliders.forEach(function(slider) {
             // Skip elements that are not sliders (like small nav bars or pagination)
@@ -205,10 +205,11 @@
 
     // Re-init after dynamic content loads
     window.refreshMovieSliders = function() {
-        const sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide');
+        const sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide, #heroThumbnails');
         sliders.forEach(function(slider) {
             delete slider.dataset.sliderInit;
         });
         init();
     };
 })();
+

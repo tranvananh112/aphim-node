@@ -85,14 +85,12 @@
         </div>
 
         <!-- Content -->
-        <div id="heroContent"
-            class="relative w-full max-w-[1600px] mx-auto z-20 h-full flex flex-col justify-center pb-[180px] md:pb-[230px] px-4 md:px-6 lg:px-8 pt-safe-main transition-opacity duration-700"
-            style="opacity:0;">
-            <div class="max-w-3xl space-y-6">
+        <div id="heroContent" class="relative w-full max-w-[1600px] mx-auto z-20 h-full flex flex-col justify-center pb-[180px] md:pb-[230px] px-4 md:px-6 lg:px-8 pt-safe-main transition-opacity duration-700" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
+            <div class="max-w-3xl space-y-6" style="margin-top: -120px;">
                 <!-- Title -->
                 <div class="space-y-3">
                     <h1 id="heroTitle"
-                        class="text-4xl md:text-5xl lg:text-[54px] font-sans font-black text-white leading-tight tracking-tight" style="text-shadow: 0 4px 16px rgba(0,0,0,0.6);">
+                        class="text-4xl md:text-[72px] lg:text-[84px] font-sans font-black text-white leading-tight tracking-tight" style="text-shadow: 0 4px 16px rgba(0,0,0,0.6);">
                          Đang tải...
                     </h1>
                     <h2 id="heroSubtitle" class="text-[#e8b94f] text-lg md:text-xl font-medium tracking-wide" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);"></h2>
@@ -150,7 +148,7 @@
         </div>
 
         <!-- Thumbnails - Bottom Right (Positioned above categories) -->
-        <div class="hero-thumbnails-container absolute z-30 left-0 right-0 pointer-events-none" style="bottom: 275px;">
+        <div class="hero-thumbnails-container absolute z-30 left-0 right-0 pointer-events-none" style="bottom: 305px;">
             <style>
                 @media (min-width: 768px) {
                     .hero-thumbnails-container {
@@ -191,7 +189,7 @@
 
         <!-- Categories Section positioned at the bottom of Hero Banner -->
         <section class="interests-section absolute left-0 right-0 z-40 bg-transparent pt-4 pb-0 mb-0" style="position: absolute !important; background: transparent !important; background-color: transparent !important; padding-top: 1rem; padding-bottom: 0px !important; margin-bottom: 0px !important; bottom: 20px !important;">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <!-- Title Header matching Screenshot 1 -->
                 <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left -ml-2 md:-ml-4 lg:-ml-5" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
                     Bạn đang quan tâm gì?
@@ -324,12 +322,13 @@
     <div class="bg-void pb-12">
         <!-- Top Movies Hot Section -->
         <section class="py-2 md:py-3 top-movies-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
-                            <span class="hidden md:inline"><span class="text-white">Bảng Xếp Hạng</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
-                            <span class="md:hidden"><span class="text-white">BXH</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
-                        </h2>
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito flex items-center -ml-2 md:-ml-4 lg:-ml-5">
+                        <span class="inline-block w-1.5 h-6 md:h-7 bg-[#fcd34d] rounded-full mr-2.5 shadow-[0_0_12px_rgba(252,211,77,0.8)] flex-shrink-0"></span>
+                        <span class="hidden md:inline uppercase"><span class="text-white">Bảng Xếp Hạng</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
+                        <span class="md:hidden uppercase"><span class="text-white">BXH</span> <span class="text-gradient-gold">Top Phim Hot</span></span>
+                    </h2>
                     <div class="flex gap-3">
                         <button id="topMoviesScrollLeft"
                             class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -358,7 +357,7 @@
 
         <!-- Cười Vui Khóc Chung (Tình Cảm) -->
         <section class="py-2 ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Cười Vui</span> <span class="text-gradient-pink">Khóc Chung</span>
@@ -437,7 +436,7 @@
         </style>
     <!-- Premium ads disabled -->
         <section class="py-2 md:py-3 !bg-transparent" id="animation-section">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Thế Giới</span> <span class="text-gradient-blue">Hoạt Hình</span>
@@ -470,7 +469,7 @@
 
         <!-- Top Comments Community Dashboard -->
         <section class="py-2 md:py-3 !bg-transparent" id="top-comments-section">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="tc-container">
                     <!-- Header -->
                     <div class="tc-header">
@@ -556,7 +555,7 @@
         <!-- Action Movies Section -->
 
         <section class="py-1.5 ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Phim</span> <span class="text-gradient-red">Hành Động</span>
@@ -592,7 +591,7 @@
 
 <!-- Adventure Movies Section (Phim Phiêu Lưu) -->
         <section class="py-2 md:py-3 !bg-transparent" id="adventure-section">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Phim</span> <span class="text-gradient-green">Phiêu Lưu</span>
@@ -625,7 +624,7 @@
 
         <!-- Mythology Ranking Section (Phim Thần Thoại) -->
         <section class="py-2 !bg-transparent overflow-hidden" id="mythology-ranking-section">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center gap-2 mb-4">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito flex items-center gap-2 uppercase -ml-2 md:-ml-4 lg:-ml-5">
                         <span class="text-white">TOP PHIM</span>
@@ -650,7 +649,7 @@
 
         <!-- Vietnamese Movies Section -->
         <section class="py-2 ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Phim</span> <span class="text-gradient-crimson">Việt Nam</span>
@@ -679,7 +678,7 @@
 
         <!-- Coming Soon Movies Section - Top 10 Style -->
         <section class="py-2 coming-soon-section ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Phim</span> <span class="text-gradient-orange">Chiếu Rạp</span>
@@ -711,7 +710,7 @@
 
         <!-- Latest Updates Section -->
         <section class="py-2 ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Phim Mới</span> <span class="text-gradient-purple">Cập Nhật</span>
@@ -755,7 +754,7 @@
 
         <!-- Horror Section -->
         <section class="py-2 horror-section ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Xem Cho</span> <span class="text-gradient-green">Biết Thêm</span>
@@ -782,7 +781,7 @@
 
         <!-- Drama Căng Đét (Short Drama) -->
         <section class="py-2 ambient-section !bg-transparent">
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">Drama</span> <span class="text-gradient-gold">Căng Đét</span>
@@ -829,7 +828,7 @@
             </style>
             <!-- TOP 10 A PHIM -->
             <section class="py-2 sofaflix-section !bg-transparent overflow-hidden">
-                <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8">
+                <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                     <div class="flex items-center gap-2 mb-4">
                         <h2 class="text-3xl md:text-4xl sofaflix-title-main text-white uppercase -ml-2 md:-ml-4 lg:-ml-5">
                             <span class="text-white">TOP 10</span> <span class="text-primary">A PHIM</span>
@@ -1742,6 +1741,7 @@
 </body>
 
 </html>
+
 
 
 

@@ -124,8 +124,6 @@
                 href="/pricing">Gói cước</a>
             <a class="nav-item px-6 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-colors duration-200 ${pathname.includes('support') ? 'text-primary' : 'text-white hover:text-primary'}"
                 href="/support">Nuôi APhim</a>
-            ${isPhimXEnabled() ? `<a class="nav-item px-6 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-colors duration-200 ${pathname.includes('phim-x') ? 'text-[#ff7351]' : 'text-[#ff7351]/70 hover:text-[#ff7351]'} flex items-center gap-1"
-                href="/phim-x"><span style="font-size:12px;background:rgba(255,115,81,0.15);border:1px solid rgba(255,115,81,0.4);padding:1px 5px;border-radius:4px;font-size:10px;">18+</span> Phim X</a>` : ''}
         `;
 
         // Replace content

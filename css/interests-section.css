@@ -67,6 +67,7 @@
         padding-right: 0 !important;
         margin-left: -1.25rem !important;
         margin-right: -1.25rem !important;
+        width: calc(100% + 2.5rem) !important;
     }
     .interest-card {
         flex: none !important;

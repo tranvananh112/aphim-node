@@ -38,7 +38,7 @@ function getAdminToken() {
 function checkAdminAuth() {
     const token = getAdminToken();
     if (!token) {
-        window.location.href = '../login.html';
+        window.location.href = '/admin/login.html';
     }
 }
 
@@ -104,7 +104,7 @@ async function loadComments() {
 
         if (!response.ok) {
             if (response.status === 401) {
-                window.location.href = '../login.html';
+                window.location.href = '/admin/login.html';
                 return;
             }
             throw new Error('Failed to load comments');
@@ -165,7 +165,7 @@ function renderComments(comments) {
                 <div style="font-size: 11.5px; color: var(--text-muted);">${userEmail}</div>
             </td>
             <td><div class="comment-content">${c.content}</div></td>
-            <td><a href="/xem-phim/${c.movieSlug}" target="_blank" class="movie-ref">${movieTitle}</a></td>
+            <td><a href="../watch.html?slug=${c.movieSlug}" target="_blank" class="movie-ref">${movieTitle}</a></td>
             <td><span style="font-size: 12px; color: var(--text-muted);">${timeStr}</span></td>
             <td>${statusHtml}</td>
             <td style="text-align: center;">

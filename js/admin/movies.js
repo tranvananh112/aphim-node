@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const backendToken = localStorage.getItem('cinestream_admin_token');
     const localToken = sessionStorage.getItem('cinestream_admin_token');
     if (!backendToken && !localToken) {
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
         return;
     }
 
@@ -230,7 +230,7 @@ function applyFilters() {
 
 // View movie
 window.viewMovie = function (slug) {
-    window.open(`..//phim/${slug}`, '_blank');
+    window.open(`../movie-detail.html?slug=${slug}`, '_blank');
 };
 
 // Edit movie

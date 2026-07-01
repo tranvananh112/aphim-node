@@ -61,11 +61,6 @@ function injectSimpleMobileMenu() {
             <a href="/pricing" class="block py-3 ${currentPage === 'pricing.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 💎 Gói cước
             </a>
-            
-            <!-- Phim X (18+) -->
-            <a href="/phim-x" class="block py-3 ${currentPage === 'phim-x.html' ? 'text-red-400 font-bold' : 'text-red-400 hover:text-red-300'} transition-colors font-bold">
-                🔞 Phim X
-            </a>
         </div>
     `;
 

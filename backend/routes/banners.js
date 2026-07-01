@@ -8,7 +8,9 @@ const {
     loadMoviesFromAPI,
     addBanner,
     updateBanner,
-    deleteBanner
+    deleteBanner,
+    fetchBannerLogo,
+    fetchAllLogos
 } = require('../controllers/bannerController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -22,8 +24,10 @@ router.use(authorize('admin'));
 
 router.get('/', getAllBanners);
 router.post('/load-movies', loadMoviesFromAPI);
+router.post('/fetch-all-logos', fetchAllLogos);   // ← Batch backfill logos cho banner cũ
 router.post('/', addBanner);
 router.put('/thumbnails', updateThumbnailList);
+router.post('/:id/fetch-logo', fetchBannerLogo);  // ← Fetch logo cho 1 banner
 router.put('/:id', updateBanner);
 router.delete('/:id', deleteBanner);
 

@@ -48,7 +48,7 @@
         backdrop-filter: none !important;
     }
 
-    /* ── Desktop Pill Container (Transparent by default, Solid on scroll) ── */
+    /* ✨ Desktop Pill Container ✨ */
     nav#mainNav:not(.scrolled) .desktop-nav-pill {
         display: flex;
         align-items: center;
@@ -59,20 +59,21 @@
         padding: 6px 8px 6px 6px;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+        box-shadow: none !important;
+        transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
     }
 
     nav#mainNav.scrolled .desktop-nav-pill {
         display: flex;
         align-items: center;
         gap: 0;
-        background: linear-gradient(90deg, rgba(242, 242, 13, 0.1) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(242, 242, 13, 0.1) 100%), rgba(10, 10, 15, 0.4) !important;
-        border: 1px solid rgba(242, 242, 13, 0.2) !important;
+        background: linear-gradient(90deg, rgba(242, 242, 13, 0.18) 0%, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(242, 242, 13, 0.18) 100%), rgba(10, 10, 15, 0.8) !important;
+        border: 1px solid rgba(242, 242, 13, 0.4) !important;
         border-radius: 999px;
         padding: 6px 8px 6px 6px;
-        backdrop-filter: blur(24px) saturate(150%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(242, 242, 13, 0.05) !important;
+        backdrop-filter: blur(48px) saturate(220%) !important;
+        -webkit-backdrop-filter: blur(48px) saturate(220%) !important;
+        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(242, 242, 13, 0.15) !important;
         transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
     }
 
@@ -361,6 +362,7 @@
         font-weight: 400;
         padding: 0 14px 0 0;
         height: 100%;
+        text-overflow: ellipsis;
     }
 
     .nav-search-v2 input::placeholder {
@@ -368,21 +370,20 @@
         font-size: 0.9rem;
     }
 
-    /* ── Auth / Login Button ── */
+    /* ✨ Auth / Login Button ✨ */
     .nav-auth-btn {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 7px 20px;
+        padding: 8px 20px; /* Reduced padding to match nav pill proportionally */
         font-size: 0.95rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         color: #000;
         background: #f2f20d;
         border-radius: 999px;
-        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        white-space: nowrap;
         box-shadow: 0 0 16px rgba(242, 242, 13, 0.25);
+        transition: all 0.3s ease;
     }
 
     .nav-auth-btn:hover {
@@ -476,5 +477,35 @@
     /* 4. Force Hide Mobile Inline Search Bar */
     nav#mainNav .mobile-inline-search {
         display: none !important;
+    }
+}
+
+/* Responsive adjustments for up to 1536px (125% zoom) */
+@media (max-width: 1536px) {
+    .nav-flat-link {
+        padding: 6px 10px !important;
+        font-size: 0.78rem !important;
+    }
+    .nav-search-v2 {
+        width: 160px !important;
+    }
+    .nav-search-v2:focus-within {
+        width: 220px !important;
+    }
+    .nav-search-v2 input {
+        font-size: 0.78rem !important;
+    }
+}
+
+@media (max-width: 1366px) {
+    .nav-flat-link {
+        padding: 5px 8px !important;
+        font-size: 0.75rem !important;
+    }
+    .nav-search-v2 {
+        width: 140px !important;
+    }
+    .nav-search-v2:focus-within {
+        width: 190px !important;
     }
 }

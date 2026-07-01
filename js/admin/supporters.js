@@ -57,7 +57,7 @@ function checkAuth() {
 
     if (!token) {
         console.log('No admin token found, redirecting to login...');
-        window.location.href = '/login';
+        window.location.href = '/admin/login.html';
         return false;
     }
 
@@ -78,7 +78,7 @@ async function loadStatistics() {
         if (response.status === 401) {
             console.log('Unauthorized, redirecting to login...');
             removeAdminToken();
-            window.location.href = '/login';
+            window.location.href = '/admin/login.html';
             return;
         }
 
@@ -119,7 +119,7 @@ async function loadSupporters() {
         if (response.status === 401) {
             console.log('Unauthorized, redirecting to login...');
             removeAdminToken();
-            window.location.href = '/login';
+            window.location.href = '/admin/login.html';
             return;
         }
 
