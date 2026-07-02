@@ -215,25 +215,36 @@ async function loadHeroLogo(movie) {
     // 3. Nếu chưa có thì tiến hành tìm trên TMDB
     const API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
 
-    // Robust proxy fetcher — tăng timeout trên mobile
+    // Robust proxy fetcher — tăng timeout trên mobile và dùng AbortController tương thích mọi trình duyệt
     const isMobileFetch = window.innerWidth < 768;
     const FETCH_TIMEOUT = isMobileFetch ? 6000 : 3000;
     const PROXY_TIMEOUT = isMobileFetch ? 7000 : 4000;
 
-    async function secureFetch(target) {
+    async function secureFetch(target, isProxy = false) {
+        const timeoutMs = isProxy ? PROXY_TIMEOUT : FETCH_TIMEOUT;
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeoutMs);
         try {
-            const r = await fetch(target, { signal: AbortSignal.timeout(FETCH_TIMEOUT) });
+            const r = await fetch(target, { signal: controller.signal });
+            clearTimeout(id);
             if (r.ok) return r;
-        } catch (e) {}
+        } catch (e) {
+            clearTimeout(id);
+        }
+        return null;
+    }
+
+    async function fetchWithFallbacks(target) {
+        let res = await secureFetch(target, false);
+        if (res) return res;
+
         const proxies = [
             `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
             `https://corsproxy.io/?${encodeURIComponent(target)}`
         ];
         for (const p of proxies) {
-            try {
-                const r = await fetch(p, { signal: AbortSignal.timeout(PROXY_TIMEOUT) });
-                if (r.ok) return r;
-            } catch (e) {}
+            res = await secureFetch(p, true);
+            if (res) return res;
         }
         return null;
     }
@@ -246,7 +257,7 @@ async function loadHeroLogo(movie) {
         if (!tmdbId) {
             const query = encodeURIComponent(movie.origin_name || movie.name);
             const searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`;
-            const searchRes = await secureFetch(searchUrl);
+            const searchRes = await fetchWithFallbacks(searchUrl);
             if (loadId !== currentLogoLoadId) return; // Hủy nếu slide đã chuyển
 
             if (searchRes) {
@@ -268,7 +279,7 @@ async function loadHeroLogo(movie) {
         }
 
         const url = `https://api.themoviedb.org/3/${type}/${tmdbId}/images?api_key=${API_KEY}`;
-        const res = await secureFetch(url);
+        const res = await fetchWithFallbacks(url);
         if (loadId !== currentLogoLoadId) return;
         if (!res) {
             logoCache.set(cacheKey, 'TEXT_ONLY');
