@@ -144,12 +144,7 @@ body.page-exiting {
 
 /* ── 7. Scroll performance ──────────────────────────────────
    Thêm overscroll-behavior để tránh page bounce gây lag. ─── */
-html {
-    overscroll-behavior: none;
-}
-
-body {
-    overscroll-behavior-y: contain;
+body { /* removed overscroll-behavior-y to fix desktop wheel */
     /* Tăng tốc scroll trên iOS */
     -webkit-overflow-scrolling: touch;
 }
