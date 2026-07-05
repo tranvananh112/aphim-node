@@ -566,7 +566,7 @@ function attachSwipeHandler() {
     // ── TOUCH (Mobile) ───────────────────────────────────
     heroEl.addEventListener('touchstart', (e) => {
         // Bỏ qua nếu chạm vào thumbnail hoặc mục quan tâm/section khác
-        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section, .overflow-x-auto, .scrollbar-hide, [class*="overflow-x"], [class*="snap-"], .movie-card, .portrait-card, .action-premium-card, img')) return;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         swipeDir = null;
@@ -574,7 +574,7 @@ function attachSwipeHandler() {
     }, { passive: true });
 
     heroEl.addEventListener('touchmove', (e) => {
-        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section, .overflow-x-auto, .scrollbar-hide, [class*="overflow-x"], [class*="snap-"], .movie-card, .portrait-card, .action-premium-card, img')) return;
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
 
@@ -594,7 +594,7 @@ function attachSwipeHandler() {
     }, { passive: true });
 
     heroEl.addEventListener('touchend', (e) => {
-        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section')) return;
+        if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section, .overflow-x-auto, .scrollbar-hide, [class*="overflow-x"], [class*="snap-"], .movie-card, .portrait-card, .action-premium-card, img')) return;
         const dx = e.changedTouches[0].clientX - startX;
         const dy = e.changedTouches[0].clientY - startY;
 

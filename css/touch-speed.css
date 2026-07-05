@@ -193,9 +193,63 @@ body { /* removed overscroll-behavior-y to fix desktop wheel */
     100% { background-position: -200% 0; }
 }
 
-/* Fix l?i rung l?c / hi?n to�n b? khung tr�n mobile khi vu?t ngang */
+/* Fix l?i rung l?c / hi?n to�n b? khung tr�n mobile khi vu?t ngang */
 [class*="overflow-x-auto"] {
     touch-action: pan-x pan-y;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
+}
+
+/* ==========================================================================
+   🚀 SIÊU TỐI ƯU CỐ ĐỊNH & MƯỢT MÀ KHI LƯỚT NGANG TRÊN MOBILE (FIX WOBBLE/SHIFT)
+   ========================================================================== */
+/* 1. Khóa cứng hướng chạm: Khi lướt ngang danh sách phim/thumbnail, tuyệt đối không bị trôi chéo hay lắc trang */
+.overflow-x-auto,
+[style*="overflow-x: auto"],
+[style*="overflow-x:auto"],
+.interests-wrapper,
+#heroThumbnails,
+.mobile-thumb-wrapper,
+.cat-tab-container,
+.scrollbar-hide {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scroll-behavior: smooth !important;
+}
+
+/* 2. Chuyển snap từ mandatory (nhảy giật cục) sang proximity để lướt tay êm ái, dừng đúng vị trí ngón tay */
+.snap-mandatory,
+[style*="scroll-snap-type:x mandatory"],
+[style*="scroll-snap-type: x mandatory"] {
+    scroll-snap-type: x proximity !important;
+}
+
+/* 3. Khóa chết chiều ngang của toàn bộ trang web trên mobile - không bao giờ bị xô lệch layout ngang */
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+}
+
+/* 4. Ngăn các thẻ phim (movie card / thumbnail / button) bị co rút, nháy hình hay kéo lê khi lướt tay */
+.overflow-x-auto > *,
+.interests-wrapper > *,
+#heroThumbnails > *,
+.scrollbar-hide > * {
+    flex-shrink: 0 !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+}
+
+/* 5. Ngăn ảnh trong các danh sách lướt ngang bị kéo nhầm (ghost drag) trên iOS/Android */
+.overflow-x-auto img,
+.interests-wrapper img,
+#heroThumbnails img,
+.scrollbar-hide img {
+    pointer-events: auto !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
 }
