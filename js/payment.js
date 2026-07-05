@@ -31,7 +31,7 @@ async function initPaymentConfig() {
             ? API_CONFIG.BACKEND_URL
             : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                 ? 'http://localhost:5000/api'
-                : 'https://a-phim-production-fb41.up.railway.app/api');
+                : 'https://a-phim-production-f6a2.up.railway.app/api');
 
         const res = await fetch(`${BACKEND_URL}/settings/payment-public`);
         if (!res.ok) return;

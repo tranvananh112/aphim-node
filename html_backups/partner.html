@@ -83,33 +83,34 @@ body{background:#0c0e10;color:#eeeef0}
   })();
 </script>
 
-        <!-- A Phim: Hardcode Dropdown Blue Override inside HTML to bypass all cache/specificity -->
-    <style id="dropdown-blue-override">
+    <!-- A Phim: Hardcode Dropdown Blue Override inside HTML to bypass all cache/specificity -->
+            <style id="dropdown-blue-override">
         @media (min-width: 1024px) {
-            nav .relative.group>.absolute.top-full {
-                background-color: #2b3a72 !important;
-                background-image: none !important;
+            nav .relative.group > .absolute.top-full {
+                background-color: #3d5a96 !important;
+                background-image: linear-gradient(145deg, #3d5a96 0%, #25385e 100%) !important;
                 backdrop-filter: blur(16px) !important;
                 -webkit-backdrop-filter: blur(16px) !important;
                 border: 1px solid rgba(255, 255, 255, 0.15) !important;
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
             }
-
-            nav .relative.group>.absolute.top-full a {
-                color: #ffffff !important;
-                font-weight: 700 !important;
-                text-shadow: none !important;
+            nav .relative.group > .absolute.top-full a {
+                color: #eff6ff !important;
+                font-weight: 500 !important;
+                text-shadow: 0 1px 3px rgba(0,0,0,0.6);
             }
-
-            nav .relative.group>.absolute.top-full a:hover {
-                color: #ffd700 !important;
-                background-color: rgba(255, 255, 255, 0.08) !important;
-                text-shadow: none !important;
+            nav .relative.group > .absolute.top-full a:hover {
+                color: #f2f20d !important;
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                text-shadow: 0 0 10px rgba(242,242,13,0.5);
+            }
+            nav .relative.group > .absolute.top-full * {
+                /* Ensure no child elements are painting a black background covering the blue */
             }
         }
     </style>
 
-    <link rel="stylesheet" href="css/nav-desktop-v2.css?v=18">
+    <link rel="stylesheet" href="css/nav-desktop-v2.css?v=15">
     <link rel="stylesheet" href="css/sticky-nav.css">
     <link rel="stylesheet" href="css/mobile-menu-modern.css">
     <link rel="stylesheet" href="css/mobile-viewport-fix.css?v=36">
@@ -126,7 +127,7 @@ body{background:#0c0e10;color:#eeeef0}
     <!-- Base CSS -->
     <link rel="stylesheet" href="css/tailwind.min.css?v=13">
     <link rel="stylesheet" href="css/design-tokens.css?v=13">
-    <link rel="stylesheet" href="css/ambient-bg.css?v=13">
+    <link rel="stylesheet" href="css/ambient-bg.css?v=1782358934019">
     <link rel="stylesheet" href="css/material-icons-fix.css?v=13">
     <!-- ===== END FONTS ===== -->
     <script src="js/anti-devtools.js?v=10"></script>
@@ -212,7 +213,7 @@ body{background:#0c0e10;color:#eeeef0}
 
                     <!-- Nav Links - flat, no pill -->
                     <nav-links class="flex items-center" style="gap:2px;">
-                        <a href="index.html" class="nav-flat-link active">Trang Ch?</a>
+                        <a href="index.html" class="nav-flat-link active">Trang Chủ</a>
 
                         <!-- Phim Dropdown -->
                         <div class="nav-flat-dropdown">
@@ -221,7 +222,7 @@ body{background:#0c0e10;color:#eeeef0}
                                 <span class="material-icons-round nav-caret">expand_more</span>
                             </button>
                             <div class="nav-dropdown-panel" id="countryDropdown" style="min-width:680px;">
-                                <div class="p-4 text-center text-gray-400 text-sm">-ang t?i...</div>
+                                <div class="p-4 text-center text-gray-400 text-sm">-Đang tải...</div>
                             </div>
                         </div>
 
@@ -232,40 +233,40 @@ body{background:#0c0e10;color:#eeeef0}
                                 <span class="material-icons-round nav-caret">expand_more</span>
                             </button>
                             <div class="nav-dropdown-panel" style="min-width:560px;">
-                                <div style="background:#2b3a72;border-radius:12px;padding:6px;border:1px solid rgba(255, 255, 255, 0.15);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
+                                <div style="background:linear-gradient(160deg,#1e4d8c 0%,#2563b8 40%,#1a3d7a 100%);border-radius:12px;padding:6px;border:1px solid rgba(59,130,246,0.25);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
                                     <div class="grid grid-cols-3 gap-0">
-                                        <a href="danh-sach.html?list=phim-moi" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim M?i</a>
-                                        <a href="danh-sach.html?list=phim-bo" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim B?</a>
-                                        <a href="danh-sach.html?list=phim-le" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim L?</a>
-                                        <a href="danh-sach.html?list=tv-shows" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">TV Shows</a>
-                                        <a href="danh-sach.html?list=hoat-hinh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Ho?t H-nh</a>
-                                        <a href="danh-sach.html?list=phim-vietsub" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Vietsub</a>
-                                        <a href="danh-sach.html?list=phim-thuyet-minh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Thuy?t Minh</a>
-                                        <a href="danh-sach.html?list=phim-long-tien" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">L?ng Ti?ng</a>
-                                        <a href="danh-sach.html?list=phim-bo-dang-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim B? -ang Chi?u</a>
-                                        <a href="danh-sach.html?list=phim-bo-hoan-thanh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">B? -- Xong</a>
-                                        <a href="danh-sach.html?list=phim-sap-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">S?p Chi?u</a>
-                                        <a href="danh-sach.html?list=subteam" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Subteam</a>
-                                        <a href="danh-sach.html?list=phim-chieu-rap" style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">?? Phim Chi?u R?p</a>
+                                        <a href="danh-sach.html?list=phim-moi" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Mới</a>
+                                        <a href="danh-sach.html?list=phim-bo" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Bộ</a>
+                                        <a href="danh-sach.html?list=phim-le" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Lẻ</a>
+                                        <a href="danh-sach.html?list=tv-shows" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">TV Shows</a>
+                                        <a href="danh-sach.html?list=hoat-hinh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Ho?t H-nh</a>
+                                        <a href="danh-sach.html?list=phim-vietsub" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Vietsub</a>
+                                        <a href="danh-sach.html?list=phim-thuyet-minh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Thuy?t Minh</a>
+                                        <a href="danh-sach.html?list=phim-long-tien" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">L?ng Ti?ng</a>
+                                        <a href="danh-sach.html?list=phim-bo-dang-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim Bộ -ang Chi?u</a>
+                                        <a href="danh-sach.html?list=phim-bo-hoan-thanh" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">B? -- Xong</a>
+                                        <a href="danh-sach.html?list=phim-sap-chieu" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">S?p Chi?u</a>
+                                        <a href="danh-sach.html?list=subteam" style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Subteam</a>
+                                        <a href="danh-sach.html?list=phim-chieu-rap" style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.95);font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.95)';">?? Phim Chiếu Rạp</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Th? Lo?i Dropdown -->
+                        <!-- Thể Loại Dropdown -->
                         <div class="nav-flat-dropdown">
                             <button class="nav-flat-link" type="button">
-                                Th? Lo?i
+                                Thể Loại
                                 <span class="material-icons-round nav-caret">expand_more</span>
                             </button>
                             <div class="nav-dropdown-panel" id="categoryDropdown" style="min-width:680px;">
-                                <div class="p-4 text-center text-gray-400 text-sm">-ang t?i...</div>
+                                <div class="p-4 text-center text-gray-400 text-sm">-Đang tải...</div>
                             </div>
                         </div>
 
                         <a href="search.html" class="nav-flat-link">Kh-m Ph-</a>
                         <a href="pricing.html" class="nav-flat-link">G-i Cu?c</a>
-                        <a href="phim-x.html" class="nav-flat-link nav-flat-link--danger">?? Phim X</a>
+                        <a href="phim-x.html" class="nav-flat-link nav-flat-link--danger">🔞 Phim X</a>
                     </nav-links>
                 </div>
             </div>
@@ -274,12 +275,12 @@ body{background:#0c0e10;color:#eeeef0}
             <!-- ZONE 3: Right - Auth + Mobile Toggle -->
             <div class="flex items-center gap-3 flex-shrink-0 ml-4">
                 <!-- Auth Container (filled by auth.js / user-ui.js) -->
-                <div id="authContainer" class="flex items-center">
+                <div id="authContainer" class="flex items-center" style="overflow: visible !important;">
                     <a href="login.html"
-                       onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
-                       class="nav-auth-btn hidden lg:inline-flex">
-                        <span class="material-icons-round" style="font-size:16px;">person</span>
-                        -ang Nh?p
+                        onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
+                        class="nav-auth-btn hidden lg:inline-flex">
+                        <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
+                        <span class="auth-btn-text">Đăng Nhập</span>
                     </a>
                 </div>
                 <!-- Mobile Menu Button -->
@@ -294,6 +295,8 @@ body{background:#0c0e10;color:#eeeef0}
             <!-- Content will be injected by mobile-menu-simple.js -->
         </div>
     </nav>
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
   <!-- Footer -->
   <div style="border-top:1px solid rgba(255,255,255,.05);padding-top:16px;margin-top:16px">
@@ -450,7 +453,7 @@ body{background:#0c0e10;color:#eeeef0}
         <div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,231,146,.03);display:flex;justify-content:space-between;align-items:center">
           <div>
             <h4 class="font-headline" style="font-size:15px;font-weight:700;font-style:italic;color:#ffe792">Theo d-i Banner -ang ch?y (Realtime)</h4>
-            <p style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif;margin-top:3px">T?t c? banner thu?c chi?n d?ch DT99 - C?p nh?t li-n t?c</p>
+            <p style="font-size:11px;color:#aaabad;font-family:Inter,sans-serif;margin-top:3px">Tất cả banner thu?c chi?n d?ch DT99 - C?p nh?t li-n t?c</p>
           </div>
           <div style="display:flex;align-items:center;gap:6px;background:rgba(107,254,156,.08);border:1px solid rgba(107,254,156,.15);border-radius:20px;padding:5px 12px">
             <div class="live-dot" style="width:6px;height:6px;background:#6bfe9c;border-radius:50%"></div>
@@ -467,7 +470,7 @@ body{background:#0c0e10;color:#eeeef0}
             <th style="text-align:center">Tr?ng th-i</th>
           </tr></thead>
           <tbody id="banners-tbody">
-            <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaabad">-ang t?i...</td></tr>
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:#aaabad">-Đang tải...</td></tr>
           </tbody>
         </table>
       </div>
@@ -520,7 +523,7 @@ body{background:#0c0e10;color:#eeeef0}
             <th>Bi?u d?</th>
           </tr></thead>
           <tbody id="top-pages-tbody">
-            <tr><td colspan="4" style="text-align:center;padding:30px;color:#aaabad">-ang t?i...</td></tr>
+            <tr><td colspan="4" style="text-align:center;padding:30px;color:#aaabad">-Đang tải...</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,13 +634,13 @@ body{background:#0c0e10;color:#eeeef0}
     <div class="aphim-inline-ad">
         <span class="aphim-inline-ad-label">Quảng cáo</span>
         <div class="aphim-inline-ad-inner">
-            <a class="aphim-inline-ad-item" href="https://vsbet294.com/p/BSYk" target="_blank" rel="noopener nofollow" aria-label="VSBet">
+            <a class="aphim-inline-ad-item" href="https://vsbet276.com/p/BSYk" target="_blank" rel="noopener nofollow" aria-label="VSBet">
                 <img src="/ads/catfish/vsbet.gif" alt="VSBet" loading="lazy">
             </a>
-            <a class="aphim-inline-ad-item" href="https://colatv99.live/" target="_blank" rel="noopener nofollow" aria-label="ColaTV">
+            <a class="aphim-inline-ad-item" href="https://colatv.live" target="_blank" rel="noopener nofollow" aria-label="ColaTV">
                 <img src="/ads/catfish/colatv.gif" alt="ColaTV" loading="lazy">
             </a>
-            <a class="aphim-inline-ad-item" href="https://colascores.com/" target="_blank" rel="noopener nofollow" aria-label="ColaScore">
+            <a class="aphim-inline-ad-item" href="https://colascores.com" target="_blank" rel="noopener nofollow" aria-label="ColaScore">
                 <img src="/ads/catfish/colascore.gif" alt="ColaScore" loading="lazy">
             </a>
         </div>
@@ -848,12 +851,12 @@ function setVal(id,n,r){if(window._SV)window._SV(id,n,r);}
 
   var _FEED_POOL = {
     pages: [
-      { title: 'Trang ch? - A Phim', path: '/index.html' },
+      { title: 'Trang chủ - A Phim', path: '/index.html' },
       { title: 'Xem phim - A Phim', path: '/watch.html' },
       { title: 'T-m ki?m phim - A Phim', path: '/search.html' },
       { title: 'Phim Vi?t Nam Hay Nh?t', path: '/danh-sach.html' },
-      { title: 'Phim L? Chi?u R?p M?i', path: '/phim-le.html' },
-      { title: 'Phim B? -ang Chi?u', path: '/phim-bo.html' },
+      { title: 'Phim Lẻ Chiếu Rạp M?i', path: '/phim-le.html' },
+      { title: 'Phim Bộ -ang Chi?u', path: '/phim-bo.html' },
       { title: 'Top Phim H-n Qu?c 2025', path: '/han-quoc.html' },
       { title: 'Phim H-nh -?ng - A Phim', path: '/hanh-dong.html' },
       { title: 'Phim Kinh D? Hay', path: '/kinh-di.html' },
@@ -1430,8 +1433,8 @@ function setVal(id,n,r){if(window._SV)window._SV(id,n,r);}
     <script src="js/premium-ad-blocker.js?v=1"></script>
     <script src="js/auth-modal.js?v=13"></script>
     <script src="js/user-ui.js?v=37"></script>
-    <script src="js/categories-dropdown.js?v=15"></script>
-    <script src="js/countries-dropdown.js?v=15"></script>
+    <script src="js/categories-dropdown.js"></script>
+    <script src="js/countries-dropdown.js"></script>
     <script src="js/dropdown-hover-fix.js"></script>
     <script src="js/sticky-nav.js"></script>
     <script src="js/mobile-menu-modern.js?v=40"></script>

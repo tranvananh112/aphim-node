@@ -11,9 +11,9 @@ const ADMIN_CONFIG = {
 };
 
 // API Configuration
-// ─── RAILWAY BACKEND v3 (e45a) — Deployed 2026-06-01 ───
+// ─── RAILWAY BACKEND v4 (f6a2) — Deployed 2026-06-01 ───
 const BACKEND_OPTIONS = {
-    NEW: 'https://a-phim-production-fb41.up.railway.app',  // ✅ ACTIVE — Railway mới
+    NEW: 'https://a-phim-production-f6a2.up.railway.app',  // ✅ ACTIVE — Railway mới
     OLD: 'https://a-phim-production-fb41.up.railway.app'   // ❌ Expired
 };
 

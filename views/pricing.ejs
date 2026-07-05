@@ -699,7 +699,7 @@
             try {
                 const BACKEND = (typeof API_CONFIG !== 'undefined')
                     ? API_CONFIG.BACKEND_URL
-                    : (location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://a-phim-production-fb41.up.railway.app/api');
+                    : (location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://a-phim-production-f6a2.up.railway.app/api');
                 const paymentRes = await fetch(`${BACKEND}/settings/payment-public`);
                 if (paymentRes.ok) {
                     const data = await paymentRes.json();

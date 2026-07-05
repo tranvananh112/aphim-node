@@ -48,14 +48,14 @@
     <link rel="stylesheet" href="css/mobile-viewport-fix.css?v=36">
     <link rel="stylesheet" href="css/mobile-menu-modern.css?v=38">
     <link rel="stylesheet" href="css/progressive-image.css?v=13">
-    <link rel="stylesheet" href="css/ambient-bg.css?v=13">
+    <link rel="stylesheet" href="css/ambient-bg.css?v=1782358934012">
 
-        <!-- A Phim: Hardcode Dropdown Blue Override inside HTML to bypass all cache/specificity -->
+    <!-- A Phim: Hardcode Dropdown Blue Override inside HTML to bypass all cache/specificity -->
     <style id="dropdown-blue-override">
         @media (min-width: 1024px) {
             nav .relative.group>.absolute.top-full {
-                background-color: #2b3a72 !important;
-                background-image: none !important;
+                background-color: #3d5a96 !important;
+                background-image: linear-gradient(145deg, #3d5a96 0%, #25385e 100%) !important;
                 backdrop-filter: blur(16px) !important;
                 -webkit-backdrop-filter: blur(16px) !important;
                 border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -63,20 +63,24 @@
             }
 
             nav .relative.group>.absolute.top-full a {
-                color: #ffffff !important;
-                font-weight: 700 !important;
-                text-shadow: none !important;
+                color: #eff6ff !important;
+                font-weight: 500 !important;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
             }
 
             nav .relative.group>.absolute.top-full a:hover {
-                color: #ffd700 !important;
-                background-color: rgba(255, 255, 255, 0.08) !important;
-                text-shadow: none !important;
+                color: #f2f20d !important;
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                text-shadow: 0 0 10px rgba(242, 242, 13, 0.5);
+            }
+
+            nav .relative.group>.absolute.top-full * {
+                /* Ensure no child elements are painting a black background covering the blue */
             }
         }
     </style>
 
-    <link rel="stylesheet" href="css/nav-desktop-v2.css?v=18">
+    <link rel="stylesheet" href="css/nav-desktop-v2.css?v=15">
     <link rel="stylesheet" href="css/sticky-nav.css">
 
     <!-- ===== FONTS + ICONS (dong bo tu index.html) ===== -->
@@ -103,7 +107,7 @@
     <!-- Base CSS -->
     <link rel="stylesheet" href="css/tailwind.min.css?v=13">
     <link rel="stylesheet" href="css/design-tokens.css?v=13">
-    <link rel="stylesheet" href="css/ambient-bg.css?v=13">
+    <link rel="stylesheet" href="css/ambient-bg.css?v=1782358934012">
     <link rel="stylesheet" href="css/material-icons-fix.css?v=13">
     <!-- ===== END FONTS ===== -->
     <script src="js/anti-devtools.js?v=10"></script>
@@ -187,7 +191,7 @@
 
                     <!-- Nav Links � flat, no pill -->
                     <nav-links class="flex items-center" style="gap:2px;">
-                        <a href="index.html" class="nav-flat-link active">Trang Ch?</a>
+                        <a href="index.html" class="nav-flat-link active">Trang Chủ</a>
 
                         <!-- Phim Dropdown -->
                         <div class="nav-flat-dropdown">
@@ -196,7 +200,7 @@
                                 <span class="material-icons-round nav-caret">expand_more</span>
                             </button>
                             <div class="nav-dropdown-panel" id="countryDropdown" style="min-width:680px;">
-                                <div class="p-4 text-center text-gray-400 text-sm">�ang t?i...</div>
+                                <div class="p-4 text-center text-gray-400 text-sm">�Đang tải...</div>
                             </div>
                         </div>
 
@@ -208,91 +212,91 @@
                             </button>
                             <div class="nav-dropdown-panel" style="min-width:560px;">
                                 <div
-                                    style="background:#2b3a72;border-radius:12px;padding:6px;border:1px solid rgba(255, 255, 255, 0.15);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
+                                    style="background:linear-gradient(160deg,#1e4d8c 0%,#2563b8 40%,#1a3d7a 100%);border-radius:12px;padding:6px;border:1px solid rgba(59,130,246,0.25);box-shadow:0 20px 50px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);">
                                     <div class="grid grid-cols-3 gap-0">
                                         <a href="danh-sach.html?list=phim-moi"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim
                                             M?i</a>
                                         <a href="danh-sach.html?list=phim-bo"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim
                                             B?</a>
                                         <a href="danh-sach.html?list=phim-le"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim
                                             L?</a>
                                         <a href="danh-sach.html?list=tv-shows"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">TV
                                             Shows</a>
                                         <a href="danh-sach.html?list=hoat-hinh"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Ho?t
                                             H�nh</a>
                                         <a href="danh-sach.html?list=phim-vietsub"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim
                                             Vietsub</a>
                                         <a href="danh-sach.html?list=phim-thuyet-minh"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Thuy?t
                                             Minh</a>
                                         <a href="danh-sach.html?list=phim-long-tien"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">L?ng
                                             Ti?ng</a>
                                         <a href="danh-sach.html?list=phim-bo-dang-chieu"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Phim
                                             B? �ang Chi?u</a>
                                         <a href="danh-sach.html?list=phim-bo-hoan-thanh"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">B?
                                             �� Xong</a>
                                         <a href="danh-sach.html?list=phim-sap-chieu"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;border-right:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">S?p
                                             Chi?u</a>
                                         <a href="danh-sach.html?list=subteam"
-                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
+                                            style="display:flex;align-items:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-size:0.82rem;text-decoration:none;transition:background 0.18s,color 0.18s;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
                                             onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">Subteam</a>
                                         <a href="danh-sach.html?list=phim-chieu-rap"
-                                            style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.88);font-weight:700;font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
-                                            onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';">??
-                                            Phim Chi?u R?p</a>
+                                            style="display:flex;align-items:center;justify-content:center;padding:11px 16px;color:rgba(255,255,255,0.95);font-size:0.82rem;font-weight:700;border-top:1px solid rgba(255,255,255,0.08);text-decoration:none;transition:background 0.18s,color 0.18s;grid-column:span 3;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff';"
+                                            onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.95)';">??
+                                            Phim Chiếu Rạp</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Th? Lo?i Dropdown -->
+                        <!-- Thể Loại Dropdown -->
                         <div class="nav-flat-dropdown">
                             <button class="nav-flat-link" type="button">
-                                Th? Lo?i
+                                Thể Loại
                                 <span class="material-icons-round nav-caret">expand_more</span>
                             </button>
                             <div class="nav-dropdown-panel" id="categoryDropdown" style="min-width:680px;">
-                                <div class="p-4 text-center text-gray-400 text-sm">�ang t?i...</div>
+                                <div class="p-4 text-center text-gray-400 text-sm">�Đang tải...</div>
                             </div>
                         </div>
 
                         <a href="search.html" class="nav-flat-link">Kh�m Ph�</a>
                         <a href="pricing.html" class="nav-flat-link">G�i Cu?c</a>
-                        <a href="phim-x.html" class="nav-flat-link nav-flat-link--danger">?? Phim X</a>
+                        <a href="phim-x.html" class="nav-flat-link nav-flat-link--danger">🔞 Phim X</a>
                     </nav-links>
                 </div>
             </div>
@@ -301,12 +305,12 @@
             <!-- ZONE 3: Right � Auth + Mobile Toggle -->
             <div class="flex items-center gap-3 flex-shrink-0 ml-4">
                 <!-- Auth Container (filled by auth.js / user-ui.js) -->
-                <div id="authContainer" class="flex items-center">
+                <div id="authContainer" class="flex items-center" style="overflow: visible !important;">
                     <a href="login.html"
                         onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
                         class="nav-auth-btn hidden lg:inline-flex">
-                        <span class="material-icons-round" style="font-size:16px;">person</span>
-                        �ang Nh?p
+                        <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
+                        <span class="auth-btn-text">Đăng Nhập</span>
                     </a>
                 </div>
                 <!-- Mobile Menu Button -->
@@ -321,6 +325,8 @@
             <!-- Content will be injected by mobile-menu-simple.js -->
         </div>
     </nav>
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 pt-24 pb-20 min-h-[80vh]">
@@ -332,7 +338,7 @@
                 <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
             </button>
             <h1 class="text-4xl md:text-5xl font-bold mb-4">B? L?c Phim</h1>
-            <p class="text-gray-400 text-lg">Tm phim theo th? lo?i, qu?c gia, nam pht hnh</p>
+            <p class="text-gray-400 text-lg">Tìm phim theo thể loại, quốc gia, năm phát hành</p>
         </div>
 
         <!-- Filter Section -->
@@ -344,29 +350,29 @@
                     <select id="filterList"
                         class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
                         <option value="">-- Ch?n danh s�ch --</option>
-                        <option value="phim-moi-cap-nhat">Phim m?i c?p nh?t</option>
-                        <option value="phim-bo">Phim b?</option>
-                        <option value="phim-le">Phim l?</option>
+                        <option value="phim-moi-cap-nhat">Phim mới c?p nh?t</option>
+                        <option value="phim-bo">Phim bộ</option>
+                        <option value="phim-le">Phim lẻ</option>
                         <option value="hoat-hinh">Ho?t h�nh</option>
                         <option value="tv-shows">TV Shows</option>
                     </select>
                 </div>
 
-                <!-- Th? lo?i -->
+                <!-- Thể loại -->
                 <div>
-                    <label class="block text-sm font-medium mb-2 text-gray-300">Th? lo?i</label>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Thể loại</label>
                     <select id="filterCategory"
                         class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
-                        <option value="">-- Ch?n th? lo?i --</option>
+                        <option value="">-- Chọn thể loại --</option>
                     </select>
                 </div>
 
-                <!-- Qu?c gia -->
+                <!-- Quốc gia -->
                 <div>
-                    <label class="block text-sm font-medium mb-2 text-gray-300">Qu?c gia</label>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Quốc gia</label>
                     <select id="filterCountry"
                         class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
-                        <option value="">-- Ch?n qu?c gia --</option>
+                        <option value="">-- Chọn quốc gia --</option>
                     </select>
                 </div>
 
@@ -375,7 +381,7 @@
                     <label class="block text-sm font-medium mb-2 text-gray-300">Nam ph�t h�nh</label>
                     <select id="filterYear"
                         class="w-full bg-background-dark border border-white/20 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none">
-                        <option value="">-- Ch?n nam --</option>
+                        <option value="">-- Chọn năm --</option>
                     </select>
                 </div>
             </div>
@@ -405,7 +411,7 @@
         <!-- Loading -->
         <div id="loading" class="hidden text-center py-20">
             <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-            <p class="text-gray-400">�ang t?i...im...</p>
+            <p class="text-gray-400">�Đang tải...im...</p>
         </div>
 
         <!-- Movies Grid -->
@@ -435,13 +441,13 @@
     <div class="aphim-inline-ad">
         <span class="aphim-inline-ad-label">Quảng cáo</span>
         <div class="aphim-inline-ad-inner">
-            <a class="aphim-inline-ad-item" href="https://vsbet294.com/p/BSYk" target="_blank" rel="noopener nofollow" aria-label="VSBet">
+            <a class="aphim-inline-ad-item" href="https://vsbet276.com/p/BSYk" target="_blank" rel="noopener nofollow" aria-label="VSBet">
                 <img src="/ads/catfish/vsbet.gif" alt="VSBet" loading="lazy">
             </a>
-            <a class="aphim-inline-ad-item" href="https://colatv99.live/" target="_blank" rel="noopener nofollow" aria-label="ColaTV">
+            <a class="aphim-inline-ad-item" href="https://colatv.live" target="_blank" rel="noopener nofollow" aria-label="ColaTV">
                 <img src="/ads/catfish/colatv.gif" alt="ColaTV" loading="lazy">
             </a>
-            <a class="aphim-inline-ad-item" href="https://colascores.com/" target="_blank" rel="noopener nofollow" aria-label="ColaScore">
+            <a class="aphim-inline-ad-item" href="https://colascores.com" target="_blank" rel="noopener nofollow" aria-label="ColaScore">
                 <img src="/ads/catfish/colascore.gif" alt="ColaScore" loading="lazy">
             </a>
         </div>
@@ -804,8 +810,8 @@
                     <div class="support-icon-wrap">
                         <span class="material-icons">support_agent</span>
                     </div>
-                    <h3 class="support-title">H? tr? tr?c tuy?n</h3>
-                    <p class="support-desc">�?i ngu h? tr? c?a A Phim lu�n s?n s�ng gi?i d�p m?i th?c m?c c?a b?n.</p>
+                    <h3 class="support-title">Hỗ trợ tr?c tuy?n</h3>
+                    <p class="support-desc">�?i ngu hỗ trợ c?a A Phim lu�n s?n s�ng gi?i d�p m?i th?c m?c c?a b?n.</p>
                     <div class="support-info-cards">
                         <div class="support-info-card">
                             <span class="material-icons">schedule</span>
@@ -822,9 +828,9 @@
                     </div>
                     <button class="support-start-btn" id="supportStartTawk">
                         <span class="material-icons">chat</span>
-                        B?t d?u chat h? tr?
+                        B?t d?u chat hỗ trợ
                     </button>
-                    <p class="support-note">Nh?n d? m? c?a s? chat v?i nh�n vi�n h? tr?</p>
+                    <p class="support-note">Nh?n d? m? c?a s? chat v?i nh�n vi�n hỗ trợ</p>
                 </div>
             </div>
         </div>
@@ -873,8 +879,8 @@
 
     <!-- ====== End Chat Widget ====== -->
     <script src="js/nav-active-indicator.js?v=13"></script>
-    <script src="js/countries-dropdown.js?v=15"></script>
-    <script src="js/categories-dropdown.js?v=15"></script>
+    <script src="js/countries-dropdown.js?v=13"></script>
+    <script src="js/categories-dropdown.js"></script>
     <script src="js/dropdown-hover-fix.js"></script>
     <script src="js/sticky-nav.js"></script>
     <script src="js/mobile-menu-modern.js?v=40"></script>
