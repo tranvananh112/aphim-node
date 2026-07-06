@@ -253,3 +253,16 @@ html, body {
     user-select: none !important;
     -webkit-user-drag: none !important;
 }
+
+
+/* Mobile Fix: Ngăn các danh sách lướt ngang bị tràn margin âm (-mx-4) ra ngoài đường ngăn cách trên mobile */
+@media (max-width: 767px) {
+    .overflow-x-auto,
+    .interests-wrapper,
+    #topMoviesContainer,
+    [id*="Container"],
+    .scrollbar-hide {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}

@@ -185,3 +185,12 @@
 .top-movies-section:hover .ranking-nav {
     opacity: 1;
 }
+
+
+/* Mobile Fix: Loại bỏ hiệu ứng so le nghiêng/nhảy cao thấp trên mobile để danh sách thẳng hàng, không bị lệch khỏi đường ngăn cách */
+@media (max-width: 767px) {
+    .ranking-item:nth-child(odd),
+    .ranking-item:nth-child(even) {
+        transform: none !important;
+    }
+}
