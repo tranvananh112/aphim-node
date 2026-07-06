@@ -212,7 +212,7 @@ body { /* removed overscroll-behavior-y to fix desktop wheel */
 .mobile-thumb-wrapper,
 .cat-tab-container,
 .scrollbar-hide {
-    touch-action: pan-y !important;
+    touch-action: pan-x pan-y !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior-x: contain !important;
     scroll-behavior: smooth !important;

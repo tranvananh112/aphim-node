@@ -886,6 +886,62 @@
             observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
+
+    <!-- ====== MOBILE SWIPE GUARD — Phân biệt vuốt ngang vs nhấn chọn ====== -->
+    <script>
+    (function() {
+        var SWIPE_THRESHOLD = 8; // px — nếu ngón tay di chuyển > 8px = đang vuốt, không phải nhấn
+        function initMobileSwipeGuard() {
+            var sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide, #heroThumbnails, .interests-wrapper, .mobile-thumb-wrapper, .cat-tab-container');
+            sliders.forEach(function(slider) {
+                if (slider.getAttribute('data-swipe-guard-attached')) return;
+                slider.setAttribute('data-swipe-guard-attached', 'true');
+                var startX = 0, startY = 0, isSwiping = false;
+                slider.addEventListener('touchstart', function(e) {
+                    if (!e.touches || e.touches.length === 0) return;
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isSwiping = false;
+                    slider.setAttribute('data-swipe', 'pending');
+                }, { passive: true });
+                slider.addEventListener('touchmove', function(e) {
+                    if (!e.touches || e.touches.length === 0) return;
+                    var dx = Math.abs(e.touches[0].clientX - startX);
+                    var dy = Math.abs(e.touches[0].clientY - startY);
+                    if (dx > SWIPE_THRESHOLD || dy > SWIPE_THRESHOLD) {
+                        isSwiping = true;
+                        slider.setAttribute('data-swipe', 'swiping');
+                    }
+                }, { passive: true });
+                slider.addEventListener('touchend', function() {
+                    if (isSwiping) {
+                        slider.setAttribute('data-swipe', 'done');
+                        setTimeout(function() {
+                            slider.removeAttribute('data-swipe');
+                        }, 300);
+                    } else {
+                        slider.removeAttribute('data-swipe');
+                    }
+                    isSwiping = false;
+                }, { passive: true });
+                slider.addEventListener('click', function(e) {
+                    if (slider.getAttribute('data-swipe') === 'done') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }, true);
+            });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileSwipeGuard);
+        } else {
+            initMobileSwipeGuard();
+        }
+        window.initMobileSwipeGuard = initMobileSwipeGuard;
+    })();
+    </script>
+    <!-- ====== End Mobile Swipe Guard ====== -->
+
 </body>
 
 </html>
