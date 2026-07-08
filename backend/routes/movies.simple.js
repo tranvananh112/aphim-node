@@ -26,3 +26,5 @@ router.put('/:id', updateMovie);
 router.delete('/:id', deleteMovie);
 
 module.exports = router;
+
+

@@ -105,3 +105,5 @@ function displaySearchResults(results) {
     // Implement search results dropdown
     // Search results handled elsewhere
 }
+
+

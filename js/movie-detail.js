@@ -189,13 +189,15 @@ function renderMovieDetail(movie) {
     // Update info
     const infoContainer = document.querySelector('.movie-info-container') || document.querySelector('.flex.flex-wrap.items-center.gap-4.mb-8');
     if (infoContainer) {
-        // Nowrap on mobile - text auto shrinks to fit one line
-        infoContainer.className = 'movie-info-container flex flex-nowrap justify-center lg:justify-start items-center gap-x-2 sm:gap-x-3 md:gap-4 mb-6 md:mb-8 text-[11px] sm:text-sm md:text-base overflow-hidden';
+        // Wrap on mobile so badges don't get hidden
+        infoContainer.className = 'movie-info-container flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 md:gap-4 mb-0 md:mb-8 text-[11px] sm:text-sm md:text-base';
 
         const avgRating = ratingService.getAverageRating(movie.slug);
         const ratings = ratingService.getRatings(movie.slug);
 
         infoContainer.innerHTML = `
+            ${movie.tmdb && movie.tmdb.vote_average ? `<span style="background-color: #3f1e00; color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); box-shadow: 0 2px 8px rgba(63, 30, 0, 0.4);" class="px-3 py-1.5 rounded-md text-[13px] font-bold leading-none tracking-wide flex items-center gap-1">IMDb ${movie.tmdb.vote_average}</span>` : ''}
+
             ${movie.type === 'series' || movie.type === 'hoathinh' || movie.type === 'tvshows' ? 
                 `<span style="background-color: #1e3a5f; color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.2); box-shadow: 0 2px 8px rgba(30, 58, 95, 0.4);" class="px-3 py-1.5 rounded-md text-[13px] font-bold leading-none tracking-wide">${movie.type === 'series' ? 'Series' : movie.type === 'hoathinh' ? 'Hoạt hình' : 'TV Shows'}</span>` 
                 : `<span style="background-color: #1e3a5f; color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.2); box-shadow: 0 2px 8px rgba(30, 58, 95, 0.4);" class="px-3 py-1.5 rounded-md text-[13px] font-bold leading-none tracking-wide">Phim Lẻ</span>`}
@@ -1119,3 +1121,5 @@ function showTrailerModal(trailerUrl, movieName) {
 
     document.body.appendChild(modal);
 }
+
+

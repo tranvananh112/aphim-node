@@ -1118,3 +1118,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCategoryBackgrounds();
 });
 
+
+

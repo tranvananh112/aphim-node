@@ -395,3 +395,5 @@ window.addEventListener('hiddenMoviesSynced', () => {
     console.log('Hidden movies synced, re-rendering home sections...');
     loadHomeMovies();
 });
+
+

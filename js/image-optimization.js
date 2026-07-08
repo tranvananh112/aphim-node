@@ -266,3 +266,5 @@ _progressiveMutationObserver.observe(document.body, {
 
 // Legacy mutation observer (kept for backward compatibility)
 const mutationObserver = _progressiveMutationObserver;
+
+

@@ -1,0 +1,159 @@
+/* ==========================================================================
+   A PHIM — Floating Side Dock
+   ========================================================================== */
+
+.floating-dock-container {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    pointer-events: none;
+}
+
+/* ── Scroll To Top Button ── */
+.fd-btn-top {
+    width: 36px;
+    height: 44px;
+    border-radius: 22px 0 0 22px;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.4);
+    margin-right: 0;
+    padding-right: 2px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+.fd-btn-top.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.fd-btn-top:hover {
+    background: #2a2a36;
+}
+
+/* ── The Dock ── */
+.fd-dock {
+    position: relative;
+    pointer-events: auto;
+}
+
+/* ── Collapsed Handle (Pill) ── */
+.fd-handle {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: none;
+    border-radius: 22px 0 0 22px;
+    padding: 10px 4px 10px 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: -4px 4px 16px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(0);
+}
+.fd-handle:hover {
+    background: #1a1a24;
+}
+.fd-dock.expanded .fd-handle {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+}
+
+.fd-indicator {
+    width: 3px;
+    height: 18px;
+    background: #22c55e;
+    border-radius: 4px;
+}
+.fd-handle .material-icons-round {
+    color: #fff;
+    font-size: 20px;
+}
+
+/* ── Expanded Menu ── */
+.fd-menu {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) translateX(120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fd-dock.expanded .fd-menu {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    position: relative;
+}
+
+.fd-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 22px 0 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, filter 0.2s;
+    text-decoration: none;
+}
+.fd-btn:hover {
+    filter: brightness(1.1);
+    transform: translateX(-4px);
+}
+.fd-btn:active {
+    transform: translateX(0);
+}
+
+.fd-btn-chat {
+    background: #f2c94c;
+    color: #1a1200;
+}
+.fd-btn-chat .material-icons-round {
+    font-size: 24px;
+}
+
+.fd-btn-telegram {
+    background: #2AABEE; /* Telegram Blue */
+    color: #fff;
+}
+.fd-btn-telegram svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.fd-btn-close {
+    background: #2d2d38;
+    color: #fff;
+    height: 48px;
+    margin-top: 4px;
+}
+.fd-btn-close .material-icons-round {
+    color: #22c55e;
+    font-size: 26px;
+}

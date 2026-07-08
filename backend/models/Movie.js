@@ -133,3 +133,5 @@ MovieSchema.methods.incrementView = async function () {
 };
 
 module.exports = mongoose.model('Movie', MovieSchema);
+
+

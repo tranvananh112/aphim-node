@@ -40,10 +40,10 @@ const API_CONFIG = {
     BACKEND_URL: chosenBackend + '/api',
 
     // Default Ophim API (primary)
-    OPHIM_URL: 'https://aphim.io.vn/v1/api',
+    OPHIM_URL: 'https://apii.online/v1/api',
 
     // Default Ophim17 API (secondary - more movies)
-    OPHIM17_URL: 'https://ophim17.cc',
+    OPHIM17_URL: 'https://apii.online',
 
     ENDPOINTS: {
         MOVIE_LIST: '/danh-sach/phim-moi-cap-nhat',
@@ -67,11 +67,12 @@ const API_CONFIG = {
 // ─ ─Dynamic Configuration Override ─ 
 // Apply cached config immediately for fast render
 try {
+    localStorage.removeItem('cinestream_public_settings'); // Force clear cache to fix API dead links
     const cachedConfigStr = localStorage.getItem('cinestream_public_settings');
     if (cachedConfigStr) {
         const cachedContent = JSON.parse(cachedConfigStr);
-        if (cachedContent.apiBase) API_CONFIG.OPHIM_URL = cachedContent.apiBase;
-        if (cachedContent.apiSecondary) API_CONFIG.OPHIM17_URL = cachedContent.apiSecondary;
+        // if (cachedContent.apiBase) API_CONFIG.OPHIM_URL = cachedContent.apiBase;
+        // if (cachedContent.apiSecondary) API_CONFIG.OPHIM17_URL = cachedContent.apiSecondary;
         if (typeof cachedContent.enableMultipleSources === 'boolean') API_CONFIG.USE_MULTIPLE_SOURCES = cachedContent.enableMultipleSources;
         if (cachedContent.watermarkUrl) API_CONFIG.WATERMARK_URL = cachedContent.watermarkUrl;
         if (typeof cachedContent.enableWatermark === 'boolean') API_CONFIG.ENABLE_WATERMARK = cachedContent.enableWatermark;
@@ -119,8 +120,8 @@ try {
                 window.dispatchEvent(new CustomEvent('configSynced', { detail: configMap }));
                 
                 // Override runtime values
-                if (configMap.apiBase) API_CONFIG.OPHIM_URL = configMap.apiBase;
-                if (configMap.apiSecondary) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
+                // if (configMap.apiBase) API_CONFIG.OPHIM_URL = configMap.apiBase;
+                // if (configMap.apiSecondary) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
                 if (typeof configMap.enableMultipleSources === 'boolean') API_CONFIG.USE_MULTIPLE_SOURCES = configMap.enableMultipleSources;
                 if (configMap.watermarkUrl) API_CONFIG.WATERMARK_URL = configMap.watermarkUrl;
                 if (typeof configMap.enableWatermark === 'boolean') API_CONFIG.ENABLE_WATERMARK = configMap.enableWatermark;
@@ -478,4 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
 

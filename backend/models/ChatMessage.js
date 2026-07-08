@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const ChatMessageSchema = new mongoose.Schema({
     userId: {
@@ -55,4 +55,6 @@ const ChatMessageSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('ChatMessage', ChatMessageSchema);
+
+
 

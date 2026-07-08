@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <!-- Google Analytics -->
@@ -10,12 +10,12 @@
         gtag('config', 'G-QYK5R13WK2');
     </script>
     <meta charset="UTF-8">
-    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
-    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
-    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta name="description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đang xem phim - Phim X Premium</title>
+    <title>�ang xem phim - Phim X Premium</title>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -394,7 +394,7 @@
     <!-- Loading -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
-        <span class="text-sm text-gray-400 font-medium tracking-wider">CHUẨN BỊ TRÌNH CHIẾU...</span>
+        <span class="text-sm text-gray-400 font-medium tracking-wider">CHU?N B? TR�NH CHI?U...</span>
     </div>
 
     <!-- Header Navbar -->
@@ -408,7 +408,7 @@
         
         <a href="phim-x.html" class="back-btn">
             <span class="material-icons-round text-sm">arrow_back</span>
-            <span>Quay về Danh sách</span>
+            <span>Quay v? Danh s�ch</span>
         </a>
     </header>
 
@@ -428,7 +428,7 @@
             <!-- Details Card -->
             <!-- Ultramodern Detail Container -->
             <div class="meta-layout-clean">
-                <h1 id="movieTitle" class="mv-title">Tải tiêu đề phim...</h1>
+                <h1 id="movieTitle" class="mv-title">T?i ti�u d? phim...</h1>
                 
                 <!-- Top Inline Stats & Feedback Row -->
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:16px;">
@@ -444,7 +444,7 @@
                         </div>
                         <div style="display:flex; align-items:center; gap:6px; cursor:pointer; transition:0.2s;" class="hover:text-white">
                             <span class="material-icons-round" style="font-size:20px;">share</span>
-                            <span style="font-weight:700; font-size:13px; display:none;">Chia sẻ</span>
+                            <span style="font-weight:700; font-size:13px; display:none;">Chia s?</span>
                         </div>
                     </div>
                 </div>
@@ -456,13 +456,13 @@
                         <div>
                             <div style="color:#fff; font-weight:700; font-size:15px;">Phim X Uploader</div>
                             <div style="color:var(--orange); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px;">
-                                <span class="material-icons-round" style="font-size:14px;">verified</span> Đã xác minh
+                                <span class="material-icons-round" style="font-size:14px;">verified</span> �� x�c minh
                             </div>
                         </div>
                     </div>
 
                     <div style="color:#d4d4d8; font-size:14px; line-height:1.6; margin-bottom:16px;" id="videoDescriptionBox">
-                        Đang tổng hợp thông tin...
+                        �ang t?ng h?p th�ng tin...
                     </div>
 
                     <!-- Tags Ecosystem -->
@@ -477,7 +477,7 @@
         <aside class="sidebar-section">
             <h2 class="section-title">
                 <div class="accent-bar"></div>
-                Đề xuất cho bạn
+                �? xu?t cho b?n
             </h2>
             <div class="recommendation-list" id="recList">
                 <!-- Filled Dynamically -->
@@ -511,7 +511,7 @@
 
             // 1. Inject Main Video Data
             document.title = video.title + ' - Phim X Premium';
-            document.getElementById('movieTitle').innerText = video.title || 'Không tên';
+            document.getElementById('movieTitle').innerText = video.title || 'Kh�ng t�n';
             
             // Set up source iframe
             const playerWrapper = document.getElementById('player-wrapper');
@@ -528,9 +528,9 @@
                 playerWrapper.innerHTML = `
                     <div class="w-full h-full flex flex-col items-center justify-center bg-neutral-900 text-center px-6">
                         <span class="material-icons-round text-6xl text-orange-500 mb-4">error_outline</span>
-                        <h3 class="text-xl font-bold text-white mb-2">Không thể nhúng video</h3>
-                        <p class="text-gray-400 mb-6">Nguồn phát này không cho phép xem trực tiếp. Vui lòng nhấn nút bên dưới để xem trên web gốc.</p>
-                        <a href="${video.url}" target="_blank" class="px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl shadow-lg transition-colors">Xem trên Web Gốc</a>
+                        <h3 class="text-xl font-bold text-white mb-2">Kh�ng th? nh�ng video</h3>
+                        <p class="text-gray-400 mb-6">Ngu?n ph�t n�y kh�ng cho ph�p xem tr?c ti?p. Vui l�ng nh?n n�t b�n du?i d? xem tr�n web g?c.</p>
+                        <a href="${video.url}" target="_blank" class="px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl shadow-lg transition-colors">Xem tr�n Web G?c</a>
                     </div>
                 `;
             }
@@ -567,14 +567,14 @@
             
             // Descriptive text generator
             const descTemplate = `
-                Chào mừng bạn đến với chuyên mục Phim X. Video <strong>"${video.title || 'N/A'}"</strong> hiện đang phát sóng với chất lượng Full HD tuyệt hảo, tải liên tục không giật lag. 
-                Thời lượng ${video.duration || 'mới cập nhật'}, thu hút hơn ${video.views || '0'} lượt xem trên nền tảng. Hãy thưởng thức trọn vẹn từng khoảnh khắc!
+                Ch�o m?ng b?n d?n v?i chuy�n m?c Phim X. Video <strong>"${video.title || 'N/A'}"</strong> hi?n dang ph�t s�ng v?i ch?t lu?ng Full HD tuy?t h?o, t?i li�n t?c kh�ng gi?t lag. 
+                Th?i lu?ng ${video.duration || 'm?i c?p nh?t'}, thu h�t hon ${video.views || '0'} lu?t xem tr�n n?n t?ng. H�y thu?ng th?c tr?n v?n t?ng kho?nh kh?c!
             `;
             descEl.innerHTML = descTemplate;
 
             // Dynamic Tag Logic: Pick words from title & generic categories
             const words = (video.title || '').split(' ').filter(w => w.length > 4).slice(0,3);
-            const standardTags = ['18+', 'Phim Mới', 'HOT', 'Full HD', 'Premium'];
+            const standardTags = ['18+', 'Phim M?i', 'HOT', 'Full HD', 'Premium'];
             const combinedTags = [...new Set([...words, ...standardTags])].slice(0, 6);
 
             tagsEl.innerHTML = combinedTags.map(tag => `
@@ -610,7 +610,7 @@
                     `;
                 }).join('');
             } else {
-                recList.innerHTML = '<p class="text-sm text-gray-500 italic p-4">Đang tải dữ liệu liên quan...</p>';
+                recList.innerHTML = '<p class="text-sm text-gray-500 italic p-4">�ang t?i d? li?u li�n quan...</p>';
             }
 
             // Hide loader
@@ -637,6 +637,8 @@
     <script src="js/realtime-sync.js?v=13"></script>
 </body>
 </html>
+
+
 
 
 

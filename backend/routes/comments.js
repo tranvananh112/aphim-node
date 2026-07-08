@@ -21,3 +21,5 @@ router.put('/:id/status', protect, authorize('admin'), updateCommentStatus);
 router.delete('/:id', protect, authorize('admin'), deleteComment);
 
 module.exports = router;
+
+

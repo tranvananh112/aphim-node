@@ -96,3 +96,5 @@ MovieAPI.prototype.fetchWithAuth = async function (url, options = {}) {
         options.priority || 0
     );
 };
+
+

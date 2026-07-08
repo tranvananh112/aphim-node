@@ -40,3 +40,4 @@ const ejsContent = `<!DOCTYPE html>
 </html>`;
 fs.writeFileSync('views/profile.ejs', ejsContent);
 console.log('Successfully updated views/profile.ejs');
+

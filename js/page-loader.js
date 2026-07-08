@@ -35,3 +35,5 @@
     // Fallback: hide after 3 seconds max
     setTimeout(hideLoader, 3000);
 })();
+
+

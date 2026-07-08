@@ -102,3 +102,5 @@ if (document.readyState === 'loading') {
 } else {
     loadCategoriesDropdown();
 }
+
+

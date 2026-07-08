@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Movie Slider - Drag to Scroll + Wheel to Horizontal
  * Works on all horizontal movie sliders across the site
  * Unified: distinguishes drag/swipe vs click for both Mouse and Touch, handles mouseup outside
@@ -8,7 +8,7 @@
 
     const DRAG_THRESHOLD = 8; // px - minimum distance to consider it a drag/swipe
 
-    // ── DRAG & SWIPE TO SCROLL ──
+    // -- DRAG & SWIPE TO SCROLL --
     function initSliderDrag(slider) {
         let isDown = false;
         let startX = 0;
@@ -17,7 +17,7 @@
         let hasDragged = false;
         let lockVertical = false;
 
-        // Quán tính (Inertia)
+        // Qu�n t�nh (Inertia)
         let lastX = 0;
         let lastTime = 0;
         let velocity = 0;
@@ -33,7 +33,7 @@
             lockVertical = false;
             slider.classList.add('active');
 
-            // Tạm thời tắt cuộn mượt và snap-scroll để kéo mượt mà 1:1 theo chuột
+            // T?m th?i t?t cu?n mu?t v� snap-scroll d? k�o mu?t m� 1:1 theo chu?t
             if (!slider.hasAttribute('data-orig-behavior')) slider.setAttribute('data-orig-behavior', slider.style.scrollBehavior); slider.style.scrollBehavior = 'auto';
             if (!slider.hasAttribute('data-orig-snap')) slider.setAttribute('data-orig-snap', slider.style.scrollSnapType); slider.style.scrollSnapType = 'none';
 
@@ -41,7 +41,7 @@
             startY = e.pageY - slider.offsetTop;
             scrollLeft = slider.scrollLeft;
 
-            // Khởi tạo tính toán quán tính
+            // Kh?i t?o t�nh to�n qu�n t�nh
             lastX = e.pageX;
             lastTime = Date.now();
             velocity = 0;
@@ -58,7 +58,7 @@
             slider.classList.remove('active');
             lockVertical = false;
 
-            // Khôi phục thuộc tính CSS ban đầu
+            // Kh�i ph?c thu?c t�nh CSS ban d?u
             slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
             slider.style.scrollSnapType = slider.getAttribute('data-orig-snap') || '';
 
@@ -68,13 +68,13 @@
                     slider.removeAttribute('data-dragged');
                 }, 300);
 
-                // Thực hiện lướt quán tính từ từ mượt mà
+                // Th?c hi?n lu?t qu�n t�nh t? t? mu?t m�
                 if (Math.abs(velocity) > 0.1) {
                     let tempVelocity = velocity;
                     const inertiaStep = function() {
-                        if (isDown) return; // Dừng lại nếu người dùng click/chạm tiếp
+                        if (isDown) return; // D?ng l?i n?u ngu?i d�ng click/ch?m ti?p
 
-                        tempVelocity *= 0.93; // Hệ số ma sát (giảm dần tốc độ)
+                        tempVelocity *= 0.93; // H? s? ma s�t (gi?m d?n t?c d?)
                         if (Math.abs(tempVelocity) < 0.08) return;
 
                         slider.scrollLeft -= tempVelocity * 12;
@@ -93,10 +93,10 @@
             const dx = Math.abs(xVal - startX);
             const dy = Math.abs(yVal - startY);
 
-            // Phân biệt cuộn dọc vs kéo ngang trước khi xác nhận kéo slider
+            // Ph�n bi?t cu?n d?c vs k�o ngang tru?c khi x�c nh?n k�o slider
             if (!hasDragged) {
                 if (dy > dx && dy > 4) {
-                    // Cử chỉ cuộn dọc -> Hủy kéo slider để trang cuộn dọc tự nhiên
+                    // C? ch? cu?n d?c -> H?y k�o slider d? trang cu?n d?c t? nhi�n
                     isDown = false;
                     slider.classList.remove('active');
                     slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
@@ -107,17 +107,17 @@
                     hasDragged = true;
                     lockVertical = true;
                 } else {
-                    return; // Đợi vượt ngưỡng threshold
+                    return; // �?i vu?t ngu?ng threshold
                 }
             }
 
-            e.preventDefault(); // Chặn hành vi kéo thả ảnh/chữ mặc định của trình duyệt
+            e.preventDefault(); // Ch?n h�nh vi k�o th? ?nh/ch? m?c d?nh c?a tr�nh duy?t
 
-            // Di chuyển slider theo tay chuột
+            // Di chuy?n slider theo tay chu?t
             const walk = (xVal - startX) * 1.5;
             slider.scrollLeft = scrollLeft - walk;
 
-            // Tính vận tốc kéo cho quán tính
+            // T�nh v?n t?c k�o cho qu�n t�nh
             const now = Date.now();
             const dt = now - lastTime;
             if (dt > 0) {
@@ -144,7 +144,7 @@
             touchStartY = e.touches[0].clientY;
             touchHasDragged = false;
 
-            // Dừng hoạt động quán tính khi người dùng chạm vào màn hình
+            // D?ng ho?t d?ng qu�n t�nh khi ngu?i d�ng ch?m v�o m�n h�nh
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
@@ -181,7 +181,7 @@
         }, true);
     }
 
-    // ── INIT ALL SLIDERS ──
+    // -- INIT ALL SLIDERS --
     function init() {
         // Select all horizontal sliders/scrollers
         const sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide, #heroThumbnails');
@@ -212,4 +212,6 @@
         init();
     };
 })();
+
+
 

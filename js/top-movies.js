@@ -120,3 +120,5 @@ window.scrollTopMovies = (dir) => {
     const container = document.getElementById('topMoviesContainer');
     if (container) container.scrollBy({ left: dir === 'right' ? 800 : -800, behavior: 'smooth' });
 };
+
+

@@ -29,6 +29,7 @@ class MovieAPI {
     // Wrapper to fetch from primary URL or fallback mirrors on failure (bypasses ISP blocks on 4G)
     async fetchWithFallback(endpoint, options = {}) {
         const bases = [
+            'https://apii.online/v1/api',
             this.ophimURL,
             'https://ophim17.cc/v1/api',
             'https://ophim10.cc/v1/api',
@@ -567,4 +568,6 @@ const movieAPI = new MovieAPI();
 document.addEventListener('DOMContentLoaded', () => {
     movieAPI.injectCanonical();
 });
+
+
 

@@ -15,3 +15,5 @@ const HiddenMovieSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('HiddenMovie', HiddenMovieSchema);
+
+

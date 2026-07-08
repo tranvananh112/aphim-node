@@ -35,3 +35,5 @@ class SimpleCache {
 
 // Export a singleton instance
 module.exports = new SimpleCache();
+
+

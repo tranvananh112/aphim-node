@@ -1,4 +1,4 @@
-﻿const ChatMessage = require('../models/ChatMessage');
+const ChatMessage = require('../models/ChatMessage');
 
 // @desc    Save chat message to MongoDB
 // @route   POST /api/chat/message
@@ -197,8 +197,8 @@ exports.toggleReaction = async (req, res) => {
             message = new ChatMessage({
                 firebaseId,
                 tab: tab || 'general',
-                text: '[Đang đồng bộ...]',
-                user: 'Khách',
+                text: '[�ang d?ng b?...]',
+                user: 'Kh�ch',
                 userId: req.user._id
             });
         }
@@ -227,7 +227,7 @@ exports.toggleReaction = async (req, res) => {
             reactionData.uids.push(uid);
             reactionData.avatars.push(avatar || '');
             if (!reactionData.names) reactionData.names = [];
-            reactionData.names.push(name || req.user.user || 'Khách');
+            reactionData.names.push(name || req.user.user || 'Kh�ch');
         }
 
         // Critical: Tell Mongoose that the Map has changed
@@ -298,4 +298,6 @@ exports.getPinned = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
+
+
 

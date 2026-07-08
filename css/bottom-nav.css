@@ -1,0 +1,545 @@
+/* ============================================================
+   A PHIM — Mobile Bottom Navigation Dock (Premium App Style)
+   SofaFlix / MB Bank inspired — Glassmorphism Floating Pill
+   ============================================================ */
+
+/* ── 1. Body padding để nội dung không bị Bottom Dock che ── */
+@media (max-width: 1023px) {
+    body {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    body > #bottom-nav-dock {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 0 !important;
+    }
+}
+
+/* ── 2. Bottom Nav Dock Container ── */
+#bottom-nav-dock {
+    display: none;
+    position: fixed !important;
+    top: auto !important;
+    bottom: -1px !important; /* Dán sát đáy màn hình */
+    left: 0 !important; /* Dán sát mép trái */
+    right: 0 !important; /* Dán sát mép phải */
+    transform: none !important;
+    -webkit-transform: none !important;
+    width: 100% !important; /* Rộng full 100% màn hình */
+    max-width: 100% !important; /* Bỏ giới hạn độ rộng */
+    height: 70px !important; /* Tăng chiều cao lên một xíu cho đỡ ngộp */
+    min-height: 70px !important;
+    padding-bottom: 0 !important; /* Xóa safe-area để ép sát đáy 100% */
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 24px 24px 0 0 !important; /* Chỉ bo tròn 2 góc trên */
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    z-index: 9500 !important;
+    overflow: visible !important;
+    will-change: transform;
+    padding: 0 4px;
+}
+
+@media (max-width: 1023px) {
+    #bottom-nav-dock {
+        display: flex !important;
+        align-items: stretch !important;
+        margin: 0 !important;
+        padding-top: 0 !important;
+    }
+}
+
+/* ── 3. Tab Items ── */
+.bn-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px 6px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.9); /* Sáng hơn rất nhiều so với 0.6 cũ */
+    text-decoration: none;
+    transition: color 0.2s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: visible;
+    min-width: 0;
+}
+
+.bn-tab:active {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.bn-tab-icon {
+    font-size: 22px !important; /* Giảm size icon xuống một xíu */
+    line-height: 1;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, background 0.2s ease;
+    color: inherit;
+    width: 32px; /* Giảm khung icon xuống để vòng tròn nhỏ lại */
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 0px;
+}
+
+.bn-tab-label {
+    font-size: 10px; /* Thu nhỏ chữ lại một xíu */
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    transition: color 0.2s ease;
+    color: inherit;
+    white-space: nowrap;
+    font-family: 'Be Vietnam Pro', 'Epilogue', sans-serif;
+}
+
+/* ── 4. Active State ── */
+.bn-tab.active {
+    color: rgba(255, 255, 255, 1);
+}
+
+.bn-tab.active .bn-tab-icon {
+    transform: translateY(0);
+    background: #eab308 !important;
+    color: #ffffff !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 4px 14px rgba(234, 179, 8, 0.5);
+}
+
+/* ── Custom: Vòng bao quanh cho icon Lottie Trang chủ ── */
+.bn-tab-center.active .bn-tab-icon {
+    background: transparent !important;
+    border: 2px solid #eab308 !important;
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.4), inset 0 0 8px rgba(234, 179, 8, 0.3) !important;
+}
+
+/* Tab More special */
+.bn-tab-more {
+    color: rgba(255, 255, 255, 0.55);
+}
+.bn-tab-more .bn-tab-icon {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px !important;
+    padding: 0;
+    transition: background 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bn-tab-more.active .bn-tab-icon,
+.bn-tab-more.sheet-open .bn-tab-icon {
+    background: rgba(255, 215, 0, 0.15);
+    color: #FFD700;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+.bn-tab-more.sheet-open {
+    color: #FFD700;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   BOTTOM SHEET GRID MODAL
+   ══════════════════════════════════════════════════════════ */
+
+#bn-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9400;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    transition: background 0.35s ease, visibility 0.35s;
+    visibility: hidden;
+}
+#bn-sheet-overlay.open {
+    background: rgba(0, 0, 0, 0.65);
+    pointer-events: auto;
+    visibility: visible;
+}
+
+#bn-sheet {
+    position: fixed;
+    left: 50%;
+    bottom: 86px;
+    width: calc(100% - 24px);
+    max-width: 420px;
+    z-index: 9450;
+    max-height: calc(85dvh - 86px);
+    max-height: calc(85vh - 86px);
+    background: linear-gradient(180deg, rgba(42, 42, 50, 0.98) 0%, rgba(26, 26, 32, 1) 100%);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, 120%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0.4s;
+    will-change: transform;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+    visibility: hidden;  /* Ẩn hoàn toàn khi chưa open */
+}
+#bn-sheet.open {
+    transform: translate(-50%, 0);
+    visibility: visible;
+}
+
+#bn-sheet::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#bn-sheet-handle {
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    margin: 14px auto 0;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sheet scroll */
+#bn-sheet-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
+}
+#bn-sheet-scroll::-webkit-scrollbar { width: 3px; }
+#bn-sheet-scroll::-webkit-scrollbar-track { background: transparent; }
+#bn-sheet-scroll::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.15); border-radius: 10px; }
+
+/* ══ SofaFlix Sheet Style ══ */
+.bn-sheet-sf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px 0;
+}
+.bn-sheet-sf-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fcd576;
+    letter-spacing: 0.2px;
+}
+.bn-sheet-sf-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Quick nav grid (5 buttons) */
+.bn-sf-quick-nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 16px 8px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bn-sf-quick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    aspect-ratio: 1;
+    padding: 6px 2px;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: background 0.2s;
+    min-width: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+.bn-sf-quick-btn:active { background: rgba(255, 255, 255, 0.15); }
+.bn-sf-quick-btn .material-icons-round { font-size: 22px; }
+.bn-sf-quick-btn span:last-child {
+    font-size: 9px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Menu list */
+.bn-sf-menu-list {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+}
+.bn-sf-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    text-decoration: none;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.bn-sf-list-item:active { background: rgba(255, 255, 255, 0.05); }
+.bn-sf-list-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 15px;
+}
+.bn-sf-icon-wrap {
+    background: rgba(252, 213, 118, 0.15);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fcd576 !important;
+}
+.bn-sf-icon-wrap .material-icons-round { font-size: 18px !important; }
+.bn-sf-list-arrow {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* Accordion */
+.bn-sf-accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+}
+.bn-sf-accordion.active .bn-sf-accordion-body { max-height: 1500px; }
+.bn-sf-accordion.active .bn-sf-list-arrow { transform: rotate(90deg); }
+.bn-sf-sub-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 4px 16px 12px 50px;
+}
+.bn-sub-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 400;
+}
+.bn-sub-item:active { color: #fcd576; }
+
+/* VIP Banner */
+.bn-upgrade-card {
+    background: linear-gradient(135deg, #1f1a04 0%, #0d0b00 100%);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 18px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(255, 215, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    flex-shrink: 0; /* Ngăn chặn việc bị bóp méo chiều cao */
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+.bn-upgrade-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.25) 0%, transparent 60%);
+    pointer-events: none;
+}
+.bn-upgrade-title {
+    font-size: 15px;
+    font-weight: 900;
+    font-style: italic;
+    color: #fff;
+    font-family: 'Epilogue', 'Be Vietnam Pro', sans-serif;
+    text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.bn-upgrade-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 14px;
+}
+.bn-upgrade-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d4af37 100%);
+    color: #3b2a00;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    position: relative;
+    z-index: 1;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+/* Auth Footer */
+.bn-auth-footer {
+    margin-top: 4px;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.bn-auth-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+}
+.bn-auth-btn.login {
+    background: rgba(252, 213, 118, 0.12);
+    border: 1px solid rgba(252, 213, 118, 0.25);
+    color: #fcd576;
+}
+.bn-auth-btn.logout {
+    background: rgba(255, 115, 81, 0.08);
+    border: 1px solid rgba(255, 115, 81, 0.2);
+    color: rgba(255, 115, 81, 0.8);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE TOP HEADER ICONS (Clean 3-icon style)
+   ══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+    /* Ẩn hamburger cũ */
+    #mobileMenuBtn,
+    .mm-burger-btn,
+    .mobile-inline-search {
+        display: none !important;
+    }
+}
+
+/* Nút icon chung */
+.mti-btn {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.18s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    font-family: inherit;
+    border: none;
+    background: transparent;
+}
+.mti-btn:active {
+    transform: scale(0.9);
+}
+.mti-btn .material-icons-round {
+    font-size: 20px !important;
+    line-height: 1;
+}
+
+/* Bell dot */
+.mti-bell {
+    position: relative;
+}
+.mti-bell-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    background: #ff4757;
+    border-radius: 50%;
+    border: 1.5px solid rgba(10, 10, 20, 0.95);
+    display: none;
+}
+.mti-bell-dot.visible { display: block; }
+
+/* ══ Desktop: ẩn tất cả mobile components ══ */
+@media (min-width: 1024px) {
+    #bottom-nav-dock,
+    #bn-sheet,
+    #bn-sheet-overlay,
+    .mti-mobile-only {
+        display: none !important;
+    }
+}

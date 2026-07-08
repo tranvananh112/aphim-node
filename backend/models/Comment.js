@@ -71,3 +71,5 @@ CommentSchema.index({ user: 1 });
 CommentSchema.index({ movieSlug: 1 });
 
 module.exports = mongoose.model('Comment', CommentSchema);
+
+

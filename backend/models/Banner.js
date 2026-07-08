@@ -67,3 +67,5 @@ BannerSchema.index({ isActive: 1, priority: -1 });
 BannerSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Banner', BannerSchema);
+
+

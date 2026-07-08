@@ -312,3 +312,5 @@ class RealtimeSync {
 document.addEventListener('DOMContentLoaded', () => {
     window.rtSync = new RealtimeSync();
 });
+
+

@@ -1,12 +1,12 @@
-﻿/**
+/**
  * A PHIM - Firebase Chat Service (FIXED VERSION)
- * Sử dụng Firestore realtime cho chat cộng đồng
+ * S? d?ng Firestore realtime cho chat c?ng d?ng
  */
 
 (function () {
     'use strict';
 
-    // ── Firebase Config ──────────────────────────────────────────────
+    // -- Firebase Config ----------------------------------------------
     const firebaseConfig = {
         apiKey: "AIzaSyBAcSx1rRMC79-yUz6XINMZOeYuKlNWA00",
         authDomain: "chat-a-phim.firebaseapp.com",
@@ -64,7 +64,7 @@
                 this.db = firebase.firestore();
 
                 this.ready = true;
-                console.log('[APFilmChat] Firebase Firestore initialized ✓');
+                console.log('[APFilmChat] Firebase Firestore initialized ?');
 
                 // Call all waiting callbacks
                 this._onReady.forEach(fn => fn());
@@ -100,7 +100,7 @@
             try {
                 const docRef = await this._msgCol(tab).add({
                     userId: msg.userId || 'guest',
-                    user: msg.user || 'Khách',
+                    user: msg.user || 'Kh�ch',
                     avatar: msg.avatar || '/apple-touch-icon.png',
                     chatRole: msg.chatRole || 'user',
                     frame: msg.frame || '',
@@ -149,7 +149,7 @@
 
                     if (err.code === 'permission-denied') {
                         if (window.showMessage) {
-                            window.showMessage('Lỗi quyền truy cập Firestore', 'error');
+                            window.showMessage('L?i quy?n truy c?p Firestore', 'error');
                         }
                     }
                 });
@@ -277,4 +277,6 @@
 
     window.firebaseChat = new FirebaseChat();
 })();
+
+
 

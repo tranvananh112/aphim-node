@@ -1,7 +1,7 @@
-﻿/**
+/**
  * SYNC FIREBASE MESSAGES TO MONGODB
- * Script này đồng bộ tất cả tin nhắn từ Firebase Firestore vào MongoDB
- * để đảm bảo chức năng pin/delete hoạt động
+ * Script n�y d?ng b? t?t c? tin nh?n t? Firebase Firestore v�o MongoDB
+ * d? d?m b?o ch?c nang pin/delete ho?t d?ng
  */
 
 require('dotenv').config();
@@ -22,7 +22,7 @@ async function syncMessages() {
         // Connect to MongoDB
         const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
         if (!mongoUri) {
-            console.error('❌ MONGODB_URI or MONGO_URI not found in .env file');
+            console.error('? MONGODB_URI or MONGO_URI not found in .env file');
             process.exit(1);
         }
 
@@ -30,14 +30,14 @@ async function syncMessages() {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log('✅ Connected to MongoDB');
+        console.log('? Connected to MongoDB');
 
         const tabs = ['general', 'movies', 'support'];
         let totalSynced = 0;
         let totalSkipped = 0;
 
         for (const tab of tabs) {
-            console.log(`\n📋 Syncing tab: ${tab}`);
+            console.log(`\n?? Syncing tab: ${tab}`);
 
             // Get all messages from Firebase
             const snapshot = await db.collection('chat').doc(tab).collection('messages').get();
@@ -60,7 +60,7 @@ async function syncMessages() {
                     await ChatMessage.create({
                         firebaseId,
                         userId: data.userId || '000000000000000000000000', // Placeholder if missing
-                        user: data.user || 'Khách',
+                        user: data.user || 'Kh�ch',
                         avatar: data.avatar || '/apple-touch-icon.png',
                         chatRole: data.chatRole || 'user',
                         frame: data.frame || '',
@@ -73,22 +73,24 @@ async function syncMessages() {
                     totalSynced++;
                     process.stdout.write('.');
                 } catch (err) {
-                    console.error(`\n   ❌ Error syncing message ${firebaseId}:`, err.message);
+                    console.error(`\n   ? Error syncing message ${firebaseId}:`, err.message);
                 }
             }
         }
 
-        console.log(`\n\n✅ Sync completed!`);
+        console.log(`\n\n? Sync completed!`);
         console.log(`   Synced: ${totalSynced} messages`);
         console.log(`   Skipped: ${totalSkipped} messages (already exist)`);
         console.log(`   Total in MongoDB: ${await ChatMessage.countDocuments()}`);
 
         process.exit(0);
     } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('? Error:', error);
         process.exit(1);
     }
 }
 
 syncMessages();
+
+
 

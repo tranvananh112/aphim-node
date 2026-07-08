@@ -303,3 +303,5 @@ window.addEventListener('hiddenMoviesSynced', () => {
         loadCategoryMovies(currentCategory, currentPage);
     }
 });
+
+

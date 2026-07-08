@@ -32,3 +32,5 @@ router.put('/:id', updateBanner);
 router.delete('/:id', deleteBanner);
 
 module.exports = router;
+
+

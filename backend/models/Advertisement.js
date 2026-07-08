@@ -60,3 +60,5 @@ AdvertisementSchema.methods.getCTR = function () {
 };
 
 module.exports = mongoose.model('Advertisement', AdvertisementSchema);
+
+

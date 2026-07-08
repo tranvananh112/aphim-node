@@ -1,9 +1,9 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const SettingSchema = new mongoose.Schema({
     general: {
         siteName: { type: String, default: 'A Phim' },
-        siteDesc: { type: String, default: 'Nền tảng xem phim trực tuyến hàng đầu Việt Nam' },
+        siteDesc: { type: String, default: 'N?n t?ng xem phim tr?c tuy?n h�ng d?u Vi?t Nam' },
         siteDomain: { type: String, default: 'APhim.vn' },
         siteEmail: { type: String, default: 'admin@APhim.vn' },
         logoUrl: { type: String, default: '../apple-touch-icon.png' },
@@ -28,7 +28,7 @@ const SettingSchema = new mongoose.Schema({
         enablePhimX: { type: Boolean, default: false },
         enableWatermark: { type: Boolean, default: true },
         watermarkUrl: { type: String, default: 'https://ophim1.com/logo.png' },
-        autoplayDelay: { type: String, default: '5 giây' },
+        autoplayDelay: { type: String, default: '5 gi�y' },
         defaultServer: { type: String, default: 'Server #1 (OPhim)' },
         proxyUrl: { type: String, default: '' },
         apiBase: { type: String, default: 'https://ophim1.com/v1/api' },
@@ -68,4 +68,6 @@ const SettingSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Setting', SettingSchema);
+
+
 

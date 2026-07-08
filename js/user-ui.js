@@ -32,7 +32,7 @@ function updateUserUI() {
 
         // 2. Render Avatar với hệ thống Frame (Sử dụng trực tiếp container làm wrap)
         const avatarHtml = `
-        <div class="shop-frame-wrap ${frameClass} size-xs nav-user-avatar-wrap" style="position:relative; flex-shrink:0; overflow: visible !important;">
+        <div class="shop-frame-wrap ${frameClass} size-sm nav-user-avatar-wrap" style="position:relative; flex-shrink:0; overflow: visible !important;">
             <img src="${savedAvatar}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; position:relative; z-index:1;" onerror="this.src='https://ui-avatars.com/api/?name=${user.name}&background=random'"/>
         </div>
     `;
@@ -40,9 +40,9 @@ function updateUserUI() {
         // 2.5 Render Notification Bell (Nâng cấp giao diện Premium)
         const notificationBell = `
             <div class="relative flex items-center" id="navNotificationBtn" style="cursor:pointer; z-index: 60; margin-right: 12px;">
-                <div class="p-2 rounded-full hover:bg-white/10 transition-all active:scale-90 relative">
-                    <span class="material-icons-round text-white text-[22px]">notifications</span>
-                    <span id="navNotifBadge" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#13131f] hidden"></span>
+                <div class="rounded-full hover:bg-white/10 transition-all active:scale-90 relative" style="width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: transparent; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);">
+                    <span class="material-icons-round text-white text-[20px]">notifications</span>
+                    <span id="navNotifBadge" class="absolute bg-red-500 rounded-full border-2 border-[#13131f] hidden" style="top: 8px; right: 8px; width: 10px; height: 10px;"></span>
                 </div>
                 
                 <!-- Notification Panel (Synchronized Premium Aesthetic) -->
@@ -156,13 +156,20 @@ function updateUserUI() {
     } else {
         // CHƯA ĐĂNG NHẬP: Tự động tiêm nút Đăng nhập chuẩn vào container để đồng bộ giao diện Mobile
         const loginBtnHtml = `
-            <a href="/login"
-               onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
-               class="nav-auth-btn" 
-               style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px;">
-                <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
-                <span class="auth-btn-text">Đăng Nhập</span>
-            </a>
+            <div class="flex items-center">
+                <div class="relative flex items-center" style="cursor:pointer; z-index: 60; margin-right: 12px;" onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');}else{alert('Vui lòng đăng nhập để xem thông báo!');}">
+                    <div class="rounded-full hover:bg-white/10 transition-all active:scale-90 relative" style="width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: transparent; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);">
+                        <span class="material-icons-round text-white text-[20px]">notifications</span>
+                    </div>
+                </div>
+                <a href="/login"
+                   onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
+                   class="nav-auth-btn" 
+                   style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px;">
+                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(2.2); margin: 0; padding: 0;" loop autoplay></dotlottie-player>
+                    <span class="auth-btn-text">Đăng Nhập</span>
+                </a>
+            </div>
         `;
         const containers = document.querySelectorAll('#authContainer');
         containers.forEach(container => {
@@ -370,12 +377,6 @@ const TOAST_ICONS = {
                 gap: 0 !important;
                 box-shadow: none !important;
             }
-            /* Longer Search Bar on Mobile */
-            .mobile-inline-search {
-                flex: 1 !important;
-                max-width: 220px !important;
-                margin: 0 10px !important;
-            }
             /* Push Notification Panel lower on Mobile */
             #navNotifPanel {
                 position: fixed !important;
@@ -405,14 +406,15 @@ const TOAST_ICONS = {
                 align-items: center !important;
                 justify-content: center !important;
                 padding: 0 !important;
-                width: 2.25rem !important;
-                height: 2.25rem !important;
+                width: 40px !important;
+                height: 40px !important;
                 min-width: unset !important;
                 gap: 0 !important;
                 position: relative !important;
-                background: rgba(0, 0, 0, 0.4) !important;
-                border: 2px solid #eab308 !important;
+                background: transparent !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
                 border-radius: 50% !important;
+                backdrop-filter: blur(8px) !important;
                 box-shadow: none !important;
                 box-sizing: border-box !important;
             }
@@ -428,18 +430,6 @@ const TOAST_ICONS = {
                 font-size: 1.25rem !important;
                 line-height: 1 !important;
                 color: #eab308 !important;
-            }
-            /* Search bar mở rộng khi button thu nhỏ */
-            .mobile-inline-search,
-            input[placeholder*="Tìm kiếm"],
-            .nav-search-input {
-                flex: 1 !important;
-                max-width: none !important;
-                text-align: left !important;
-            }
-            /* Placeholder text căn trái */
-            input::placeholder {
-                text-align: left !important;
             }
         }
     `;
@@ -851,3 +841,5 @@ document.addEventListener('click', (e) => {
 
 // Initial badge update
 setTimeout(updateNotifBadge, 1500);
+
+

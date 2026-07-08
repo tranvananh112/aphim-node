@@ -15,7 +15,7 @@
     /* FAB - Cố định góc phải dưới */
     .chat-fab {
         position: fixed !important;
-        bottom: 20px !important;
+        bottom: 96px !important;
         right: 20px !important;
         width: 48px !important;
         height: 48px !important;

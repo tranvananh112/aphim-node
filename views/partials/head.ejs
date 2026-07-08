@@ -62,8 +62,8 @@
 <script src="/js/seo-optimizer.js?v=4"></script>
 <script src="/js/auth.js?v=40"></script>
 <script src="/js/premium-ad-blocker.js?v=3"></script>
-<script src="/js/auth-modal.js?v=23"></script>
-<script src="/js/user-ui.js?v=40"></script>
+<script src="/js/auth-modal.js?v=24"></script>
+<script src="/js/user-ui.js?v=43"></script>
 <script src="/js/realtime-sync.js?v=23"></script>
 
 <!-- Navigation CSS -->
@@ -71,7 +71,7 @@
 <link rel="stylesheet" href="/css/navigation-pill-v2.css?v=21">
 <link rel="stylesheet" href="/css/navigation-smooth.css?v=21">
 <link rel="stylesheet" href="/css/sticky-nav.css?v=21">
-<link rel="stylesheet" href="/css/nav-desktop-v2.css?v=22">
+<link rel="stylesheet" href="/css/nav-desktop-v2.css?v=24">
 <link rel="stylesheet" href="/css/material-icons-fix.css?v=21">
 <link rel="stylesheet" href="/css/dropdown-z-index-fix.css?v=21">
 <link rel="stylesheet" href="/css/top-movies.css?v=21">
@@ -88,7 +88,7 @@
 <link rel="stylesheet" href="/css/interests-section.css?v=25">
 <link rel="stylesheet" href="/css/top-comments.css?v=13">
 <link rel="stylesheet" href="/css/mobile-menu-modern.css?v=38">
-<link rel="stylesheet" href="/css/mobile-viewport-fix.css?v=37">
+<link rel="stylesheet" href="/css/mobile-viewport-fix.css?v=39">
 <link rel="stylesheet" href="/css/avatar-frames.css?v=21">
 
 <style>
@@ -148,7 +148,7 @@
 <link rel="stylesheet" href="/css/country-sections.css?v=21">
 
 <!-- Material Icons Loader -->
-<script src="/js/material-icons-loader.js?v=23"></script>
+<script src="/js/material-icons-loader.js?v=24"></script>
 
 <style>
     ::-webkit-scrollbar { width: 8px; }
@@ -257,12 +257,11 @@
 </script>
 <style>
     html.no-splash #splashLoader { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; animation: none !important; }
-    html.no-splash body > *:not(#splashLoader) { opacity: 1 !important; visibility: visible !important; }
     html, body { background-color: #0f1016 !important; }
     #splashLoader { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background-color: #0f1016 !important; background-image: url('https://beam-images.warnermediacdn.com/2026-05/image_3.png?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=2000') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; z-index: 99999 !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 1 !important; visibility: visible !important; transition: opacity 0.5s ease-out, visibility 0.5s ease-out, filter 0.5s ease-out; }
     #splashLoader::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 11, 16, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 0; }
     #splashLoader.splash-fade-out { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; filter: blur(5px); }
-    body:not(.splash-ready)>*:not(#splashLoader) { opacity: 0 !important; visibility: hidden !important; }
+    body:not(.splash-ready)>*:not(#splashLoader):not(#mobileSearchOverlay) { opacity: 0 !important; visibility: hidden !important; }
 </style>
 
 <!-- Splash Loader -->
@@ -323,3 +322,4 @@
 
 <!-- SEO Meta Tags -->
 <link rel="stylesheet" href="/css/touch-speed.css">
+

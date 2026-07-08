@@ -201,3 +201,5 @@ UserSchema.methods.hasActiveSubscription = function () {
 };
 
 module.exports = mongoose.model('User', UserSchema);
+
+

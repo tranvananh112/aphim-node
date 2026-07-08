@@ -1,11 +1,11 @@
-﻿// Register Page Script
+// Register Page Script
 
 // Check if redirected from login page with highlight parameter
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('highlight') === 'true') {
         // Show message
-        showMessage('Vui lòng đăng ký tài khoản thủ công bên dưới', 'info');
+        showMessage('Vui l�ng dang k� t�i kho?n th? c�ng b�n du?i', 'info');
 
         // Wait a bit then scroll and highlight
         setTimeout(() => {
@@ -53,32 +53,32 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
     // Validation
     if (!name || !email || !phone || !password || !confirmPassword) {
-        showMessage('Vui lòng điền đầy đủ thông tin', 'error');
+        showMessage('Vui l�ng di?n d?y d? th�ng tin', 'error');
         return;
     }
 
     if (!validateEmail(email)) {
-        showMessage('Email không hợp lệ', 'error');
+        showMessage('Email kh�ng h?p l?', 'error');
         return;
     }
 
     if (!validatePhone(phone)) {
-        showMessage('Số điện thoại không hợp lệ', 'error');
+        showMessage('S? di?n tho?i kh�ng h?p l?', 'error');
         return;
     }
 
     if (!validatePassword(password)) {
-        showMessage('Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số', 'error');
+        showMessage('M?t kh?u ph?i c� �t nh?t 8 k� t?, bao g?m ch? hoa, ch? thu?ng v� s?', 'error');
         return;
     }
 
     if (password !== confirmPassword) {
-        showMessage('Mật khẩu xác nhận không khớp', 'error');
+        showMessage('M?t kh?u x�c nh?n kh�ng kh?p', 'error');
         return;
     }
 
     if (!terms) {
-        showMessage('Vui lòng đồng ý với điều khoản sử dụng', 'error');
+        showMessage('Vui l�ng d?ng � v?i di?u kho?n s? d?ng', 'error');
         return;
     }
 
@@ -86,13 +86,13 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const result = await authService.register(email, password, name, phone, rememberMe);
 
     if (result.success) {
-        showMessage('Đăng ký thành công!', 'success');
+        showMessage('�ang k� th�nh c�ng!', 'success');
         setTimeout(() => {
             const redirectParam = new URLSearchParams(window.location.search).get('redirect');
             window.location.href = redirectParam ? decodeURIComponent(redirectParam) : 'index.html';
         }, 800);
     } else {
-        showMessage(result.message || 'Đăng ký thất bại', 'error');
+        showMessage(result.message || '�ang k� th?t b?i', 'error');
     }
 });
 
@@ -185,12 +185,12 @@ function showMessage(message, type = 'info') {
 
 // Social login functions
 function loginWithGoogle() {
-    showMessage('Hiện tại chưa hỗ trợ đăng ký bằng Google. Vui lòng đăng ký thủ công bên dưới.', 'error');
+    showMessage('Hi?n t?i chua h? tr? dang k� b?ng Google. Vui l�ng dang k� th? c�ng b�n du?i.', 'error');
     scrollToManualForm();
 }
 
 function loginWithFacebook() {
-    showMessage('Hiện tại chưa hỗ trợ đăng ký bằng Facebook. Vui lòng đăng ký thủ công bên dưới.', 'error');
+    showMessage('Hi?n t?i chua h? tr? dang k� b?ng Facebook. Vui l�ng dang k� th? c�ng b�n du?i.', 'error');
     scrollToManualForm();
 }
 
@@ -269,4 +269,6 @@ document.getElementById('confirmPassword').addEventListener('input', function ()
         this.classList.remove('border-red-500');
     }
 });
+
+
 

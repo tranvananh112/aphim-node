@@ -12,3 +12,5 @@ router.delete('/:id', protect, deleteMessage);
 router.put('/pin/:id', protect, togglePin);
 
 module.exports = router;
+
+

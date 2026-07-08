@@ -34,3 +34,5 @@ router.put('/:id', protect, authorize('admin'), updateMovie);
 router.delete('/:id', protect, authorize('admin'), deleteMovie);
 
 module.exports = router;
+
+

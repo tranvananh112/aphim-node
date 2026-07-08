@@ -59,6 +59,7 @@
    FLOATING ACTION BUTTON
    ============================================ */
 .chat-fab {
+    display: none !important;
     position: fixed !important;
     bottom: 28px !important;
     right: 28px !important;
@@ -71,7 +72,7 @@
     box-sizing: border-box !important;
     background: linear-gradient(135deg, #ffd709 0%, #f59e0b 100%) !important;
     border-radius: 50% !important;
-    display: flex !important;
+    display: none !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;

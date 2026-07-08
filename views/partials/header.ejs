@@ -15,7 +15,8 @@
     <div class="container relative mx-auto px-6 flex items-center justify-between" style="height:56px;">
 
         <!-- ZONE 1: Logo -->
-        <a href="/" class="flex items-center gap-2.5 group flex-shrink-0" style="text-decoration:none;">
+        <div class="flex-1 flex justify-start">
+            <a href="/" class="flex items-center gap-2.5 group flex-shrink-0" style="text-decoration:none;">
             <div
                 class="w-9 h-9 rounded-full border-2 border-primary flex items-center justify-center bg-black/40 group-hover:bg-primary/20 transition-colors duration-300 overflow-hidden">
                 <img src="/apple-touch-icon.png" alt="A Phim Logo"
@@ -27,16 +28,11 @@
                 <span class="text-[9px] text-white/40 uppercase tracking-widest">Cinema</span>
             </div>
         </a>
-
-        <!-- Mobile Inline Search -->
-        <form action="/search" method="GET" class="mobile-inline-search">
-            <span class="material-icons-round mobile-inline-search-icon">search</span>
-            <input type="text" name="q" placeholder="Tìm kiếm phim..." autocomplete="off"
-                class="mobile-inline-search-input">
-        </form>
+        </div>
 
         <!-- ZONE 2: Desktop Search + Links (hidden on mobile) -->
-        <div class="hidden lg:flex items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="white-space: nowrap;">
+        <div class="hidden lg:flex items-center justify-center flex-none mx-4" 
+style="white-space: nowrap;">
             <div id="desktopNavPill" class="desktop-nav-pill">
 
                 <!-- Search Bar -->
@@ -151,20 +147,28 @@
             </div>
         </div>
 
-        <!-- ZONE 3: Right — Auth + Mobile Toggle -->
-        <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+        <!-- ZONE 3: Right — Search + Bell + Auth (Panda) -->
+        <div class="flex-1 flex justify-end">
+            <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+            <!-- Mobile: Search + Bell icons (chỉ hiện trên mobile) -->
+            <div class="flex items-center gap-2.5 lg:hidden">
+                <button id="mtiSearchBtn"
+                    class="mti-btn"
+                    style="width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: transparent; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);"
+                    aria-label="Tìm kiếm">
+                    <span class="material-icons-outlined" style="font-size:20px; color:#eab308;">search</span>
+                </button>
+            </div>
+            <!-- Auth Container: hiện trên cả desktop và mobile -->
             <div id="authContainer" class="flex items-center" style="overflow: visible !important;">
                 <a href="/login"
                     onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
                     class="nav-auth-btn hidden lg:inline-flex">
-                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(1.85); margin: -10px -4px -10px -12px;" loop autoplay></dotlottie-player>
+                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 100%; height: 100%; transform: scale(2.2); margin: 0; padding: 0;" loop autoplay></dotlottie-player>
                     <span class="auth-btn-text">Đăng Nhập</span>
                 </a>
             </div>
-            <!-- Mobile Menu Button -->
-            <button id="mobileMenuBtn" class="lg:hidden text-white p-1">
-                <span class="material-icons-round">menu</span>
-            </button>
+        </div>
         </div>
     </div>
 </nav>
@@ -177,7 +181,7 @@
 <script src="/js/countries-dropdown.js?v=17"></script>
 <script src="/js/dropdown-hover-fix.js?v=15"></script>
 <script src="/js/mobile-menu-modern.js?v=42"></script>
-<script src="/js/nav-instant-suggest.js?v=7"></script>
+<script src="/js/nav-instant-suggest.js?v=8"></script>
 <script src="/js/sticky-nav.js?v=19"></script>
 <script src="/js/nav-active-indicator.js?v=15"></script>
 
@@ -191,3 +195,37 @@
         }
     });
 </script>
+
+<!-- ===== MOBILE SEARCH OVERLAY ===== -->
+<div id="mobileSearchOverlay" style="opacity: 0; visibility: hidden; pointer-events: none;">
+    <div class="mso-header">
+        <div class="mso-input-wrap">
+            <span class="material-icons-round mso-icon-search">search</span>
+            <input type="text" id="msoInput" class="mso-input"
+                placeholder="Tìm kiếm phim, diễn viên..." autocomplete="off" enterkeyhint="search">
+            <button id="msoClearBtn" class="mso-clear-btn" aria-label="Xóa">
+                <span class="material-icons-round" style="font-size:18px;">close</span>
+            </button>
+        </div>
+        <button id="msoCloseBtn" class="mso-close-btn" aria-label="Đóng">
+            <span class="material-icons-round">close</span>
+        </button>
+    </div>
+    
+    <div id="msoResultsArea" class="mso-results-area">
+        <div id="msoResultsHeader" class="mso-results-header">
+            <span>KẾT QUẢ TÌM KIẾM</span>
+            <span id="msoResultsCount">0 phim</span>
+        </div>
+        <div id="msoResultsList" class="mso-results-list">
+            <!-- Search results injected here -->
+        </div>
+        <a href="#" id="msoSeeAll" class="mso-see-all">Xem tất cả kết quả &gt;</a>
+    </div>
+</div>
+
+<!-- ===== BOTTOM NAV JS/CSS ===== -->
+<link rel="stylesheet" href="/css/bottom-nav.css?v=138">
+<link rel="stylesheet" href="/css/mobile-search-overlay.css?v=110">
+<script src="/js/mobile-search-overlay.js?v=111" defer></script>
+<script src="/js/bottom-nav.js?v=135" defer></script>

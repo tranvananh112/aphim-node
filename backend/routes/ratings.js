@@ -12,3 +12,5 @@ router.post('/:movieId', protect, (req, res) => {
 });
 
 module.exports = router;
+
+

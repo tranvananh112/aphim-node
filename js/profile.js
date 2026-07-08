@@ -880,10 +880,6 @@ window.showTab = function (tabName, isInitialOrPop = false) {
         if (sidebar) sidebar.style.display = 'none';
         if (contentHeader) contentHeader.style.display = 'flex';
         
-        // 🚀 NATIVE APP UX: Hide the global main navbar when inside a detailed Sub-Tab
-        // This permanently stops all header collisions and allows the Back Header to sit flush with the Safe Area Notch.
-        if (mainNav) mainNav.style.display = 'none';
-        
         // Ensure hero card (banner) is hidden or smaller on mobile detail view to save space
         const heroCard = document.querySelector('.profile-hero-card');
         if (heroCard) heroCard.style.display = 'none';
@@ -1419,4 +1415,6 @@ window.saveEditProfile = async function() {
 
 // Selection logic is now handled by profile-shop.js to avoid duplication
 // and ensure consistency with the shop logic.
+
+
 

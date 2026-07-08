@@ -273,3 +273,5 @@ async function preloadCriticalData() {
         }
     });
 }
+
+

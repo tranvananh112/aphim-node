@@ -285,3 +285,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initPaymentConfig();   // override PAYMENT_CONFIG + PLANS từ backend
     initPaymentPage();           // render với config mới nhất
 });
+
+

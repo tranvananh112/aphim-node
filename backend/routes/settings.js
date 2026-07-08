@@ -16,3 +16,5 @@ router.route('/')
     .put(protect, authorize('admin'), updateSettings);
 
 module.exports = router;
+
+

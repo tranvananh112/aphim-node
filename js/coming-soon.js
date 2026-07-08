@@ -117,3 +117,5 @@
     // Expose to window
     window.loadComingSoonMovies = loadComingSoonMovies;
 })();
+
+

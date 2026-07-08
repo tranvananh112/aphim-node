@@ -374,8 +374,9 @@
     .nav-auth-btn {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 20px; /* Reduced padding to match nav pill proportionally */
+        gap: 4px;
+        padding: 0 12px; /* Reduce padding for a more compact and rounded look */
+        height: 40px;
         font-size: 0.95rem;
         font-weight: 700;
         letter-spacing: 0.04em;

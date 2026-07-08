@@ -169,3 +169,5 @@ if (document.readyState === 'loading') {
 }
 
 console.log('🚀 Page optimization initialized');
+
+

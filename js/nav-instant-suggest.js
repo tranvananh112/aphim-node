@@ -171,19 +171,38 @@
     }
 
     async function fetchMovies(keyword, limit) {
+        let items = [];
+        const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://ophim1.com/v1/api';
+        const url1 = `${base1}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
+        
         try {
-            const base = getOphimBase();
-            const url = `${base}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
             const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
             const timer = ctrl ? setTimeout(() => ctrl.abort(), 5000) : null;
-            const res = await fetch(url, ctrl ? { signal: ctrl.signal } : {});
+            const res1 = await fetch(url1, ctrl ? { signal: ctrl.signal } : {});
             if (timer) clearTimeout(timer);
-            if (!res.ok) return [];
-            const data = await res.json();
-            return data?.data?.items || [];
-        } catch {
-            return [];
+            const data1 = await res1.json();
+            if (data1 && data1.data && data1.data.items && data1.data.items.length > 0) {
+                return data1.data.items;
+            }
+            throw new Error('Primary API returned empty or failed');
+        } catch (err) {
+            console.warn('Primary API failed, switching to backup API...', err);
+            try {
+                const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://ophim17.cc/v1/api';
+                const url2 = `${base2}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
+                const ctrl2 = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const timer2 = ctrl2 ? setTimeout(() => ctrl2.abort(), 5000) : null;
+                const res2 = await fetch(url2, ctrl2 ? { signal: ctrl2.signal } : {});
+                if (timer2) clearTimeout(timer2);
+                const data2 = await res2.json();
+                if (data2 && data2.data && data2.data.items) {
+                    return data2.data.items;
+                }
+            } catch (backupErr) {
+                console.error('Both APIs failed for search');
+            }
         }
+        return [];
     }
 
     // ── Determine how many results to show based on the input type ──────────────
@@ -330,7 +349,7 @@
             clearTimeout(debounceTimer);
             const v = input.value.trim();
             if (!v || v.length < 2) { hide(); lastKeyword = ''; return; }
-            debounceTimer = setTimeout(() => onKeyword(v), 180);
+            debounceTimer = setTimeout(() => onKeyword(v), 150);
         });
 
         // Re-show panel on focus if there was a previous result
@@ -438,3 +457,5 @@
 
     window.initNavInstantSuggest = init;
 })();
+
+

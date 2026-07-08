@@ -421,3 +421,5 @@ window.showStatDetail = function(type) {
         if (window.lucide) lucide.createIcons();
     }, 300);
 }
+
+

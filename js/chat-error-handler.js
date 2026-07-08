@@ -511,3 +511,5 @@
     window.chatErrorHandler = new ChatErrorHandler();
     console.log('[ChatErrorHandler] Initialized ✓');
 })();
+
+

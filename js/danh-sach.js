@@ -302,3 +302,5 @@ window.addEventListener('hiddenMoviesSynced', () => {
         loadMoviesList(typeParam, pageParam);
     }
 });
+
+

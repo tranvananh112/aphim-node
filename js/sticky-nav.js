@@ -33,45 +33,16 @@
             return;
         }
 
-        // MOBILE: Auto-hide mượt mà khi scroll xuống
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = document.documentElement.clientHeight;
-
-        // Ở đầu trang (nhỏ hơn 10px) - luôn hiện rõ
-        if (scrollTop <= 10) {
-            nav.classList.remove('scrolled', 'nav-hidden');
-            nav.classList.add('nav-visible');
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        }
-        // Tránh hiệu ứng overscroll/bounce ở đáy màn hình
-        else if (scrollTop + clientHeight >= scrollHeight - 40) {
-            lastScrollTop = scrollTop;
-        }
-        else {
+        // MOBILE: Tắt auto-hide, luôn hiển thị
+        if (scrollTop > 5) {
             nav.classList.add('scrolled');
-            
-            // Tính toán khoảng cách (delta) từ lần đánh dấu cuối cùng
-            const delta = scrollTop - lastScrollTop;
-
-            // Nếu cuộn đủ một đoạn (ví dụ > 10px) thì mới quyết định ẩn hay hiện
-            if (Math.abs(delta) >= 12) {
-                if (delta > 0 && scrollTop > hideThreshold) {
-                    // Kéo XUỐNG -> ẨN
-                    if (!nav.classList.contains('nav-hidden')) {
-                        nav.classList.add('nav-hidden');
-                        nav.classList.remove('nav-visible');
-                    }
-                } else if (delta < 0) {
-                    // Kéo LÊN -> HIỆN
-                    if (!nav.classList.contains('nav-visible')) {
-                        nav.classList.add('nav-visible');
-                        nav.classList.remove('nav-hidden');
-                    }
-                }
-                // Chỉ cập nhật mốc lastScrollTop khi đã cuộn đủ xa và xử lý xong
-                lastScrollTop = scrollTop;
-            }
+        } else {
+            nav.classList.remove('scrolled');
         }
+        
+        nav.classList.remove('nav-hidden');
+        nav.classList.add('nav-visible');
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
         ticking = false;
     }
@@ -171,3 +142,5 @@
         _resizeTimer = setTimeout(initDropdownDim, 200);
     }, { passive: true });
 })();
+
+

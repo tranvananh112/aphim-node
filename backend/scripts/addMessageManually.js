@@ -1,6 +1,6 @@
-﻿/**
+/**
  * ADD MESSAGE MANUALLY TO MONGODB
- * Script này thêm tin nhắn thủ công vào MongoDB để test chức năng pin
+ * Script n�y th�m tin nh?n th? c�ng v�o MongoDB d? test ch?c nang pin
  */
 
 require('dotenv').config();
@@ -13,7 +13,7 @@ async function addMessage() {
         // Connect to MongoDB
         const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
         if (!mongoUri) {
-            console.error('❌ MONGODB_URI or MONGO_URI not found in .env file');
+            console.error('? MONGODB_URI or MONGO_URI not found in .env file');
             process.exit(1);
         }
 
@@ -21,7 +21,7 @@ async function addMessage() {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log('✅ Connected to MongoDB');
+        console.log('? Connected to MongoDB');
 
         // Get command line arguments
         const firebaseId = process.argv[2];
@@ -29,12 +29,12 @@ async function addMessage() {
         const tab = process.argv[4] || 'general';
 
         if (!firebaseId) {
-            console.log('\n📋 USAGE: node addMessageManually.js <FIREBASE_ID> [TEXT] [TAB]');
-            console.log('📋 Example: node addMessageManually.js 97ol3w4U1bmPHwgUcX4D "Hello World" general\n');
+            console.log('\n?? USAGE: node addMessageManually.js <FIREBASE_ID> [TEXT] [TAB]');
+            console.log('?? Example: node addMessageManually.js 97ol3w4U1bmPHwgUcX4D "Hello World" general\n');
 
             // Show existing messages
             const messages = await ChatMessage.find().limit(5).sort('-createdAt');
-            console.log('📋 Recent messages in MongoDB:');
+            console.log('?? Recent messages in MongoDB:');
             messages.forEach(m => {
                 console.log(`   - ${m.text.substring(0, 50)} | Firebase ID: ${m.firebaseId} | Tab: ${m.tab}`);
             });
@@ -45,7 +45,7 @@ async function addMessage() {
         // Check if message already exists
         const existing = await ChatMessage.findOne({ firebaseId });
         if (existing) {
-            console.log('⚠️  Message already exists in MongoDB:');
+            console.log('??  Message already exists in MongoDB:');
             console.log(`   Text: ${existing.text}`);
             console.log(`   User: ${existing.user}`);
             console.log(`   Tab: ${existing.tab}`);
@@ -59,7 +59,7 @@ async function addMessage() {
         const admin = await User.findOne({ $or: [{ role: 'admin' }, { chatRole: 'admin' }] });
 
         if (!admin) {
-            console.log('❌ No admin user found. Please create an admin first.');
+            console.log('? No admin user found. Please create an admin first.');
             process.exit(1);
         }
 
@@ -77,23 +77,25 @@ async function addMessage() {
             isPinned: false
         });
 
-        console.log('\n✅ Message added successfully!');
+        console.log('\n? Message added successfully!');
         console.log(`   Text: ${message.text}`);
         console.log(`   User: ${message.user}`);
         console.log(`   Tab: ${message.tab}`);
         console.log(`   Firebase ID: ${message.firebaseId}`);
         console.log(`   MongoDB ID: ${message._id}`);
-        console.log('\n📌 You can now pin this message using:');
+        console.log('\n?? You can now pin this message using:');
         console.log(`   PUT http://localhost:5000/api/chat/pin/${message.firebaseId}`);
         console.log(`   OR`);
         console.log(`   PUT http://localhost:5000/api/chat/pin/${message._id}`);
 
         process.exit(0);
     } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('? Error:', error);
         process.exit(1);
     }
 }
 
 addMessage();
+
+
 

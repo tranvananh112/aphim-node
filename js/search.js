@@ -508,3 +508,5 @@ window.addEventListener('hiddenMoviesSynced', () => {
         performSearch();
     }
 });
+
+

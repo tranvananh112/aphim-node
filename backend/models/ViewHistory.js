@@ -58,3 +58,5 @@ ViewHistorySchema.methods.updateProgress = function () {
 };
 
 module.exports = mongoose.model('ViewHistory', ViewHistorySchema);
+
+

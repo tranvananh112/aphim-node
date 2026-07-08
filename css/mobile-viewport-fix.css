@@ -328,8 +328,8 @@ select option {
         align-items: center !important;
         justify-content: center !important;
         padding: 0 !important;
-        width: 2.25rem !important;
-        height: 2.25rem !important;
+        width: 40px !important;
+        height: 40px !important;
         background: rgba(0, 0, 0, 0.4) !important; /* Đen mờ giống logo */
         border: 2px solid #eab308 !important; /* Viền vàng */
         border-radius: 50% !important;
@@ -372,15 +372,25 @@ select option {
 
 /* Các tùy chỉnh cụ thể riêng cho mobile (dưới 768px) */
 @media (max-width: 768px) {
-    /* 1. ẨN HOÀN TOÀN PHẦN CHỮ CỦA LOGO trên màn hình nhỏ */
+    /* Ép header phải trong suốt hoàn toàn không có nền đen */
+    nav#mainNav, header {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    /* 1. Bỏ ẩn chữ Logo trên màn hình nhỏ theo yêu cầu */
     .flex-col.leading-none {
-        display: none !important;
+        display: flex !important;
+        margin-left: 6px !important; /* Thêm khoảng thở cho logo và chữ */
     }
     
-    /* Logo group giờ chỉ có ảnh, remove gap */
+    /* Logo group khôi phục khoảng cách mặc định */
     a.group.flex-shrink-0.flex.items-center,
     a[href="index.html"].group {
-        gap: 0 !important;
+        gap: 8px !important; /* Đặt lại gap thay vì 0 */
     }
 }
 

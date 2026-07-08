@@ -415,3 +415,5 @@
         console.log('Modal data reset. Reload page to see modal.');
     };
 })();
+
+

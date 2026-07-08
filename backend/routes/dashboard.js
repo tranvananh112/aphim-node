@@ -10,3 +10,5 @@ router.use(authorize('admin'));
 router.get('/stats', getDashboardStats);
 
 module.exports = router;
+
+

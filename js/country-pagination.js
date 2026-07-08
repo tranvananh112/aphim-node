@@ -277,3 +277,5 @@ window.addEventListener('hiddenMoviesSynced', () => {
         loadCountryMovies(currentCountry, currentCountryName, currentPage);
     }
 });
+
+

@@ -1,4 +1,4 @@
-﻿const Setting = require('../models/Setting');
+const Setting = require('../models/Setting');
 const cache = require('../utils/cache');
 
 // Helper to ensure a single settings document exists
@@ -49,7 +49,7 @@ exports.updateSettings = async (req, res) => {
 
         
                 cache.del('public_settings');
-        res.json({ success: true, data: settings, message: 'Lưu cấu hình thành công' });
+        res.json({ success: true, data: settings, message: 'Luu c?u h�nh th�nh c�ng' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -59,11 +59,11 @@ exports.updateSettings = async (req, res) => {
 // @route   GET /api/settings/public
 // @access  Public
 exports.getPublicSettings = async (req, res) => {
-    // Safe defaults — returned even when DB is unreachable so frontend never breaks
+    // Safe defaults � returned even when DB is unreachable so frontend never breaks
     const defaults = {
         general: {
             siteName: 'A Phim',
-            siteDesc: 'Nền tảng xem phim trực tuyến hàng đầu Việt Nam',
+            siteDesc: 'N?n t?ng xem phim tr?c tuy?n h�ng d?u Vi?t Nam',
             siteDomain: 'APhim.vn',
             logoUrl: '../apple-touch-icon.png',
             faviconUrl: '../apple-touch-icon.png',
@@ -77,7 +77,7 @@ exports.getPublicSettings = async (req, res) => {
             apiSecondary: 'https://ophim17.cc',
             enableMultipleSources: false,
             defaultServer: 'Server #1 (OPhim)',
-            autoplayDelay: '5 giây',
+            autoplayDelay: '5 gi�y',
             categoryBackgrounds: {
                 "danh-sach/phim-bo": "",
                 "danh-sach/phim-moi-cap-nhat": "",
@@ -122,12 +122,12 @@ exports.getPublicSettings = async (req, res) => {
             }
         };
 
-        // Lưu cache 5 phút
+        // Luu cache 5 ph�t
         cache.set('public_settings', publicData, 300);
         res.json({ success: true, data: publicData });
     } catch (error) {
         // Graceful degradation: return defaults so frontend config.js never crashes
-        console.error('Settings/public fetch error – returning defaults:', error.message);
+        console.error('Settings/public fetch error � returning defaults:', error.message);
         res.json({ success: true, data: defaults });
     }
 };
@@ -163,12 +163,14 @@ exports.getPaymentPublic = async (req, res) => {
                 bankOwner:        p.bankOwner         ?? defaults.bankOwner,
                 bankAccount:      p.bankAccount       ?? defaults.bankAccount,
                 momoPhone:        p.momoPhone         ?? defaults.momoPhone
-                // vnPayKey và zaloPayKey bị ẩn chủ động (sensitive)
+                // vnPayKey v� zaloPayKey b? ?n ch? d?ng (sensitive)
             }
         });
     } catch (error) {
-        console.error('Payment/public fetch error – returning defaults:', error.message);
+        console.error('Payment/public fetch error � returning defaults:', error.message);
         res.json({ success: true, data: defaults });
     }
 };
+
+
 

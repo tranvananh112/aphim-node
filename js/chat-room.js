@@ -1,6 +1,6 @@
-﻿/**
+/**
  * A PHIM - Chat Widget Controller  v3.5  (Firebase Realtime + MongoDB Sync)
- * Flow: Welcome → Chat Room (Firestore realtime)
+ * Flow: Welcome ? Chat Room (Firestore realtime)
  */
 
 class APFilmChat {
@@ -19,12 +19,12 @@ class APFilmChat {
         this._defaultH = 600;
 
         this.emojis = [
-            '😀', '😄', '😆', '😅', '😂', '🤣', '😊', '😇',
-            '🥰', '😍', '🤩', '😘', '😋', '😎', '🤓', '🥳',
-            '😏', '😒', '😞', '😔', '😢', '😭', '😤', '😡',
-            '👍', '👎', '👏', '🙌', '🤝', '💪', '❤️', '🔥',
-            '⭐', '🎬', '🍿', '🎭', '🎥', '📽️', '🎞️', '🎉',
-            '🤔', '💯', '✅', '❌', '🔴', '🟡', '🟢', '✨',
+            '??', '??', '??', '??', '??', '??', '??', '??',
+            '??', '??', '??', '??', '??', '??', '??', '??',
+            '??', '??', '??', '??', '??', '??', '??', '??',
+            '??', '??', '??', '??', '??', '??', '??', '??',
+            '?', '??', '??', '??', '??', '???', '???', '??',
+            '??', '??', '?', '?', '??', '??', '??', '?',
         ];
 
         this.reactionsCache = {}; // Local cache for MongoDB reactions (Persistence Fallback)
@@ -101,7 +101,7 @@ class APFilmChat {
                     this.isBanned = await window.firebaseChat.isBanned(this.user.id);
                     if (this.isBanned) {
                         if (this.el.messageInput) {
-                            this.el.messageInput.placeholder = 'Tài khoản đã bị cấm chat.';
+                            this.el.messageInput.placeholder = 'T�i kho?n d� b? c?m chat.';
                             this.el.messageInput.disabled = true;
                         }
                         if (this.el.sendBtn) this.el.sendBtn.disabled = true;
@@ -112,7 +112,7 @@ class APFilmChat {
             // Listen for login success event
             this._setupLoginListener();
 
-            console.log('[APFilmChat] Community Chat initialized successfully ✓');
+            console.log('[APFilmChat] Community Chat initialized successfully ?');
         } catch (err) {
             console.error('[APFilmChat] Initialization failed:', err);
         }
@@ -151,26 +151,26 @@ class APFilmChat {
             menu.style.zIndex = '999999';
             menu.innerHTML = `
                 <div class="reaction-bubble">
-                    <span class="react-emoji" data-emoji="❤️">❤️</span>
-                    <span class="react-emoji" data-emoji="😍">😍</span>
-                    <span class="react-emoji" data-emoji="👍">👍</span>
-                    <span class="react-emoji" data-emoji="🔥">🔥</span>
-                    <span class="react-emoji" data-emoji="👏">👏</span>
-                    <span class="react-emoji" data-emoji="😂">😂</span>
-                    <span class="react-emoji" data-emoji="😮">😮</span>
-                    <span class="react-emoji" data-emoji="😢">😢</span>
-                    <span class="react-emoji" data-emoji="💯">💯</span>
-                    <span class="react-emoji" data-emoji="🎉">🎉</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
+                    <span class="react-emoji" data-emoji="??">??</span>
                 </div>
                 <div class="menu-items-container">
-                    <div class="menu-item" id="ctxReply"><span class="material-icons">reply</span> <span>Trả lời</span></div>
-                    <div class="menu-item" id="ctxForward"><span class="material-icons">forward</span> <span>Chuyển tiếp</span></div>
-                    <div class="menu-item" id="ctxCopy"><span class="material-icons">content_copy</span> <span>Sao chép</span></div>
-                    <div class="menu-item" id="ctxSelect"><span class="material-icons">check_circle</span> <span>Chọn nhiều</span></div>
-                    <div class="menu-item" id="ctxPin" style="display: none;"><span class="material-icons">push_pin</span> <span>Ghim tin nhắn</span></div>
+                    <div class="menu-item" id="ctxReply"><span class="material-icons">reply</span> <span>Tr? l?i</span></div>
+                    <div class="menu-item" id="ctxForward"><span class="material-icons">forward</span> <span>Chuy?n ti?p</span></div>
+                    <div class="menu-item" id="ctxCopy"><span class="material-icons">content_copy</span> <span>Sao ch�p</span></div>
+                    <div class="menu-item" id="ctxSelect"><span class="material-icons">check_circle</span> <span>Ch?n nhi?u</span></div>
+                    <div class="menu-item" id="ctxPin" style="display: none;"><span class="material-icons">push_pin</span> <span>Ghim tin nh?n</span></div>
                     <div class="menu-separator" id="ctxDangerSep" style="display: none;"></div>
-                    <div class="menu-item danger" id="ctxBan" style="display: none;"><span class="material-icons">block</span> <span>Chặn người dùng</span></div>
-                    <div class="menu-item danger" id="ctxDelete" style="display: none;"><span class="material-icons">delete</span> <span>Xóa tin nhắn</span></div>
+                    <div class="menu-item danger" id="ctxBan" style="display: none;"><span class="material-icons">block</span> <span>Ch?n ngu?i d�ng</span></div>
+                    <div class="menu-item danger" id="ctxDelete" style="display: none;"><span class="material-icons">delete</span> <span>X�a tin nh?n</span></div>
                 </div>
             `;
             document.body.appendChild(menu);
@@ -196,7 +196,7 @@ class APFilmChat {
             }
         }
 
-        // 🔄 AUTOMATIC MODERNIZATION UPGRADE CHECK:
+        // ?? AUTOMATIC MODERNIZATION UPGRADE CHECK:
         // If we detect a legacy hardcoded chat UI implementation (which lacks critical modern features like the
         // Avatar Main component or Pinned Message slots), we programmatically purge the obsolete nodes
         // so the script can dynamically inject the 100% correct master Telegram widget instead.
@@ -219,7 +219,7 @@ class APFilmChat {
         }
 
         const html = `
-            <button id="chatFab" class="chat-fab" aria-label="Mở chat cộng đồng" title="Chat Cộng Đồng">
+            <button id="chatFab" class="chat-fab" aria-label="M? chat c?ng d?ng" title="Chat C?ng �?ng">
                 <span class="fab-icon material-icons">forum</span>
                 <span class="chat-fab-badge" id="chatFabBadge">0</span>
             </button>
@@ -231,10 +231,10 @@ class APFilmChat {
                             <img src="/apple-touch-icon.png" alt="A" id="headerGroupAvatar">
                         </div>
                         <div class="chat-header-text">
-                            <div class="chat-header-title">Cộng Đồng A Phim</div>
+                            <div class="chat-header-title">C?ng �?ng A Phim</div>
                             <div class="chat-header-status">
                                 <span class="online-dot"></span>
-                                <span class="chat-header-online-text" id="headerOnlineCount">... người trực tuyến</span>
+                                <span class="chat-header-online-text" id="headerOnlineCount">... ngu?i tr?c tuy?n</span>
                             </div>
                         </div>
                     </div>
@@ -245,11 +245,11 @@ class APFilmChat {
                                 <div class="pinned-user" id="pinnedBannerUser">Pinned Message</div>
                                 <div class="pinned-text" id="pinnedBannerText">...</div>
                             </div>
-                            <button class="pinned-close-btn" id="unpinBtn" title="Bỏ ghim"><span class="material-icons">close</span></button>
+                            <button class="pinned-close-btn" id="unpinBtn" title="B? ghim"><span class="material-icons">close</span></button>
                         </div>
-                        <button class="chat-header-btn" id="chatSearchBtn" title="Tìm kiếm"><span class="material-icons">search</span></button>
-                        <button class="chat-header-btn" id="chatMinimizeBtn" title="Thu nhỏ"><span class="material-icons">remove</span></button>
-                        <button class="chat-header-btn" id="chatCloseBtn" title="Đóng"><span class="material-icons">close</span></button>
+                        <button class="chat-header-btn" id="chatSearchBtn" title="T�m ki?m"><span class="material-icons">search</span></button>
+                        <button class="chat-header-btn" id="chatMinimizeBtn" title="Thu nh?"><span class="material-icons">remove</span></button>
+                        <button class="chat-header-btn" id="chatCloseBtn" title="��ng"><span class="material-icons">close</span></button>
                     </div>
                 </div>
 
@@ -271,20 +271,20 @@ class APFilmChat {
                             <img src="/apple-touch-icon.png" alt="A Phim" style="width:42px;height:42px;object-fit:contain;">
                         </div>
                         <div>
-                            <h2 class="welcome-title">Chào mừng đến <span>Kênh A Phim</span></h2>
-                            <p class="welcome-desc" style="margin-top:8px;">Kết nối, thảo luận và tận hưởng điện ảnh cùng hàng ngàn tín đồ phim ảnh.</p>
+                            <h2 class="welcome-title">Ch�o m?ng d?n <span>K�nh A Phim</span></h2>
+                            <p class="welcome-desc" style="margin-top:8px;">K?t n?i, th?o lu?n v� t?n hu?ng di?n ?nh c�ng h�ng ng�n t�n d? phim ?nh.</p>
                         </div>
                         <div class="welcome-stats">
-                            <div class="welcome-stat"><div class="welcome-stat-num" id="welcomeOnline">1,284</div><div class="welcome-stat-label">Trực tuyến</div></div>
-                            <div class="welcome-stat"><div class="welcome-stat-num">50K+</div><div class="welcome-stat-label">Thành viên</div></div>
-                            <div class="welcome-stat"><div class="welcome-stat-num">24/7</div><div class="welcome-stat-label">Hoạt động</div></div>
+                            <div class="welcome-stat"><div class="welcome-stat-num" id="welcomeOnline">1,284</div><div class="welcome-stat-label">Tr?c tuy?n</div></div>
+                            <div class="welcome-stat"><div class="welcome-stat-num">50K+</div><div class="welcome-stat-label">Th�nh vi�n</div></div>
+                            <div class="welcome-stat"><div class="welcome-stat-num">24/7</div><div class="welcome-stat-label">Ho?t d?ng</div></div>
                         </div>
                         <div class="welcome-features">
-                            <div class="welcome-feature"><span class="material-icons">movie</span><div class="welcome-feature-text"><strong>Thảo luận phim</strong><span>Review, rating và khám phá phim mới</span></div></div>
-                            <div class="welcome-feature"><span class="material-icons">groups</span><div class="welcome-feature-text"><strong>Cộng đồng sôi nổi</strong><span>Kết nối với người xem cùng sở thích</span></div></div>
-                            <div class="welcome-feature"><span class="material-icons">bolt</span><div class="welcome-feature-text"><strong>Chat thời gian thực</strong><span>Nhắn tin ngay lập tức, không độ trễ</span></div></div>
+                            <div class="welcome-feature"><span class="material-icons">movie</span><div class="welcome-feature-text"><strong>Th?o lu?n phim</strong><span>Review, rating v� kh�m ph� phim m?i</span></div></div>
+                            <div class="welcome-feature"><span class="material-icons">groups</span><div class="welcome-feature-text"><strong>C?ng d?ng s�i n?i</strong><span>K?t n?i v?i ngu?i xem c�ng s? th�ch</span></div></div>
+                            <div class="welcome-feature"><span class="material-icons">bolt</span><div class="welcome-feature-text"><strong>Chat th?i gian th?c</strong><span>Nh?n tin ngay l?p t?c, kh�ng d? tr?</span></div></div>
                         </div>
-                        <button class="welcome-start-btn" id="welcomeStartBtn">Bắt đầu chat ngay <span class="material-icons">arrow_forward</span></button>
+                        <button class="welcome-start-btn" id="welcomeStartBtn">B?t d?u chat ngay <span class="material-icons">arrow_forward</span></button>
                     </div>
 
                     <!-- SCREEN: CHAT ROOM -->
@@ -296,9 +296,9 @@ class APFilmChat {
                     <div class="chat-screen chat-screen-support" id="screenSupport">
                         <div class="support-inner">
                             <div class="support-icon-wrap"><span class="material-icons">support_agent</span></div>
-                            <h3 class="support-title">Hỗ trợ trực tuyến</h3>
-                            <p class="support-desc">Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7.</p>
-                            <button class="support-start-btn" id="supportStartTawk">Bắt đầu chat hỗ trợ</button>
+                            <h3 class="support-title">H? tr? tr?c tuy?n</h3>
+                            <p class="support-desc">Ch�ng t�i lu�n s?n s�ng h? tr? b?n 24/7.</p>
+                            <button class="support-start-btn" id="supportStartTawk">B?t d?u chat h? tr?</button>
                         </div>
                     </div>
                 </div>
@@ -306,11 +306,11 @@ class APFilmChat {
                 <div class="chat-input-area" id="chatInputArea" style="display: none;">
                     <div class="chat-tabs-bar">
                         <button class="chat-tab active" data-tab="general">Chung</button>
-                        <button class="chat-tab tab-disabled" data-tab="movies" disabled title="Tính năng đang được nâng cấp">
+                        <button class="chat-tab tab-disabled" data-tab="movies" disabled title="T�nh nang dang du?c n�ng c?p">
                             <span class="material-icons" style="font-size: 14px;">construction</span>
                             Phim
                         </button>
-                        <button class="chat-tab" data-tab="support">Hỗ trợ</button>
+                        <button class="chat-tab" data-tab="support">H? tr?</button>
                     </div>
                     <div class="chat-input-prefix" id="inputPrefix" style="display: none;">
                         <div class="prefix-icon"><span class="material-icons" id="prefixIcon">reply</span></div>
@@ -334,16 +334,16 @@ class APFilmChat {
                     <div class="input-row">
                         <button class="input-icon-btn" id="emojiToggleBtn"><span class="material-icons">mood</span></button>
                         <div class="message-input-wrapper">
-                            <textarea id="chatMessageInput" placeholder="Viết tin nhắn..." rows="1" maxlength="1000"></textarea>
+                            <textarea id="chatMessageInput" placeholder="Vi?t tin nh?n..." rows="1" maxlength="1000"></textarea>
                         </div>
                         <button class="send-btn" id="chatSendBtn" disabled><span class="material-icons">send</span></button>
                     </div>
                     <div class="input-footer" id="inputFooter" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 0;">
                         <div class="current-user-tag" id="currentUserTag" style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--c-text-dim);">
                             <div class="current-user-avatar" id="currentUserAvatar" style="width: 24px; height: 24px; flex-shrink: 0;"></div>
-                            <span class="current-user-name" id="currentUserName">Khách</span>
+                            <span class="current-user-name" id="currentUserName">Kh�ch</span>
                         </div>
-                        <a class="change-name-link" id="changeNameLink" style="font-size: 11px; color: var(--c-text-faint); cursor: pointer; text-decoration: underline;">Đổi tên</a>
+                        <a class="change-name-link" id="changeNameLink" style="font-size: 11px; color: var(--c-text-faint); cursor: pointer; text-decoration: underline;">�?i t�n</a>
                     </div>
                 </div>
 
@@ -498,7 +498,7 @@ class APFilmChat {
     _syncUserUI() {
         if (!this.user) return;
 
-        // Hiển thị tên + badge admin nếu có
+        // Hi?n th? t�n + badge admin n?u c�
         if (this.el.currentUserName) {
             const isAdmin = this.user.chatRole === 'admin' || this.user.role === 'admin';
             if (isAdmin) {
@@ -522,7 +522,7 @@ class APFilmChat {
 
         if (this.el.bulkDeleteBtn) {
             this.el.bulkDeleteBtn.onclick = () => {
-                if (confirm(`Xóa ${this.selectedMsgs.length} tin nhắn đã chọn?`)) {
+                if (confirm(`X�a ${this.selectedMsgs.length} tin nh?n d� ch?n?`)) {
                     this.selectedMsgs.forEach(id => {
                         if (window.firebaseChat?.ready) window.firebaseChat.deleteMessage(this.currentTab, id);
                     });
@@ -539,7 +539,7 @@ class APFilmChat {
                     if (el) texts.push(el.textContent);
                 });
                 navigator.clipboard.writeText(texts.join('\n---\n'));
-                if (window.showMessage) window.showMessage('Đã sao chép các tin nhắn được chọn', 'success');
+                if (window.showMessage) window.showMessage('�� sao ch�p c�c tin nh?n du?c ch?n', 'success');
                 this._toggleSelectMode(false);
             };
         }
@@ -570,7 +570,7 @@ class APFilmChat {
                     window.authModal.open('login');
                 } else {
                     console.error('[APFilmChat] Auth modal not available');
-                    this._showNotification('Vui lòng đăng nhập để sử dụng chat', 'warning');
+                    this._showNotification('Vui l�ng dang nh?p d? s? d?ng chat', 'warning');
                 }
             }
         });
@@ -597,9 +597,9 @@ class APFilmChat {
                 // Check if tab is disabled
                 if (tab.disabled || tab.classList.contains('tab-disabled')) {
                     if (window.showMessage) {
-                        window.showMessage('⚠️ Tính năng đang được nâng cấp', 'info');
+                        window.showMessage('?? T�nh nang dang du?c n�ng c?p', 'info');
                     } else {
-                        alert('Tính năng đang được nâng cấp');
+                        alert('T�nh nang dang du?c n�ng c?p');
                     }
                     return;
                 }
@@ -608,7 +608,7 @@ class APFilmChat {
             });
         });
 
-        // ⚡ ULTRA-FAST TEXTAREA AUTO-GROW ENGINE (No layout thrashing)
+        // ? ULTRA-FAST TEXTAREA AUTO-GROW ENGINE (No layout thrashing)
         let inputRAF = null;
         let lastInputValue = '';
         let lastScrollHeight = 0;
@@ -659,7 +659,7 @@ class APFilmChat {
         el.prefixClose?.addEventListener('click', () => this._cancelReply());
         el.bulkForwardBtn?.addEventListener('click', () => {
             if (this.selectedMsgs.length > 0) {
-                if (window.showMessage) window.showMessage('Đã chuyển tiếp tin nhắn', 'info');
+                if (window.showMessage) window.showMessage('�� chuy?n ti?p tin nh?n', 'info');
                 this._toggleSelectMode(false);
             }
         });
@@ -711,9 +711,9 @@ class APFilmChat {
         // Block movies tab
         if (tabName === 'movies') {
             if (window.showMessage) {
-                window.showMessage('⚠️ Tính năng đang được nâng cấp', 'info');
+                window.showMessage('?? T�nh nang dang du?c n�ng c?p', 'info');
             } else {
-                alert('Tính năng đang được nâng cấp');
+                alert('T�nh nang dang du?c n�ng c?p');
             }
             return; // Don't switch to movies tab
         }
@@ -779,7 +779,7 @@ class APFilmChat {
                 this.user.id,
                 count => {
                     const fmt = count.toLocaleString('vi-VN');
-                    if (this.el.headerOnline) this.el.headerOnline.textContent = `${fmt} người trực tuyến`;
+                    if (this.el.headerOnline) this.el.headerOnline.textContent = `${fmt} ngu?i tr?c tuy?n`;
                     if (this.el.welcomeOnline) this.el.welcomeOnline.textContent = fmt;
                 }
             );
@@ -831,10 +831,10 @@ class APFilmChat {
     }
 
     _unpinCurrent() {
-        if (!confirm('Bỏ ghim tin nhắn này?')) return;
+        if (!confirm('B? ghim tin nh?n n�y?')) return;
         if (window.firebaseChat?.ready) {
             window.firebaseChat.unpinAll(this.currentTab);
-            if (window.showMessage) window.showMessage('Đã gỡ ghim tin nhắn', 'info');
+            if (window.showMessage) window.showMessage('�� g? ghim tin nh?n', 'info');
         }
     }
 
@@ -846,7 +846,7 @@ class APFilmChat {
             target.classList.add('jump-highlight');
             setTimeout(() => target.classList.remove('jump-highlight'), 2000);
         } else {
-            if (window.showMessage) window.showMessage('Tin nhắn gốc đã cũ hoặc không có trong bộ nhớ', 'info');
+            if (window.showMessage) window.showMessage('Tin nh?n g?c d� cu ho?c kh�ng c� trong b? nh?', 'info');
         }
     }
 
@@ -858,7 +858,7 @@ class APFilmChat {
                 count => {
                     const fmt = count.toLocaleString('vi-VN');
                     if (this.el.welcomeOnline) this.el.welcomeOnline.textContent = fmt;
-                    if (this.el.headerOnline) this.el.headerOnline.textContent = `${fmt} người trực tuyến`;
+                    if (this.el.headerOnline) this.el.headerOnline.textContent = `${fmt} ngu?i tr?c tuy?n`;
                 }
             );
         };
@@ -871,7 +871,7 @@ class APFilmChat {
         const toast = document.createElement('div');
         toast.className = `chat-toast chat-toast-${type}`;
 
-        const icon = type === 'warning' ? '⚠️' : type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+        const icon = type === 'warning' ? '??' : type === 'error' ? '?' : type === 'success' ? '?' : '??';
 
         let html = `
             <div class="chat-toast-icon">${icon}</div>
@@ -891,7 +891,7 @@ class APFilmChat {
         html += `</div>`;
 
         if (!options.persistent) {
-            html += `<button class="chat-toast-close" onclick="this.parentElement.remove()">×</button>`;
+            html += `<button class="chat-toast-close" onclick="this.parentElement.remove()">�</button>`;
         }
 
         toast.innerHTML = html;
@@ -935,12 +935,12 @@ class APFilmChat {
 
     _showLoginSuccessNotification() {
         this._showNotification(
-            'Đăng nhập thành công! Vui lòng tải lại trang để sử dụng chat.',
+            '�ang nh?p th�nh c�ng! Vui l�ng t?i l?i trang d? s? d?ng chat.',
             'success',
             {
                 persistent: true,
                 action: {
-                    text: '🔄 Tải lại trang',
+                    text: '?? T?i l?i trang',
                     onClick: 'window.location.reload()'
                 }
             }
@@ -1103,7 +1103,7 @@ class APFilmChat {
             // Build Detailed Tooltip
             let tooltipHtml = '<div class="reaction-tooltip">';
             for (const [emo, data] of Object.entries(mergedReactions)) {
-                const names = (data.names && data.names.length > 0) ? data.names.join(', ') : `${data.uids.length} người`;
+                const names = (data.names && data.names.length > 0) ? data.names.join(', ') : `${data.uids.length} ngu?i`;
                 tooltipHtml += `
                     <div class="tooltip-row">
                         <span class="tooltip-emoji">${emo}</span>
@@ -1153,7 +1153,7 @@ class APFilmChat {
             <div class="tg-msg-checkbox"></div>
             ${avatarHtml}
             <div class="tg-msg-bubble">
-                <div class="quick-heart" title="Thả tim" onclick="event.stopPropagation(); window.apFilmChat._handleReaction('${msg.id}', '❤️')">
+                <div class="quick-heart" title="Th? tim" onclick="event.stopPropagation(); window.apFilmChat._handleReaction('${msg.id}', '??')">
                     <span class="material-icons">favorite</span>
                 </div>
                 ${replyInfoHtml}
@@ -1199,7 +1199,7 @@ class APFilmChat {
         bubble.addEventListener('dblclick', e => {
             e.preventDefault();
             // Quick react with heart on double click (Telegram style)
-            this._handleReaction(msg.id, '❤️');
+            this._handleReaction(msg.id, '??');
         });
 
         bubble.addEventListener('click', e => {
@@ -1227,7 +1227,7 @@ class APFilmChat {
         if (!cache[emoji]) cache[emoji] = { uids: [], avatars: [], names: [] };
 
         const myUid = this.user.id || this.user._id;
-        const myName = this.user.user || this.user.name || 'Khách';
+        const myName = this.user.user || this.user.name || 'Kh�ch';
         const myAvatar = this.user.avatar || '/apple-touch-icon.png';
 
         const idx = cache[emoji].uids.indexOf(myUid);
@@ -1261,7 +1261,7 @@ class APFilmChat {
                 // Build Tooltip HTML for optimistic update
                 let tooltipHtml = '<div class="reaction-tooltip">';
                 for (const [emo, data] of Object.entries(cache)) {
-                    const names = (data.names && data.names.length > 0) ? data.names.join(', ') : `${data.uids.length} người`;
+                    const names = (data.names && data.names.length > 0) ? data.names.join(', ') : `${data.uids.length} ngu?i`;
                     tooltipHtml += `
                         <div class="tooltip-row">
                             <span class="tooltip-emoji">${emo}</span>
@@ -1331,7 +1331,7 @@ class APFilmChat {
         const isMobile = window.innerWidth <= 768;
 
         if (!isMobile) {
-            // 🚀 DESKTOP PRESETS
+            // ?? DESKTOP PRESETS
             menu.classList.remove('mobile-bottom-sheet');
             
             // Fetch coordinates and bounds
@@ -1399,7 +1399,7 @@ class APFilmChat {
             menu.style.transform = 'none';
             menu.style.width = 'auto';
 
-            // 🚀 UX Magic: If the menu flipped ABOVE the message, reverse flex layout 
+            // ?? UX Magic: If the menu flipped ABOVE the message, reverse flex layout 
             // to keep floating reaction bubbles absolutely closest to the text content!
             if (isFlipped) {
                 menu.style.flexDirection = 'column-reverse';
@@ -1407,7 +1407,7 @@ class APFilmChat {
                 menu.style.flexDirection = 'column';
             }
         } else {
-            // 📱 MOBILE BOTTOM SHEET TRIGGER
+            // ?? MOBILE BOTTOM SHEET TRIGGER
             menu.classList.add('mobile-bottom-sheet');
             
             // Flush all specific coordinate metrics to inherit Bottom Sheet layout
@@ -1425,7 +1425,7 @@ class APFilmChat {
         document.getElementById('ctxCopy').onclick = () => {
             navigator.clipboard.writeText(msg.text);
             menu.style.display = 'none';
-            if (window.showMessage) window.showMessage('Đã sao chép tin nhắn', 'success');
+            if (window.showMessage) window.showMessage('�� sao ch�p tin nh?n', 'success');
         };
         document.getElementById('ctxSelect').onclick = () => {
             this._toggleSelectMode(true);
@@ -1465,13 +1465,13 @@ class APFilmChat {
                 menu.style.display = 'none';
             };
             ctxBan.onclick = () => {
-                if (confirm(`Chặn người dùng "${msg.user}"? Họ sẽ không thể nhắn tin nữa.`)) {
+                if (confirm(`Ch?n ngu?i d�ng "${msg.user}"? H? s? kh�ng th? nh?n tin n?a.`)) {
                     if (window.firebaseChat?.ready) window.firebaseChat.banUser(msg.userId, msg.user);
                 }
                 menu.style.display = 'none';
             };
             ctxDelete.onclick = async () => {
-                if (confirm('Xóa tin nhắn này?')) {
+                if (confirm('X�a tin nh?n n�y?')) {
                     try {
                         // Delete from Firebase first
                         if (window.firebaseChat?.ready) {
@@ -1492,19 +1492,19 @@ class APFilmChat {
                             const result = await response.json();
                             if (result.success) {
                                 if (window.showMessage) {
-                                    window.showMessage('✅ Đã xóa tin nhắn', 'success');
+                                    window.showMessage('? �� x�a tin nh?n', 'success');
                                 }
                             } else {
                                 console.error('Delete failed:', result.message);
                                 if (window.showMessage) {
-                                    window.showMessage(`❌ Lỗi: ${result.message}`, 'error');
+                                    window.showMessage(`? L?i: ${result.message}`, 'error');
                                 }
                             }
                         }
                     } catch (error) {
                         console.error('Delete message error:', error);
                         if (window.showMessage) {
-                            window.showMessage('❌ Không thể xóa tin nhắn', 'error');
+                            window.showMessage('? Kh�ng th? x�a tin nh?n', 'error');
                         }
                     }
                 }
@@ -1517,7 +1517,7 @@ class APFilmChat {
             if (msg.isOwn) {
                 ctxDelete.style.display = 'flex';
                 ctxDelete.onclick = async () => {
-                    if (confirm('Xóa tin nhắn của bạn?')) {
+                    if (confirm('X�a tin nh?n c?a b?n?')) {
                         try {
                             // Delete from Firebase first
                             if (window.firebaseChat?.ready) {
@@ -1538,19 +1538,19 @@ class APFilmChat {
                                 const result = await response.json();
                                 if (result.success) {
                                     if (window.showMessage) {
-                                        window.showMessage('✅ Đã xóa tin nhắn', 'success');
+                                        window.showMessage('? �� x�a tin nh?n', 'success');
                                     }
                                 } else {
                                     console.error('Delete failed:', result.message);
                                     if (window.showMessage) {
-                                        window.showMessage(`❌ ${result.message}`, 'error');
+                                        window.showMessage(`? ${result.message}`, 'error');
                                     }
                                 }
                             }
                         } catch (error) {
                             console.error('Delete message error:', error);
                             if (window.showMessage) {
-                                window.showMessage('❌ Không thể xóa tin nhắn', 'error');
+                                window.showMessage('? Kh�ng th? x�a tin nh?n', 'error');
                             }
                         }
                     }
@@ -1619,7 +1619,7 @@ class APFilmChat {
 
     _updateSelectedUI() {
         if (this.el.selectedCount) {
-            this.el.selectedCount.textContent = `${this.selectedMsgs.length} đã chọn`;
+            this.el.selectedCount.textContent = `${this.selectedMsgs.length} d� ch?n`;
         }
         if (this.el.bulkActionBar) {
             this.el.bulkActionBar.style.display = this.selectedMsgs.length > 0 ? 'flex' : 'none';
@@ -1629,7 +1629,7 @@ class APFilmChat {
 
     _sendMessage() {
         if (this.isBanned) {
-            if (window.showMessage) window.showMessage('Bạn đang bị cấm khỏi phòng chat', 'error');
+            if (window.showMessage) window.showMessage('B?n dang b? c?m kh?i ph�ng chat', 'error');
             return;
         }
 
@@ -1803,7 +1803,7 @@ class APFilmChat {
         document.body.classList.remove('chat-open');
     }
 
-    /* ── Desktop Interaction ── */
+    /* -- Desktop Interaction -- */
     _initDragResize() {
         // Skip drag/resize on mobile completely
         if (window.innerWidth <= 768) {
@@ -1892,7 +1892,7 @@ class APFilmChat {
 
         // Bind events to new handles
         this._bindResizeHandlers();
-        console.log('[APFilmChat] 8-way Resize handles created ✓');
+        console.log('[APFilmChat] 8-way Resize handles created ?');
     }
 
     _bindResizeHandlers() {
@@ -2043,7 +2043,7 @@ function ensureChatInteraction() {
             win.appendChild(div);
         });
         if (window.apFilmChat) window.apFilmChat._bindResizeHandlers();
-        console.log('[APFilmChat] 8-way Resize system re-initialized ✓');
+        console.log('[APFilmChat] 8-way Resize system re-initialized ?');
     }
 }
 setInterval(ensureChatInteraction, 4000);
@@ -2054,4 +2054,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.apFilmChat = new APFilmChat();
+
+
 

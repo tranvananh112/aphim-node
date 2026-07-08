@@ -58,3 +58,4 @@ const fs = require('fs');
     fs.writeFileSync('sitemap.xml', xml, 'utf8');
     console.log(`Done! Total URLs: ${staticPages.length + uniqueMovies.length}. File size: ${Math.round(xml.length / 1024)} KB`);
 })();
+
