@@ -165,7 +165,52 @@ class MovieAPI {
                 const response = await this.fetchWithFallback(`/phim/${slug}`, {
                     headers: { 'accept': 'application/json' }
                 });
-                return await response.json();
+                const ophimData = await response.json();
+                
+                // Cào thêm dữ liệu từ VSMOV (nếu có)
+                try {
+                    const vsResponse = await this.fetchWithTimeout(`https://vsmov.com/api/phim/${slug}`, { timeout: 8000 });
+                    if (vsResponse.ok) {
+                        const vsData = await vsResponse.json();
+                        // Nếu VSMOV có trả về episodes
+                        if (vsData && vsData.status && vsData.episodes && vsData.episodes.length > 0) {
+                            // Hỗ trợ cấu trúc Ophim V1 API (data.item)
+                            if (ophimData.data && ophimData.data.item) {
+                                if (!ophimData.data.item.episodes) ophimData.data.item.episodes = [];
+                                
+                                ophimData.data.item.episodes.forEach(s => {
+                                    if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+                                });
+
+                                vsData.episodes.forEach(vsServer => {
+                                    if (vsServer.server_data && vsServer.server_data.length > 0) {
+                                        if (vsServer.server_name) vsServer.server_name = vsServer.server_name.replace(/ #\d+/g, '').trim();
+                                        ophimData.data.item.episodes.push(vsServer);
+                                    }
+                                });
+                            } 
+                            // Hỗ trợ cấu trúc Ophim cũ (không có data.item)
+                            else if (ophimData.movie) {
+                                if (!ophimData.episodes) ophimData.episodes = [];
+                                
+                                ophimData.episodes.forEach(s => {
+                                    if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+                                });
+
+                                vsData.episodes.forEach(vsServer => {
+                                    if (vsServer.server_data && vsServer.server_data.length > 0) {
+                                        if (vsServer.server_name) vsServer.server_name = vsServer.server_name.replace(/ #\d+/g, '').trim();
+                                        ophimData.episodes.push(vsServer);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Lỗi gọi API VSMOV (bỏ qua và tiếp tục với Ophim):', e.message);
+                }
+                
+                return ophimData;
             }
         } catch (error) {
             console.error('Error fetching movie detail:', error);

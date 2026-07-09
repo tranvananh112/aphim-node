@@ -242,12 +242,14 @@ function renderMovieDetail(movie) {
             console.log('✅ Custom link found for movie:', movie.slug);
         } else if (movie.episodes && movie.episodes.length > 0) {
             // Có episodes từ API
-            const firstEpisode = movie.episodes[0].server_data[0];
+            const serverIndex = typeof currentServerIndexDetail !== 'undefined' ? currentServerIndexDetail : 0;
+            const firstEpisode = movie.episodes[serverIndex]?.server_data[0] || movie.episodes[0].server_data[0];
+            const cleanSlug = firstEpisode.slug.replace(/^tap-/, '');
             const isHtmlEnv = window.location.pathname.includes('.html');
             if (isHtmlEnv) {
-                watchBtn.href = `/watch.html?slug=${movie.slug}&episode=tap-${firstEpisode.slug}`;
+                watchBtn.href = `/watch.html?slug=${movie.slug}&episode=tap-${cleanSlug}&server=${serverIndex}`;
             } else {
-                watchBtn.href = `/xem-phim/${movie.slug}/tap-${firstEpisode.slug}`;
+                watchBtn.href = `/xem-phim/${movie.slug}/tap-${cleanSlug}?server=${serverIndex}`;
             }
         } else {
             // Không có link
@@ -370,7 +372,15 @@ function renderVersions(movie) {
     wrapper.className = 'w-full block';
     wrapper.innerHTML = versionsHTML;
 
-    actionsContainer.after(wrapper);
+    
+    const mobileEpisodesWrapper = document.getElementById('episodes-mobile')?.parentElement;
+    if (window.innerWidth < 1024 && mobileEpisodesWrapper) {
+        // TrÃªn mobile, SVAP nÄƒm dÆ°á»›i danh sÃ¡ch táºp phim
+        mobileEpisodesWrapper.after(wrapper);
+    } else {
+        // TrÃªn desktop, SVAP náº±m ngay dÆ°á»›i nÃºt Xem Ngay
+        actionsContainer.after(wrapper);
+    }
 }
 
 // Logic chuyển hướng linh hoạt giữa Node và HTML
@@ -503,11 +513,24 @@ async function loadMovieGallery(movie) {
                 
                 setupGalleryScroll();
                 
-                // Di chuyển phần hình ảnh lên nằm ngay dưới danh sách tập phim
+                                // Di chuyển phần hình ảnh xuống bên dưới mục "Các bản chiếu" (nếu có), hoặc dưới danh sách tập
+                const versionsContainer = document.getElementById('versions-container');
                 const mobileEpisodesWrapper = document.getElementById('episodes-mobile')?.parentElement;
-                if (mobileEpisodesWrapper) {
-                    mobileEpisodesWrapper.after(galleryContainer);
-                    console.log('✅ Gallery container moved below mobile episodes list');
+                
+                if (window.innerWidth < 1024) {
+                    if (versionsContainer) {
+                        versionsContainer.after(galleryContainer);
+                        console.log('✅ Gallery container moved below versions-container (Mobile)');
+                    } else if (mobileEpisodesWrapper) {
+                        mobileEpisodesWrapper.after(galleryContainer);
+                        console.log('✅ Gallery container moved below mobile episodes list (Mobile)');
+                    }
+                } else {
+                    const descSection = document.querySelector('.mb-10.max-w-4xl') || document.querySelector('#movie-content-section') || document.querySelector('.mb-10.w-full.text-left');
+                    if (descSection) {
+                        descSection.before(galleryContainer);
+                        console.log('✅ Gallery container positioned above movie description on Desktop');
+                    }
                 }
 
                 // Update SVAP backgrounds with gallery images dynamically
@@ -610,7 +633,7 @@ function addMovieMetadata(movie) {
 
     // Build metadata cards FIRST
     const metadataHTML = `
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mb-8 w-full">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-3 mb-8 w-full">
             <!-- Thể Loại -->
             ${movie.category && movie.category.length > 0 ? `
             <div style="background-color: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);" class="rounded-xl p-3 shadow-lg hover:bg-white/20 transition-all duration-300">
@@ -799,28 +822,120 @@ function addMovieMetadata(movie) {
     }
 }
 
+let currentServerIndexDetail = 0;
+
+// Biến toàn cục cho search/sort ở trang detail
+window.episodeSearchTermDetail = window.episodeSearchTermDetail || '';
+window.episodeSortOrderDetail = window.episodeSortOrderDetail || 'asc';
+
 // Render episodes
 function renderEpisodes(episodes) {
     if (!episodes || episodes.length === 0) return;
 
     const desktopContainer = document.getElementById('episodes-desktop');
     const mobileContainer = document.getElementById('episodes-mobile');
+    
+    // Render Server List
+    if (episodes.length > 0) {
+        const desktopServerContainer = document.getElementById('server-list-desktop');
+        const mobileServerContainer = document.getElementById('server-list-mobile');
+        
+        const labelHTML = `
+            <div class="flex items-center gap-2 mr-2 flex-shrink-0">
+                <span class="material-icons-round text-white text-[16px]">dns</span>
+                <span class="text-white font-bold uppercase text-[12px] tracking-wider" style="text-shadow: 0 1px 2px rgba(0,0,0,0.8);">MÁY CHỦ :</span>
+            </div>
+        `;
+
+        const buttonsHTML = episodes.map((server, index) => {
+            const isActive = index === currentServerIndexDetail;
+            const totalEps = server.server_data ? server.server_data.length : 0;
+            const epText = totalEps === 1 ? 'Full' : `${totalEps} tập`;
+            
+            // Default colors for index > 1
+            let activeBorder = 'border-blue-500';
+            let activeBg = 'bg-blue-500/10';
+            let activeText = 'text-blue-500';
+            let inactiveBorder = 'border-blue-500';
+            let inactiveHover = 'hover:bg-blue-500/5';
+            
+            if (index === 0) { // Server 1 (Ophim)
+                activeBorder = 'border-yellow-500';
+                activeBg = 'bg-yellow-500/15';
+                activeText = 'text-yellow-500';
+                inactiveBorder = 'border-yellow-500';
+                inactiveHover = 'hover:bg-yellow-500/5';
+            } else if (index === 1) { // Server 2 (VSMOV)
+                activeBorder = 'border-green-500';
+                activeBg = 'bg-green-500/15';
+                activeText = 'text-green-500';
+                inactiveBorder = 'border-green-500';
+                inactiveHover = 'hover:bg-green-500/5';
+            }
+
+            const borderClass = isActive ? activeBorder : inactiveBorder;
+            const bgClass = isActive ? activeBg : 'bg-transparent';
+            const textClass = isActive ? activeText : 'text-gray-400';
+            const hoverClass = isActive ? '' : `${inactiveHover} hover:text-gray-200`;
+
+            return `
+                <button onclick="changeServerDetail(${index})"
+                    class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all duration-200 border ${borderClass} ${bgClass} ${hoverClass}">
+                    <span class="${isActive ? 'font-bold text-white' : 'font-medium ' + textClass}">${server.server_name}</span>
+                    <span class="${activeText} mx-0.5">|</span>
+                    <span class="${isActive ? 'text-gray-200 font-semibold' : 'text-gray-500'}">${epText}</span>
+                </button>
+            `;
+        }).join('');
+        
+        const serverHtml = labelHTML + buttonsHTML;
+        
+        if (desktopServerContainer) {
+            desktopServerContainer.innerHTML = serverHtml;
+            desktopServerContainer.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
+            desktopServerContainer.style.scrollbarWidth = ''; // Đã bỏ ẩn thanh cuộn
+        }
+        if (mobileServerContainer) {
+            mobileServerContainer.innerHTML = serverHtml;
+            mobileServerContainer.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
+            mobileServerContainer.style.scrollbarWidth = ''; // Đã bỏ ẩn thanh cuộn
+        }
+    }
 
     if (!desktopContainer && !mobileContainer) {
         console.warn('⚠️ Episode containers not found');
         return;
     }
 
-    const serverData = episodes[0].server_data;
+    const serverData = episodes[currentServerIndexDetail]?.server_data || episodes[0].server_data;
 
-    const html = serverData.map((ep, index) => {
+    // Hiển thị/ẩn thanh tìm kiếm
+    ['desktop', 'mobile'].forEach(type => {
+        const searchContainer = document.getElementById(`episode-search-${type}`);
+        if (searchContainer) {
+            searchContainer.style.display = serverData.length > 0 ? 'flex' : 'none';
+        }
+    });
+
+    // Lọc và Sắp xếp
+    let displayEpisodes = [...serverData];
+    if (window.episodeSearchTermDetail) {
+        const term = window.episodeSearchTermDetail.toLowerCase();
+        displayEpisodes = displayEpisodes.filter(ep => ep.name.toLowerCase().includes(term));
+    }
+    if (window.episodeSortOrderDetail === 'desc') {
+        displayEpisodes.reverse();
+    }
+
+    const html = displayEpisodes.map((ep, index) => {
         const isActive = index === 0;
+        const cleanSlug = ep.slug.replace(/^tap-/, '');
         
         return `
-            <a href="/xem-phim/${currentMovie.slug}/tap-${ep.slug}"
-                class="${isActive ? 'bg-[#fcd576] text-black font-bold border-transparent' : 'bg-[#323447] hover:bg-white/10 text-gray-300 border-white/5'} px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-all border whitespace-nowrap shadow-lg hover:-translate-y-1">
-                <span class="material-icons-round text-[18px]">${isActive ? 'play_arrow' : 'play_arrow'}</span>
-                <span>${ep.name}</span>
+            <a href="/xem-phim/${currentMovie.slug}/tap-${cleanSlug}?server=${currentServerIndexDetail}"
+                class="${isActive ? 'bg-[#fcd576] text-black font-bold border-transparent' : 'bg-[#323447] hover:bg-white/10 text-gray-300 border-white/5'} px-4 py-1.5 sm:py-2 rounded-lg flex items-center justify-center gap-2 transition-all border whitespace-nowrap shadow-lg hover:-translate-y-1 w-full">
+                <span class="material-icons-round text-[18px]">play_arrow</span>
+                <span>${ep.name.trim()}</span>
             </a>
         `;
     }).join('');
@@ -828,6 +943,14 @@ function renderEpisodes(episodes) {
     if (desktopContainer) desktopContainer.innerHTML = html;
     if (mobileContainer) mobileContainer.innerHTML = html;
 }
+
+window.changeServerDetail = function(index) {
+    if (!currentMovie || !currentMovie.episodes || index < 0 || index >= currentMovie.episodes.length) return;
+    if (index === currentServerIndexDetail) return;
+    
+    currentServerIndexDetail = index;
+    renderEpisodes(currentMovie.episodes);
+};
 
 // Setup favorite button
 function setupFavoriteButton() {
@@ -1123,3 +1246,36 @@ function showTrailerModal(trailerUrl, movieName) {
 }
 
 
+
+// --- EVENT LISTENERS CHO TÌM KIẾM/SẮP XẾP TẬP PHIM (DETAIL PAGE) ---
+document.addEventListener('DOMContentLoaded', () => {
+    ['desktop', 'mobile'].forEach(type => {
+        const searchInput = document.getElementById(`search-episode-input-${type}`);
+        const sortBtn = document.getElementById(`sort-episodes-btn-${type}`);
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                window.episodeSearchTermDetail = e.target.value;
+                // Đồng bộ 2 input
+                ['desktop', 'mobile'].forEach(t => {
+                    if (t !== type) {
+                        const otherInput = document.getElementById(`search-episode-input-${t}`);
+                        if (otherInput) otherInput.value = e.target.value;
+                    }
+                });
+                if (currentMovie && currentMovie.episodes) {
+                    renderEpisodes(currentMovie.episodes);
+                }
+            });
+        }
+        
+        if (sortBtn) {
+            sortBtn.addEventListener('click', () => {
+                window.episodeSortOrderDetail = window.episodeSortOrderDetail === 'asc' ? 'desc' : 'asc';
+                if (currentMovie && currentMovie.episodes) {
+                    renderEpisodes(currentMovie.episodes);
+                }
+            });
+        }
+    });
+});

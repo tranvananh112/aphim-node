@@ -69,10 +69,26 @@
                                 class="w-1.5 h-6 bg-red-600 rounded-full shadow-[0_0_10px_rgba(236,19,19,0.5)]"></span>
                             Danh sách tập phim
                         </h3>
+                        <div id="server-list-desktop" class="flex flex-wrap gap-2 mb-4 w-full"></div>
+                        
+                        <!-- Thanh tìm kiếm tập phim (Desktop) -->
+                        <div id="episode-search-desktop" class="flex items-center gap-2 mb-4 w-full" style="display: none;">
+                            <div class="relative w-48 sm:w-56">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" style="left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" id="search-episode-input-desktop" placeholder="Tìm tập..." class="w-full bg-white/5 border border-white/10 rounded-lg py-2 pr-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#fcd576]/50 transition-colors" style="padding-left: 32px !important;">
+                            </div>
+                            <button id="sort-episodes-btn-desktop" class="flex-shrink-0 bg-white/5 border border-white/10 rounded-lg w-[38px] h-[38px] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                <span class="material-icons-round text-[18px]">swap_vert</span>
+                            </button>
+                        </div>
+
                         <!-- Sử dụng flex wrap để linh hoạt hoặc grid -->
-                        <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
-                            id="episodes-desktop">
-                            <!-- JS will render episodes here -->
+                        <div class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2 pb-2">
+                            <div class="grid grid-cols-2 xl:grid-cols-3 gap-2" id="episodes-desktop">
+                                <!-- JS will render episodes here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,9 +136,25 @@
                             <span class="w-1 h-6 bg-red-600 rounded-full shadow-[0_0_10px_rgba(236,19,19,0.5)]"></span>
                             Danh sách tập phim
                         </h3>
-                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-[300px] overflow-y-auto pr-1"
-                            id="episodes-mobile">
-                            <!-- JS will render episodes here -->
+                        <div id="server-list-mobile" class="flex flex-nowrap overflow-x-auto gap-2 mb-3 w-full pb-2 hide-scrollbar"></div>
+                        
+                        <!-- Thanh tìm kiếm tập phim (Mobile) -->
+                        <div id="episode-search-mobile" class="flex items-center gap-2 mb-3 w-full px-1" style="display: none;">
+                            <div class="relative w-48 sm:w-56">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" style="left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" id="search-episode-input-mobile" placeholder="Tìm tập..." class="w-full bg-white/5 border border-white/10 rounded-lg py-2 pr-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#fcd576]/50 transition-colors" style="padding-left: 32px !important;">
+                            </div>
+                            <button id="sort-episodes-btn-mobile" class="flex-shrink-0 bg-white/5 border border-white/10 rounded-lg w-[38px] h-[38px] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                <span class="material-icons-round text-[18px]">swap_vert</span>
+                            </button>
+                        </div>
+
+                        <div class="max-h-[300px] overflow-y-auto custom-scrollbar pr-1.5 pb-2">
+                            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2" id="episodes-mobile">
+                                <!-- JS will render episodes here -->
+                            </div>
                         </div>
                     </div>
 
@@ -314,7 +346,7 @@
     <script src="/js/search-icon-enhance.js?v=15"></script>
     <script src="/js/image-optimization.js?v=15"></script>
     <script src="/js/seo-optimizer.js?v=4"></script>
-    <script src="/js/api.js?v=17"></script>
+    <script src="/js/api.js?v=19"></script>
     <script src="/js/premium-ad-blocker.js?v=3"></script>
     <script src="/js/user.js?v=40"></script>
     <script src="/js/rating.js?v=15"></script>

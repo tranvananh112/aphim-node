@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     let slug = urlParams.get('slug');
     let episodeSlug = urlParams.get('episode');
 
+    let serverIndex = urlParams.get('server');
+
     if (!slug && window.location.pathname.startsWith('/xem-phim/')) {
         const parts = window.location.pathname.split('/').filter(Boolean); // ["xem-phim", "slug", "episode"]
         if (parts.length >= 2) {
@@ -46,13 +48,20 @@ async function loadMovieAndPlay(slug, episodeSlug) {
 
             // Find episode
             if (currentMovie.episodes && currentMovie.episodes.length > 0) {
-                // Initialize default server index to 0
-                currentServerIndex = 0;
+                // Initialize server index from URL or default to 0
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedServer = urlParams.get('server');
+                if (requestedServer !== null && !isNaN(requestedServer) && parseInt(requestedServer) < currentMovie.episodes.length) {
+                    currentServerIndex = parseInt(requestedServer);
+                } else {
+                    currentServerIndex = 0;
+                }
+                
                 const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
                 console.log('📋 Server data:', serverData);
 
                 currentEpisode = episodeSlug
-                    ? serverData.find(ep => ep.slug === episodeSlug)
+                    ? serverData.find(ep => ep.slug.replace(/^tap-/, '') === episodeSlug.replace(/^tap-/, ''))
                     : serverData[0];
 
                 if (!currentEpisode) currentEpisode = serverData[0];
@@ -481,12 +490,10 @@ function renderVersions(movie) {
     const versionsHTML = `
         <div class="w-full mb-6 mt-2">
             <!-- Banner Notification -->
-            <div style="background: linear-gradient(to right, #4f46e5, #d946ef);" class="rounded-xl p-4 mb-5 flex items-center gap-4 shadow-lg">
-                <div style="background-color: #1e3a8a;" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-inner">
-                    <span class="material-icons-round text-[#fcd576] text-xl">notifications_active</span>
-                </div>
-                <div>
-                    <p class="text-white font-bold text-sm leading-tight" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">Click chọn SVAP1, SVAP2 hoặc SVAP3 nếu phim không xem được.</p>
+            <div class="w-full mb-4 mt-2" style="padding-right: 6px; padding-left: 6px;">
+                <div class="flex justify-center items-center gap-2 px-4 py-2.5 w-full rounded-lg bg-white/5 text-center border border-white/10 text-gray-300 text-[11px] sm:text-xs md:text-[13px] shadow-sm">
+                    <span class="material-icons-round text-[#fcd576] text-[16px] flex-shrink-0">info</span>
+                    <span>Nếu xem bị lỗi, hãy thử đổi máy chủ (SVAP) phía dưới nhé!</span>
                 </div>
             </div>
 
@@ -518,8 +525,8 @@ function renderVersions(movie) {
     wrapper.className = 'w-full';
     wrapper.innerHTML = versionsHTML;
 
-    // Chèn vào trước tiêu đề "Danh sách tập"
-    parentContainer.insertBefore(wrapper, parentContainer.firstChild);
+    // Chèn vào SAU danh sách tập phim (dưới cùng của block)
+    parentContainer.appendChild(wrapper);
 }
 
 // Logic chuyển hướng linh hoạt giữa Node và HTML
@@ -645,7 +652,7 @@ async function loadMovieGallery(movie) {
                 galleryCount.textContent = `(${backdrops.length} ảnh)`;
                 
                 scrollContainer.innerHTML = backdrops.map((img, index) => `
-                    <div class="flex-shrink-0 w-[200px] md:w-[280px] aspect-video rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-white/30 transition-colors relative cursor-pointer" onclick="openLightbox(window.movieGalleryImageUrls, ${index})">
+                    <div style="flex-shrink: 0; width: 280px; aspect-ratio: 16/9; max-width: 80vw;" class=" rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-white/30 transition-colors relative cursor-pointer" onclick="openLightbox(window.movieGalleryImageUrls, ${index})">
                         <img src="https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img.file_path}" alt="Cảnh phim ${movie.name}" loading="lazy" class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110">
                     </div>
                 `).join('');
@@ -837,10 +844,122 @@ window.startActualPlayback = function() {
     }, 100);
 };
 
+// Render server list
+function renderServerList(episodes) {
+    if (!episodes || episodes.length === 0) return; // Luôn hiện ngay cả khi có 1 server
+
+    const container = document.getElementById('server-list');
+    if (!container) return;
+
+    const labelHTML = `
+        <div class="flex items-center gap-2 mr-2 flex-shrink-0">
+            <span class="material-icons-round text-white text-[16px]">dns</span>
+            <span class="text-white font-bold uppercase text-[12px] tracking-wider" style="text-shadow: 0 1px 2px rgba(0,0,0,0.8);">MÁY CHỦ :</span>
+        </div>
+    `;
+
+    const buttonsHTML = episodes.map((server, index) => {
+        const isActive = index === currentServerIndex;
+        const totalEps = server.server_data ? server.server_data.length : 0;
+        const epText = totalEps === 1 ? 'Full' : `${totalEps} tập`;
+        
+        // Default colors for index > 1
+        let activeBorder = 'border-blue-500';
+        let activeBg = 'bg-blue-500/10';
+        let activeText = 'text-blue-500';
+        let inactiveBorder = 'border-blue-500';
+        let inactiveHover = 'hover:bg-blue-500/5';
+        
+        if (index === 0) { // Server 1 (Ophim)
+            activeBorder = 'border-yellow-500';
+            activeBg = 'bg-yellow-500/15';
+            activeText = 'text-yellow-500';
+            inactiveBorder = 'border-yellow-500';
+            inactiveHover = 'hover:bg-yellow-500/5';
+        } else if (index === 1) { // Server 2 (VSMOV)
+            activeBorder = 'border-green-500';
+            activeBg = 'bg-green-500/15';
+            activeText = 'text-green-500';
+            inactiveBorder = 'border-green-500';
+            inactiveHover = 'hover:bg-green-500/5';
+        }
+
+        const borderClass = isActive ? activeBorder : inactiveBorder;
+        const bgClass = isActive ? activeBg : 'bg-transparent';
+        const textClass = isActive ? activeText : 'text-gray-400';
+        const hoverClass = isActive ? '' : `${inactiveHover} hover:text-gray-200`;
+
+        return `
+            <button onclick="changeServer(${index})"
+                class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all duration-200 border ${borderClass} ${bgClass} ${hoverClass}">
+                <span class="${isActive ? 'font-bold text-white' : 'font-medium ' + textClass}">${server.server_name}</span>
+                <span class="${activeText} mx-0.5">|</span>
+                <span class="${isActive ? 'text-gray-200 font-semibold' : 'text-gray-500'}">${epText}</span>
+            </button>
+        `;
+    }).join('');
+
+    container.innerHTML = labelHTML + buttonsHTML;
+    
+    // Đảm bảo container trên 1 hàng, có thể cuộn ngang nếu màn hình nhỏ
+    container.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
+    container.style.scrollbarWidth = ''; // Đã bỏ ẩn thanh cuộn
+}
+
+window.changeServer = function(index) {
+    if (!currentMovie || !currentMovie.episodes || index < 0 || index >= currentMovie.episodes.length) return;
+    if (index === currentServerIndex) return;
+
+    currentServerIndex = index;
+    
+    // Tìm tập tương ứng bên server mới nếu có (dựa theo tên tập)
+    const newServerData = currentMovie.episodes[currentServerIndex].server_data;
+    if (currentEpisode) {
+        const matchingEp = newServerData.find(ep => ep.name === currentEpisode.name);
+        if (matchingEp) {
+            currentEpisode = matchingEp;
+        } else {
+            // Nếu không có tập cùng tên, lấy tập đầu tiên
+            currentEpisode = newServerData[0];
+        }
+    } else {
+        currentEpisode = newServerData[0];
+    }
+    
+    // Cập nhật URL parameter
+    if (window.location.pathname.startsWith('/xem-phim/')) {
+        window.history.pushState({}, '', `/xem-phim/${currentMovie.slug}/tap-${currentEpisode.slug}?server=${currentServerIndex}`);
+    } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('episode', `tap-${currentEpisode.slug}`);
+        urlParams.set('server', currentServerIndex);
+        window.history.pushState({}, '', 'watch.html?' + urlParams.toString());
+    }
+
+    renderServerList(currentMovie.episodes);
+    renderEpisodeList(currentMovie.episodes);
+    
+    // Nếu đang xem thì tự động đổi luồng video
+    if (player && !player.paused) {
+        showSeekOverlay(`Đang tải máy chủ: ${currentMovie.episodes[index].server_name}...`, true);
+        setTimeout(() => {
+            initializePlayer(currentEpisode);
+        }, 300);
+    } else {
+        initializePlayer(currentEpisode);
+    }
+};
+
+// Biến toàn cục cho search/sort
+window.episodeSearchTerm = window.episodeSearchTerm || '';
+window.episodeSortOrder = window.episodeSortOrder || 'asc';
+
 // Render episode list
 function renderEpisodeList(episodes) {
     if (!episodes || episodes.length === 0) return;
-
+    
+    renderServerList(episodes); // Gọi kèm renderServerList để cập nhật UI Máy chủ
+    
     const container = document.getElementById('episode-list') || document.querySelector('.grid.grid-cols-2');
     if (!container) return;
 
@@ -852,20 +971,33 @@ function renderEpisodeList(episodes) {
         episodeCountEl.textContent = `(${serverData.length} tập)`;
     }
 
-    container.innerHTML = serverData.map(ep => {
-        const isActive = currentEpisode && ep.slug === currentEpisode.slug;
-        const name = ep.name.trim();
-        let displayEpName = name;
-        if (/^\d+$/.test(name)) {
-            displayEpName = `Tập ${name.padStart(2, '0')}`;
+    // --- SEARCH & SORT LOGIC ---
+    const searchContainer = document.getElementById('episode-search-container');
+    if (searchContainer) {
+        if (serverData.length > 0) {
+            searchContainer.style.display = 'flex';
         } else {
-            displayEpName = name.startsWith('Tập') ? name : `Tập ${name}`;
+            searchContainer.style.display = 'none';
         }
+    }
 
+    let displayEpisodes = [...serverData];
+    if (window.episodeSearchTerm) {
+        const term = window.episodeSearchTerm.toLowerCase();
+        displayEpisodes = displayEpisodes.filter(ep => ep.name.toLowerCase().includes(term));
+    }
+    if (window.episodeSortOrder === 'desc') {
+        displayEpisodes.reverse();
+    }
+
+    container.innerHTML = displayEpisodes.map(ep => {
+        const isActive = currentEpisode && ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, '');
+        
         return `
             <button onclick="changeEpisode('${ep.slug}')"
-                class="${isActive ? 'bg-[#fcd576] text-black font-bold border-transparent shadow-[0_4px_12px_rgba(252,211,77,0.3)] scale-105 active' : 'bg-[#131314] hover:bg-white/5 text-gray-400 border border-white/5 hover:text-white'} transition-all duration-300 rounded-lg w-full py-1.5 text-[11px] sm:text-xs font-semibold cursor-pointer active:scale-95 text-center">
-                ${displayEpName}
+                class="${isActive ? 'bg-[#fcd576] text-black font-bold border-transparent active shadow-[0_4px_12px_rgba(252,211,77,0.3)]' : 'bg-[#323447] hover:bg-white/10 text-gray-300 border-white/5'} px-4 py-1.5 sm:py-2 rounded-lg flex items-center justify-center gap-2 transition-all border whitespace-nowrap shadow-lg hover:-translate-y-1 w-full cursor-pointer">
+                <span class="material-icons-round text-[18px]">play_arrow</span>
+                <span>${ep.name.trim()}</span>
             </button>
         `;
     }).join('');
@@ -951,6 +1083,41 @@ function initializePlayer(episode) {
 
     // Load watch progress
     const progress = userService.getWatchProgress(currentMovie.slug, episode.slug);
+
+    const isEmbed = !episode.link_m3u8 && episode.link_embed;
+
+    if (isEmbed) {
+        playerContainer.innerHTML = `
+            <iframe id="videoIframe" 
+                src="${videoUrl}" 
+                class="w-full h-full bg-black border-0" 
+                allowfullscreen 
+                allow="autoplay; fullscreen">
+            </iframe>
+        `;
+        
+        // Mock player to prevent errors in other scripts
+        window.player = {
+            currentTime: 0,
+            duration: 0,
+            paused: false,
+            play: async () => {},
+            pause: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            canPlayType: () => false,
+            requestFullscreen: async () => {
+                const iframe = document.getElementById('videoIframe');
+                if (iframe.requestFullscreen) iframe.requestFullscreen();
+            }
+        };
+
+        // Hide mobile overlay controls since iframe has its own
+        const mobCtrl = document.getElementById('mob-player-ctrl');
+        if (mobCtrl) mobCtrl.style.display = 'none';
+        
+        return; // Skip HLS setup
+    }
 
     playerContainer.innerHTML = `
         <video id="videoPlayer" 
@@ -1266,7 +1433,7 @@ function autoPlayNext() {
     if (!currentMovie.episodes || currentMovie.episodes.length === 0) return;
 
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const currentIndex = serverData.findIndex(ep => ep.slug === currentEpisode.slug);
+    const currentIndex = serverData.findIndex(ep => ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, ''));
 
     if (currentIndex < serverData.length - 1) {
         const nextEpisode = serverData[currentIndex + 1];
@@ -1788,11 +1955,8 @@ function showSeekOverlay(text, isRight) {
 window.changeEpisode = function(episodeSlug) {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length === 0) return;
     
-    // Reset server index to 0 when changing episode manually
-    currentServerIndex = 0;
-    
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const foundEp = serverData.find(ep => ep.slug === episodeSlug);
+    const foundEp = serverData.find(ep => ep.slug.replace(/^tap-/, '') === episodeSlug.replace(/^tap-/, ''));
     if (!foundEp) return;
 
     // 1. Update active state variables
@@ -1800,10 +1964,11 @@ window.changeEpisode = function(episodeSlug) {
 
     // 2. Update URL query parameter cleanly without page reload
     if (window.location.pathname.startsWith('/xem-phim/')) {
-        window.history.pushState({}, '', `/xem-phim/${currentMovie.slug}/tap-${episodeSlug}`);
+        window.history.pushState({}, '', `/xem-phim/${currentMovie.slug}/tap-${episodeSlug}?server=${currentServerIndex}`);
     } else {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('episode', episodeSlug);
+        urlParams.set('server', currentServerIndex);
         window.history.pushState({}, '', 'watch.html?' + urlParams.toString());
     }
 
@@ -1834,7 +1999,7 @@ window.changeEpisode = function(episodeSlug) {
 function updateEpisodeNavButtons() {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length === 0 || !currentEpisode) return;
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const currentIndex = serverData.findIndex(ep => ep.slug === currentEpisode.slug);
+    const currentIndex = serverData.findIndex(ep => ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, ''));
     
     const prevBtn = document.getElementById('btn-prev-episode');
     const nextBtn = document.getElementById('btn-next-episode');
@@ -1864,7 +2029,7 @@ function updateEpisodeNavButtons() {
 function playPreviousEpisode() {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length === 0 || !currentEpisode) return;
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const currentIndex = serverData.findIndex(ep => ep.slug === currentEpisode.slug);
+    const currentIndex = serverData.findIndex(ep => ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, ''));
     if (currentIndex > 0) {
         window.changeEpisode(serverData[currentIndex - 1].slug);
     }
@@ -1873,7 +2038,7 @@ function playPreviousEpisode() {
 function playNextEpisode() {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length === 0 || !currentEpisode) return;
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const currentIndex = serverData.findIndex(ep => ep.slug === currentEpisode.slug);
+    const currentIndex = serverData.findIndex(ep => ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, ''));
     if (currentIndex < serverData.length - 1) {
         window.changeEpisode(serverData[currentIndex + 1].slug);
     }
@@ -1883,7 +2048,7 @@ function playNextEpisode() {
 function autoPlayNext() {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length === 0 || !currentEpisode) return;
     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
-    const currentIndex = serverData.findIndex(ep => ep.slug === currentEpisode.slug);
+    const currentIndex = serverData.findIndex(ep => ep.slug.replace(/^tap-/, '') === currentEpisode.slug.replace(/^tap-/, ''));
     
     // If it's the last episode, do nothing
     if (currentIndex >= serverData.length - 1) return;
@@ -2138,3 +2303,27 @@ function reportError() {
 
 
 
+
+// --- EVENT LISTENERS CHO TÌM KIẾM/SẮP XẾP TẬP PHIM (WATCH PAGE) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-episode-input');
+    const sortBtn = document.getElementById('sort-episodes-btn');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            window.episodeSearchTerm = e.target.value;
+            if (currentMovie && currentMovie.episodes) {
+                renderEpisodeList(currentMovie.episodes);
+            }
+        });
+    }
+    
+    if (sortBtn) {
+        sortBtn.addEventListener('click', () => {
+            window.episodeSortOrder = window.episodeSortOrder === 'asc' ? 'desc' : 'asc';
+            if (currentMovie && currentMovie.episodes) {
+                renderEpisodeList(currentMovie.episodes);
+            }
+        });
+    }
+});
