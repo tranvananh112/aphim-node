@@ -88,7 +88,8 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding-bottom: 0.5rem;
-    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
 }
 
 .country-scroll-container::-webkit-scrollbar {
@@ -99,7 +100,6 @@
 .landscape-card {
     flex: none;
     width: 180px;
-    scroll-snap-align: start;
     transition: all 0.3s ease;
 }
 

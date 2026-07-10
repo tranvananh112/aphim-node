@@ -5,13 +5,25 @@
 .portrait-card {
     flex: none;
     width: 140px; /* Mobile */
-    scroll-snap-align: start;
     transition: all 0.3s ease;
 }
 
 @media (min-width: 768px) {
     .portrait-card {
-        width: 175px; /* Kích thước chuẩn như hình */
+        /* Hiển thị 5 thẻ trên màn hình vừa */
+        flex: 0 0 calc((100% - 4rem) / 5);
+    }
+}
+@media (min-width: 1024px) {
+    .portrait-card {
+        /* Hiển thị 6 thẻ trên màn hình lớn */
+        flex: 0 0 calc((100% - 5rem) / 6);
+    }
+}
+@media (min-width: 1280px) {
+    .portrait-card {
+        /* Hiển thị chính xác 8 thẻ trên màn hình Desktop rộng (100% khít không dư) */
+        flex: 0 0 calc((100% - 7rem) / 8);
     }
 }
 

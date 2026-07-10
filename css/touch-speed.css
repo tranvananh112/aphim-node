@@ -4,7 +4,7 @@
    ============================================================ */
 
 /* ── 1. Xóa 300ms tap delay toàn site ──────────────────────
-   touch-action: manipulation = browser biết đây là single-tap,
+   
    không cần chờ để phát hiện double-tap zoom.
    Kết quả: click/touchend kích hoạt NGAY (0ms delay) ────── */
 a,
@@ -29,7 +29,7 @@ summary,
 .nav-item,
 [data-href],
 [onclick] {
-    touch-action: manipulation;
+    
     -webkit-tap-highlight-color: transparent;
     cursor: pointer;
     /* Ngăn text select khi tap nhanh */
@@ -195,7 +195,7 @@ body { /* removed overscroll-behavior-y to fix desktop wheel */
 
 /* Fix l?i rung l?c / hi?n to�n b? khung tr�n mobile khi vu?t ngang */
 [class*="overflow-x-auto"] {
-    touch-action: pan-x pan-y;
+    
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
 }
@@ -212,17 +212,17 @@ body { /* removed overscroll-behavior-y to fix desktop wheel */
 .mobile-thumb-wrapper,
 .cat-tab-container,
 .scrollbar-hide {
-    touch-action: pan-x pan-y !important;
+    
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior-x: contain !important;
     scroll-behavior: smooth !important;
 }
 
-/* 2. Chuyển snap về mandatory để tạo cảm giác lướt từng mục (item by item) giống các app xịn */
+/* 2. Chuyển snap từ mandatory (nhảy giật cục) sang proximity để lướt tay êm ái, dừng đúng vị trí ngón tay */
 .snap-mandatory,
 [style*="scroll-snap-type:x mandatory"],
 [style*="scroll-snap-type: x mandatory"] {
-    scroll-snap-type: x mandatory !important;
+    scroll-snap-type: x proximity !important;
 }
 
 /* 3. Khóa chết chiều ngang của toàn bộ trang web trên mobile - không bao giờ bị xô lệch layout ngang */
@@ -232,7 +232,7 @@ html, body {
     position: relative !important;
 }
 
-/* 4. Ngăn các thẻ phim bị co rút và buộc snap vào vị trí từng mục */
+/* 4. Ngăn các thẻ phim (movie card / thumbnail / button) bị co rút, nháy hình hay kéo lê khi lướt tay */
 .overflow-x-auto > *,
 .interests-wrapper > *,
 #heroThumbnails > *,
@@ -242,7 +242,6 @@ html, body {
     -webkit-user-select: none !important;
     -webkit-touch-callout: none !important;
     -webkit-user-drag: none !important;
-    scroll-snap-align: start !important;
 }
 
 /* 5. Ngăn ảnh trong các danh sách lướt ngang bị kéo nhầm (ghost drag) trên iOS/Android */

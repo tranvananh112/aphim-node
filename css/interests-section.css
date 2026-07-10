@@ -18,10 +18,9 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-snap-type: x mandatory;
-    touch-action: pan-x;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
 }
 
 .interests-wrapper::-webkit-scrollbar {
@@ -35,7 +34,6 @@
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    scroll-snap-align: start;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--card-color, #3b82f6);
     border: none;

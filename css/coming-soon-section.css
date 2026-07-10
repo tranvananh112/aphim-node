@@ -25,7 +25,6 @@
     position: relative;
     flex-shrink: 0;
     width: 100px;
-    scroll-snap-align: start;
 }
 
 @media (min-width: 768px) {

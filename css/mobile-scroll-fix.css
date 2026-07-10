@@ -1,80 +1,59 @@
 /* =====================================================
-   MOBILE SCROLL & TOUCH FIX v4
-   Fix đúng: dùng overscroll-behavior thay vì pan-x
-   Không làm khựng lướt dọc trang trên mobile
+   MOBILE SCROLL & TOUCH FIX v8
+   Khôi phục scroll ngang tự nhiên, loại bỏ các mã gây kẹt
    ===================================================== */
 
-/* ---- FIX 1: Tắt highlight cam/xanh toàn bộ slider ---- */
+/* ---- FIX 1: Tắt highlight xanh/cam khi chạm ---- */
 .overflow-x-auto *,
-.snap-x *,
 .scrollbar-hide * {
     -webkit-tap-highlight-color: transparent !important;
     -webkit-touch-callout: none;
-    user-select: none;
 }
 
-/* ---- FIX 2: Container scroll ngang ---- */
-/* KHÔNG dùng touch-action: pan-x — sẽ block lướt dọc trang!
-   Dùng overscroll-behavior-x: contain thay thế — nhẹ hơn, đúng hơn */
+/* ---- FIX 2: Container scroll ngang — Natural Momentum ---- */
 .overflow-x-auto,
 [class*="overflow-x-auto"],
 .scrollbar-hide,
-.snap-x {
-    /* Chặn scroll ngang lan ra ngoài container (không ảnh hưởng lướt dọc) */
-    overscroll-behavior-x: contain;
-    /* Scroll mượt trên iOS */
-    -webkit-overflow-scrolling: touch;
-    /* Tắt highlight */
-    -webkit-tap-highlight-color: transparent;
-    /* Ẩn scroll dọc trong slider */
-    overflow-y: hidden !important;
+.interests-wrapper,
+.country-scroll-container,
+[id*="Container"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scrollbar-width: none;
 }
 
-/* ---- FIX 3: Card chiều cao đồng đều ---- */
-.snap-x > *,
-.overflow-x-auto > * {
-    flex-shrink: 0;
-    align-self: flex-start;
+/* Ẩn scrollbar trên Webkit */
+.overflow-x-auto::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar,
+.interests-wrapper::-webkit-scrollbar,
+.country-scroll-container::-webkit-scrollbar {
+    display: none !important;
 }
 
-/* Ảnh poster cố định tỉ lệ 2:3 */
-.snap-x img,
-.overflow-x-auto img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    object-fit: cover;
-    object-position: center top;
-    flex-shrink: 0;
+/* ---- FIX 3: Đảm bảo Card không bị co rút (tránh mất scroll) ---- */
+.overflow-x-auto > *,
+.interests-wrapper > *,
+.country-scroll-container > *,
+[id*="Container"] > * {
+    flex-shrink: 0 !important;
 }
 
-/* ---- FIX 4: CLICK NHANH + CHÍNH XÁC ---- */
-/* Xóa 300ms double-tap delay — nhận click ngay */
-a, button, [onclick],
-[role="button"],
-[class*="card"],
-[class*="movie-item"],
-[class*="film-item"],
-[class*="premium-card"] {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    cursor: pointer;
-}
-
-/* ---- FIX 5: Hover chỉ trên desktop ---- */
+/* ---- FIX 4: Desktop — giữ hover effect ---- */
 @media (hover: hover) and (pointer: fine) {
-    .snap-x a:hover,
-    .overflow-x-auto a:hover {
+    .overflow-x-auto a:hover,
+    .interests-wrapper a:hover,
+    .country-scroll-container a:hover {
         opacity: 0.85;
     }
 }
 
+/* ---- FIX 5: Mobile — tắt hover (tránh bị sáng khung sau khi chạm) ---- */
 @media (hover: none) and (pointer: coarse) {
-    /* Mobile: tắt hover để không bị sáng khung */
-    .snap-x a:hover,
-    .snap-x div:hover,
     .overflow-x-auto a:hover,
     .overflow-x-auto div:hover,
+    .interests-wrapper a:hover,
+    .interests-wrapper div:hover,
     [class*="card"]:hover,
     [class*="movie-item"]:hover,
     [class*="film-item"]:hover,
@@ -82,27 +61,5 @@ a, button, [onclick],
         transform: none !important;
         box-shadow: none !important;
         opacity: 1 !important;
-    }
-}
-
-/* ---- FIX 6: Mobile ---- */
-@media (max-width: 768px) {
-    /* Xóa 300ms tap delay toàn trang — KHÔNG block scroll */
-    a, button, [onclick], [role="button"] {
-        touch-action: manipulation;
-    }
-
-    .overflow-x-auto,
-    .snap-x,
-    .scrollbar-hide {
-        /* Dùng overscroll thay vì pan-x để không block lướt dọc */
-        overscroll-behavior-x: contain;
-        overflow-y: hidden !important;
-        scroll-snap-type: x mandatory;
-    }
-
-    .snap-x > *,
-    .overflow-x-auto > * {
-        align-self: flex-start !important;
     }
 }

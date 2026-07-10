@@ -1,14 +1,24 @@
 /* ============================================================
-   A PHIM — Bảng Xếp Hạng Top Phim Hot (Premium Staggered Layout)
+   A PHIM — Bảng Xếp Hạng Top Phim Hot (Fixed Height — No Layout Shift)
    ============================================================ */
 
+/* ── Container: align-items: flex-start, KHÔNG dùng items-end ── */
+#topMoviesContainer,
+#comingSoonContainer,
+[id$="Container"].flex {
+    align-items: flex-start !important;
+}
+
+/* ── Ranking Item: cố định chiều cao ── */
 .ranking-item {
     flex: none;
-    width: 140px; /* Mobile */
-    scroll-snap-align: start;
-    transition: transform 0.2s ease-out, z-index 0.2s ease-out;
-    perspective: 1000px; /* Tạo không gian 3D */
-    padding: 1rem 0;
+    width: 140px;               /* Mobile */
+    /* Cố định chiều cao = poster + info cứng */
+    display: flex;
+    flex-direction: column;
+    padding: 0;                 /* Bỏ padding để không làm lệch */
+    margin: 0 4px;
+    /* Tắt hiệu ứng so le trên mobile */
 }
 
 @media (min-width: 768px) {
@@ -17,39 +27,50 @@
     }
 }
 
-/* Lồi lõm (Staggered) Effect: So le cao thấp và nghiêng nhẹ */
-.ranking-item:nth-child(odd) {
-    transform: translateY(-8px) rotateZ(-1.5deg);
-}
-
+/* Mobile: Bỏ hoàn toàn staggered effect — nguồn gây lệch chiều cao */
+.ranking-item:nth-child(odd),
 .ranking-item:nth-child(even) {
-    transform: translateY(8px) rotateZ(1.5deg);
+    transform: none !important;
 }
 
-/* Hover state: Fast, non-laggy lift */
-.ranking-item:hover {
-    transform: translateY(-15px) scale(1.05) rotateZ(0deg) !important;
-    z-index: 20;
+/* Desktop hover — chỉ scale nhẹ, không translate */
+@media (hover: hover) and (pointer: fine) {
+    .ranking-item:hover {
+        transform: scale(1.03) !important;
+        z-index: 20;
+    }
 }
 
+/* ── Poster Wrapper: cố định tỉ lệ 2:3 ── */
 .ranking-poster-w {
     position: relative;
-    aspect-ratio: 2 / 3;
+    width: 100%;
+    aspect-ratio: 2 / 3;       /* Cố định tỉ lệ, không bị text đẩy */
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 0.75rem;
     background: #0f1016;
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    /* Dùng box-shadow thay border để không thay đổi kích thước */
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.08), 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.2s ease;
+    flex-shrink: 0;             /* Không co lại */
 }
 
 /* Hover border highlight */
-.ranking-item:hover .ranking-poster-w {
-    border-color: rgba(255, 215, 0, 0.5);
+@media (hover: hover) and (pointer: fine) {
+    .ranking-item:hover .ranking-poster-w {
+        box-shadow: 0 0 0 1.5px rgba(255, 215, 0, 0.5), 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
 }
 
-/* Badges at bottom */
+/* ── Rank #1: dùng outline thay border — không ảnh hưởng kích thước ── */
+.ranking-item[data-rank="1"] .ranking-poster-w {
+    outline: 3px solid #ffd700;
+    outline-offset: -1px;       /* Vào trong, không làm card to hơn */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    /* KHÔNG dùng transform: scale() — gây lệch layout */
+}
+
+/* ── Badges at bottom ── */
 .ranking-badges-bottom {
     position: absolute;
     bottom: 8px;
@@ -71,7 +92,7 @@
 .badge-lt { background: #2563eb; border-radius: 4px; }
 .badge-tm { background: #0ea5e9; border-radius: 4px; }
 
-/* Circle Icon bottom right */
+/* ── Circle Icon bottom right ── */
 .ranking-icon-circle {
     position: absolute;
     bottom: 8px;
@@ -93,13 +114,7 @@
     color: white;
 }
 
-/* Rank 1 Highlight - Much thicker */
-.ranking-item[data-rank="1"] .ranking-poster-w {
-    border: 3px solid #ffd700;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    transform: scale(1.02);
-}
-
+/* Poster image */
 .ranking-poster-w img {
     width: 100%;
     height: 100%;
@@ -107,29 +122,34 @@
     transition: transform 0.3s ease-out;
 }
 
-/* Zoom image slightly on hover like other movie cards */
-.ranking-item:hover .ranking-poster-w img {
-    transform: scale(1.08);
+@media (hover: hover) and (pointer: fine) {
+    .ranking-item:hover .ranking-poster-w img {
+        transform: scale(1.08);
+    }
 }
 
-/* Big Number Layout - horizontal with text */
+/* ── Info Row: cố định chiều cao ── */
 .ranking-info-w {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    padding: 0.5rem 0;
+    gap: 0.75rem;
+    padding: 8px 4px;
+    /* Cố định chiều cao để tất cả card có info row bằng nhau */
+    min-height: 70px;
+    flex-shrink: 0;
 }
 
 .rank-big-number {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     font-style: italic;
     line-height: 1;
     color: #ffd700;
     text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
     font-family: 'Outfit', sans-serif;
-    min-width: 40px;
+    min-width: 36px;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .ranking-text-content {
@@ -138,7 +158,7 @@
 }
 
 .ranking-title {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 700;
     color: #fff;
     white-space: nowrap;
@@ -148,7 +168,7 @@
 }
 
 .ranking-sub {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
     overflow: hidden;
@@ -157,12 +177,15 @@
 }
 
 .ranking-extra {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #fff;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Navigation arrows */
+/* ── Navigation arrows ── */
 .ranking-nav {
     position: absolute;
     top: 50%;
@@ -184,13 +207,4 @@
 
 .top-movies-section:hover .ranking-nav {
     opacity: 1;
-}
-
-
-/* Mobile Fix: Loại bỏ hiệu ứng so le nghiêng/nhảy cao thấp trên mobile để danh sách thẳng hàng, không bị lệch khỏi đường ngăn cách */
-@media (max-width: 767px) {
-    .ranking-item:nth-child(odd),
-    .ranking-item:nth-child(even) {
-        transform: none !important;
-    }
 }
