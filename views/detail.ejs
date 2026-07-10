@@ -114,24 +114,24 @@
                     </div>
 
                     <div
-                        class="movie-actions-container flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 lg:gap-4 mt-4 md:mt-8 mb-4 md:mb-10 w-full">
+                        class="movie-actions-container flex flex-nowrap items-center justify-center lg:justify-start gap-2 sm:gap-3 lg:gap-4 mt-5 md:mt-8 mb-0 md:mb-10 w-full">
                         <a href="/watch" id="watchNowBtn"
-                            class="group relative flex-none px-6 sm:px-8 lg:px-10 py-3 lg:py-4 bg-red-600 text-white font-bold rounded-full shadow-lg shadow-red-600/40 hover:shadow-red-600/60 hover:-translate-y-1 transition-all duration-300">
-                            <div class="flex items-center justify-center gap-1 sm:gap-2 lg:gap-3">
-                                <div id="play-btn-lottie" style="width:36px; height:36px;"></div>
-                                <span class="text-xs sm:text-sm lg:text-lg tracking-wide whitespace-nowrap">XEM
-                                    NGAY</span>
-                            </div>
+                            class="group relative px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-red-600 text-white font-semibold rounded-full shadow-lg shadow-red-600/40 hover:shadow-red-600/60 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 flex-shrink-0">
+                            <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">play_arrow</span>
+                            <span class="hidden lg:inline text-base whitespace-nowrap uppercase tracking-wide">XEM NGAY</span>
+                            <!-- For mobile, we might want XEM NGAY visible, but secondary buttons hide it. We'll show it on mobile to be safe: -->
+                            <!-- Wait, original had it visible on mobile. Let's keep it visible on mobile: -->
+                            <span class="lg:hidden text-xs sm:text-sm whitespace-nowrap ml-1 sm:ml-2 uppercase font-bold">XEM NGAY</span>
                         </a>
                         <button
-                            class="w-[52px] h-[52px] lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0">
-                            <span class="material-icons-round text-2xl lg:text-xl">videocam</span>
+                            class="px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0">
+                            <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">videocam</span>
                             <span class="hidden lg:inline text-base whitespace-nowrap">Trailer</span>
                         </button>
                     </div>
 
                     <!-- MOBILE EPISODES (Hidden on desktop) -->
-                    <div class="block lg:hidden w-full mt-4 mb-8">
+                    <div class="block lg:hidden w-full mt-6 mb-4">
                         <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1 h-6 bg-red-600 rounded-full shadow-[0_0_10px_rgba(236,19,19,0.5)]"></span>
                             Danh sách tập phim
@@ -151,7 +151,7 @@
                             </button>
                         </div>
 
-                        <div class="max-h-[300px] overflow-y-auto custom-scrollbar pr-1.5 pb-2">
+                        <div class="overflow-y-auto custom-scrollbar pr-1.5 pb-2" style="max-height: 260px;">
                             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2" id="episodes-mobile">
                                 <!-- JS will render episodes here -->
                             </div>
