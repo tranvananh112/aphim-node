@@ -109,6 +109,17 @@
     /* ===== MOBILE HERO BRIGHTNESS FIX (Inline = không bị cache) ===== */
     /* Ép buộc hero sáng bình thường trên điện thoại, không cần chờ JS */
     @media (max-width: 1023px) {
+        /* Chống vỡ layout (FOUC/CLS) trên điện thoại khi JS đang load */
+        .movie-content-zone {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+        }
+        .movie-content-zone.loaded {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* 1. Xóa opacity ẩn → hiển thị ngay cả khi JS chưa chạy xong */
         #heroImage {
             opacity: 1 !important;

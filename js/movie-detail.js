@@ -1,4 +1,24 @@
 // Movie Detail Page Script
+// --- Anti-FOUC CSS injection (Mobile layout jump fix) ---
+if (!document.getElementById('anti-fouc-style')) {
+    const style = document.createElement('style');
+    style.id = 'anti-fouc-style';
+    style.innerHTML = `
+        @media (max-width: 1023px) {
+            .movie-content-zone {
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+            }
+            .movie-content-zone.loaded {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 let currentMovie = null;
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -49,6 +69,11 @@ async function loadMovieDetail(slug) {
             setupFavoriteButton();
             setupRatingSystem();
             loadRatingsAndComments(slug);
+            
+            // Fade in content smoothly on mobile after render
+            setTimeout(() => {
+                document.querySelector('.movie-content-zone')?.classList.add('loaded');
+            }, 50);
         } else {
             showError('Không thể tải thông tin phim');
         }
@@ -70,6 +95,14 @@ function renderMovieDetail(movie) {
     // Update poster
     const posterImg = document.querySelector('.aspect-\\[2\\/3\\] img');
     if (posterImg) {
+        posterImg.style.opacity = '0';
+        posterImg.onload = () => {
+            posterImg.style.opacity = '';
+            posterImg.animate([
+                { opacity: 0, transform: 'scale(0.95)' },
+                { opacity: 1, transform: 'scale(1)' }
+            ], { duration: 600, easing: 'ease-out' });
+        };
         posterImg.src = movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 600, 85, true);
         posterImg.alt = `Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub tại APhim`;
     }
@@ -77,6 +110,15 @@ function renderMovieDetail(movie) {
     // Update background
     const bgImg = document.querySelector('.absolute.top-0 img');
     if (bgImg) {
+        bgImg.style.opacity = '0';
+        bgImg.onload = () => {
+            const targetOpacity = getComputedStyle(bgImg).opacity;
+            bgImg.style.opacity = '';
+            bgImg.animate([
+                { opacity: 0 },
+                { opacity: targetOpacity }
+            ], { duration: 800, easing: 'ease-out' });
+        };
         bgImg.src = movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 1200, 90, true);
     }
 
