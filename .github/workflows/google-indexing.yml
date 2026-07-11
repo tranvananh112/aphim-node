@@ -1,0 +1,26 @@
+name: Auto Google Indexing
+
+on:
+  schedule:
+    # Chạy 2 lần 1 ngày (Vào 07:00 sáng và 19:00 tối giờ Việt Nam)
+    - cron: '0 0,12 * * *'
+  workflow_dispatch: # Cho phép bấm nút chạy bằng tay trên web GitHub
+
+jobs:
+  index_movies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Lấy mã nguồn về máy chủ Github
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Cài đặt Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📦 Cài đặt thư viện (googleapis)
+        run: npm install
+
+      - name: 🚀 Chạy kịch bản ép Google Index
+        run: npm run seo:index
