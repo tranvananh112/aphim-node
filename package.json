@@ -5,6 +5,7 @@
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
+        "seo:index": "node scripts/sync-indexing.js",
         "dev": "nodemon server.js",
         "proxy": "node proxy-server.js",
         "start-all": "concurrently \"npm start\" \"npm run proxy\"",
@@ -19,12 +20,13 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "axios": "^1.13.6",
+        "axios": "^1.18.1",
         "composio-core": "^0.5.39",
         "cors": "^2.8.5",
         "dotenv": "^17.4.2",
         "ejs": "^6.0.1",
         "express": "^4.18.2",
+        "googleapis": "^173.0.0",
         "jimp": "^0.16.13"
     },
     "devDependencies": {
