@@ -29,7 +29,7 @@
 
         banners: [
             {
-                img: '/ads/catfish/vsbet.gif',
+                img: '/ads/catfish/728x90-AFF-Cup.gif',
                 url: 'https://vsbet276.com/p/BSYk',
                 label: 'VSBet — Nạp Đầu Nhận 68,888,000đ'
             },
