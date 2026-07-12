@@ -17,13 +17,20 @@
     display: flex;
     flex-direction: column;
     padding: 0;                 /* Bỏ padding để không làm lệch */
-    margin: 0 4px;
-    /* Tắt hiệu ứng so le trên mobile */
+    gap: 12px;
 }
 
 @media (min-width: 768px) {
     .ranking-item {
         width: 190px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .ranking-item {
+        /* Hiển thị chính xác 7 thẻ trên màn hình Desktop để vừa khít 100% container (gap-7 = 1.75rem * 6 = 10.5rem) */
+        flex: 0 0 calc((100% - 10.5rem) / 7);
+        width: calc((100% - 10.5rem) / 7);
     }
 }
 
@@ -207,4 +214,38 @@
 
 .top-movies-section:hover .ranking-nav {
     opacity: 1;
+}
+
+/* --- ĐỒNG BỘ CĂN LỀ Y HỆT MỤC "BẠN ĐANG QUAN TÂM GÌ" --- */
+@media (min-width: 1024px) {
+    #topMoviesContainer,
+    #romanceContainer,
+    #animationContainer,
+    #actionMoviesContainer,
+    #adventureContainer,
+    #mythologyRankingContainer,
+    #vietnamMoviesGrid,
+    #comingSoonContainer,
+    #latestMoviesGrid,
+    #comedyContainer,
+    #dramaContainer,
+    #sofaflixContainer {
+        margin-left: -1.25rem !important;
+        margin-right: -1.25rem !important;
+        width: calc(100% + 2.5rem) !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+/* Xóa margin của thẻ đầu tiên/cuối cùng để sát mép hoàn toàn khi áp dụng margin âm */
+[id$="Container"] > div:first-child,
+[id$="Grid"] > div:first-child,
+.ranking-item:first-child {
+    margin-left: 0 !important;
+}
+[id$="Container"] > div:last-child,
+[id$="Grid"] > div:last-child,
+.ranking-item:last-child {
+    margin-right: 0 !important;
 }

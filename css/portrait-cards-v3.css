@@ -10,20 +10,20 @@
 
 @media (min-width: 768px) {
     .portrait-card {
-        /* Hiển thị 5 thẻ trên màn hình vừa */
         flex: 0 0 calc((100% - 4rem) / 5);
+        width: calc((100% - 4rem) / 5);
     }
 }
 @media (min-width: 1024px) {
     .portrait-card {
-        /* Hiển thị 6 thẻ trên màn hình lớn */
         flex: 0 0 calc((100% - 5rem) / 6);
+        width: calc((100% - 5rem) / 6);
     }
 }
 @media (min-width: 1280px) {
     .portrait-card {
-        /* Hiển thị chính xác 8 thẻ trên màn hình Desktop rộng (100% khít không dư) */
         flex: 0 0 calc((100% - 7rem) / 8);
+        width: calc((100% - 7rem) / 8);
     }
 }
 
