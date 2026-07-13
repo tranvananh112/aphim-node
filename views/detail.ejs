@@ -51,10 +51,15 @@
                 <span id="breadcrumb-movie-name" class="text-white font-semibold"></span>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-16 mt-4 lg:mt-0">
-                <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-4 lg:gap-16 mt-[-40px] lg:mt-0 relative z-10">
+                <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-4 lg:gap-6">
+                    <style>
+                        .custom-mobile-poster { width: 100%; max-width: 280px; }
+                        @media (min-width: 640px) { .custom-mobile-poster { max-width: 320px; } }
+                        @media (min-width: 1024px) { .custom-mobile-poster { max-width: none; } }
+                    </style>
                     <div
-                        class="w-[150px] sm:w-[200px] lg:w-full mx-auto relative aspect-[2/3] rounded-2xl lg:rounded-xl overflow-hidden shadow-2xl shadow-black/80 lg:shadow-black/50 group border border-white/5 bg-[#1a1c29]">
+                        class="custom-mobile-poster mx-auto relative aspect-[2/3] rounded-[16px] lg:rounded-xl overflow-hidden shadow-2xl shadow-black/90 lg:shadow-black/50 group border border-white/10 lg:border-white/5 bg-[#1a1c29]">
                         <img alt="Poster"
                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                             src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" fetchpriority="high" />
@@ -93,8 +98,8 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-8 xl:col-span-9 flex flex-col justify-start lg:justify-end items-center lg:items-start pb-0 text-center lg:text-left">
-                    <h1 class="text-4xl lg:text-7xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+                <div class="lg:col-span-8 xl:col-span-9 flex flex-col justify-start lg:justify-end items-center lg:items-start pb-0 text-center lg:text-left -mt-2 lg:mt-0">
+                    <h1 class="text-[26px] sm:text-4xl lg:text-7xl font-extrabold text-white mb-2 lg:mb-4 leading-tight tracking-tight">
                         Stranger Things: <br />
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Thế giới
                             ngược (Mùa 4)</span>
@@ -116,7 +121,7 @@
                     <div
                         class="movie-actions-container flex flex-nowrap items-center justify-center lg:justify-start gap-2 sm:gap-3 lg:gap-4 mt-5 md:mt-8 mb-0 md:mb-10 w-full">
                         <a href="/watch" id="watchNowBtn"
-                            class="group relative px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-red-600 text-white font-semibold rounded-full shadow-lg shadow-red-600/40 hover:shadow-red-600/60 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 flex-shrink-0">
+                            class="group relative px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-red-600 text-white font-semibold rounded-full shadow-lg shadow-red-600/40 hover:shadow-red-600/60 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 flex-shrink-0">
                             <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">play_arrow</span>
                             <span class="hidden lg:inline text-base whitespace-nowrap uppercase tracking-wide">XEM NGAY</span>
                             <!-- For mobile, we might want XEM NGAY visible, but secondary buttons hide it. We'll show it on mobile to be safe: -->
@@ -124,7 +129,7 @@
                             <span class="lg:hidden text-xs sm:text-sm whitespace-nowrap ml-1 sm:ml-2 uppercase font-bold">XEM NGAY</span>
                         </a>
                         <button
-                            class="px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0">
+                            class="px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0">
                             <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">videocam</span>
                             <span class="hidden lg:inline text-base whitespace-nowrap">Trailer</span>
                         </button>
