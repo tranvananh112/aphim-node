@@ -92,8 +92,21 @@
 <link rel="stylesheet" href="/css/avatar-frames.css?v=21">
 
 <style>
-    .action-premium-card { position: relative; width: 280px; flex-shrink: 0; margin-bottom: 20px; transition: transform 0.3s ease; scroll-snap-align: start; }
-    .action-premium-card:hover { transform: translateY(-5px); }
+    .action-premium-card { position: relative; width: 280px; flex-shrink: 0; margin-bottom: 20px; transition: transform 0.3s ease; }
+    /* Chỉ hover trên desktop, mobile không dùng :hover */
+    @media (hover: hover) { .action-premium-card:hover { transform: translateY(-5px); } }
+    /* Tắt hiệu ứng sáng xanh khi chạm trên mobile */
+    .action-premium-card,
+    .action-premium-card a,
+    .action-premium-card img,
+    #romanceContainer, #comedyContainer, #dramaContainer,
+    #actionMoviesContainer, #adventureContainer, #animationContainer,
+    #topMoviesContainer, #comingSoonContainer, #latestMoviesGrid,
+    #mythologyRankingContainer, #vietnamMoviesGrid, #sofaflixContainer {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        user-select: none;
+    }
     .action-backdrop-w { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #111; }
     .action-backdrop-w img { width: 100%; height: 100%; object-fit: cover; }
     .action-small-poster { position: absolute; bottom: 10px; left: 10px; width: 65px; aspect-ratio: 2/3; border-radius: 6px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); z-index: 10; background: #000; }
@@ -286,9 +299,12 @@
         if (typeof EventTarget !== 'undefined') {
             const originalAddEventListener = EventTarget.prototype.addEventListener;
             EventTarget.prototype.addEventListener = function (type, listener, options) {
+                // Chỉ ép passive trên touchmove/touchstart nếu options KHÔNG tự set passive=false
+                // (cho phép section-swipe.js dùng preventDefault để chặn cuộn trang khi lướt ngang)
                 if (type === 'touchstart' || type === 'touchmove' || type === 'wheel' || type === 'mousewheel') {
                     if (typeof options === 'boolean') options = { capture: options, passive: true };
                     else if (typeof options === 'object' && options.passive === undefined) options.passive = true;
+                    // Nếu options.passive đã được set rõ ràng (true hoặc false) → giữ nguyên
                 }
                 return originalAddEventListener.call(this, type, listener, options);
             };

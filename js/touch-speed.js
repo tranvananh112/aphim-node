@@ -104,6 +104,19 @@
     var _touchStartY = 0;
     var _touchTarget = null;
     var _touchHandled = false;
+    var _rippleEl = null;     // Element đang có ripple
+    var _swipeCancelled = false; // True khi phát hiện là swipe ngang
+
+    // Hàm xóa ripple ngay lập tức (gọi khi swipe được xác nhận)
+    function cancelRipple() {
+        if (_rippleEl) {
+            _rippleEl.classList.remove('tap-ripple');
+            // Xóa tất cả dot đang animated
+            var dots = _rippleEl.querySelectorAll('.tap-ripple-dot');
+            dots.forEach(function(d) { if (d.parentNode) d.parentNode.removeChild(d); });
+            _rippleEl = null;
+        }
+    }
 
     document.addEventListener('touchstart', function (e) {
         var target = e.target.closest('a[href], [data-href], .mm-card-item[href], .mm-nav-full[href]');
@@ -114,11 +127,14 @@
         _touchStartY = e.touches[0].clientY;
         _touchTarget = target;
         _touchHandled = false;
+        _swipeCancelled = false;
+        _rippleEl = null;
 
         // Visual feedback ngay lập tức
         var rippleEl = target.classList.contains('tap-ripple') ? target : target;
         rippleEl.classList.add('tap-ripple');
         createRipple(rippleEl, e);
+        _rippleEl = rippleEl; // Lưu để có thể cancel sau
 
         // ĐÃ TẮT: Prefetch URL ngay khi chạm để tránh lỗi 503 (DDOS tự tạo)
         // var url = target.getAttribute('href') || target.getAttribute('data-href');
@@ -158,8 +174,18 @@
         _touchTarget = null;
     }, { passive: false });
 
-    document.addEventListener('touchmove', function () {
-        _touchTarget = null; // Cancel khi scroll
+    document.addEventListener('touchmove', function (e) {
+        if (!_touchTarget) return;
+        var dx = Math.abs(e.touches[0].clientX - _touchStartX);
+        var dy = Math.abs(e.touches[0].clientY - _touchStartY);
+        // Nếu lướt ngang nhiều hơn dọc → là swipe → hủy ripple ngay
+        if (dx > 8 && dx > dy * 0.8 && !_swipeCancelled) {
+            _swipeCancelled = true;
+            cancelRipple();
+            _touchTarget = null;
+        } else if (dy > 10) {
+            _touchTarget = null; // scroll dọc → cancel
+        }
     }, { passive: true });
 
     // ── Prefetch on hover (desktop) ──────────────────────────
