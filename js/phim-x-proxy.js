@@ -3,7 +3,7 @@
 
 const PROXY_API = (typeof API_CONFIG !== 'undefined' && API_CONFIG.BACKEND_URL) 
     ? API_CONFIG.BACKEND_URL + '/phimx-proxy' 
-    : 'https://a-phim-production-f6a2.up.railway.app/api/phimx-proxy';
+    : 'https://a-phim-production-953d.up.railway.app/api/phimx-proxy';
 
 const S = {
     currentServer: 2, // 1 = Pornhub, 2 = Eporner

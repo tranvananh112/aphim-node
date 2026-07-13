@@ -177,7 +177,7 @@ const realtimeApiUrl = (typeof API_CONFIG !== 'undefined' && API_CONFIG.BACKEND_
     ? API_CONFIG.BACKEND_URL 
     : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000/api'
-        : 'https://a-phim-production-f6a2.up.railway.app/api');
+        : 'https://a-phim-production-953d.up.railway.app/api');
 const realtimeSync = new RealtimeSync(realtimeApiUrl);
 
 // Export for use in other scripts
