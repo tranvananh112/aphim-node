@@ -35,7 +35,7 @@
             },
             {
                 img: '/ads/catfish/colatv.gif',
-                url: 'https://colatv.live',
+                url: 'https://colatv77.live',
                 label: 'ColaTV — Xem Phim HD Miễn Phí'
             },
             {
