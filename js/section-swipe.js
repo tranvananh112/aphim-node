@@ -85,6 +85,8 @@
         var active = false;
         var totalDx = 0;
 
+        var startIdx = 0;
+
         // TOUCHSTART
         el.addEventListener('touchstart', function (e) {
             if (e.touches.length !== 1) { active = false; return; }
@@ -92,10 +94,15 @@
             startX = lastX = t.clientX;
             startY = t.clientY;
             startTime = Date.now();
-            startScrollLeft = el.scrollLeft;
             dir = null;
             active = true;
             totalDx = 0;
+            
+            var cards = getCards(el);
+            startIdx = cards.length ? getNearestIdx(el, cards) : 0;
+            
+            // Giữ cho trình duyệt không dùng thao tác vuốt ngang để back/forward trang
+            el.style.touchAction = 'pan-y';
         }, { passive: true });
 
         // TOUCHMOVE
@@ -112,17 +119,18 @@
             }
 
             if (dir === 'h') {
-                // Chặn trang cuộn dọc (passive: false đã được đặt đúng)
-                e.preventDefault();
-                el.scrollLeft = startScrollLeft - dx;
+                // CHỈ cập nhật biến, KHÔNG preventDefault và KHÔNG gán scrollLeft
+                // Để trình duyệt cuộn mượt native 100% bằng compositor thread (GPU)
                 totalDx = Math.abs(dx);
                 lastX = t.clientX;
             }
-        }, { passive: false });
+        }, { passive: true });
 
         // TOUCHEND
         el.addEventListener('touchend', function () {
             active = false;
+            el.style.touchAction = '';
+            
             if (dir !== 'h') { dir = null; return; }
 
             var dx = lastX - startX;
@@ -136,11 +144,11 @@
             var target = cur;
 
             var shouldMove = totalDx > SNAP_THRESH || vel > VEL_THRESH;
-            if (shouldMove) {
-                // dx âm = ngón lướt sang trái = tiến (index tăng)
+            if (shouldMove && cur === startIdx) {
                 target = dx < 0 ? cur + 1 : cur - 1;
             }
 
+            // Gọi scrollTo(smooth) sẽ ngắt native momentum và trượt mượt về item chuẩn xác
             snapTo(el, cards, target);
 
             // Chặn click link nếu thực sự đã swipe (không phải tap)
@@ -158,6 +166,7 @@
 
         el.addEventListener('touchcancel', function () {
             active = false;
+            el.style.touchAction = '';
             dir = null;
             totalDx = 0;
         }, { passive: true });

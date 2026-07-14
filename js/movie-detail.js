@@ -253,11 +253,16 @@ function renderMovieDetail(movie) {
     }
 
     // Update description
-    const descElement = document.querySelector('.mb-10 p') || document.querySelector('.mb-10.max-w-4xl p');
+    const descElement = document.getElementById('movie-content');
     if (descElement) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = movie.content;
-        descElement.textContent = tempDiv.textContent || 'Chưa có mô tả';
+        descElement.innerHTML = movie.content || 'Chưa có mô tả';
+    } else {
+        const oldDescElement = document.querySelector('.mb-10 p') || document.querySelector('.mb-10.max-w-4xl p');
+        if (oldDescElement) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = movie.content;
+            oldDescElement.textContent = tempDiv.textContent || 'Chưa có mô tả';
+        }
     }
 
     // Update categories and actors
@@ -1002,7 +1007,7 @@ function setupFavoriteButton() {
     const isFav = userService.isFavorite(currentMovie.slug);
 
     const favBtn = document.createElement('button');
-    favBtn.className = 'px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
+    favBtn.className = 'px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
     favBtn.innerHTML = `
         <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">${isFav ? 'favorite' : 'favorite_border'}</span>
         <span class="hidden lg:inline text-base whitespace-nowrap">${isFav ? 'Đã lưu' : 'Lưu phim'}</span>
@@ -1028,7 +1033,7 @@ function setupFavoriteButton() {
 
     // ── Playlist button ──────────────────────────────────
     const plBtn = document.createElement('button');
-    plBtn.className = 'px-4 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
+    plBtn.className = 'px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
     plBtn.innerHTML = `
         <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">playlist_add</span>
         <span class="hidden lg:inline text-base whitespace-nowrap">Thêm vào</span>

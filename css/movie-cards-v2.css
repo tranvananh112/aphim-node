@@ -40,6 +40,7 @@
     padding-top: 150%; /* 2:3 aspect ratio */
     overflow: hidden;
     background: var(--bg-elevated, #1a1b2e);
+    border-radius: var(--radius-card, 12px);
 }
 
 .movie-card-v2 .card-poster img {
