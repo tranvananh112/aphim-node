@@ -101,6 +101,9 @@
             var cards = getCards(el);
             startIdx = cards.length ? getNearestIdx(el, cards) : 0;
             
+            // Lưu lại vị trí cuộn ban đầu để tracking ngón tay
+            startScrollLeft = el.scrollLeft;
+            
             // Giữ cho trình duyệt không dùng thao tác vuốt ngang để back/forward trang
             el.style.touchAction = 'pan-y';
         }, { passive: true });
@@ -119,10 +122,11 @@
             }
 
             if (dir === 'h') {
-                // CHỈ cập nhật biến, KHÔNG preventDefault và KHÔNG gán scrollLeft
-                // Để trình duyệt cuộn mượt native 100% bằng compositor thread (GPU)
                 totalDx = Math.abs(dx);
                 lastX = t.clientX;
+                
+                // Kéo mượt ngay tức thì theo ngón tay người dùng
+                el.scrollLeft = startScrollLeft - dx;
             }
         }, { passive: true });
 

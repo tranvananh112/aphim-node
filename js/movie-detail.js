@@ -232,7 +232,7 @@ function renderMovieDetail(movie) {
     const infoContainer = document.querySelector('.movie-info-container') || document.querySelector('.flex.flex-wrap.items-center.gap-4.mb-8');
     if (infoContainer) {
         // Wrap on mobile so badges don't get hidden
-        infoContainer.className = 'movie-info-container flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 md:gap-4 mb-0 md:mb-8 text-[11px] sm:text-sm md:text-base';
+        infoContainer.className = 'movie-info-container flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 md:gap-4 mb-0 md:mb-0 text-[11px] sm:text-sm md:text-base w-full';
 
         const avgRating = ratingService.getAverageRating(movie.slug);
         const ratings = ratingService.getRatings(movie.slug);
@@ -356,7 +356,7 @@ function renderVersions(movie) {
     }
 
     const versionsHTML = `
-        <div class="w-full mt-4 mb-2">
+        <div class="w-full mt-0 mb-4">
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 Các bản chiếu
             </h3>
@@ -675,7 +675,7 @@ function addMovieMetadata(movie) {
     const metadataContainer = document.querySelector('.lg\\:col-span-8');
     if (!metadataContainer) return;
 
-    const descSection = metadataContainer.querySelector('.mb-10.max-w-4xl') || metadataContainer.querySelector('#movie-content-section') || metadataContainer.querySelector('.mb-10.w-full.text-left');
+    const descSection = metadataContainer.querySelector('#movie-content-section') || metadataContainer.querySelector('.mb-10.max-w-4xl') || metadataContainer.querySelector('.mb-10.w-full.text-left') || metadataContainer.querySelector('.mb-8.w-full.text-left');
     if (!descSection) return;
 
     // Build metadata cards FIRST
