@@ -21,9 +21,12 @@
 
     // ── Danh sách container cần xử lý ───────────────────────────────────────
     var CONTAINER_IDS = [
+        'heroThumbnails',
+        'interestsContainer',
         'topMoviesContainer',
         'romanceContainer',
         'animationContainer',
+        'tc-featured-container',
         'actionMoviesContainer',
         'adventureContainer',
         'mythologyRankingContainer',

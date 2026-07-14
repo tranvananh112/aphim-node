@@ -194,7 +194,7 @@
                 <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left lg:-ml-5" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
                     Bạn đang quan tâm gì?
                 </h3>
-                <div class="interests-wrapper scrollbar-hide pt-4 pb-0 mb-0 items-start">
+                <div id="interestsContainer" class="interests-wrapper scrollbar-hide pt-4 pb-0 mb-0 items-start">
                     <!-- 1. Phim Bộ -->
                     <div class="interest-card" style="--card-color: #8b5cf6" data-api="danh-sach/phim-bo"
                         onclick="location.href = '/danh-sach?list=phim-bo'">
@@ -1734,67 +1734,12 @@
     <script src="/js/movie-slider.js?v=3"></script>
 
     <!-- Section Swipe: Snap-to-card universal cho mọi section phim -->
-    <script src="/js/section-swipe.js?v=5"></script>
+    <script src="/js/section-swipe.js?v=6" defer></script>
 
     <!-- Catfish banner disabled -->
 
 
 <%- include('partials/chat') %>
-
-    <!-- ====== MOBILE SWIPE GUARD — Phân biệt vuốt ngang vs nhấn chọn ====== -->
-    <script>
-    (function() {
-        var SWIPE_THRESHOLD = 8; // px — nếu ngón tay di chuyển > 8px = đang vuốt, không phải nhấn
-        function initMobileSwipeGuard() {
-            var sliders = document.querySelectorAll('.overflow-x-auto, .snap-x, .scrollbar-hide, #heroThumbnails, .interests-wrapper, .mobile-thumb-wrapper, .cat-tab-container');
-            sliders.forEach(function(slider) {
-                if (slider.getAttribute('data-swipe-guard-attached')) return;
-                slider.setAttribute('data-swipe-guard-attached', 'true');
-                var startX = 0, startY = 0, isSwiping = false;
-                slider.addEventListener('touchstart', function(e) {
-                    if (!e.touches || e.touches.length === 0) return;
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                    isSwiping = false;
-                    slider.setAttribute('data-swipe', 'pending');
-                }, { passive: true });
-                slider.addEventListener('touchmove', function(e) {
-                    if (!e.touches || e.touches.length === 0) return;
-                    var dx = Math.abs(e.touches[0].clientX - startX);
-                    var dy = Math.abs(e.touches[0].clientY - startY);
-                    if (dx > SWIPE_THRESHOLD || dy > SWIPE_THRESHOLD) {
-                        isSwiping = true;
-                        slider.setAttribute('data-swipe', 'swiping');
-                    }
-                }, { passive: true });
-                slider.addEventListener('touchend', function() {
-                    if (isSwiping) {
-                        slider.setAttribute('data-swipe', 'done');
-                        setTimeout(function() {
-                            slider.removeAttribute('data-swipe');
-                        }, 300);
-                    } else {
-                        slider.removeAttribute('data-swipe');
-                    }
-                    isSwiping = false;
-                }, { passive: true });
-                slider.addEventListener('click', function(e) {
-                    if (slider.getAttribute('data-swipe') === 'done') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                }, true);
-            });
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMobileSwipeGuard);
-        } else {
-            initMobileSwipeGuard();
-        }
-        window.initMobileSwipeGuard = initMobileSwipeGuard;
-    })();
-    </script>
-    <!-- ====== End Mobile Swipe Guard ====== -->
 
 </body>
 
