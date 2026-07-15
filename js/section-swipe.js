@@ -1,25 +1,27 @@
 /**
- * section-swipe.js v5 — Universal Snap-to-card
+ * section-swipe.js v6 — Universal High-Performance Snap-to-card
  *
  * Hỗ trợ TẤT CẢ loại card trong mọi container:
  *  - .action-premium-card  (BXH, Tình Cảm, Hành Động...)
  *  - .portrait-card        (Phim Việt Nam, Phim Mới...)
  *  - .anime-card           (Hoạt Hình)
+ *  - .interest-card        (Bạn đang quan tâm gì?)
  *  - .ranking-item / .sofaflix-card / bất kỳ class nào khác
  *
- * Chiến lược: lấy TẤT CẢ con trực tiếp của container (`:scope > *`)
- * thay vì tìm class cố định.
- *
- * Hành vi:
- *  - Lướt ngang trên BẤT KỲ card nào → snap sang đúng 1 card
- *  - Nhấn nhẹ (< TAP_LIMIT px) → link phim vẫn mở
- *  - Lướt dọc → trang cuộn dọc bình thường
- *  - KHÔNG gây sáng cả ô (tap-highlight đã xử lý trong CSS)
+ * Chiến lược v6 Nâng cấp vượt trội:
+ *  1. Không can thiệp `el.scrollLeft = ...` trong lúc ngón tay kéo (`touchmove`),
+ *     để trình duyệt tận dụng tối đa GPU native touch momentum (`-webkit-overflow-scrolling: touch`).
+ *  2. Tạm khóa `scroll-behavior: smooth !important` khi đang giữ ngón tay trên màn hình,
+ *     ngăn xung đột giữa animation smooth của CSS và gia tốc kéo tay thực tế của người dùng.
+ *  3. Tính toán tọa độ chính xác 100% bằng `getBoundingClientRect()` chuẩn theo padding container,
+ *     khắc phục hoàn toàn lỗi lệch card khi container không có `position: relative`.
+ *  4. Tự động quét và nhận diện TẤT CẢ các container cuộn ngang trên mọi trang
+ *     cùng MutationObserver tự động gá sự kiện khi API load thêm dữ liệu mới.
  */
 (function () {
     'use strict';
 
-    // ── Danh sách container cần xử lý ───────────────────────────────────────
+    // ── Danh sách container ưu tiên cần xử lý ───────────────────────────────
     var CONTAINER_IDS = [
         'heroThumbnails',
         'interestsContainer',
@@ -47,12 +49,11 @@
 
     // ── Lấy danh sách card con của container ────────────────────────────────
     function getCards(el) {
-        // Lấy tất cả con trực tiếp có width > 0 (tránh loading spinner ẩn)
         var all = el.querySelectorAll(':scope > *');
         var result = [];
         for (var i = 0; i < all.length; i++) {
             var child = all[i];
-            // Bỏ qua spinner/loading (thường không có offsetWidth)
+            // Bỏ qua spinner/loading (thường không có offsetWidth hoặc rất nhỏ)
             if (child.offsetWidth > 20) {
                 result.push(child);
             }
@@ -60,21 +61,51 @@
         return result;
     }
 
-    // ── Tìm card gần nhất với vị trí scroll hiện tại ────────────────────────
+    // ── Tính chính xác vị trí scrollLeft mục tiêu để card [idx] căn thẳng mép trái ban đầu
+    function getTargetScrollLeft(el, cards, idx) {
+        if (!cards || !cards.length || idx < 0 || idx >= cards.length) return el.scrollLeft;
+        var elRect = el.getBoundingClientRect();
+        var cardRect = cards[idx].getBoundingClientRect();
+        var firstCardRect = cards[0].getBoundingClientRect();
+        
+        // Tính padding/margin ban đầu của card đầu tiên so với mép trái container
+        var basePadding = Math.max(0, firstCardRect.left - elRect.left + el.scrollLeft);
+        var target = cardRect.left - elRect.left + el.scrollLeft - basePadding;
+        return Math.max(0, target);
+    }
+
+    // ── Tìm index của card gần nhất với vị trí cuộn hiện tại ────────────────────────
     function getNearestIdx(el, cards) {
-        var scroll = el.scrollLeft;
+        if (!cards || !cards.length) return 0;
+        var currentScroll = el.scrollLeft;
         var best = 0, bestDist = Infinity;
         for (var i = 0; i < cards.length; i++) {
-            var dist = Math.abs(cards[i].offsetLeft - scroll);
-            if (dist < bestDist) { bestDist = dist; best = i; }
+            var targetScroll = getTargetScrollLeft(el, cards, i);
+            var dist = Math.abs(targetScroll - currentScroll);
+            if (dist < bestDist) {
+                bestDist = dist;
+                best = i;
+            }
         }
         return best;
     }
 
     // ── Smooth scroll đến card theo index ────────────────────────────────────
     function snapTo(el, cards, idx) {
+        if (!cards || !cards.length) return;
         idx = Math.max(0, Math.min(cards.length - 1, idx));
-        el.scrollTo({ left: cards[idx].offsetLeft, behavior: 'smooth' });
+        var targetScroll = getTargetScrollLeft(el, cards, idx);
+        
+        // Bật lại scroll-behavior smooth để trượt êm ái về vị trí snap
+        el.style.setProperty('scroll-behavior', 'smooth', 'important');
+        el.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        
+        // Trả lại trạng thái scroll-behavior sau khi snap hoàn tất
+        setTimeout(function () {
+            if (!el._isSwiping) {
+                el.style.removeProperty('scroll-behavior');
+            }
+        }, 350);
     }
 
     // ── Khởi tạo swipe cho một container ────────────────────────────────────
@@ -83,11 +114,9 @@
         el._snapInited = true;
 
         var startX = 0, startY = 0, startTime = 0, lastX = 0;
-        var startScrollLeft = 0;
         var dir = null;       // 'h' | 'v' | null
         var active = false;
         var totalDx = 0;
-
         var startIdx = 0;
 
         // TOUCHSTART
@@ -100,14 +129,13 @@
             dir = null;
             active = true;
             totalDx = 0;
-            
+            el._isSwiping = true;
+
             var cards = getCards(el);
             startIdx = cards.length ? getNearestIdx(el, cards) : 0;
-            
-            // Lưu lại vị trí cuộn ban đầu để tracking ngón tay
-            startScrollLeft = el.scrollLeft;
-            
-            // Giữ cho trình duyệt không dùng thao tác vuốt ngang để back/forward trang
+
+            // Tắt tạm thời scroll-behavior: smooth để ngón tay kéo mượt 1:1 không bị delay bởi CSS
+            el.style.setProperty('scroll-behavior', 'auto', 'important');
             el.style.touchAction = 'pan-y';
         }, { passive: true });
 
@@ -127,25 +155,34 @@
             if (dir === 'h') {
                 totalDx = Math.abs(dx);
                 lastX = t.clientX;
-                
-                // Kéo mượt ngay tức thì theo ngón tay người dùng
-                el.scrollLeft = startScrollLeft - dx;
+                // V6: Không gán el.scrollLeft = ... trong touchmove!
+                // Trình duyệt tự động dùng hardware-accelerated momentum cuộn mượt 100% theo tay.
             }
         }, { passive: true });
 
         // TOUCHEND
         el.addEventListener('touchend', function () {
+            if (!active) return;
             active = false;
+            el._isSwiping = false;
             el.style.touchAction = '';
-            
-            if (dir !== 'h') { dir = null; return; }
+
+            if (dir !== 'h') {
+                dir = null;
+                el.style.removeProperty('scroll-behavior');
+                return;
+            }
 
             var dx = lastX - startX;
             var dt = Math.max(1, Date.now() - startTime);
             var vel = Math.abs(dx) / dt; // px/ms
 
             var cards = getCards(el);
-            if (!cards.length) { dir = null; return; }
+            if (!cards.length) {
+                dir = null;
+                el.style.removeProperty('scroll-behavior');
+                return;
+            }
 
             var cur = getNearestIdx(el, cards);
             var target = cur;
@@ -155,16 +192,21 @@
                 target = dx < 0 ? cur + 1 : cur - 1;
             }
 
-            // Gọi scrollTo(smooth) sẽ ngắt native momentum và trượt mượt về item chuẩn xác
+            // trượt mượt về item chuẩn xác
             snapTo(el, cards, target);
 
-            // Chặn click link nếu thực sự đã swipe (không phải tap)
+            // Chặn click link nếu thực sự đã lướt ngang (không phải tap)
             if (totalDx > TAP_LIMIT) {
                 el.addEventListener('click', function blockClick(ev) {
                     ev.preventDefault();
                     ev.stopPropagation();
                     el.removeEventListener('click', blockClick, true);
                 }, { capture: true, once: true });
+
+                // Dọn dẹp listener chặn click sau 400ms đề phòng trường hợp click không kích hoạt
+                setTimeout(function () {
+                    el.removeEventListener('click', blockClick, true);
+                }, 400);
             }
 
             dir = null;
@@ -173,7 +215,9 @@
 
         el.addEventListener('touchcancel', function () {
             active = false;
+            el._isSwiping = false;
             el.style.touchAction = '';
+            el.style.removeProperty('scroll-behavior');
             dir = null;
             totalDx = 0;
         }, { passive: true });
@@ -181,10 +225,20 @@
 
     // ── Gắn vào tất cả container ─────────────────────────────────────────────
     function attachToAll() {
+        // 1. Gắn theo danh sách ID ưu tiên
         CONTAINER_IDS.forEach(function (id) {
             var el = document.getElementById(id);
             if (el) initContainer(el);
         });
+
+        // 2. Tự động nhận diện TẤT CẢ các danh sách lướt ngang trên trang
+        var autoContainers = document.querySelectorAll('.overflow-x-auto, .scrollbar-hide, [class*="overflow-x-auto"], #heroThumbnails, .interests-wrapper, .mobile-thumb-wrapper, .cat-tab-container, #episode-list');
+        for (var i = 0; i < autoContainers.length; i++) {
+            var c = autoContainers[i];
+            if (!c._snapInited && (c.scrollWidth > c.clientWidth || c.children.length >= 2)) {
+                initContainer(c);
+            }
+        }
     }
 
     // Chạy ngay khi DOM ready
@@ -195,9 +249,32 @@
     }
 
     // Chạy lại sau khi JS async load xong data vào containers
-    setTimeout(attachToAll, 1000);
-    setTimeout(attachToAll, 2500);
-    setTimeout(attachToAll, 5000);
+    setTimeout(attachToAll, 800);
+    setTimeout(attachToAll, 2000);
+    setTimeout(attachToAll, 4500);
+
+    // Tự động lắng nghe DOM thay đổi (khi tải phim thêm hoặc chuyển tab)
+    if (typeof MutationObserver !== 'undefined') {
+        var observer = new MutationObserver(function (mutations) {
+            var shouldCheck = false;
+            for (var i = 0; i < mutations.length; i++) {
+                if (mutations[i].addedNodes && mutations[i].addedNodes.length > 0) {
+                    shouldCheck = true;
+                    break;
+                }
+            }
+            if (shouldCheck) {
+                attachToAll();
+            }
+        });
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        } else {
+            document.addEventListener('DOMContentLoaded', function () {
+                observer.observe(document.body, { childList: true, subtree: true });
+            });
+        }
+    }
 
     // API public
     window.sectionSwipeInit   = attachToAll;
