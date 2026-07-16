@@ -88,7 +88,7 @@
         <div id="heroContent" class="relative w-full max-w-[1600px] mx-auto z-20 h-full flex flex-col justify-center pb-[180px] md:pb-[230px] px-4 md:px-6 lg:px-8 pt-safe-main transition-opacity duration-700" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
             <div class="max-w-3xl space-y-6" style="margin-top: -120px;">
                 <!-- Title -->
-                <div class="space-y-3">
+                <div class="space-y-3 hero-title-slot">
                     <h1 id="heroTitle"
                         class="text-4xl md:text-[72px] lg:text-[84px] font-sans font-black text-white leading-tight tracking-tight" style="text-shadow: 0 4px 16px rgba(0,0,0,0.6);">
                          Đang tải...
@@ -118,15 +118,15 @@
                     <a id="heroPlayBtn" href="#" class="group inline-flex flex-col items-center justify-center relative" style="text-decoration: none;">
                         <div class="relative flex items-center justify-center">
                             <!-- Pulse Animation Rings -->
-                            <div class="absolute inset-0 rounded-full animate-ping bg-[#fcd576]/60 play-btn-circle" style="width: 68px; height: 68px;"></div>
-                            <div class="absolute inset-0 rounded-full animate-pulse bg-[#fcd576]/40 play-btn-circle" style="width: 68px; height: 68px;"></div>
+                            <div class="absolute inset-0 rounded-full animate-ping play-btn-circle" style="width: 68px; height: 68px; background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 50%, #C48600 100%); opacity: 0.55;"></div>
+                            <div class="absolute inset-0 rounded-full animate-pulse play-btn-circle" style="width: 68px; height: 68px; background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 50%, #C48600 100%); opacity: 0.45;"></div>
 
                             <!-- Main Button -->
-                            <div class="relative bg-[#fcd576] rounded-full flex items-center justify-center gold-heartbeat-glow group-hover:scale-110 transition-all duration-300 play-btn-circle shadow-[0_0_25px_rgba(252,213,118,0.8)]" style="width: 68px; height: 68px;">
-                                <svg class="relative z-10 translate-x-[2px]" viewBox="0 0 24 24" fill="#000000" stroke="#000000" stroke-width="3" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="width: 26px; height: 26px; color: #000000 !important; fill: #000000 !important; stroke: #000000 !important;">
-                                    <path d="M8 5v14l11-7z" fill="#000000" stroke="#000000" style="fill: #000000 !important; stroke: #000000 !important;" />
+                            <div class="relative rounded-full flex items-center justify-center gold-heartbeat-glow group-hover:scale-110 transition-all duration-300 play-btn-circle" style="width: 68px; height: 68px; background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 75%, #C48600 100%) !important; border: 2px solid rgba(255, 248, 210, 0.8) !important; box-shadow: 0 14px 30px -4px rgba(230, 168, 23, 0.7), 0 8px 15px -4px rgba(196, 134, 0, 0.85), 0 0 35px rgba(252, 213, 118, 0.6), inset 0 3px 5px rgba(255, 255, 255, 0.9), inset 0 -4px 6px rgba(160, 100, 0, 0.95) !important;">
+                                <svg class="relative z-10 translate-x-[2px]" viewBox="0 0 24 24" fill="#0d0f1a" stroke="#0d0f1a" stroke-width="3" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="width: 26px; height: 26px; color: #0d0f1a !important; fill: #0d0f1a !important; stroke: #0d0f1a !important; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45)) !important;">
+                                    <path d="M8 5v14l11-7z" fill="#0d0f1a" stroke="#0d0f1a" style="fill: #0d0f1a !important; stroke: #0d0f1a !important;" />
                                 </svg>
-                                <div class="absolute inset-0 border-2 border-[#fcd576]/80 rounded-full scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"></div>
+                                <div class="absolute inset-0 border-2 border-[#fff3b0] rounded-full scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500 shadow-[0_0_20px_rgba(252,213,118,0.8)]"></div>
                             </div>
                         </div>
                         <span class="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap mt-2 text-center text-primary font-bold uppercase tracking-widest text-[11px] opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 drop-shadow-[0_2px_8px_rgba(252,211,77,0.8)] pointer-events-none">
@@ -152,35 +152,72 @@
             <style>
                 @media (min-width: 768px) {
                     .hero-thumbnails-container {
-                        bottom: 320px !important;
+                        bottom: 400px !important;
+                    }
+                    .mobile-thumb-wrapper {
+                        justify-content: flex-end !important;
+                    }
+                    .desktop-thumb-scroll {
+                        max-width: 600px !important;
+                        overflow-x: auto !important;
+                        overflow-y: hidden !important;
+                        scrollbar-width: none; /* Firefox */
+                        -ms-overflow-style: none;  /* IE and Edge */
+                        margin-right: -16px !important;
+                    }
+                    .desktop-thumb-scroll::-webkit-scrollbar {
+                        display: none;
+                    }
+                    #heroThumbnails {
+                        padding-right: 0 !important;
+                        padding-left: 0 !important;
                     }
                 }
                 @media (max-width: 767px) {
                     .hero-thumbnails-container {
-                        bottom: 190px !important; /* Hạ xuống một chút cho vào giữa khoảng trống */
+                        bottom: 176px !important;
+                        left: 0 !important;
+                        right: 0 !important;
+                        z-index: 45 !important;
+                    }
+                    .interests-section {
+                        bottom: 30px !important;
                     }
                     .mobile-thumb-wrapper {
+                        display: flex !important;
                         justify-content: center !important;
-                        padding-left: 24px !important;
-                        padding-right: 24px !important;
+                        align-items: center !important;
+                        width: 100% !important;
+                        padding: 0 18px !important;
+                        overflow: visible !important;
                     }
                     #heroThumbnails {
-                        /* KHÔNG dùng justify-content: center trên container có overflow-x */
-                        /* vì sẽ hiển thị giữa danh sách thay vì đầu danh sách */
-                        justify-content: flex-start !important;
+                        display: flex !important;
+                        justify-content: center !important;
                         align-items: center !important;
-                        max-width: 300px !important;
-                        padding: 6px 8px !important;
+                        gap: 10px !important;
+                        max-width: 100% !important;
+                        width: auto !important;
+                        margin: 0 auto !important;
+                        padding: 10px 16px !important;
+                        background: transparent !important;
+                        backdrop-filter: none !important;
+                        -webkit-backdrop-filter: none !important;
+                        border: none !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                        overflow: visible !important;
                     }
                     /* Scroll về đầu khi init - đảm bảo item đầu tiên hiện trước */
                     #heroThumbnails:not([data-scrolled]) {
                         scroll-behavior: auto !important;
                     }
+                }
             </style>
-            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 mobile-thumb-wrapper" style="display:flex; justify-content:flex-end; pointer-events:auto;">
-                <div style="max-width:600px; width: max-content; flex-shrink:0;">
+            <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 mobile-thumb-wrapper" style="display:flex; justify-content:center; pointer-events:auto; overflow:visible;">
+                <div class="desktop-thumb-scroll overflow-x-auto" style="width: max-content; flex-shrink:0;">
                     <div id="heroThumbnails"
-                        style="display:flex; align-items:center; gap:10px; overflow-x:auto; padding:8px 0 8px 16px; scrollbar-width:none; -ms-overflow-style:none; scroll-snap-type:x mandatory;">
+                        style="display:flex; align-items:center; gap:10px; overflow:visible; padding:10px 16px; scrollbar-width:none; -ms-overflow-style:none;">
                         <!-- Thumbnails will be loaded here -->
                     </div>
                 </div>
@@ -188,7 +225,7 @@
         </div>
 
         <!-- Categories Section positioned at the bottom of Hero Banner -->
-        <section class="interests-section absolute left-0 right-0 z-40 bg-transparent pt-4 pb-0 mb-0" style="position: absolute !important; background: transparent !important; background-color: transparent !important; padding-top: 1rem; padding-bottom: 0px !important; margin-bottom: 0px !important; bottom: 20px !important;">
+        <section class="interests-section absolute left-0 right-0 z-40 bg-transparent pt-4 pb-0 mb-0" style="position: absolute !important; background: transparent !important; background-color: transparent !important; padding-top: 1rem; padding-bottom: 0px !important; margin-bottom: 0px !important;">
             <div class="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8" style="max-width: 1600px !important; width: 100% !important; margin-left: auto !important; margin-right: auto !important;">
                 <!-- Title Header matching Screenshot 1 -->
                 <h3 class="text-lg md:text-xl font-bold text-white mb-3 leading-none relative z-10 text-center md:text-left lg:-ml-5" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">

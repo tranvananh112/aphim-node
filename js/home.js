@@ -59,8 +59,8 @@ function renderMovieGrid(movies, container) {
                     ${movie.episode_current}
                 </div>` : ''}
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                    <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
-                        <span class="material-icons-round text-black text-xl">play_arrow</span>
+                    <div class="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300" style="background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 75%, #C48600 100%) !important; border: 1.5px solid rgba(255, 248, 210, 0.8) !important; box-shadow: 0 8px 18px rgba(230, 168, 23, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(160, 100, 0, 0.9) !important;">
+                        <span class="material-icons-round text-[#0d0f1a] text-2xl font-bold" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));">play_arrow</span>
                     </div>
                 </div>
             </div>

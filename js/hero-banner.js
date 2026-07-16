@@ -12,8 +12,29 @@ let isTransitioning = false;
 let autoReturnTimer = null;   // Timer tự động về index 0
 const AUTO_RETURN_DELAY = 3500;   // 3.5 giây sau khi không tương tác
 
+// ── Lock Mobile Hero Viewport Height ──────────────────────────────
+// Khóa cố định pixel chiều cao Hero ngay khi load trên Mobile
+// Tránh hiện tượng giật / nhảy dọc khi thanh url (search bar) của Safari/Chrome thu gọn lúc cuộn
+function lockMobileHeroHeight() {
+    const heroEl = document.querySelector('main.relative.h-screen');
+    if (!heroEl) return;
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+        const stableHeight = Math.min(window.innerHeight, 800);
+        heroEl.style.setProperty('height', `${stableHeight}px`, 'important');
+        heroEl.style.setProperty('min-height', `${stableHeight}px`, 'important');
+        heroEl.style.setProperty('max-height', `${stableHeight}px`, 'important');
+    } else {
+        heroEl.style.removeProperty('height');
+        heroEl.style.removeProperty('min-height');
+        heroEl.style.removeProperty('max-height');
+    }
+}
+window.addEventListener('orientationchange', () => setTimeout(lockMobileHeroHeight, 200));
+
 // ── Entry Point ─────────────────────────────────────────────────
 async function loadHeroBanner() {
+    lockMobileHeroHeight();
 
     // 1. INSTANT: đọc cache LocalStorage hiển thị ngay
     try {
@@ -146,6 +167,45 @@ async function loadHeroLogo(movie) {
         return;
     }
 
+    // Helper tạo Logo thư pháp điện ảnh SVG 3D nếu TMDB không có logo ảnh
+    function _generateFallbackCinematicLogo(movieObj) {
+        const title = (movieObj.name || 'A PHIM').toUpperCase();
+        const words = title.split(' ');
+        let line1 = title;
+        let line2 = '';
+        if (words.length > 3 && title.length > 15) {
+            const mid = Math.ceil(words.length / 2);
+            line1 = words.slice(0, mid).join(' ');
+            line2 = words.slice(mid).join(' ');
+        } else if (title.length > 20 && words.length > 2) {
+            const mid = Math.ceil(words.length / 2);
+            line1 = words.slice(0, mid).join(' ');
+            line2 = words.slice(mid).join(' ');
+        }
+        const height = 110;
+        const y1 = line2 ? 42 : 62;
+        const y2 = line2 ? 88 : 0;
+        
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="460" height="${height}" viewBox="0 0 460 ${height}">
+            <defs>
+                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FFFFFF"/>
+                    <stop offset="35%" stop-color="#FFF3B0"/>
+                    <stop offset="70%" stop-color="#FCE181"/>
+                    <stop offset="100%" stop-color="#D69F3D"/>
+                </linearGradient>
+                <filter id="cinematicShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.95"/>
+                </filter>
+            </defs>
+            <g filter="url(#cinematicShadow)">
+                <text x="230" y="${y1}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="${line2 ? 30 : 36}" fill="url(#goldGrad)" letter-spacing="1.5">${line1}</text>
+                ${line2 ? `<text x="230" y="${y2}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="30" fill="url(#goldGrad)" letter-spacing="1.5">${line2}</text>` : ''}
+            </g>
+        </svg>`;
+        return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
     // Hàm phụ trợ hiển thị logo mượt mà, an toàn
     function applyLogoToDOM(url) {
         if (loadId !== currentLogoLoadId) return; // Nếu user chuyển slide khác -> hủy ngay
@@ -177,7 +237,9 @@ async function loadHeroLogo(movie) {
         img.onerror = () => {
             if (loadId === currentLogoLoadId) {
                 document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
-                heroTitle.style.display = 'block';
+                // Nếu tải ảnh lỗi -> dùng logo SVG điện ảnh tự tạo
+                const fallbackUrl = _generateFallbackCinematicLogo(movie);
+                if (url !== fallbackUrl) applyLogoToDOM(fallbackUrl);
             }
         };
 
@@ -204,13 +266,13 @@ async function loadHeroLogo(movie) {
         if (cachedUrl && cachedUrl !== 'TEXT_ONLY') {
             applyLogoToDOM(cachedUrl);
         } else {
-            heroTitle.style.display = 'block';
+            applyLogoToDOM(_generateFallbackCinematicLogo(movie));
         }
         return;
     }
 
-    // Hiển thị text title tạm thời trong lúc truy vấn TMDB lần đầu
-    heroTitle.style.display = 'block';
+    // Hiển thị tạm thời logo SVG điện ảnh trong lúc truy vấn TMDB lần đầu
+    applyLogoToDOM(_generateFallbackCinematicLogo(movie));
 
     // 3. Nếu chưa có thì tiến hành tìm trên TMDB
     const API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
@@ -454,15 +516,11 @@ function updateHeroBannerText(movie) {
 
     if (heroTitle) {
         heroTitle.textContent = movie.name || '';
-        // ✅ FIX: Chỉ hiện text title nếu chắc chắn không có logo
-        const cacheKeyCheck = movie.slug || movie.name;
-        const hasLogoReady = (movie.logoUrl && movie.logoUrl.trim() !== '') ||
-                             (logoCache.has(cacheKeyCheck) && logoCache.get(cacheKeyCheck) !== 'TEXT_ONLY');
-        heroTitle.style.display = hasLogoReady ? 'none' : 'block';
+        heroTitle.style.display = 'none';
     }
     if (heroSubtitle) heroSubtitle.textContent = movie.origin_name || '';
 
-    // Async load TMDB logo replacing title
+    // Async load TMDB logo or generate cinematic fallback logo
     loadHeroLogo(movie);
 
     if (heroBadges) {
@@ -766,15 +824,18 @@ async function loadVietnameseThumbnailsFallback() {
 function applyThumbnails(movies) {
     if (!Array.isArray(movies) || movies.length === 0) return;
 
-    const adminBannerSlide = heroSlides[0] || currentAdminBanner;
-    heroSlides = [adminBannerSlide, ...movies];
+    const isMobile = window.innerWidth < 768;
+    const activeMovies = isMobile ? movies.slice(0, 6) : movies;
 
-    renderThumbnails(movies);
+    const adminBannerSlide = heroSlides[0] || currentAdminBanner;
+    heroSlides = [adminBannerSlide, ...activeMovies];
+
+    renderThumbnails(activeMovies);
     updateThumbnailActive(currentSlideIndex);
 
     // Preload tất cả ảnh thumbnail ngay sau khi render
     // → khi user click, ảnh đã sẵn sàng trong browser cache
-    preloadSlideImages(movies);
+    preloadSlideImages(activeMovies);
 }
 
 // ── Preload ảnh ngầm cho tất cả slides ──────────────────────────
@@ -782,8 +843,7 @@ function preloadSlideImages(movies) {
     // Delay nhẹ để không tranh băng thông với initial hero image
     setTimeout(() => {
         movies.forEach((movie, i) => {
-            const isMobile = window.innerWidth < 768;
-            const rawUrl = movie.poster_url || movie.thumb_url;
+            const rawUrl = getHeroImageUrl(movie);
             if (!rawUrl) return;
             const url = buildImageUrl(rawUrl, 1200);
             if (url) {
@@ -800,7 +860,10 @@ function renderThumbnails(movies) {
     const container = document.getElementById('heroThumbnails');
     if (!container || !Array.isArray(movies) || movies.length === 0) return;
 
-    container.innerHTML = movies.map((movie, i) => {
+    const isMobile = window.innerWidth < 768;
+    const displayMovies = isMobile ? movies.slice(0, 6) : movies;
+
+    container.innerHTML = displayMovies.map((movie, i) => {
         const imgSrc = (typeof imageOptimizer !== 'undefined')
             ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 300, 75)
             : buildImageUrl(movie.thumb_url || movie.poster_url, 300);
@@ -929,7 +992,7 @@ function renderHeroBannerContent(movie, isInstant) {
     if (!heroImage) return;
 
     if (placeholder && movie) {
-        const rawPlaceholderUrl = movie.poster_url || movie.thumb_url;
+        const rawPlaceholderUrl = getHeroImageUrl(movie);
         const optPlaceholderUrl = buildImageUrl(rawPlaceholderUrl, 600);
         if (optPlaceholderUrl) {
             placeholder.style.backgroundImage = `url('${optPlaceholderUrl}')`;
@@ -937,8 +1000,7 @@ function renderHeroBannerContent(movie, isInstant) {
         }
     }
 
-    const isMobile = window.innerWidth < 768;
-    const rawUrl = movie.poster_url || movie.thumb_url;
+    const rawUrl = getHeroImageUrl(movie);
     const optUrl = buildImageUrl(rawUrl, 1200);
     if (!optUrl) return;
 

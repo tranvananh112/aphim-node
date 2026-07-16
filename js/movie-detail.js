@@ -15,6 +15,60 @@ if (!document.getElementById('anti-fouc-style')) {
                 visibility: visible;
             }
         }
+        .cinematic-gold-title {
+            font-family: 'Space Grotesk', 'Be Vietnam Pro', system-ui, sans-serif !important;
+            font-weight: 900 !important;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFF4B8 30%, #FCE181 65%, #D69F3D 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            display: inline-block !important;
+            filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.95)) drop-shadow(0 2px 6px rgba(214, 159, 61, 0.5)) !important;
+            letter-spacing: 1.5px !important;
+            line-height: 1.15 !important;
+        }
+        .cinematic-sub-title {
+            font-family: 'Space Grotesk', 'Be Vietnam Pro', system-ui, sans-serif !important;
+            font-weight: 800 !important;
+            color: #fcd576 !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
+            letter-spacing: 2.5px !important;
+            display: block !important;
+            margin-top: 8px !important;
+        }
+        .cinematic-gold-btn {
+            background: linear-gradient(135deg, #FFEFA6 0%, #FCD576 40%, #D69F3D 100%) !important;
+            color: #0d0f1a !important;
+            font-weight: 900 !important;
+            box-shadow: 0 6px 20px rgba(214, 159, 61, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .cinematic-gold-btn:hover {
+            background: linear-gradient(135deg, #FFF6C8 0%, #FFE08C 40%, #E5AA45 100%) !important;
+            box-shadow: 0 8px 25px rgba(214, 159, 61, 0.65), inset 0 2px 5px rgba(255, 255, 255, 0.8) !important;
+            transform: translateY(-2px) !important;
+        }
+        .cinematic-gold-badge {
+            background: linear-gradient(135deg, #FFEFA6 0%, #FCD576 45%, #D69F3D 100%) !important;
+            color: #0d0f1a !important;
+            font-weight: 900 !important;
+            box-shadow: 0 4px 14px rgba(214, 159, 61, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            letter-spacing: 1px !important;
+        }
+        .cinematic-gold-bar {
+            background: linear-gradient(to bottom, #FFF4B8 0%, #FCD576 50%, #D69F3D 100%) !important;
+            box-shadow: 0 0 12px rgba(252, 213, 118, 0.6), 0 0 4px rgba(214, 159, 61, 0.8) !important;
+            border-radius: 9999px !important;
+        }
+        .cinematic-gold-rating {
+            background: linear-gradient(135deg, rgba(214, 159, 61, 0.2) 0%, rgba(252, 213, 118, 0.1) 100%) !important;
+            color: #fcd576 !important;
+            border: 1px solid rgba(252, 213, 118, 0.4) !important;
+            box-shadow: 0 4px 14px rgba(214, 159, 61, 0.25) !important;
+            font-weight: 800 !important;
+        }
     `;
     document.head.appendChild(style);
 }
@@ -107,6 +161,13 @@ function renderMovieDetail(movie) {
         posterImg.alt = `Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub tại APhim`;
     }
 
+    // Update quality badge on poster
+    const posterQualityBadge = document.getElementById('posterQualityBadge') || document.querySelector('.aspect-\\[2\\/3\\].relative > div');
+    if (posterQualityBadge) {
+        posterQualityBadge.className = 'absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded shadow-lg uppercase tracking-wider cinematic-gold-badge';
+        if (movie.quality) posterQualityBadge.textContent = movie.quality;
+    }
+
     // Update background
     const bgImg = document.querySelector('.absolute.top-0 img');
     if (bgImg) {
@@ -125,13 +186,10 @@ function renderMovieDetail(movie) {
     // Update title
     const titleElement = document.querySelector('h1');
     if (titleElement) {
-        // Vietnamese name larger, English name smaller and on one line
-        titleElement.className = 'font-vietnam lg:font-playfair font-extrabold lg:font-normal text-white mb-4 leading-tight tracking-tight lg:tracking-normal drop-shadow-2xl text-center lg:text-left w-full';
+        titleElement.className = 'mb-3 lg:mb-5 text-center lg:text-left w-full';
         titleElement.innerHTML = `
-            <span class="block text-4xl md:text-5xl lg:text-7xl mb-1">${movie.name}</span>
-            <span class="block text-xl md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-bright whitespace-nowrap overflow-hidden text-ellipsis opacity-90 font-bold tracking-wide">
-                ${movie.origin_name}
-            </span>
+            <span class="block text-4xl sm:text-5xl lg:text-7xl cinematic-gold-title">${movie.name || ''}</span>
+            <span class="text-xl sm:text-3xl lg:text-4xl cinematic-sub-title">${movie.origin_name || ''}</span>
         `;
     }
 
@@ -232,7 +290,7 @@ function renderMovieDetail(movie) {
     const infoContainer = document.querySelector('.movie-info-container') || document.querySelector('.flex.flex-wrap.items-center.gap-4.mb-8');
     if (infoContainer) {
         // Wrap on mobile so badges don't get hidden
-        infoContainer.className = 'movie-info-container flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 md:gap-4 mb-0 md:mb-0 text-[11px] sm:text-sm md:text-base w-full';
+        infoContainer.className = 'movie-info-container flex flex-wrap justify-center lg:justify-start items-center gap-2 sm:gap-3 md:gap-4 mb-2 md:mb-3 lg:mb-4 text-[11px] sm:text-sm md:text-base w-full';
 
         const avgRating = ratingService.getAverageRating(movie.slug);
         const ratings = ratingService.getRatings(movie.slug);
@@ -356,8 +414,8 @@ function renderVersions(movie) {
     }
 
     const versionsHTML = `
-        <div class="w-full mt-0 mb-4">
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <div class="w-full mt-3 sm:mt-4 lg:mt-5 mb-4 sm:mb-6">
+            <h3 class="text-lg font-bold text-white mb-2 sm:mb-3 flex items-center gap-2">
                 Các bản chiếu
             </h3>
             <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
@@ -1007,9 +1065,9 @@ function setupFavoriteButton() {
     const isFav = userService.isFavorite(currentMovie.slug);
 
     const favBtn = document.createElement('button');
-    favBtn.className = 'px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
+    favBtn.className = 'w-12 h-12 sm:w-14 sm:h-14 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/10 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-xl flex-shrink-0 hover:border-[#fcd576]/50';
     favBtn.innerHTML = `
-        <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">${isFav ? 'favorite' : 'favorite_border'}</span>
+        <span class="material-icons-round text-[22px] sm:text-[26px] lg:text-[24px]">${isFav ? 'favorite' : 'favorite_border'}</span>
         <span class="hidden lg:inline text-base whitespace-nowrap">${isFav ? 'Đã lưu' : 'Lưu phim'}</span>
     `;
 
@@ -1021,10 +1079,10 @@ function setupFavoriteButton() {
         }
         if (userService.isFavorite(currentMovie.slug)) {
             userService.removeFromFavorites(currentMovie.slug);
-            favBtn.innerHTML = '<span class="material-icons-round text-2xl lg:text-xl">favorite_border</span><span class="hidden lg:inline text-base whitespace-nowrap">Lưu phim</span>';
+            favBtn.innerHTML = '<span class="material-icons-round text-[22px] sm:text-[26px] lg:text-[24px]">favorite_border</span><span class="hidden lg:inline text-base whitespace-nowrap">Lưu phim</span>';
         } else {
             if (userService.addToFavorites(currentMovie)) {
-                favBtn.innerHTML = '<span class="material-icons-round text-2xl lg:text-xl">favorite</span><span class="hidden lg:inline text-base whitespace-nowrap">Đã lưu</span>';
+                favBtn.innerHTML = '<span class="material-icons-round text-[22px] sm:text-[26px] lg:text-[24px]">favorite</span><span class="hidden lg:inline text-base whitespace-nowrap">Đã lưu</span>';
             }
         }
     });
@@ -1033,9 +1091,9 @@ function setupFavoriteButton() {
 
     // ── Playlist button ──────────────────────────────────
     const plBtn = document.createElement('button');
-    plBtn.className = 'px-5 h-10 sm:px-6 sm:h-12 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/5 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-lg flex-shrink-0';
+    plBtn.className = 'w-12 h-12 sm:w-14 sm:h-14 lg:w-auto lg:h-auto lg:px-8 lg:py-4 bg-[#323447] lg:bg-white/10 lg:hover:bg-white/20 text-gray-300 lg:text-white font-semibold rounded-full lg:backdrop-blur-md border border-white/10 lg:border-white/30 lg:hover:border-white/50 transition-all duration-300 flex items-center justify-center gap-0 lg:gap-3 shadow-xl flex-shrink-0 hover:border-[#fcd576]/50';
     plBtn.innerHTML = `
-        <span class="material-icons-round text-[18px] sm:text-xl lg:text-xl">playlist_add</span>
+        <span class="material-icons-round text-[22px] sm:text-[26px] lg:text-[24px]">playlist_add</span>
         <span class="hidden lg:inline text-base whitespace-nowrap">Thêm vào</span>
     `;
     plBtn.addEventListener('click', () => {

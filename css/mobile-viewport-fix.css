@@ -318,32 +318,38 @@ select option {
         gap: 12px !important; /* Nới rộng khoảng cách click thoải mái */
     }
     
-    /* CẬP NHẬT NÚT ĐĂNG NHẬP: CHỈ HIỂN THỊ ICON ĐỂ THANH TÌM KIẾM TRẢI DÀI RA */
-    .auth-btn-text {
-        display: none !important;
-    }
-    
+    /* CẬP NHẬT NÚT ĐĂNG NHẬP: VÀNG ÁNH KIM 24K SANG TRỌNG & BÓNG ĐỔ SÂU 3D CHUẨN ĐIỆN ẢNH */
     .nav-auth-btn {
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 0 !important;
-        width: 40px !important;
-        height: 40px !important;
-        background: rgba(0, 0, 0, 0.4) !important; /* Đen mờ giống logo */
-        border: 2px solid #eab308 !important; /* Viền vàng */
-        border-radius: 50% !important;
-        box-shadow: none !important;
-        box-sizing: border-box !important;
+        padding: 6px 16px !important;
+        font-size: 12px !important;
+        font-weight: 800 !important;
+        gap: 6px !important;
+        color: #0d0f1a !important; /* Ép chữ đen sang trọng */
+        background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 78%, #C48600 100%) !important; /* Vàng kim 24K */
+        border: 1.5px solid rgba(255, 248, 210, 0.85) !important;
+        border-radius: 999px !important;
+        box-shadow: 0 8px 18px -2px rgba(230, 168, 23, 0.65), 0 4px 10px -2px rgba(196, 134, 0, 0.8), 0 0 20px rgba(252, 213, 118, 0.5), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -3px 4px rgba(160, 100, 0, 0.9) !important;
         text-decoration: none !important;
-        position: relative !important;
+        white-space: nowrap !important;
+        height: 34px !important; /* Chiều cao cân bằng hoàn hảo */
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     }
     
-    /* Đảm bảo icon người bên trong nút có màu vàng và canh giữa tuyệt đối */
+    .nav-auth-btn:hover {
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFE18D 40%, #F2BA29 78%, #D69708 100%) !important;
+        transform: translateY(-1px) scale(1.03) !important;
+        box-shadow: 0 12px 24px -2px rgba(230, 168, 23, 0.8), 0 6px 14px -2px rgba(196, 134, 0, 0.9), 0 0 28px rgba(252, 213, 118, 0.75), inset 0 2px 4px rgba(255, 255, 255, 1), inset 0 -3px 5px rgba(160, 100, 0, 0.95) !important;
+    }
+    
+    /* Đảm bảo icon bên trong nút cũng hòa hợp nhịp nhàng */
     .nav-auth-btn .material-icons-round {
-        color: #eab308 !important;
-        font-size: 1.25rem !important;
-        margin: 0 !important;
+        color: #0d0f1a !important;
+        font-size: 16px !important;
+        margin-bottom: 1px;
     }
     
     /* Force cụm nút bên phải và menu hamburger luôn căn giữa chiều dọc (flex items center) */

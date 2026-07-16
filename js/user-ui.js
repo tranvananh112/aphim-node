@@ -165,8 +165,8 @@ function updateUserUI() {
                 <a href="/login"
                    onclick="if(window.showAuthModal){event.preventDefault();event.stopImmediatePropagation();window.showAuthModal('login');return false;}"
                    class="nav-auth-btn" 
-                   style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px;">
-                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 40px; height: 40px; transform: scale(2.2); margin: 0; padding: 0;" loop autoplay></dotlottie-player>
+                   style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 2px !important; padding: 0 14px 0 8px !important; height: 40px !important;">
+                    <dotlottie-player src="/icons/panda.lottie" background="transparent" speed="1" style="width: 36px !important; height: 36px !important; margin: 0 !important; padding: 0 !important; pointer-events: none !important;" loop autoplay></dotlottie-player>
                     <span class="auth-btn-text">Đăng Nhập</span>
                 </a>
             </div>

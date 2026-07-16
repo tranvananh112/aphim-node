@@ -170,6 +170,7 @@ function renderMovieInfo(movie, episode) {
     const breadcrumb = document.getElementById('breadcrumb-movie-name');
     if (breadcrumb) {
         breadcrumb.textContent = movie.name + (episode ? ` - ${episode.name}` : '');
+        breadcrumb.style.cssText = "background: linear-gradient(90deg, #FFF8E7 0%, #FCD576 40%, #FFDF80 75%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576; font-weight: 700; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(252,213,118,0.25));";
         
         if (!document.getElementById('breadcrumb-category')) {
             let categoryName = '';
@@ -290,7 +291,10 @@ function renderMovieInfo(movie, episode) {
     }
 
     const sidebarName = document.getElementById('sidebar-movie-name');
-    if (sidebarName) sidebarName.textContent = movie.name;
+    if (sidebarName) {
+        sidebarName.textContent = movie.name;
+        sidebarName.style.cssText = "background: linear-gradient(90deg, #FFF8E7 0%, #FCD576 40%, #FFDF80 75%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576; filter: drop-shadow(0 3px 10px rgba(0,0,0,0.9)) drop-shadow(0 1px 3px rgba(214,159,61,0.4));";
+    }
 
     const sidebarOrigin = document.getElementById('sidebar-movie-origin');
     if (sidebarOrigin) sidebarOrigin.textContent = `${movie.origin_name} (${movie.year})`;
@@ -805,10 +809,10 @@ function renderPlayerPlaceholder(episode) {
 
                 <!-- Movie Title & Episode Name (Premium layout with extra top margin) -->
                 <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 mt-1.5">
-                    <h3 class="text-white font-extrabold text-base sm:text-2xl md:text-3xl tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] max-w-[65vw] sm:max-w-[450px] md:max-w-[600px] truncate leading-tight">
-                        ${movieName}
+                    <h3 class="font-extrabold text-base sm:text-2xl md:text-3xl tracking-tight max-w-[65vw] sm:max-w-[450px] md:max-w-[600px] truncate leading-tight" style="filter: drop-shadow(0 4px 14px rgba(0,0,0,0.95)) drop-shadow(0 1px 3px rgba(214,159,61,0.5));">
+                        <span style="background: linear-gradient(90deg, #FFF8E7 0%, #FCD576 35%, #FFDF80 65%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576;">${movieName}</span>
                     </h3>
-                    <span class="text-[#fcd576] font-bold text-xs sm:text-sm md:text-base tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                    <span class="font-bold text-xs sm:text-sm md:text-base tracking-wide whitespace-nowrap" style="background: linear-gradient(90deg, #FCD576 0%, #FFF4B8 50%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.85));">
                         ${epName}
                     </span>
                 </div>

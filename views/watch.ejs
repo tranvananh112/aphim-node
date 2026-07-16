@@ -596,7 +596,7 @@
         <div class="flex items-center gap-2 text-sm text-gray-400 mb-4 font-medium" id="watch-breadcrumb">
             <a class="hover:text-white transition-colors" href="/">Trang chủ</a>
             <span class="material-icons-round text-base">chevron_right</span>
-            <span id="breadcrumb-movie-name" class="text-white font-semibold"><%= movie ? movie.name : 'Đang tải...' %></span>
+            <span id="breadcrumb-movie-name" class="font-bold" style="background: linear-gradient(90deg, #FFF8E7 0%, #FCD576 40%, #FFDF80 75%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(252,213,118,0.25));"><%= movie ? movie.name : 'Đang tải...' %></span>
         </div>
 
         <style>
@@ -812,7 +812,7 @@
                             <img id="sidebar-poster" src="" alt="Poster" class="w-full h-full object-cover object-top" style="object-position: top;">
                         </div>
                         <div class="flex flex-col min-w-0 py-1.5 justify-between gap-2.5">
-                            <h2 id="sidebar-movie-name" class="font-black text-xl md:text-2xl leading-snug text-white tracking-tight line-clamp-2 hover:text-primary transition-colors cursor-pointer"><%= movie ? movie.name : 'Đang tải...' %></h2>
+                            <h2 id="sidebar-movie-name" class="font-black text-xl md:text-2xl leading-snug tracking-tight line-clamp-2 hover:brightness-110 transition-all cursor-pointer" style="background: linear-gradient(90deg, #FFF8E7 0%, #FCD576 40%, #FFDF80 75%, #D69F3D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #FCD576; filter: drop-shadow(0 3px 10px rgba(0,0,0,0.9)) drop-shadow(0 1px 3px rgba(214,159,61,0.4));"><%= movie ? movie.name : 'Đang tải...' %></h2>
                             <p id="sidebar-movie-origin" class="text-sm text-gray-400 font-semibold truncate leading-relaxed"><%= movie ? (movie.origin_name || '') : '' %></p>
                             <div class="flex flex-wrap gap-2.5 mt-1">
                                 <span id="sidebar-quality" class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">HD</span>
