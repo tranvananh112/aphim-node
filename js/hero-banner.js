@@ -186,6 +186,10 @@ async function loadHeroLogo(movie) {
         const y1 = line2 ? 42 : 62;
         const y2 = line2 ? 88 : 0;
         
+        const isDesktop = window.innerWidth >= 1024;
+        const anchor = isDesktop ? 'start' : 'middle';
+        const xPos = isDesktop ? '10' : '230';
+        
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="460" height="${height}" viewBox="0 0 460 ${height}">
             <defs>
                 <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -199,8 +203,8 @@ async function loadHeroLogo(movie) {
                 </filter>
             </defs>
             <g filter="url(#cinematicShadow)">
-                <text x="230" y="${y1}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="${line2 ? 30 : 36}" fill="url(#goldGrad)" letter-spacing="1.5">${line1}</text>
-                ${line2 ? `<text x="230" y="${y2}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="30" fill="url(#goldGrad)" letter-spacing="1.5">${line2}</text>` : ''}
+                <text x="${xPos}" y="${y1}" text-anchor="${anchor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="${line2 ? 30 : 36}" fill="url(#goldGrad)" letter-spacing="1.5">${line1}</text>
+                ${line2 ? `<text x="${xPos}" y="${y2}" text-anchor="${anchor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="30" fill="url(#goldGrad)" letter-spacing="1.5">${line2}</text>` : ''}
             </g>
         </svg>`;
         return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
