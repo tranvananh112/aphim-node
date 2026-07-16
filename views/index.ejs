@@ -175,13 +175,29 @@
                 }
                 @media (max-width: 767px) {
                     .hero-thumbnails-container {
-                        bottom: 176px !important;
+                        bottom: 246px !important;
                         left: 0 !important;
                         right: 0 !important;
                         z-index: 45 !important;
                     }
                     .interests-section {
-                        bottom: 30px !important;
+                        bottom: 90px !important;
+                    }
+                    .bg-void {
+                        margin-top: -60px !important;
+                        position: relative !important;
+                        z-index: 50 !important;
+                    }
+                    .bg-void::before {
+                        content: '';
+                        position: absolute;
+                        top: -60px;
+                        left: 0;
+                        right: 0;
+                        height: 60px;
+                        background: linear-gradient(to bottom, transparent, var(--bg-void, #1e2130));
+                        pointer-events: none;
+                        z-index: -1;
                     }
                     .mobile-thumb-wrapper {
                         display: flex !important;
