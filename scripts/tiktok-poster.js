@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const ffmpeg = require('fluent-ffmpeg');
+const { execSync } = require('child_process');
 const { generateTikTokCaption } = require('./tiktok-ai-generator');
 
 // THAY BẰNG TOKEN CỦA BẠN
@@ -83,6 +85,60 @@ async function refreshAccessToken() {
 }
 
 /**
+ * Hàm upload khi đã có file mp4 sẵn trên ổ cứng (cho trường hợp tự render video)
+ */
+async function postVideoToTikTokLocal(filePath, caption) {
+    try {
+        log.info(`📤 Đang tải file Local Video lên TikTok: ${filePath}`);
+        const videoSize = fs.statSync(filePath).size;
+        
+        log.info("🚀 Khởi tạo phiên đăng video lên TikTok...");
+        const initResponse = await axios.post(
+            'https://open.tiktokapis.com/v2/post/publish/video/init/',
+            {
+                post_info: { title: caption, privacy_level: 'SELF_ONLY' },
+                source_info: { source: 'FILE_UPLOAD', video_size: videoSize, chunk_size: videoSize, total_chunk_count: 1 }
+            },
+            { headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json; charset=UTF-8' } }
+        );
+
+        if (initResponse.data.data && initResponse.data.data.upload_url) {
+            const uploadUrl = initResponse.data.data.upload_url;
+            log.info("⬆️ Đang đẩy gói dữ liệu video (Chunking) lên TikTok Server...");
+            
+            const fileData = fs.readFileSync(filePath);
+            await axios.put(uploadUrl, fileData, {
+                headers: {
+                    'Content-Type': 'video/mp4',
+                    'Content-Length': videoSize,
+                    'Content-Range': `bytes 0-${videoSize - 1}/${videoSize}`
+                },
+                maxBodyLength: Infinity,
+                maxContentLength: Infinity
+            });
+            log.success("Đăng video thành công rực rỡ!");
+            return true;
+        }
+        throw new Error("Không nhận được upload_url từ TikTok");
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            log.warn("Token hết hạn (401), chuẩn bị refresh...");
+            const newToken = await refreshAccessToken();
+            if (newToken) return await postVideoToTikTokLocal(filePath, caption);
+        }
+        
+        const errData = error.response ? error.response.data : {};
+        if (errData.error && errData.error.code === 'unaudited_client_can_only_post_to_private_accounts') {
+            log.error("Lỗi TikTok Sandbox: Ứng dụng chưa được duyệt chỉ có thể đăng lên tài khoản Riêng Tư.");
+            return { success: false, reason: "sandbox_privacy" };
+        }
+        
+        log.error("Lỗi đăng video Local:", errData || error.message);
+        return { success: false, reason: "unknown" };
+    }
+}
+
+/**
  * Hàm tự động tải và đăng video lên TikTok bằng FILE UPLOAD (Chunked)
  */
 async function postVideoToTikTok(videoUrl, caption) {
@@ -155,6 +211,63 @@ async function postVideoToTikTok(videoUrl, caption) {
 }
 
 /**
+ * Kỹ thuật Tạo Video Độc Bản: Biến Ảnh Poster Phim thành Video MP4 5 giây
+ * (Đảm bảo 100% lách qua hệ thống quét Spam/Trùng lặp của TikTok)
+ */
+async function generateUniqueVideo(posterUrl, tempVideoPath) {
+    return new Promise(async (resolve) => {
+        try {
+            // Kiểm tra xem máy chủ có cài FFmpeg không
+            execSync('ffmpeg -version', { stdio: 'ignore' });
+            
+            log.info("Khởi động Lò Phản Ứng: Đang render Video Độc Bản từ Poster phim...");
+            
+            // 1. Tải ảnh Poster về
+            const tempImagePath = path.join(__dirname, `temp_poster_${Date.now()}.jpg`);
+            const response = await axios({ url: posterUrl, responseType: 'stream' });
+            const writer = fs.createWriteStream(tempImagePath);
+            response.data.pipe(writer);
+            
+            await new Promise((res, rej) => {
+                writer.on('finish', res);
+                writer.on('error', rej);
+            });
+
+            // 2. Dùng FFmpeg biến ảnh thành Video dài 5 giây, có hiệu ứng Zoom In nhẹ
+            ffmpeg()
+                .input(tempImagePath)
+                .loop(5)
+                .videoFilters([
+                    "scale=1080:1920:force_original_aspect_ratio=increase",
+                    "crop=1080:1920",
+                    "zoompan=z='min(zoom+0.0015,1.5)':d=125"
+                ])
+                .outputOptions([
+                    '-c:v libx264',
+                    '-t 5',
+                    '-pix_fmt yuv420p',
+                    '-r 25'
+                ])
+                .save(tempVideoPath)
+                .on('end', () => {
+                    log.success("Render Video độc bản thành công!");
+                    if (fs.existsSync(tempImagePath)) fs.unlinkSync(tempImagePath);
+                    resolve(true);
+                })
+                .on('error', (err) => {
+                    log.warn("Lỗi render video: " + err.message);
+                    if (fs.existsSync(tempImagePath)) fs.unlinkSync(tempImagePath);
+                    resolve(false);
+                });
+
+        } catch (e) {
+            log.warn("Máy chủ chưa cài đặt FFmpeg. Chuyển sang luồng Stock Video.");
+            resolve(false);
+        }
+    });
+}
+
+/**
  * Hàm lấy ngẫu nhiên 1 phim từ OPhim API với bộ lọc thông minh
  */
 async function getRandomUnpostedMovie() {
@@ -217,18 +330,45 @@ async function autoPostMovie() {
         return;
     }
 
-    // Logic Video Fallback Thông Minh
-    // 1. Kiểm tra trailer thật, 2. Kiểm tra link tập 1, 3. Dùng video dự phòng
-    let videoMp4Url = "https://www.w3schools.com/html/mov_bbb.mp4"; // Default Stock Fallback
+    // Trích xuất hình ảnh Poster từ Ophim
+    const imageDomain = "https://img.ophim.live/uploads/movies/";
+    const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
+                      (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
+
+    // Logic Video Fallback ĐỘC BẢN
+    let videoMp4Url = "https://www.w3schools.com/html/mov_bbb.mp4"; // Stock Fallback
+    const uniqueVideoPath = path.join(__dirname, `unique_render_${Date.now()}.mp4`);
+    let useUniqueLocalVideo = false;
+
     if (movie.trailer_url && movie.trailer_url.endsWith('.mp4')) {
         videoMp4Url = movie.trailer_url;
         log.info("Sử dụng Trailer MP4 gốc của phim.");
+    } else if (posterUrl) {
+        log.info("Chế tạo Video mới hoàn toàn từ Poster Phim để lách AI TikTok...");
+        const renderSuccess = await generateUniqueVideo(posterUrl, uniqueVideoPath);
+        if (renderSuccess) {
+            useUniqueLocalVideo = true;
+            videoMp4Url = "file://" + uniqueVideoPath;
+        } else {
+            log.info("Không thể render video, chuyển sang luồng dự phòng (Stock Video).");
+        }
     } else {
-        log.info("Không tìm thấy Trailer MP4, chuyển sang luồng dự phòng (Stock Video).");
+        log.info("Không có Poster hoặc Trailer MP4, chuyển sang luồng dự phòng (Stock Video).");
     }
 
     // Xử lý Upload
-    const uploadResult = await postVideoToTikTok(videoMp4Url, caption);
+    // Lưu ý: postVideoToTikTok cần xử lý trường hợp videoUrl là file local (bắt đầu bằng file://)
+    let uploadResult;
+    if (useUniqueLocalVideo) {
+        uploadResult = await postVideoToTikTokLocal(uniqueVideoPath, caption);
+    } else {
+        uploadResult = await postVideoToTikTok(videoMp4Url, caption);
+    }
+    
+    // Dọn rác
+    if (useUniqueLocalVideo && fs.existsSync(uniqueVideoPath)) {
+        fs.unlinkSync(uniqueVideoPath);
+    }
     
     // Nếu uploadResult trả về true (kiểu cũ) hoặc object có success = true
     const isSuccess = uploadResult === true || (uploadResult && uploadResult.success);
@@ -245,10 +385,6 @@ async function autoPostMovie() {
         const timeTaken = ((Date.now() - startTime) / 1000).toFixed(1);
         
         // Trích xuất hình ảnh Poster từ Ophim
-        const imageDomain = "https://img.ophim.live/uploads/movies/";
-        const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
-                          (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
-
         const reportMsg = `🚀 <b>[AUTO POST TIKTOK] NHIỆM VỤ HOÀN TẤT!</b>\n\n` +
                           `🎬 <b>Phim:</b> ${movie.name} (${movie.origin_name})\n` +
                           `🎭 <b>Thể loại:</b> ${movieGenres}\n` +
