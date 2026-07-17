@@ -58,9 +58,19 @@ app.get('/tiktok/callback', async (req, res) => {
 
         const data = tokenResponse.data;
         if (data.access_token) {
-            // Lưu Access Token và Refresh Token vào file
-            fs.writeFileSync(path.join(__dirname, 'tiktok-tokens.json'), JSON.stringify(data, null, 2));
-            res.send('<h2>✅ Uỷ quyền TikTok thành công!</h2><p>Đã lưu Access Token. Bạn có thể đóng tab này và bắt đầu auto-post.</p>');
+            // Hiển thị trực tiếp token lên màn hình để copy thay vì ghi vào file
+            const tokenHTML = `
+                <h2>✅ Uỷ quyền TikTok thành công!</h2>
+                <p>Do máy chủ của bạn (Vercel) không cho phép ghi file (read-only), vui lòng copy các mã dưới đây để sử dụng:</p>
+                <div style="background:#eee; padding:15px; border-radius:5px;">
+                    <b>Access Token:</b><br/>
+                    <textarea style="width:100%; height:80px;">${data.access_token}</textarea><br/><br/>
+                    <b>Refresh Token (Quan trọng nhất):</b><br/>
+                    <textarea style="width:100%; height:80px;">${data.refresh_token}</textarea>
+                </div>
+                <p><i>Hãy lưu mã Refresh Token này lại để dùng cho kịch bản tự động đăng bài!</i></p>
+            `;
+            res.send(tokenHTML);
         } else {
             res.send('Lỗi lấy token: ' + JSON.stringify(data));
         }
