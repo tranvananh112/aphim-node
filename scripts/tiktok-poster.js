@@ -133,6 +133,7 @@ async function postToTikTok(videoUrl, caption) {
         }
 
         // Đăng với chế độ Công khai, nếu bị từ chối thì tự động chuyển Riêng tư
+        const videoSize = fs.statSync(tempFilePath).size;
         const privacyLevels = ['PUBLIC_TO_EVERYONE', 'SELF_ONLY'];
         let uploadUrl = null;
         let finalPrivacy = null;
