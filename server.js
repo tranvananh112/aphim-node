@@ -3,7 +3,6 @@ const path = require('path');
 const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
-require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -22,62 +21,6 @@ app.use(express.static(__dirname));
 // ===== STATIC: Serve icons/ ra đường dẫn root (để Lottie load /icon-*.json) =====
 // VD: GET /icon-phim-bo.json → f:\Wesite Xem Phim Node\icons\icon-phim-bo.json
 app.use(express.static(path.join(__dirname, 'icons')));
-
-// ===== TIKTOK OAUTH2 INTEGRATION =====
-app.get('/tiktok/login', (req, res) => {
-    const csrfState = Math.random().toString(36).substring(7);
-    res.cookie('csrfState', csrfState, { maxAge: 60000 });
-    
-    let url = 'https://www.tiktok.com/v2/auth/authorize/';
-    url += `?client_key=sbawgwih1ntin8uihk`;
-    url += '&scope=video.publish,video.upload';
-    url += '&response_type=code';
-    url += `&redirect_uri=https://aphim.top/tiktok/callback`;
-    url += '&state=' + csrfState;
-    
-    res.redirect(url);
-});
-
-app.get('/tiktok/callback', async (req, res) => {
-    const code = req.query.code;
-    const err = req.query.error;
-    
-    if (err) return res.send('Lỗi ủy quyền TikTok: ' + err);
-    if (!code) return res.send('Không tìm thấy mã uỷ quyền.');
-
-    try {
-        const tokenResponse = await axios.post('https://open.tiktokapis.com/v2/oauth/token/', {
-            client_key: 'sbawgwih1ntin8uihk',
-            client_secret: 'WtZ2pvXKSQ8oPswaqzJ8QBXJ8AyyFHfD',
-            code: code,
-            grant_type: 'authorization_code',
-            redirect_uri: 'https://aphim.top/tiktok/callback'
-        }, {
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        });
-
-        const data = tokenResponse.data;
-        if (data.access_token) {
-            // Hiển thị trực tiếp token lên màn hình để copy thay vì ghi vào file
-            const tokenHTML = `
-                <h2>✅ Uỷ quyền TikTok thành công!</h2>
-                <p>Do máy chủ của bạn (Vercel) không cho phép ghi file (read-only), vui lòng copy các mã dưới đây để sử dụng:</p>
-                <div style="background:#eee; padding:15px; border-radius:5px;">
-                    <b>Access Token:</b><br/>
-                    <textarea style="width:100%; height:80px;">${data.access_token}</textarea><br/><br/>
-                    <b>Refresh Token (Quan trọng nhất):</b><br/>
-                    <textarea style="width:100%; height:80px;">${data.refresh_token}</textarea>
-                </div>
-                <p><i>Hãy lưu mã Refresh Token này lại để dùng cho kịch bản tự động đăng bài!</i></p>
-            `;
-            res.send(tokenHTML);
-        } else {
-            res.send('Lỗi lấy token: ' + JSON.stringify(data));
-        }
-    } catch (error) {
-        res.send('Lỗi server: ' + (error.response ? JSON.stringify(error.response.data) : error.message));
-    }
-});
 
 // ===== CACHE for API proxies =====
 const apiCache = new Map();
@@ -135,7 +78,7 @@ app.get('/phim/:slug', async (req, res) => {
     try {
         const response = await axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 });
         const data = response.data;
-        
+
         if (data && data.status && data.movie) {
             const movie = data.movie;
             const episodes = data.episodes || [];
@@ -147,7 +90,7 @@ app.get('/phim/:slug', async (req, res) => {
             const eps = movie.episode_total || '?';
             const rawContent = movie.content ? movie.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim() : '';
             const content = rawContent.substring(0, 100);
-            
+
             const title = `Phim ${name} Vietsub + Thuyết Minh - Full HD`;
             const isSeries = movie.type === 'series';
             let desc;
@@ -228,7 +171,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
         const data = response.data;
         const movie = data && data.movie ? data.movie : null;
         const episodes = data && data.episodes ? data.episodes : [];
-        
+
         res.render('watch', {
             title: movie ? `Xem ${movie.name} - APhim` : 'Xem Phim - APhim',
             currentPage: 'watch',
@@ -430,7 +373,7 @@ app.get('/sitemap-images.xml', async (req, res) => {
             } catch (e) { /* bỏ qua trang lỗi */ }
         }));
 
-        const urlEntries = allMovies.map(function(movie) {
+        const urlEntries = allMovies.map(function (movie) {
             const slug = movie.slug || '';
             const name = (movie.name || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
             const pageUrl = 'https://aphim.top/phim/' + slug;
@@ -638,7 +581,7 @@ app.get(['/api/isports/image/:teamId', '/v1/api/isports/image/:teamId'], async (
         } else {
             res.status(404).send('No logo');
         }
-    } catch(e) {
+    } catch (e) {
         res.status(404).send('Error fetching proxy image');
     }
 });
@@ -721,69 +664,69 @@ app.get(['/api/sportmonks/fixture/:id', '/v1/api/sportmonks/fixture/:id'], async
 
 // RapidAPI Sofascore proxy
 app.get(['/api/sofascore/*', '/v1/api/sofascore/*'], async (req, res) => {
-  try {
-    const targetPath = req.params[0];
-    const cacheKey = targetPath;
-    const cached = getCached(cacheKey);
-    if (cached) {
-        res.setHeader('X-Cache', 'HIT');
-        return res.status(200).send(cached);
-    }
-    const url = `https://sportapi7.p.rapidapi.com/${targetPath}`;
-    console.log(`[Proxy] Fetching: ${url}`);
-    const result = await queuedFetch(url, {
-        headers: {
-            'x-rapidapi-key': '8e131041e5msheef9200c98e9712p109669jsn30145b3c501d',
-            'x-rapidapi-host': 'sportapi7.p.rapidapi.com',
-            'Accept': 'application/json'
+    try {
+        const targetPath = req.params[0];
+        const cacheKey = targetPath;
+        const cached = getCached(cacheKey);
+        if (cached) {
+            res.setHeader('X-Cache', 'HIT');
+            return res.status(200).send(cached);
         }
-    });
-    if (result.status === 200 && result.text) {
-        setCache(cacheKey, result.text); 
-        res.setHeader('X-Cache', 'MISS');
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).send(result.text);
-    } else {
-        console.error(`[Proxy] Error ${result.status}:`, result.text);
-        res.status(result.status || 500).json({ error: 'Upstream Error', details: result.text });
+        const url = `https://sportapi7.p.rapidapi.com/${targetPath}`;
+        console.log(`[Proxy] Fetching: ${url}`);
+        const result = await queuedFetch(url, {
+            headers: {
+                'x-rapidapi-key': '8e131041e5msheef9200c98e9712p109669jsn30145b3c501d',
+                'x-rapidapi-host': 'sportapi7.p.rapidapi.com',
+                'Accept': 'application/json'
+            }
+        });
+        if (result.status === 200 && result.text) {
+            setCache(cacheKey, result.text);
+            res.setHeader('X-Cache', 'MISS');
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(result.text);
+        } else {
+            console.error(`[Proxy] Error ${result.status}:`, result.text);
+            res.status(result.status || 500).json({ error: 'Upstream Error', details: result.text });
+        }
+    } catch (error) {
+        console.error("RapidAPI Proxy Error:", error.message);
+        res.status(200).json({ events: [] });
     }
-  } catch (error) {
-    console.error("RapidAPI Proxy Error:", error.message);
-    res.status(200).json({ events: [] }); 
-  }
 });
 
 // Sofascore team image proxy
 app.get('/api/image/team/:id', async (req, res) => {
-  try {
-    const teamId = req.params.id;
-    const imageUrl = `https://api.sofascore.app/api/v1/team/${teamId}/image`;
-    const response = await axios.get(imageUrl, { 
-      responseType: 'arraybuffer',
-      validateStatus: () => true,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://www.sofascore.com/',
-        'Origin': 'https://www.sofascore.com',
-        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
-      }
-    });
-    if (response.status === 200) {
-        res.set('Content-Type', 'image/png');
-        res.send(response.data);
-    } else {
-        res.status(404).send('Not Found');
+    try {
+        const teamId = req.params.id;
+        const imageUrl = `https://api.sofascore.app/api/v1/team/${teamId}/image`;
+        const response = await axios.get(imageUrl, {
+            responseType: 'arraybuffer',
+            validateStatus: () => true,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Referer': 'https://www.sofascore.com/',
+                'Origin': 'https://www.sofascore.com',
+                'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+            }
+        });
+        if (response.status === 200) {
+            res.set('Content-Type', 'image/png');
+            res.send(response.data);
+        } else {
+            res.status(404).send('Not Found');
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch team image' });
     }
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch team image' });
-  }
 });
 
 // ==========================================
 // 404 HANDLER
 // ==========================================
 app.use((req, res) => {
-    res.status(404).render('404', { 
+    res.status(404).render('404', {
         title: '404 - Không tìm thấy trang',
         currentPage: '404'
     });

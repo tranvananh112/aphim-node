@@ -1,0 +1,42 @@
+name: Auto Post TikTok (King Workflow)
+
+on:
+  schedule:
+    # Chạy tự động vào lúc 12:00 trưa và 20:00 tối mỗi ngày (Giờ VN - UTC+7)
+    # Tương đương với 05:00 và 13:00 UTC
+    - cron: '0 5,13 * * *'
+  workflow_dispatch: # Cho phép bấm chạy thủ công trên web Github
+
+jobs:
+  post_to_tiktok:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Cài đặt Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cài đặt thư viện (Install Dependencies)
+        run: npm install
+
+      - name: Chạy Kịch bản Đăng Video TikTok (KING Workflow)
+        run: node scripts/tiktok-poster.js
+        env:
+          # Các biến bảo mật sẽ được truyền từ Github Secrets
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+      - name: Lưu Lịch Sử Phim Đã Đăng (Chống Trùng Lặp)
+        run: |
+          git config --global user.name "TikTok Auto Poster"
+          git config --global user.email "bot@aphim.top"
+          git add posted-tiktok.json
+          git commit -m "Auto-update: Lưu ID phim vừa đăng TikTok [skip ci]" || echo "No changes to commit"
+          git push

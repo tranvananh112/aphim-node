@@ -3,21 +3,21 @@ const axios = require('axios');
 
 async function generateTikTokCaption(movieTitle, movieDescription, genres) {
     const prompt = `
-Bạn là một chuyên gia Social Media và SEO hàng đầu trên TikTok.
-Nhiệm vụ của bạn là viết một bài đăng TikTok để giới thiệu một bộ phim cực hay, giúp thu hút hàng triệu lượt xem và tương tác.
-
-THÔNG TIN PHIM:
+Bạn là một chuyên gia Social Media và Cố vấn Kịch bản hạng S trên TikTok.
+Nhiệm vụ của bạn là viết một bài Caption cực kỳ viral (giật gân, thu hút) để giới thiệu bộ phim sau:
 - Tên phim: ${movieTitle}
 - Thể loại: ${genres}
-- Nội dung tóm tắt: ${movieDescription}
+- Nội dung: ${movieDescription}
 
-YÊU CẦU BÀI VIẾT TIKTOK (CAPTION):
-1. Dòng đầu tiên: Phải là một câu TIÊU ĐỀ GIẬT GÂN, tò mò, bắt trend hoặc gây sốc để giữ chân người xem ngay trong 3 giây đầu. (Ví dụ: "Sốc!", "Bạn sẽ hối hận nếu bỏ qua siêu phẩm này...", "Cú twist đỉnh nhất lịch sử..."). Viết IN HOA một phần để nhấn mạnh.
-2. Dòng 2-3: Review tóm tắt nội dung cực kỳ cuốn hút, đánh vào cảm xúc, không spoil kết thúc. Dùng icon emoji phù hợp 🎬🔥😱.
-3. Call-to-action (Kêu gọi hành động): Kêu gọi người xem tìm link xem trọn bộ chất lượng cao HD miễn phí tại website APhim.top (gắn link khéo léo).
-4. Hashtags chuẩn SEO TikTok: Ít nhất 7 hashtags. Bắt buộc có #aphim #phimhay #reviewphim #xemphim. Các hashtag còn lại dựa trên thể loại phim và tên phim.
-
-Định dạng đầu ra: Chỉ trả về nội dung caption, không cần thêm giải thích.
+YÊU CẦU NGHIÊM NGẶT (PHẢI TUÂN THỦ 100%):
+1. **Câu Hook 3 giây đầu:** Mở đầu bằng một câu "Móc câu" cực sốc, giật gân, khơi gợi tò mò tột độ (IN HOA, dùng Emoji mạnh). Tuyệt đối không dùng những câu sáo rỗng.
+2. **Kể chuyện mập mờ:** Tóm tắt phim theo phong cách Review bí ẩn, kể một nửa câu chuyện và đặt câu hỏi mở để ép người xem phải click vào link hoặc xem hết video.
+3. **Kêu gọi hành động (CTA):** Điều hướng người xem truy cập link "aphim.top" một cách khéo léo và tự nhiên nhất.
+4. **Chuẩn SEO & Hidden Keywords:**
+   - Chọn ra 5 Hashtags đang thịnh hành nhất và liên quan sát nhất (VD: #aphim #phimhay #reviewphim #xemphim #phim[theloai]).
+   - Chèn lồng ghép các từ khoá tìm kiếm tự nhiên vào trong văn bản.
+5. **Chống trùng lặp:** Không sử dụng lại các mô típ văn mẫu như "Bạn đã sẵn sàng chưa?", "Đừng bỏ lỡ!". Hãy dùng văn phong sáng tạo, tự nhiên, đôi khi hơi "đời" hoặc "slang" của Gen Z.
+6. Kết quả trả về CHỈ LÀ ĐOẠN CAPTION, không kèm theo lời chào, không kèm theo giải thích.
 `;
 
     try {
