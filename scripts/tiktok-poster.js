@@ -93,39 +93,44 @@ async function postToTikTok(videoUrl, caption) {
     const tempFilePath = path.join(__dirname, `temp_upload_${Date.now()}.mp4`);
     
     try {
-        // --- Buước 1: Thử FFmpeg cắt video ---
+        // --- Buước 1: Dùng FFmpeg cắt 15s từ M3U8 ---
         let videoReady = false;
         try {
-            execSync('ffmpeg -version', { stdio: 'ignore' });
-            log.info(`✂️ Đang cắt 15 giây Highlight từ M3U8...`);
+            // Kiểm tra FFmpeg có sẵn trên máy chủ không (Linux và Windows)
+            try { execSync('ffmpeg -version', { stdio: 'ignore' }); } 
+            catch { execSync('where ffmpeg', { stdio: 'ignore' }); }
+            
+            log.info(`✂️ FFmpeg phát hiện, bắt đầu cắt 15 giây Highlight từ link M3U8...`);
             await new Promise((resolve, reject) => {
                 ffmpeg(videoUrl)
-                    .seekInput('00:03:00') // Bỏ 3 phút đầu
+                    .seekInput('00:03:00')
                     .duration(15)
                     .outputOptions(['-c:v libx264', '-c:a aac', '-preset ultrafast', '-pix_fmt yuv420p', '-movflags faststart'])
                     .save(tempFilePath)
-                    .on('end', () => { log.success('Cắt 15s Highlight thành công!'); resolve(); })
+                    .on('end', () => { log.success('FFmpeg cắt 15s Highlight thành công!'); resolve(); })
                     .on('error', (err) => reject(err));
             });
+            
+            // Xác nhận file đầu ra hợp lệ (phải lớn hơn 100KB)
+            const stat = fs.statSync(tempFilePath);
+            if (stat.size < 100 * 1024) throw new Error('File output quá nhỏ, render thất bại.');
+            
             videoReady = true;
+            log.info(`Kích thước video: ${(stat.size / 1024 / 1024).toFixed(2)} MB`);
         } catch (e) {
-            log.warn(`Lỗi cắt video: ${e.message}. Chuyển sang tải MP4 thột.`);
+            log.warn(`Lỗi FFmpeg: ${e.message}`);
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
         }
 
-        // --- Nếu FFmpeg không có, tải video từ URL bằng axios ---
         if (!videoReady) {
-            log.info(`⬇️ Đang tải video từ URL về máy chủ...`);
-            const resp = await axios({ method: 'GET', url: videoUrl, responseType: 'stream', timeout: 60000 });
-            const writer = fs.createWriteStream(tempFilePath);
-            resp.data.pipe(writer);
-            await new Promise((resolve, reject) => { writer.on('finish', resolve); writer.on('error', reject); });
-            videoReady = true;
+            // FFmpeg không có hoặc thất bại - Chỉ có FFmpeg mới decode HLS được
+            log.error('KHÔNG THỂ TẢI VIDEO: FFmpeg bắt buộc để cắt video HLS/M3U8. Bỏ qua bài đăng này.');
+            return { success: false, reason: 'ffmpeg_unavailable' };
         }
 
         const videoSize = fs.statSync(tempFilePath).size;
-        log.info(`🚀 Khởi tạo phiên FILE_UPLOAD: ${(videoSize/1024/1024).toFixed(2)} MB`);
+        log.info(`🚀 Khởi tạo phiên FILE_UPLOAD lên TikTok: ${(videoSize/1024/1024).toFixed(2)} MB`);
         
-        // --- Buước 2: Init upload trên TikTok ---
         const initResp = await axios.post(
             'https://open.tiktokapis.com/v2/post/publish/video/init/',
             {
@@ -137,15 +142,14 @@ async function postToTikTok(videoUrl, caption) {
 
         const errCode = initResp.data?.error?.code;
         if (errCode === 'unaudited_client_can_only_post_to_private_accounts') {
-            log.warn("Ứng dụng chưa được duyệt: Video sẽ vào Riêng Tư (bình thường ở giai đoạn Sandbox).");
+            log.warn("Ứng dụng Sandbox: Video sẽ vào Riêng Tư (bình thường ở giai đoạn Sandbox).");
             return { success: true, reason: 'sandbox' };
         }
 
         const uploadUrl = initResp.data?.data?.upload_url;
         if (!uploadUrl) throw new Error(`Init thất bại: ${JSON.stringify(initResp.data)}`);
 
-        // --- Buước 3: Đẩy file lên upload URL ---
-        log.info(`⬆️ Đẩy file lên TikTok Upload Server...`);
+        log.info(`⬆️ Đẩy file MP4 lên TikTok Upload Server...`);
         const fileBuffer = fs.readFileSync(tempFilePath);
         await axios.put(uploadUrl, fileBuffer, {
             headers: {

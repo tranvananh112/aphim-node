@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Cài đặt bộ vi xử lý Video (FFmpeg)
-        uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Cài đặt FFmpeg (Bộ xử lý Video)
+        run: sudo apt-get install -y ffmpeg
         
       - name: Cài đặt thư viện (Install Dependencies)
         run: npm install
