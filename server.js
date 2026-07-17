@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
+require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,6 +22,52 @@ app.use(express.static(__dirname));
 // ===== STATIC: Serve icons/ ra đường dẫn root (để Lottie load /icon-*.json) =====
 // VD: GET /icon-phim-bo.json → f:\Wesite Xem Phim Node\icons\icon-phim-bo.json
 app.use(express.static(path.join(__dirname, 'icons')));
+
+// ===== TIKTOK OAUTH2 INTEGRATION =====
+app.get('/tiktok/login', (req, res) => {
+    const csrfState = Math.random().toString(36).substring(7);
+    res.cookie('csrfState', csrfState, { maxAge: 60000 });
+    
+    let url = 'https://www.tiktok.com/v2/auth/authorize/';
+    url += `?client_key=${process.env.TIKTOK_CLIENT_KEY}`;
+    url += '&scope=video.publish,video.upload';
+    url += '&response_type=code';
+    url += `&redirect_uri=https://aphim.top/tiktok/callback`;
+    url += '&state=' + csrfState;
+    
+    res.redirect(url);
+});
+
+app.get('/tiktok/callback', async (req, res) => {
+    const code = req.query.code;
+    const err = req.query.error;
+    
+    if (err) return res.send('Lỗi ủy quyền TikTok: ' + err);
+    if (!code) return res.send('Không tìm thấy mã uỷ quyền.');
+
+    try {
+        const tokenResponse = await axios.post('https://open.tiktokapis.com/v2/oauth/token/', {
+            client_key: process.env.TIKTOK_CLIENT_KEY,
+            client_secret: process.env.TIKTOK_CLIENT_SECRET,
+            code: code,
+            grant_type: 'authorization_code',
+            redirect_uri: 'https://aphim.top/tiktok/callback'
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+        const data = tokenResponse.data;
+        if (data.access_token) {
+            // Lưu Access Token và Refresh Token vào file
+            fs.writeFileSync(path.join(__dirname, 'tiktok-tokens.json'), JSON.stringify(data, null, 2));
+            res.send('<h2>✅ Uỷ quyền TikTok thành công!</h2><p>Đã lưu Access Token. Bạn có thể đóng tab này và bắt đầu auto-post.</p>');
+        } else {
+            res.send('Lỗi lấy token: ' + JSON.stringify(data));
+        }
+    } catch (error) {
+        res.send('Lỗi server: ' + (error.response ? JSON.stringify(error.response.data) : error.message));
+    }
+});
 
 // ===== CACHE for API proxies =====
 const apiCache = new Map();
