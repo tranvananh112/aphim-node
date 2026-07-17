@@ -29,7 +29,7 @@ app.get('/tiktok/login', (req, res) => {
     res.cookie('csrfState', csrfState, { maxAge: 60000 });
     
     let url = 'https://www.tiktok.com/v2/auth/authorize/';
-    url += `?client_key=${process.env.TIKTOK_CLIENT_KEY}`;
+    url += `?client_key=aw6ejuc47ltu5m2o`;
     url += '&scope=video.publish,video.upload';
     url += '&response_type=code';
     url += `&redirect_uri=https://aphim.top/tiktok/callback`;
@@ -47,8 +47,8 @@ app.get('/tiktok/callback', async (req, res) => {
 
     try {
         const tokenResponse = await axios.post('https://open.tiktokapis.com/v2/oauth/token/', {
-            client_key: process.env.TIKTOK_CLIENT_KEY,
-            client_secret: process.env.TIKTOK_CLIENT_SECRET,
+            client_key: 'aw6ejuc47ltu5m2o',
+            client_secret: 'tHAtHOTt1gpxE6zHQBlGl5ylqmAwH6Uj',
             code: code,
             grant_type: 'authorization_code',
             redirect_uri: 'https://aphim.top/tiktok/callback'
