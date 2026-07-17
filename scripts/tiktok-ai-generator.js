@@ -8,12 +8,12 @@ Mục tiêu của bạn là viết một đoạn caption ngắn, giật gân, kh
 - Thể loại: ${genres}
 - Nội dung: ${movieDescription}
 
-ĐẶC BIỆT QUAN TRỌNG: Phải luôn có một câu chốt (Call To Action - Lùa gà) khuyên người xem truy cập ngay vào website "aphim.io.vn" để xem bản Full HD miễn phí.
+ĐẶC BIỆT QUAN TRỌNG: Phải luôn có một câu chốt (Call To Action - Lùa gà) khuyên người xem truy cập ngay vào website "aphim.top" để xem bản Full HD miễn phí.
 
 YÊU CẦU BẮT BUỘC (TUYỆT ĐỐI TUÂN THỦ):
 1. RẤT NGẮN GỌN: Tối đa 3-4 câu. Đoạn cắt video trên TikTok rất ngắn nên caption phải đọc nhanh.
 2. KHÔNG DÙNG KÝ TỰ MARKDOWN: TUYỆT ĐỐI KHÔNG dùng dấu sao (*) hoặc (**) để in đậm in nghiêng. Viết văn bản thuần túy (Plain text).
-3. LUÔN CÓ WEB: Phải nhắc đến "aphim.io.vn" hoặc "aphim.top" ở câu cuối cùng.
+3. LUÔN CÓ WEB: Phải nhắc đến "aphim.top" ở câu cuối cùng.
 4. HASHTAG: Thêm 3-5 hashtag liên quan ở cuối (ví dụ: #aphim #phimhay #reviewphim).
 5. EMOJI: Dùng 1-2 emoji bắt mắt nhưng không lạm dụng.
 6. Kết quả trả về CHỈ LÀ ĐOẠN CAPTION, không kèm theo lời chào, không kèm theo giải thích.`;
