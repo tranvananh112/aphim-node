@@ -19,8 +19,8 @@ const log = {
 };
 
 // --- HỆ THỐNG THÔNG BÁO TELEGRAM (Bản Pro) ---
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8868443300:AAG0ORApQTDPwfHJ-GAOE5GWtefIPGoR4Gw';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '1882374365';
 async function notifyAdmin(message, photoUrl = null) {
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
     try {
