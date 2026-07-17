@@ -103,6 +103,10 @@ async function postToTikTok(videoUrl, caption) {
             log.info(`✂️ FFmpeg phát hiện, bắt đầu cắt 30 giây Highlight từ link M3U8...`);
             await new Promise((resolve, reject) => {
                 ffmpeg(videoUrl)
+                    .inputOptions([
+                        '-headers', 'Referer: https://ophim1.com/\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n',
+                        '-protocol_whitelist', 'file,http,https,tcp,tls,crypto'
+                    ])
                     .seekInput('00:03:00')
                     .duration(30)
                     .outputOptions(['-c:v libx264', '-c:a aac', '-preset ultrafast', '-pix_fmt yuv420p', '-movflags faststart'])
