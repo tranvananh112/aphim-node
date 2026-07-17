@@ -1,3 +1,4 @@
+require('dotenv').config({ quiet: true }); // Load .env local (nếu có), bỏ qua nếu không tìm thấy
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
