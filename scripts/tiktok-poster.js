@@ -85,62 +85,97 @@ async function refreshAccessToken() {
 }
 
 /**
- * Hàm upload khi đã có file mp4 sẵn trên ổ cứng (cho trường hợp tự render video)
+ * Đăng video lên TikTok bằng FILE_UPLOAD:
+ * 1. Dùng FFmpeg tải và cắt 15s từ link M3U8 về file local
+ * 2. Đẩy file lên TikTok Server bằng upload URL chính hãng
  */
-async function postVideoToTikTokLocal(filePath, caption) {
+async function postToTikTok(videoUrl, caption) {
+    const tempFilePath = path.join(__dirname, `temp_upload_${Date.now()}.mp4`);
+    
     try {
-        log.info(`📤 Đang tải file Local Video lên TikTok: ${filePath}`);
-        const videoSize = fs.statSync(filePath).size;
+        // --- Buước 1: Thử FFmpeg cắt video ---
+        let videoReady = false;
+        try {
+            execSync('ffmpeg -version', { stdio: 'ignore' });
+            log.info(`✂️ Đang cắt 15 giây Highlight từ M3U8...`);
+            await new Promise((resolve, reject) => {
+                ffmpeg(videoUrl)
+                    .seekInput('00:03:00') // Bỏ 3 phút đầu
+                    .duration(15)
+                    .outputOptions(['-c:v libx264', '-c:a aac', '-preset ultrafast', '-pix_fmt yuv420p', '-movflags faststart'])
+                    .save(tempFilePath)
+                    .on('end', () => { log.success('Cắt 15s Highlight thành công!'); resolve(); })
+                    .on('error', (err) => reject(err));
+            });
+            videoReady = true;
+        } catch (e) {
+            log.warn(`Lỗi cắt video: ${e.message}. Chuyển sang tải MP4 thột.`);
+        }
+
+        // --- Nếu FFmpeg không có, tải video từ URL bằng axios ---
+        if (!videoReady) {
+            log.info(`⬇️ Đang tải video từ URL về máy chủ...`);
+            const resp = await axios({ method: 'GET', url: videoUrl, responseType: 'stream', timeout: 60000 });
+            const writer = fs.createWriteStream(tempFilePath);
+            resp.data.pipe(writer);
+            await new Promise((resolve, reject) => { writer.on('finish', resolve); writer.on('error', reject); });
+            videoReady = true;
+        }
+
+        const videoSize = fs.statSync(tempFilePath).size;
+        log.info(`🚀 Khởi tạo phiên FILE_UPLOAD: ${(videoSize/1024/1024).toFixed(2)} MB`);
         
-        log.info("🚀 Khởi tạo phiên đăng video lên TikTok...");
-        const initResponse = await axios.post(
+        // --- Buước 2: Init upload trên TikTok ---
+        const initResp = await axios.post(
             'https://open.tiktokapis.com/v2/post/publish/video/init/',
             {
-                post_info: { title: caption, privacy_level: 'SELF_ONLY' },
+                post_info: { title: caption, privacy_level: 'SELF_ONLY', disable_duet: false, disable_comment: false, disable_stitch: false },
                 source_info: { source: 'FILE_UPLOAD', video_size: videoSize, chunk_size: videoSize, total_chunk_count: 1 }
             },
             { headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json; charset=UTF-8' } }
         );
 
-        if (initResponse.data.data && initResponse.data.data.upload_url) {
-            const uploadUrl = initResponse.data.data.upload_url;
-            log.info("⬆️ Đang đẩy gói dữ liệu video (Chunking) lên TikTok Server...");
-            
-            const fileData = fs.readFileSync(filePath);
-            await axios.put(uploadUrl, fileData, {
-                headers: {
-                    'Content-Type': 'video/mp4',
-                    'Content-Length': videoSize,
-                    'Content-Range': `bytes 0-${videoSize - 1}/${videoSize}`
-                },
-                maxBodyLength: Infinity,
-                maxContentLength: Infinity
-            });
-            log.success("Đăng video thành công rực rỡ!");
-            return true;
+        const errCode = initResp.data?.error?.code;
+        if (errCode === 'unaudited_client_can_only_post_to_private_accounts') {
+            log.warn("Ứng dụng chưa được duyệt: Video sẽ vào Riêng Tư (bình thường ở giai đoạn Sandbox).");
+            return { success: true, reason: 'sandbox' };
         }
-        throw new Error("Không nhận được upload_url từ TikTok");
+
+        const uploadUrl = initResp.data?.data?.upload_url;
+        if (!uploadUrl) throw new Error(`Init thất bại: ${JSON.stringify(initResp.data)}`);
+
+        // --- Buước 3: Đẩy file lên upload URL ---
+        log.info(`⬆️ Đẩy file lên TikTok Upload Server...`);
+        const fileBuffer = fs.readFileSync(tempFilePath);
+        await axios.put(uploadUrl, fileBuffer, {
+            headers: {
+                'Content-Type': 'video/mp4',
+                'Content-Length': videoSize,
+                'Content-Range': `bytes 0-${videoSize - 1}/${videoSize}`
+            },
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
+            timeout: 120000
+        });
+
+        log.success('Đăng video lên TikTok thành công!');
+        return { success: true };
+
     } catch (error) {
-        if (error.response && error.response.status === 401) {
-            log.warn("Token hết hạn (401), chuẩn bị refresh...");
+        if (error.response?.status === 401) {
+            log.warn('Token hết hạn, refresh...');
             const newToken = await refreshAccessToken();
-            if (newToken) return await postVideoToTikTokLocal(filePath, caption);
+            if (newToken) return await postToTikTok(videoUrl, caption);
         }
-        
-        const errData = error.response ? error.response.data : {};
-        if (errData.error && errData.error.code === 'unaudited_client_can_only_post_to_private_accounts') {
-            log.error("Lỗi TikTok Sandbox: Ứng dụng chưa được duyệt chỉ có thể đăng lên tài khoản Riêng Tư.");
-            return { success: false, reason: "sandbox_privacy" };
-        }
-        
-        log.error("Lỗi đăng video Local:", errData || error.message);
-        return { success: false, reason: "unknown" };
+        const errData = error.response?.data || error.message;
+        log.error('Lỗi đăng video:', JSON.stringify(errData));
+        return { success: false, reason: JSON.stringify(errData) };
+    } finally {
+        if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
     }
 }
 
-/**
- * Hàm tự động tải và đăng video lên TikTok bằng FILE UPLOAD (Chunked)
- */
+
 async function postVideoToTikTok(videoUrl, caption) {
     const tempFilePath = path.join(__dirname, `temp_${Date.now()}.mp4`);
     try {
@@ -326,7 +361,19 @@ async function getRandomUnpostedMovie() {
         log.info(`Đang truy xuất siêu dữ liệu (Metadata) cho phim: ${randomMovie.slug}`);
         
         const detailRes = await axios.get(`https://ophim1.com/phim/${randomMovie.slug}`);
-        return detailRes.data.movie;
+        const movieData = detailRes.data.movie;
+        const episodes = detailRes.data.episodes || [];
+        
+        // Trích xuất link m3u8 từ tập 1 đầu tiên
+        let m3u8_url = null;
+        if (episodes.length > 0 && episodes[0].server_data && episodes[0].server_data.length > 0) {
+            m3u8_url = episodes[0].server_data[0].link_m3u8;
+            log.info(`✅ Tìm thấy link M3U8: ${m3u8_url ? m3u8_url.substring(0, 60) + '...' : 'không có'}`);
+        } else {
+            log.warn("Phim này không có link tập.");
+        }
+        
+        return { ...movieData, m3u8_url };
     });
 }
 
@@ -370,52 +417,30 @@ async function autoPostMovie() {
     const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
                       (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
 
-    // Logic Video Fallback ĐỘC BẢN 3 LỚP
-    let videoMp4Url = "https://www.w3schools.com/html/mov_bbb.mp4"; // Stock Fallback
-    const uniqueVideoPath = path.join(__dirname, `unique_render_${Date.now()}.mp4`);
-    let useUniqueLocalVideo = false;
+    // Logic Video: Ưu tiên lấy link M3U8 từ tập phim, sau đó Trailer, rồi mới dùng Poster
+    let videoUrl = null;
 
-    // Lớp 1: Cắt Video Highlight từ Phim
+    // Lớp 1: Link M3U8 từ tập 1 (Tự động làm mau hết nét căng)
     if (movie.m3u8_url) {
-        log.info("Chế độ VIP: Tìm thấy link M3U8, tiến hành cắt Highlight clip 15s...");
-        const cutSuccess = await cutHighlightClip(movie.m3u8_url, uniqueVideoPath);
-        if (cutSuccess) {
-            useUniqueLocalVideo = true;
-            videoMp4Url = "file://" + uniqueVideoPath;
-        }
+        videoUrl = movie.m3u8_url;
+        log.info(`🎞️ Chế độ VIP: Dùng trực tiếp link M3U8 từ OPhim.`);
     }
-
-    // Lớp 2: Dùng Trailer MP4 nếu Lớp 1 thất bại
-    if (!useUniqueLocalVideo && movie.trailer_url && movie.trailer_url.endsWith('.mp4')) {
-        videoMp4Url = movie.trailer_url;
+    // Lớp 2: Trailer MP4 gốc
+    else if (movie.trailer_url && movie.trailer_url.endsWith('.mp4')) {
+        videoUrl = movie.trailer_url;
         log.info("Sử dụng Trailer MP4 gốc của phim.");
-    } 
-    
-    // Lớp 3: Sinh Video từ Poster nếu không có Trailer
-    if (!useUniqueLocalVideo && videoMp4Url === "https://www.w3schools.com/html/mov_bbb.mp4" && posterUrl) {
-        log.info("Chế tạo Video mới hoàn toàn từ Poster Phim để lách AI TikTok...");
-        const renderSuccess = await generateUniqueVideo(posterUrl, uniqueVideoPath);
-        if (renderSuccess) {
-            useUniqueLocalVideo = true;
-            videoMp4Url = "file://" + uniqueVideoPath;
-        } else {
-            log.info("Không thể render video, chuyển sang luồng dự phòng (Stock Video).");
-        }
+    }
+    // Lớp 3: Fallback - Lấy link embed tập 1 nếu có (embed player)
+    else {
+        log.warn("⚠️ Không tìm thấy link video nào hợp lệ cho bộ phim này, bỏ qua.");
+        await notifyAdmin(`⚠️ Không tìm thấy link video cho phim: ${movie.name}`);
+        return;
     }
 
-    // Xử lý Upload
-    // Lưu ý: postVideoToTikTok cần xử lý trường hợp videoUrl là file local (bắt đầu bằng file://)
-    let uploadResult;
-    if (useUniqueLocalVideo) {
-        uploadResult = await postVideoToTikTokLocal(uniqueVideoPath, caption);
-    } else {
-        uploadResult = await postVideoToTikTok(videoMp4Url, caption);
-    }
+    // Upload video lên TikTok bằng PULL_FROM_URL
+    const uploadResult = await postToTikTok(videoUrl, caption);
     
-    // Dọn rác
-    if (useUniqueLocalVideo && fs.existsSync(uniqueVideoPath)) {
-        fs.unlinkSync(uniqueVideoPath);
-    }
+    // Dọn file tạm (nếu có)
     
     // Nếu uploadResult trả về true (kiểu cũ) hoặc object có success = true
     const isSuccess = uploadResult === true || (uploadResult && uploadResult.success);
