@@ -142,9 +142,15 @@ async function postVideoToTikTok(videoUrl, caption) {
             const newToken = await refreshAccessToken();
             if (newToken) return await postVideoToTikTok(videoUrl, caption);
         }
+
+        const errData = error.response ? error.response.data : {};
+        if (errData.error && errData.error.code === 'unaudited_client_can_only_post_to_private_accounts') {
+            log.error("Lỗi TikTok Sandbox: Ứng dụng chưa được duyệt chỉ có thể đăng lên tài khoản Riêng Tư (Private Account).");
+            return { success: false, reason: "sandbox_privacy" };
+        }
         
-        log.error("Lỗi đăng video:", error.response ? error.response.data : error.message);
-        return false;
+        log.error("Lỗi đăng video:", errData || error.message);
+        return { success: false, reason: "unknown" };
     }
 }
 
@@ -222,9 +228,12 @@ async function autoPostMovie() {
     }
 
     // Xử lý Upload
-    const uploadSuccess = await postVideoToTikTok(videoMp4Url, caption);
+    const uploadResult = await postVideoToTikTok(videoMp4Url, caption);
     
-    if (uploadSuccess) {
+    // Nếu uploadResult trả về true (kiểu cũ) hoặc object có success = true
+    const isSuccess = uploadResult === true || (uploadResult && uploadResult.success);
+
+    if (isSuccess) {
         // Cập nhật CSDL nội bộ
         let postedIds = [];
         if (fs.existsSync(POSTED_JSON_PATH)) {
@@ -248,7 +257,11 @@ async function autoPostMovie() {
                           
         await notifyAdmin(reportMsg, posterUrl);
     } else {
-        await notifyAdmin(`❌ <b>[BÁO ĐỘNG ĐỎ] Lỗi Đăng TikTok:</b>\nBộ phim <b>${movie.name}</b> đã bị lỗi trong quá trình Upload. Sếp vui lòng kiểm tra lại log!`);
+        if (uploadResult && uploadResult.reason === "sandbox_privacy") {
+            await notifyAdmin(`❌ <b>[BÁO ĐỘNG] CẦN CẤU HÌNH LẠI TIKTOK:</b>\nBộ phim <b>${movie.name}</b> không thể đăng được vì Ứng dụng TikTok của sếp chưa được duyệt (Đang ở chế độ Test).\n\n<b>Cách khắc phục:</b> Vào app TikTok trên điện thoại -> Cài đặt quyền riêng tư -> Chuyển tài khoản thành <b>"Tài khoản riêng tư (Private Account)"</b> thì Bot mới đăng video lên được!`);
+        } else {
+            await notifyAdmin(`❌ <b>[BÁO ĐỘNG ĐỎ] Lỗi Đăng TikTok:</b>\nBộ phim <b>${movie.name}</b> đã bị lỗi trong quá trình Upload. Sếp vui lòng kiểm tra lại log!`);
+        }
     }
 }
 
