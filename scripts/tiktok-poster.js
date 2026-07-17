@@ -268,6 +268,41 @@ async function generateUniqueVideo(posterUrl, tempVideoPath) {
 }
 
 /**
+ * Cắt 15 giây Highlight từ M3U8 Stream (Tự động bỏ qua 5 phút đầu)
+ */
+async function cutHighlightClip(m3u8Url, tempVideoPath) {
+    return new Promise(async (resolve) => {
+        try {
+            execSync('ffmpeg -version', { stdio: 'ignore' });
+            log.info("Khởi động Lò Phản Ứng: Đang trích xuất Video Highlight chân thực từ phim...");
+            
+            ffmpeg(m3u8Url)
+                .seekInput('00:05:00') // Bỏ qua 5 phút đầu
+                .duration(15) // Cắt 15 giây
+                .outputOptions([
+                    '-c:v libx264',
+                    '-c:a aac',
+                    '-preset fast',
+                    '-pix_fmt yuv420p',
+                    '-r 25'
+                ])
+                .save(tempVideoPath)
+                .on('end', () => {
+                    log.success("Cắt Video Highlight 15s thành công rực rỡ!");
+                    resolve(true);
+                })
+                .on('error', (err) => {
+                    log.warn("Lỗi cắt video highlight: " + err.message);
+                    resolve(false);
+                });
+        } catch (e) {
+            log.warn("Máy chủ chưa cài FFmpeg hoặc lỗi khởi tạo. Bỏ qua cắt video.");
+            resolve(false);
+        }
+    });
+}
+
+/**
  * Hàm lấy ngẫu nhiên 1 phim từ OPhim API với bộ lọc thông minh
  */
 async function getRandomUnpostedMovie() {
@@ -335,15 +370,29 @@ async function autoPostMovie() {
     const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
                       (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
 
-    // Logic Video Fallback ĐỘC BẢN
+    // Logic Video Fallback ĐỘC BẢN 3 LỚP
     let videoMp4Url = "https://www.w3schools.com/html/mov_bbb.mp4"; // Stock Fallback
     const uniqueVideoPath = path.join(__dirname, `unique_render_${Date.now()}.mp4`);
     let useUniqueLocalVideo = false;
 
-    if (movie.trailer_url && movie.trailer_url.endsWith('.mp4')) {
+    // Lớp 1: Cắt Video Highlight từ Phim
+    if (movie.m3u8_url) {
+        log.info("Chế độ VIP: Tìm thấy link M3U8, tiến hành cắt Highlight clip 15s...");
+        const cutSuccess = await cutHighlightClip(movie.m3u8_url, uniqueVideoPath);
+        if (cutSuccess) {
+            useUniqueLocalVideo = true;
+            videoMp4Url = "file://" + uniqueVideoPath;
+        }
+    }
+
+    // Lớp 2: Dùng Trailer MP4 nếu Lớp 1 thất bại
+    if (!useUniqueLocalVideo && movie.trailer_url && movie.trailer_url.endsWith('.mp4')) {
         videoMp4Url = movie.trailer_url;
         log.info("Sử dụng Trailer MP4 gốc của phim.");
-    } else if (posterUrl) {
+    } 
+    
+    // Lớp 3: Sinh Video từ Poster nếu không có Trailer
+    if (!useUniqueLocalVideo && videoMp4Url === "https://www.w3schools.com/html/mov_bbb.mp4" && posterUrl) {
         log.info("Chế tạo Video mới hoàn toàn từ Poster Phim để lách AI TikTok...");
         const renderSuccess = await generateUniqueVideo(posterUrl, uniqueVideoPath);
         if (renderSuccess) {
@@ -352,8 +401,6 @@ async function autoPostMovie() {
         } else {
             log.info("Không thể render video, chuyển sang luồng dự phòng (Stock Video).");
         }
-    } else {
-        log.info("Không có Poster hoặc Trailer MP4, chuyển sang luồng dự phòng (Stock Video).");
     }
 
     // Xử lý Upload
