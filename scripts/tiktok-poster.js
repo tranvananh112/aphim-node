@@ -132,26 +132,36 @@ async function postToTikTok(videoUrl, caption) {
             return { success: false, reason: 'ffmpeg_unavailable' };
         }
 
-        const videoSize = fs.statSync(tempFilePath).size;
-        log.info(`🚀 Khởi tạo phiên FILE_UPLOAD lên TikTok: ${(videoSize/1024/1024).toFixed(2)} MB`);
-        
-        const initResp = await axios.post(
-            'https://open.tiktokapis.com/v2/post/publish/video/init/',
-            {
-                post_info: { title: caption, privacy_level: 'PUBLIC_TO_EVERYONE', disable_duet: false, disable_comment: false, disable_stitch: false },
-                source_info: { source: 'FILE_UPLOAD', video_size: videoSize, chunk_size: videoSize, total_chunk_count: 1 }
-            },
-            { headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json; charset=UTF-8' } }
-        );
+        // Đăng với chế độ Công khai, nếu bị từ chối thì tự động chuyển Riêng tư
+        const privacyLevels = ['PUBLIC_TO_EVERYONE', 'SELF_ONLY'];
+        let uploadUrl = null;
+        let finalPrivacy = null;
 
-        const errCode = initResp.data?.error?.code;
-        if (errCode === 'unaudited_client_can_only_post_to_private_accounts') {
-            log.warn("Ứng dụng Sandbox: Video sẽ vào Riêng Tư (bình thường ở giai đoạn Sandbox).");
-            return { success: true, reason: 'sandbox' };
+        for (const privacy of privacyLevels) {
+            log.info(`🚀 Khởi tạo phiên FILE_UPLOAD (${privacy}): ${(videoSize/1024/1024).toFixed(2)} MB`);
+            const initResp = await axios.post(
+                'https://open.tiktokapis.com/v2/post/publish/video/init/',
+                {
+                    post_info: { title: caption, privacy_level: privacy, disable_duet: false, disable_comment: false, disable_stitch: false },
+                    source_info: { source: 'FILE_UPLOAD', video_size: videoSize, chunk_size: videoSize, total_chunk_count: 1 }
+                },
+                { headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json; charset=UTF-8' } }
+            );
+
+            const errCode = initResp.data?.error?.code;
+            if (errCode === 'unaudited_client_can_only_post_to_private_accounts') {
+                if (privacy === 'PUBLIC_TO_EVERYONE') {
+                    log.warn('App Sandbox: không đăng Công khai được, tự động chuyển sang Riêng tư...');
+                    continue; // Thử lần tiếp với SELF_ONLY
+                }
+            }
+
+            uploadUrl = initResp.data?.data?.upload_url;
+            if (uploadUrl) { finalPrivacy = privacy; break; }
+            throw new Error(`Init thất bại: ${JSON.stringify(initResp.data)}`);
         }
 
-        const uploadUrl = initResp.data?.data?.upload_url;
-        if (!uploadUrl) throw new Error(`Init thất bại: ${JSON.stringify(initResp.data)}`);
+        if (!uploadUrl) throw new Error('Không khởi tạo được phiên upload sau khi thử tất cả mức riêng tư.');
 
         log.info(`⬆️ Đẩy file MP4 lên TikTok Upload Server...`);
         const fileBuffer = fs.readFileSync(tempFilePath);
@@ -166,7 +176,7 @@ async function postToTikTok(videoUrl, caption) {
             timeout: 120000
         });
 
-        log.success('Đăng video lên TikTok thành công!');
+        log.success(`Đăng video lên TikTok thành công! (Chế độ: ${finalPrivacy === 'SELF_ONLY' ? '🔒 Riêng tư - App chưa được duyệt' : '🌍 Công khai'})`);
         return { success: true };
 
     } catch (error) {
