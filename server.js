@@ -329,6 +329,10 @@ app.get('/profile.html', (req, res) => res.redirect(301, req.url.replace('.html'
 app.get('/register.html', (req, res) => res.redirect(301, req.url.replace('.html', '')));
 app.get('/support.html', (req, res) => res.redirect(301, req.url.replace('.html', '')));
 
+app.get('/tiktok5pgXUVWzUxAifGnSg4nsTciyOtz2bvpK.txt', (req, res) => {
+    res.send('tiktok-developers-site-verification=5pgXUVWzUxAifGnSg4nsTciyOtz2bvpK');
+});
+
 app.get(['/the-thao', '/the-thao.html'], (req, res) => {
     res.redirect(301, '/pricing');
 });
