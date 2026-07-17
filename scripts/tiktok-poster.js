@@ -18,16 +18,32 @@ const log = {
     success: (msg) => console.log(`[${new Date().toISOString()}] ✅ SUCCESS: ${msg}`)
 };
 
-// --- HỆ THỐNG THÔNG BÁO TELEGRAM (Gỉa lập/Tích hợp sẵn) ---
+// --- HỆ THỐNG THÔNG BÁO TELEGRAM (Bản Pro) ---
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
-async function notifyAdmin(message) {
+async function notifyAdmin(message, photoUrl = null) {
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
     try {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' });
+        if (photoUrl) {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            await axios.post(url, { 
+                chat_id: TELEGRAM_CHAT_ID, 
+                photo: photoUrl,
+                caption: message, 
+                parse_mode: 'HTML' 
+            });
+        } else {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' });
+        }
     } catch (e) {
-        log.warn("Không thể gửi thông báo Telegram");
+        log.warn("Lỗi gửi ảnh Telegram, đang thử gửi lại bằng văn bản thuần...");
+        if (photoUrl) {
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' });
+            } catch (err) {}
+        }
     }
 }
 
@@ -217,11 +233,22 @@ async function autoPostMovie() {
         postedIds.push(movie._id);
         fs.writeFileSync(POSTED_JSON_PATH, JSON.stringify(postedIds, null, 2));
         log.success(`Cập nhật Database thành công. Đã khóa ID [${movie._id}] chống trùng.`);
-        
         const timeTaken = ((Date.now() - startTime) / 1000).toFixed(1);
-        await notifyAdmin(`✅ <b>Bot TikTok:</b> Đăng thành công phim <b>${movie.name}</b>\nThời gian xử lý: ${timeTaken}s`);
+        
+        // Trích xuất hình ảnh Poster từ Ophim
+        const imageDomain = "https://img.ophim.live/uploads/movies/";
+        const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
+                          (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
+
+        const reportMsg = `🚀 <b>[AUTO POST TIKTOK] NHIỆM VỤ HOÀN TẤT!</b>\n\n` +
+                          `🎬 <b>Phim:</b> ${movie.name} (${movie.origin_name})\n` +
+                          `🎭 <b>Thể loại:</b> ${movieGenres}\n` +
+                          `⏱ <b>Tốc độ xử lý:</b> ${timeTaken}s\n\n` +
+                          `<i>🤖 Bot đã dọn dẹp rác, lưu vào Database chống trùng lặp và sẵn sàng cho ca làm việc tiếp theo!</i>`;
+                          
+        await notifyAdmin(reportMsg, posterUrl);
     } else {
-        await notifyAdmin(`❌ <b>Bot TikTok Lỗi:</b> Không thể upload video phim <b>${movie.name}</b>`);
+        await notifyAdmin(`❌ <b>[BÁO ĐỘNG ĐỎ] Lỗi Đăng TikTok:</b>\nBộ phim <b>${movie.name}</b> đã bị lỗi trong quá trình Upload. Sếp vui lòng kiểm tra lại log!`);
     }
 }
 
