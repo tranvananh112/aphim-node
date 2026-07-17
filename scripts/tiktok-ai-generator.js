@@ -2,23 +2,21 @@ require('dotenv').config();
 const axios = require('axios');
 
 async function generateTikTokCaption(movieTitle, movieDescription, genres) {
-    const prompt = `
-Bạn là một chuyên gia Social Media và Cố vấn Kịch bản hạng S trên TikTok.
-Nhiệm vụ của bạn là viết một bài Caption cực kỳ viral (giật gân, thu hút) để giới thiệu bộ phim sau:
+    const prompt = `Bạn là một Content Creator TikTok chuyên nghiệp chuyên review phim.
+Mục tiêu của bạn là viết một đoạn caption ngắn, giật gân, khơi gợi trí tò mò để khiến người xem phải thèm thuồng và tò mò về bộ phim sau:
 - Tên phim: ${movieTitle}
 - Thể loại: ${genres}
 - Nội dung: ${movieDescription}
 
-YÊU CẦU NGHIÊM NGẶT (PHẢI TUÂN THỦ 100%):
-1. **Câu Hook 3 giây đầu:** Mở đầu bằng một câu "Móc câu" cực sốc, giật gân, khơi gợi tò mò tột độ (IN HOA, dùng Emoji mạnh). Tuyệt đối không dùng những câu sáo rỗng.
-2. **Kể chuyện mập mờ:** Tóm tắt phim theo phong cách Review bí ẩn, kể một nửa câu chuyện và đặt câu hỏi mở để ép người xem phải click vào link hoặc xem hết video.
-3. **Kêu gọi hành động (CTA):** Điều hướng người xem truy cập link "aphim.top" một cách khéo léo và tự nhiên nhất.
-4. **Chuẩn SEO & Hidden Keywords:**
-   - Chọn ra 5 Hashtags đang thịnh hành nhất và liên quan sát nhất (VD: #aphim #phimhay #reviewphim #xemphim #phim[theloai]).
-   - Chèn lồng ghép các từ khoá tìm kiếm tự nhiên vào trong văn bản.
-5. **Chống trùng lặp:** Không sử dụng lại các mô típ văn mẫu như "Bạn đã sẵn sàng chưa?", "Đừng bỏ lỡ!". Hãy dùng văn phong sáng tạo, tự nhiên, đôi khi hơi "đời" hoặc "slang" của Gen Z.
-6. Kết quả trả về CHỈ LÀ ĐOẠN CAPTION, không kèm theo lời chào, không kèm theo giải thích.
-`;
+ĐẶC BIỆT QUAN TRỌNG: Phải luôn có một câu chốt (Call To Action - Lùa gà) khuyên người xem truy cập ngay vào website "aphim.io.vn" để xem bản Full HD miễn phí.
+
+YÊU CẦU BẮT BUỘC (TUYỆT ĐỐI TUÂN THỦ):
+1. RẤT NGẮN GỌN: Tối đa 3-4 câu. Đoạn cắt video trên TikTok rất ngắn nên caption phải đọc nhanh.
+2. KHÔNG DÙNG KÝ TỰ MARKDOWN: TUYỆT ĐỐI KHÔNG dùng dấu sao (*) hoặc (**) để in đậm in nghiêng. Viết văn bản thuần túy (Plain text).
+3. LUÔN CÓ WEB: Phải nhắc đến "aphim.io.vn" hoặc "aphim.top" ở câu cuối cùng.
+4. HASHTAG: Thêm 3-5 hashtag liên quan ở cuối (ví dụ: #aphim #phimhay #reviewphim).
+5. EMOJI: Dùng 1-2 emoji bắt mắt nhưng không lạm dụng.
+6. Kết quả trả về CHỈ LÀ ĐOẠN CAPTION, không kèm theo lời chào, không kèm theo giải thích.`;
 
     try {
         const response = await axios.post(
