@@ -100,11 +100,11 @@ async function postToTikTok(videoUrl, caption) {
             try { execSync('ffmpeg -version', { stdio: 'ignore' }); } 
             catch { execSync('where ffmpeg', { stdio: 'ignore' }); }
             
-            log.info(`✂️ FFmpeg phát hiện, bắt đầu cắt 15 giây Highlight từ link M3U8...`);
+            log.info(`✂️ FFmpeg phát hiện, bắt đầu cắt 30 giây Highlight từ link M3U8...`);
             await new Promise((resolve, reject) => {
                 ffmpeg(videoUrl)
                     .seekInput('00:03:00')
-                    .duration(15)
+                    .duration(30)
                     .outputOptions(['-c:v libx264', '-c:a aac', '-preset ultrafast', '-pix_fmt yuv420p', '-movflags faststart'])
                     .save(tempFilePath)
                     .on('end', () => { log.success('FFmpeg cắt 15s Highlight thành công!'); resolve(); })
@@ -134,7 +134,7 @@ async function postToTikTok(videoUrl, caption) {
         const initResp = await axios.post(
             'https://open.tiktokapis.com/v2/post/publish/video/init/',
             {
-                post_info: { title: caption, privacy_level: 'SELF_ONLY', disable_duet: false, disable_comment: false, disable_stitch: false },
+                post_info: { title: caption, privacy_level: 'PUBLIC_TO_EVERYONE', disable_duet: false, disable_comment: false, disable_stitch: false },
                 source_info: { source: 'FILE_UPLOAD', video_size: videoSize, chunk_size: videoSize, total_chunk_count: 1 }
             },
             { headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json; charset=UTF-8' } }
