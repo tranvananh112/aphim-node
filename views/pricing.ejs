@@ -36,7 +36,7 @@
     </script>
 
     <!-- -----------------------------------------------------------
-         MOBILE SWIPE PRICING UI (ch? hi?n trên mobile < 768px)
+         MOBILE SWIPE PRICING UI (ch? hi?n trï¿½n mobile < 768px)
          ----------------------------------------------------------- -->
     <style>
     @media (min-width: 768px) {
@@ -308,7 +308,7 @@
         <div class="msw-tabs">
             <div class="msw-tab-wrap">
                 <div class="msw-tab-bg" id="mswTabBg"></div>
-                <button class="msw-tab-btn active" id="mswTabPlan" onclick="mswSwitchTab('plan')">Mua Gói</button>
+                <button class="msw-tab-btn active" id="mswTabPlan" onclick="mswSwitchTab('plan')">Mua Gï¿½i</button>
                 <button class="msw-tab-btn" id="mswTabCoin" onclick="mswSwitchTab('coin')">N?p Xu</button>
             </div>
         </div>
@@ -318,33 +318,33 @@
                 <div class="msw-card msw-card--free">
                     <div class="msw-card-backdrop" id="msw-bd-free"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói Mi?n Phí</div>
+                        <div class="msw-card-tag">Gï¿½i Mi?n Phï¿½</div>
                     </div>
-                    <div class="msw-card-name">Mi?n Phí</div>
+                    <div class="msw-card-name">Mi?n Phï¿½</div>
                     <div style="display:flex;align-items:baseline;gap:4px;">
                         <div class="msw-card-price">0</div>
-                        <span class="msw-card-period">d / tháng</span>
+                        <span class="msw-card-period">d / thï¿½ng</span>
                     </div>
                 </div>
                 <div class="msw-card msw-card--premium">
                     <div class="msw-card-backdrop" id="msw-bd-premium"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói Thành Viên</div>
+                        <div class="msw-card-tag">Gï¿½i Thï¿½nh Viï¿½n</div>
                         <div class="msw-card-badge">Ph? bi?n nh?t</div>
                     </div>
                     <div class="msw-card-name">Cao C?p</div>
                     <div style="display:flex;align-items:baseline;gap:4px;">
                         <div class="msw-card-price">169.000</div>
-                        <span class="msw-card-period">d / tháng</span>
+                        <span class="msw-card-period">d / thï¿½ng</span>
                     </div>
                 </div>
                 <div class="msw-card msw-card--family">
                     <div class="msw-card-backdrop" id="msw-bd-family"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói Gia Ðình</div>
+                        <div class="msw-card-tag">Gï¿½i Gia ï¿½ï¿½nh</div>
                         <div class="msw-card-badge">Ti?t ki?m 20%</div>
                     </div>
-                    <div class="msw-card-name">Gia Ðình</div>
+                    <div class="msw-card-name">Gia ï¿½ï¿½nh</div>
                     <div style="display:flex;align-items:baseline;gap:4px;">
                         <div class="msw-card-price">699.000</div>
                         <span class="msw-card-period">d / nam</span>
@@ -364,7 +364,7 @@
                 <div class="msw-card msw-card--coin1">
                     <div class="msw-card-backdrop" id="msw-bd-coin1"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói Kh?i Ð?u</div>
+                        <div class="msw-card-tag">Gï¿½i Kh?i ï¿½?u</div>
                     </div>
                     <div class="msw-card-name">5.000 Xu</div>
                     <div style="display:flex;align-items:baseline;gap:4px;">
@@ -375,7 +375,7 @@
                 <div class="msw-card msw-card--coin2">
                     <div class="msw-card-backdrop" id="msw-bd-coin2"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói Ðam Mê</div>
+                        <div class="msw-card-tag">Gï¿½i ï¿½am Mï¿½</div>
                         <div class="msw-card-badge">Ph? bi?n</div>
                     </div>
                     <div class="msw-card-name">30.000 Xu</div>
@@ -387,7 +387,7 @@
                 <div class="msw-card msw-card--coin3">
                     <div class="msw-card-backdrop" id="msw-bd-coin3"></div>
                     <div class="msw-card-header">
-                        <div class="msw-card-tag">Gói VIP Collector</div>
+                        <div class="msw-card-tag">Gï¿½i VIP Collector</div>
                     </div>
                     <div class="msw-card-name">200.000 Xu</div>
                     <div style="display:flex;align-items:baseline;gap:4px;">
@@ -407,8 +407,8 @@
 
     <div id="mswBottomBar" class="hidden-bar">
         <div class="msw-bar-price">
-            <div class="msw-bar-label">T?ng thanh toán</div>
-            <div class="msw-bar-amount" id="mswBarAmount">—</div>
+            <div class="msw-bar-label">T?ng thanh toï¿½n</div>
+            <div class="msw-bar-amount" id="mswBarAmount">ï¿½</div>
             <div class="msw-bar-period" id="mswBarPeriod"></div>
         </div>
         <button class="msw-bar-btn" onclick="mswBuyNow()">Mua Ngay ?</button>
@@ -416,23 +416,23 @@
 
     <script>
     const MSW_PLANS = [
-        { key: 'free', payUrl: null, name: 'Mi?n Phí', amount: '0d', period: '/tháng',
-          features: ['Truy c?p kho phim gi?i h?n', 'Ch?t lu?ng SD (480p)', 'Xem trên 1 thi?t b?'], bonus: null },
-        { key: 'premium', payUrl: '/payment?plan=premium', name: 'Cao C?p', amount: '169.000d', period: '/tháng',
-          features: ['Truy c?p toàn b? kho phim', 'Ch?t lu?ng Full HD & 4K', 'Không qu?ng cáo', 'Xem trên 2 thi?t b?', 'Dùng th? mi?n phí 7 ngày'],
-          bonus: { icon: 'redeem', main: 'T?ng 10.000 Xu Thu?ng', sub: '+ 300 XP (Lên ngay 10 C?p)' } },
-        { key: 'family', payUrl: '/payment?plan=family', name: 'Gia Ðình', amount: '699.000d', period: '/nam',
-          features: ['T?t c? quy?n l?i Cao C?p', 'Xem trên 4 thi?t b? cùng lúc', 'H? tr? uu tiên 24/7'],
-          bonus: { icon: 'card_giftcard', main: 'T?ng 50.000 Xu Siêu C?p', sub: '+ 1.000 XP Th?n Thánh' } }
+        { key: 'free', payUrl: null, name: 'Mi?n Phï¿½', amount: '0d', period: '/thï¿½ng',
+          features: ['Truy c?p kho phim gi?i h?n', 'Ch?t lu?ng SD (480p)', 'Xem trï¿½n 1 thi?t b?'], bonus: null },
+        { key: 'premium', payUrl: '/payment?plan=premium', name: 'Cao C?p', amount: '169.000d', period: '/thï¿½ng',
+          features: ['Truy c?p toï¿½n b? kho phim', 'Ch?t lu?ng Full HD & 4K', 'Khï¿½ng qu?ng cï¿½o', 'Xem trï¿½n 2 thi?t b?', 'Dï¿½ng th? mi?n phï¿½ 7 ngï¿½y'],
+          bonus: { icon: 'redeem', main: 'T?ng 10.000 Xu Thu?ng', sub: '+ 300 XP (Lï¿½n ngay 10 C?p)' } },
+        { key: 'family', payUrl: '/payment?plan=family', name: 'Gia ï¿½ï¿½nh', amount: '699.000d', period: '/nam',
+          features: ['T?t c? quy?n l?i Cao C?p', 'Xem trï¿½n 4 thi?t b? cï¿½ng lï¿½c', 'H? tr? uu tiï¿½n 24/7'],
+          bonus: { icon: 'card_giftcard', main: 'T?ng 50.000 Xu Siï¿½u C?p', sub: '+ 1.000 XP Th?n Thï¿½nh' } }
     ];
     const MSW_COINS = [
-        { key: 'xu_20k', name: 'Kh?i Ð?u', amount: '20.000d', period: '',
-          features: ['5.000 Xu n?p vào tài kho?n', 'Dành cho ngu?i m?i b?t d?u', 'Dùng mua khung Avatar & Banner'], bonus: null },
-        { key: 'xu_100k', name: 'Ðam Mê', amount: '100.000d', period: '',
-          features: ['30.000 Xu n?p vào tài kho?n', 'T?ng thêm 5.000 Xu Thu?ng', 'M? khoá khung Avatar hi?m'],
-          bonus: { icon: 'stars', main: '+ T?ng 5.000 Xu Thu?ng', sub: 'Giá tr? t?t nh?t!' } },
+        { key: 'xu_20k', name: 'Kh?i ï¿½?u', amount: '20.000d', period: '',
+          features: ['5.000 Xu n?p vï¿½o tï¿½i kho?n', 'Dï¿½nh cho ngu?i m?i b?t d?u', 'Dï¿½ng mua khung Avatar & Banner'], bonus: null },
+        { key: 'xu_100k', name: 'ï¿½am Mï¿½', amount: '100.000d', period: '',
+          features: ['30.000 Xu n?p vï¿½o tï¿½i kho?n', 'T?ng thï¿½m 5.000 Xu Thu?ng', 'M? khoï¿½ khung Avatar hi?m'],
+          bonus: { icon: 'stars', main: '+ T?ng 5.000 Xu Thu?ng', sub: 'Giï¿½ tr? t?t nh?t!' } },
         { key: 'xu_500k', name: 'VIP Collector', amount: '500.000d', period: '',
-          features: ['200.000 Xu n?p vào tài kho?n', 'T?ng thêm 50.000 Xu Thu?ng', 'M? khoá toàn b? khung VIP'],
+          features: ['200.000 Xu n?p vï¿½o tï¿½i kho?n', 'T?ng thï¿½m 50.000 Xu Thu?ng', 'M? khoï¿½ toï¿½n b? khung VIP'],
           bonus: { icon: 'diamond', main: '+ T?ng 50.000 Xu Thu?ng', sub: 'B? suu t?p d?nh cao' } }
     ];
 
@@ -453,7 +453,7 @@
                 </div>
             </div>` : '';
         infoEl.innerHTML = `
-            <div class="msw-info-title">${data.name} — Quy?n l?i</div>
+            <div class="msw-info-title">${data.name} ï¿½ Quy?n l?i</div>
             <ul class="msw-feature-list">
                 ${data.features.map(f => `<li class="msw-feature-item"><span class="material-icons-round">check_circle</span>${f}</li>`).join('')}
             </ul>${bonusHTML}`;
@@ -544,7 +544,7 @@
                      style="top: 6px; bottom: 6px; left: 6px; width: 140px; background: #e8b94f; transform: translateX(0); box-shadow: 0 4px 15px rgba(232,185,79,0.4);"></div>
                 <button id="togglePlanBtn" onclick="switchPricingTab('plan')"
                     class="relative rounded-full text-sm font-extrabold transition-colors duration-300 z-10"
-                    style="width: 140px; padding: 10px 0; color: #000;">Mua Gói</button>
+                    style="width: 140px; padding: 10px 0; color: #000;">Mua Gï¿½i</button>
                 <button id="toggleCoinBtn" onclick="switchPricingTab('coin')"
                     class="relative rounded-full text-sm font-extrabold transition-colors duration-300 z-10 hover:text-white"
                     style="width: 140px; padding: 10px 0; color: #9ca3af;">N?p Xu</button>
@@ -553,9 +553,9 @@
 
         <div id="planSection" class="transition-opacity duration-300" style="opacity: 1; display: block; margin-top: 0;">
             <div class="text-center mb-8">
-                <h1 class="text-xl md:text-2xl font-bold mb-3">Nâng C?p Tr?i Nghi?m Ði?n ?nh</h1>
+                <h1 class="text-xl md:text-2xl font-bold mb-3">Nï¿½ng C?p Tr?i Nghi?m ï¿½i?n ?nh</h1>
                 <p class="text-gray-400 max-w-xl mx-auto text-sm">
-                    Ch?n gói thành viên phù h?p d? m? khóa kho phim 4K không gi?i h?n và xem phim không qu?ng cáo ngay hôm nay.
+                    Ch?n gï¿½i thï¿½nh viï¿½n phï¿½ h?p d? m? khï¿½a kho phim 4K khï¿½ng gi?i h?n vï¿½ xem phim khï¿½ng qu?ng cï¿½o ngay hï¿½m nay.
                 </p>
             </div>
 
@@ -563,18 +563,18 @@
                 <!-- Free Plan -->
                 <div class="p-card">
                     <div class="p-card-backdrop" id="bd-free"></div>
-                    <div class="p-title">Mi?n Phí</div>
+                    <div class="p-title">Mi?n Phï¿½</div>
                     <div class="p-price-wrap">
                         <span class="p-price">0</span>
                         <span class="p-currency">d</span>
-                        <span class="p-period">/tháng</span>
+                        <span class="p-period">/thï¿½ng</span>
                     </div>
                     <ul class="p-features">
                         <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Truy c?p kho phim gi?i h?n</li>
                         <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Ch?t lu?ng SD (480p)</li>
-                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trên 1 thi?t b?</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trï¿½n 1 thi?t b?</li>
                     </ul>
-                    <button id="btn-free-plan" class="p-btn p-btn-outline">Ðang s? d?ng</button>
+                    <button id="btn-free-plan" class="p-btn p-btn-outline">ï¿½ang s? d?ng</button>
                 </div>
 
                 <!-- Premium Plan -->
@@ -585,30 +585,30 @@
                     <div class="p-price-wrap">
                         <span class="p-price" id="price-premium" style="color:var(--p-gold)">169.000</span>
                         <span class="p-currency" style="color:var(--p-gold)">d</span>
-                        <span class="p-period">/tháng</span>
+                        <span class="p-period">/thï¿½ng</span>
                     </div>
-                    <div style="font-size:11px; color:var(--p-gold); font-weight:700; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">Dùng th? mi?n phí 7 ngày</div>
+                    <div style="font-size:11px; color:var(--p-gold); font-weight:700; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">Dï¿½ng th? mi?n phï¿½ 7 ngï¿½y</div>
                     <ul class="p-features">
-                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Truy c?p toàn b? kho phim</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Truy c?p toï¿½n b? kho phim</li>
                         <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Ch?t lu?ng Full HD & 4K</li>
-                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Không qu?ng cáo</li>
-                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Xem trên 2 thi?t b?</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Khï¿½ng qu?ng cï¿½o</li>
+                        <li class="p-feature-item"><span class="material-icons-round" style="color:var(--p-gold)">check_circle</span>Xem trï¿½n 2 thi?t b?</li>
                     </ul>
                     <div class="p-bonus-badge" style="border-color:rgba(232,185,79,0.3); background:rgba(232,185,79,0.05);">
                         <div class="p-bonus-icon" style="background:var(--p-gold)"><span class="material-icons-round">redeem</span></div>
                         <div>
                             <div style="font-size:13px; font-weight:800; color:var(--p-gold);">T?ng 10.000 Xu Thu?ng</div>
-                            <div style="font-size:10px; opacity:0.6;">+ 300 XP (Lên ngay 10 C?p)</div>
+                            <div style="font-size:10px; opacity:0.6;">+ 300 XP (Lï¿½n ngay 10 C?p)</div>
                         </div>
                     </div>
-                    <a href="/payment?plan=premium" data-plan="premium" id="btn-premium-plan" class="p-btn p-btn-gold">Ch?n Gói Cao C?p</a>
+                    <a href="/payment?plan=premium" data-plan="premium" id="btn-premium-plan" class="p-btn p-btn-gold">Ch?n Gï¿½i Cao C?p</a>
                 </div>
 
                 <!-- Family Plan -->
                 <div class="p-card">
                     <div class="p-card-backdrop" id="bd-family"></div>
                     <div style="position:absolute; top:24px; right:24px; background:rgba(16,185,129,0.15); color:var(--p-emerald); font-size:10px; font-weight:800; padding:4px 10px; border-radius:8px;">TI?T KI?M 20%</div>
-                    <div class="p-title">Gia Ðình</div>
+                    <div class="p-title">Gia ï¿½ï¿½nh</div>
                     <div class="p-price-wrap">
                         <span class="p-price" id="price-premium-year">699.000</span>
                         <span class="p-currency">d</span>
@@ -616,35 +616,35 @@
                     </div>
                     <ul class="p-features">
                         <li class="p-feature-item"><span class="material-icons-round">check_circle</span>T?t c? quy?n l?i Cao C?p</li>
-                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trên 4 thi?t b? cùng lúc</li>
-                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>H? tr? uu tiên 24/7</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>Xem trï¿½n 4 thi?t b? cï¿½ng lï¿½c</li>
+                        <li class="p-feature-item"><span class="material-icons-round">check_circle</span>H? tr? uu tiï¿½n 24/7</li>
                     </ul>
                     <div class="p-bonus-badge">
                         <div class="p-bonus-icon"><span class="material-icons-round">card_giftcard</span></div>
                         <div>
-                            <div style="font-size:13px; font-weight:800; color:var(--p-emerald);">T?ng 50.000 Xu Siêu C?p</div>
-                            <div style="font-size:10px; opacity:0.6;">+ 1.000 XP Th?n Thánh</div>
+                            <div style="font-size:13px; font-weight:800; color:var(--p-emerald);">T?ng 50.000 Xu Siï¿½u C?p</div>
+                            <div style="font-size:10px; opacity:0.6;">+ 1.000 XP Th?n Thï¿½nh</div>
                         </div>
                     </div>
-                    <a href="/payment?plan=family" data-plan="family" id="btn-family-plan" class="p-btn p-btn-outline">Ch?n Gói Gia Ðình</a>
+                    <a href="/payment?plan=family" data-plan="family" id="btn-family-plan" class="p-btn p-btn-outline">Ch?n Gï¿½i Gia ï¿½ï¿½nh</a>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION: GÓI N?P XU -->
+        <!-- SECTION: Gï¿½I N?P XU -->
         <div id="coinSection" class="transition-opacity duration-300" style="opacity: 0; display: none; margin-top: 0;">
             <div class="mb-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-xl md:text-2xl font-bold text-white mb-3">Gói N?p Xu <span class="text-primary">Ti?t Ki?m</span></h2>
-                    <p class="text-gray-400 max-w-xl mx-auto text-sm">Dùng Xu d? m? khóa Khung Avatar & Banner d?c quy?n t?i C?a hàng Profile c?a b?n.</p>
+                    <h2 class="text-xl md:text-2xl font-bold text-white mb-3">Gï¿½i N?p Xu <span class="text-primary">Ti?t Ki?m</span></h2>
+                    <p class="text-gray-400 max-w-xl mx-auto text-sm">Dï¿½ng Xu d? m? khï¿½a Khung Avatar & Banner d?c quy?n t?i C?a hï¿½ng Profile c?a b?n.</p>
                 </div>
                 <div class="p-coin-grid">
                     <div class="p-coin-card" onclick="openPaymentModal('xu_20k')">
                         <div class="p-card-backdrop" id="bd-coin1"></div>
                         <div class="p-coin-icon" style="background:rgba(56,189,248,0.1); color:var(--p-blue);"><span class="material-icons-round">savings</span></div>
-                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gói Kh?i Ð?u</h3>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gï¿½i Kh?i ï¿½?u</h3>
                         <div style="font-size:2.5rem; font-weight:900; color:var(--p-blue); letter-spacing:-1px;">5.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
-                        <div style="font-size:12px; color:rgba(255,255,255,0.3); margin-bottom:20px;">Dành cho ngu?i m?i b?t d?u</div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.3); margin-bottom:20px;">Dï¿½nh cho ngu?i m?i b?t d?u</div>
                         <div style="height:1px; background:rgba(255,255,255,0.05); margin-bottom:20px;"></div>
                         <div style="font-size:1.4rem; font-weight:800; margin-bottom:20px;">20.000 d</div>
                         <button class="p-btn p-btn-outline" style="padding:12px;">N?p Ngay</button>
@@ -653,7 +653,7 @@
                         <div class="p-card-backdrop" id="bd-coin2"></div>
                         <div style="position:absolute; top:12px; right:12px; background:var(--p-gold); color:#000; font-size:9px; font-weight:900; padding:3px 8px; border-radius:10px; text-transform:uppercase;">PH? BI?N</div>
                         <div class="p-coin-icon" style="background:rgba(232,185,79,0.15); color:var(--p-gold); box-shadow:0 0 20px rgba(232,185,79,0.2);"><span class="material-icons-round">stars</span></div>
-                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.8); margin-bottom:4px;">Gói Ðam Mê</h3>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.8); margin-bottom:4px;">Gï¿½i ï¿½am Mï¿½</h3>
                         <div style="font-size:2.5rem; font-weight:900; color:var(--p-gold); letter-spacing:-1px;">30.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
                         <div style="font-size:12px; color:var(--p-emerald); font-weight:700; margin-bottom:20px;">+ T?ng 5.000 Xu Thu?ng</div>
                         <div style="height:1px; background:rgba(232,185,79,0.1); margin-bottom:20px;"></div>
@@ -663,7 +663,7 @@
                     <div class="p-coin-card" onclick="openPaymentModal('xu_500k')">
                         <div class="p-card-backdrop" id="bd-coin3"></div>
                         <div class="p-coin-icon" style="background:rgba(168,85,247,0.1); color:var(--p-purple);"><span class="material-icons-round">diamond</span></div>
-                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gói VIP Collector</h3>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:4px;">Gï¿½i VIP Collector</h3>
                         <div style="font-size:2.5rem; font-weight:900; color:var(--p-purple); letter-spacing:-1px;">200.000 <span style="font-size:14px; opacity:0.5;">Xu</span></div>
                         <div style="font-size:12px; color:var(--p-purple); font-weight:700; margin-bottom:20px;">+ T?ng 50.000 Xu Thu?ng</div>
                         <div style="height:1px; background:rgba(255,255,255,0.05); margin-bottom:20px;"></div>
@@ -777,7 +777,7 @@
     <div id="aphim-guide-overlay" onclick="if(event.target===this)aphimCloseGuide()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
         <div style="position:relative;width:100%;max-width:460px;background:#0d0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.8);">
             <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.25);">
-                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hu?ng d?n cài d?t A Phim</span>
+                <span style="font-size:0.82rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:0.06em;">Hu?ng d?n cï¿½i d?t A Phim</span>
                 <button onclick="aphimCloseGuide()" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:#aaa;font-size:1rem;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">?</button>
             </div>
             <div style="padding:14px;overflow-y:auto;max-height:78vh;">
