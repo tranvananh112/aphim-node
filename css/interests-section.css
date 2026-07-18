@@ -65,6 +65,11 @@
         z-index: 40 !important;
         width: 100% !important;
     }
+
+    /* Fix: Cho phép interests-section hiện ra ngoài hero container trên desktop */
+    main.relative.h-screen {
+        overflow: visible !important;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

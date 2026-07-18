@@ -204,12 +204,18 @@ main.bg-background-dark,
 .country-section,
 .imdb-section,
 section.bg-background-dark,
-section[id],
-section,
+section[id]:not(.interests-section),
+section:not(.interests-section),
 #dynamicSections,
 #dynamicSections > div {
     background-color: #1e2130 !important;
     background: #1e2130 !important;
+}
+
+/* interests-section: luôn trong suốt (nền ảnh hero xuyên qua) */
+section.interests-section {
+    background-color: transparent !important;
+    background: transparent !important;
 }
 
 /* Glass cards giữ nền riêng */
