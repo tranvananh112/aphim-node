@@ -297,7 +297,7 @@
         right: auto !important;
         z-index: 40 !important;
         padding-top: 0 !important; /* Margin 24px từ Thumbnails đã lo việc này */
-        padding-bottom: 24px !important; 
+        padding-bottom: 8px !important; /* Giảm khoảng trống dưới */
         margin-bottom: 0 !important;
         background: transparent !important; /* Chìm vào nền gradient tối gốc */
         transform: translateY(0) !important;
@@ -309,24 +309,63 @@
         text-align: center !important;
     }
     
-    /* 6. Fix lỗi viền đen chia cắt do bg-void margin-top âm */
+    /* 6. Fix lỗi viền đen chia cắt và DỜI BXH LÊN ĐỂ LẤP KHOẢNG TRỐNG */
     body .bg-void, div.bg-void {
-        margin-top: 0px !important;
+        margin-top: -32px !important; /* Dời toàn bộ nội dung dưới lên sát interests-section */
         position: relative !important;
-        z-index: 50 !important;
-        padding-top: 24px !important; /* Khoảng cách với section trên */
+        z-index: 30 !important; /* Giảm z-index xuống 30 để luồn DƯỚI interests-section (40), không cắt ngang thẻ */
+        padding-top: 24px !important; /* Trả lại 24px để cân bằng khoảng cách với các section dưới */
+        background: transparent !important; /* Ép trong suốt để không tạo đường kẻ cắt ngang */
+        background-color: transparent !important;
     }
     body .bg-void::before, div.bg-void::before {
-        display: block !important;
-        content: '' !important;
-        position: absolute !important;
-        top: -40px !important; /* Đẩy lên một chút để hòa trộn 40px cuối của heroSection */
-        left: 0 !important;
-        right: 0 !important;
-        height: 40px !important;
-        background: linear-gradient(to bottom, transparent, var(--bg-void, #1e2130)) !important;
-        pointer-events: none !important;
-        z-index: -1 !important;
+        display: none !important; /* Xóa bỏ lớp gradient giả vì nền đã trong suốt */
+    }
+
+    /* 7. Thu nhỏ font chữ tiêu đề section và icon lướt trên mobile cho gọn gàng */
+    section h2, 
+    .container h2,
+    h2.text-xl.md\:text-2xl {
+        font-size: 1.15rem !important; /* ~18.4px, nhỏ gọn hơn text-xl (20px) */
+        font-weight: 800 !important;
+        letter-spacing: -0.01em !important;
+        line-height: 1.3 !important;
+    }
+
+    /* Thu nhỏ các icon chevron (nút lướt) ở bên cạnh tiêu đề */
+    section h2 + .flex > button,
+    section .flex.justify-between > .flex > button,
+    .top-movies-section .flex.gap-3 > button {
+        width: 32px !important;
+        height: 32px !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    section h2 + .flex > button span,
+    section .flex.justify-between > .flex > button span,
+    .top-movies-section .flex.gap-3 > button span {
+        font-size: 1.15rem !important;
+    }
+
+    /* 8. Cân bằng khoảng cách (Equal Spacing) cho mọi section trên mobile */
+    .bg-void section {
+        padding-top: 16px !important; /* Khoảng cách ĐỀU NHAU giữa các section */
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Khoảng cách từ tiêu đề đến danh sách phim */
+    .bg-void section .mb-3,
+    .bg-void section .mb-6 {
+        margin-bottom: 12px !important;
+    }
+    
+    /* Gọn gàng padding của thẻ chứa phim */
+    #topMoviesContainer,
+    .bg-void section .py-4,
+    .bg-void section .overflow-x-auto {
+        padding-top: 0 !important;
+        padding-bottom: 8px !important; /* 8px pb + 16px pt (next section) = 24px gap */
     }
 }
 

@@ -350,6 +350,61 @@
 <!-- SEO Meta Tags -->
 <link rel="stylesheet" href="/css/touch-speed.css">
 
+<style>
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #1e202c;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #f2f20d;
+    }
+
+    /* Hide scrollbar for horizontal scroll sections */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Thẻ cứng khóa kích thước ngang chống lỗi fOUC co bóp dẹt trên Safari/Mobile */
+    .movie-card-w {
+        flex: none !important;
+        width: 160px !important;
+        scroll-snap-align: start;
+    }
+
+    @media (min-width: 768px) {
+        .movie-card-w {
+            width: 192px !important;
+        }
+    }
+
+    .movie-card-w-sm {
+        flex: none !important;
+        width: 140px !important;
+        scroll-snap-align: start;
+    }
+
+    @media (min-width: 768px) {
+        .movie-card-w-sm {
+            width: 180px !important;
+        }
+    }
+</style>
+
 <!-- Google Schema Markup (Gắn Ngôi Sao) -->
 <% if (typeof movie !== 'undefined' && movie) { %>
 <script type="application/ld+json">
