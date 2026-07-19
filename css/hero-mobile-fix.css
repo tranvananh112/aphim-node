@@ -20,11 +20,12 @@
 
     /* 2. Ảnh nền Hero: NẰM NGANG LẠI (Landscape phía trên), không zoom dọc cắt hình */
     main.relative.h-screen .hero-mask-fade {
-        position: absolute !important;
+        position: fixed !important; /* Đổi thành fixed để cố định background khi lướt (parallax) */
         inset: 0 !important;
         height: 100svh !important; /* Độc lập với main, luôn phủ kín màn hình bằng màu đen */
         background-color: #0b0f19 !important;
         z-index: 0 !important;
+        pointer-events: none !important; /* Không cản trở click bên dưới */
     }
 
     #heroImage {
