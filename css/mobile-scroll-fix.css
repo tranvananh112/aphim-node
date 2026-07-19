@@ -21,6 +21,7 @@
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior-x: contain !important;
     scrollbar-width: none;
+    touch-action: pan-y pan-x !important; /* FIX LƯỚT DỌC: Báo trình duyệt cho phép cuộn dọc tự nhiên */
 }
 
 /* Ẩn scrollbar trên Webkit */
