@@ -8,10 +8,10 @@
     gtag('config', 'G-QYK5R13WK2');   /* aphim.io.vn */
     gtag('config', 'G-49C5PWSSDB');   /* aphim.top / A PHIM EJS */
 </script>
-<link rel="canonical" href="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : 'https://aphim.io.vn/' %>" />
-<meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao.' %>" />
-<meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao.' %>" />
-<meta property="twitter:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao.' %>" />
+<link rel="canonical" href="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : 'https://aphim.top/' %>" />
+<meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.' %>" />
+<meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.' %>" />
+<meta property="twitter:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.' %>" />
 <!-- 🚀 TURBO LOAD — Preconnect ngay lập tức để giảm độ trễ mạng -->
 <link rel="preconnect" href="https://ophim1.com" crossorigin>
 <link rel="preconnect" href="https://img.ophim.live" crossorigin>
@@ -23,13 +23,13 @@
 
 <script src="/js/chat-init-guard.js?v=39" fetchpriority="high"></script>
 <meta property="og:title" content="<%= locals.ogTitle || locals.title || 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí' %>" />
-<meta property="og:image" content="<%= locals.ogImage || 'https://aphim.io.vn/android-chrome-512x512.png' %>" />
+<meta property="og:image" content="<%= locals.ogImage || 'https://aphim.top/android-chrome-512x512.png' %>" />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content="<%= locals.ogUrl || 'https://aphim.io.vn/' %>" />
+<meta property="twitter:url" content="<%= locals.ogUrl || 'https://aphim.top/' %>" />
 <meta property="twitter:title" content="<%= locals.ogTitle || locals.title || 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí' %>" />
-<meta property="twitter:image" content="<%= locals.ogImage || 'https://aphim.io.vn/android-chrome-512x512.png' %>" />
+<meta property="twitter:image" content="<%= locals.ogImage || 'https://aphim.top/android-chrome-512x512.png' %>" />
 
 <!-- Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -408,13 +408,13 @@
 <!-- Google Schema Markup (Gắn Ngôi Sao) -->
 <% if (typeof movie !== 'undefined' && movie) { %>
 <script type="application/ld+json">
-{
+[{
   "@context": "https://schema.org",
   "@type": "<%= movie.type === 'series' ? 'TVSeries' : 'Movie' %>",
-  "name": "<%= movie.name.replace(/"/g, '&quot;') %>",
-  "alternateName": "<%= movie.origin_name ? movie.origin_name.replace(/"/g, '&quot;') : '' %>",
+  "name": "<%= movie.name ? movie.name.replace(/\"/g, '&quot;') : '' %>",
+  "alternateName": "<%= movie.origin_name ? movie.origin_name.replace(/\"/g, '&quot;') : '' %>",
   "image": "<%= typeof ogImage !== 'undefined' ? ogImage : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophim.live/uploads/movies/' + movie.thumb_url) : 'https://aphim.top/android-chrome-512x512.png') %>",
-  "description": "<%= typeof metaDescription !== 'undefined' ? metaDescription.replace(/"/g, '&quot;') : movie.name %>",
+  "description": "<%= typeof metaDescription !== 'undefined' ? metaDescription.replace(/\"/g, '&quot;') : (movie.name || '') %>",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "<%= (Math.random() * (4.9 - 4.5) + 4.5).toFixed(1) %>",

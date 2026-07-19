@@ -69,11 +69,11 @@
                     </div>
                 <!-- DESKTOP EPISODES (Hidden on mobile) -->
                     <div class="hidden lg:block w-full mt-2 sm:mt-3">
-                        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
                             <span
                                 class="w-1.5 h-6 rounded-full cinematic-gold-bar"></span>
                             Danh sách tập phim
-                        </h3>
+                        </h2>
                         <div id="server-list-desktop" class="flex flex-wrap gap-2 mb-4 w-full"></div>
                         
                         <!-- Thanh tìm kiếm tập phim (Desktop) -->
@@ -156,8 +156,9 @@
                         }
                     </style>
                     <h1 class="mb-3 lg:mb-5 text-center lg:text-left w-full">
-                        <span class="block text-4xl sm:text-5xl lg:text-7xl cinematic-gold-title"><%= typeof movie !== 'undefined' && movie && movie.name ? movie.name : 'Đang tải...' %></span>
-                        <span class="text-xl sm:text-3xl lg:text-4xl cinematic-sub-title"><%= typeof movie !== 'undefined' && movie && movie.origin_name ? movie.origin_name : '' %></span>
+                        <span class="sr-only">Xem Phim <%= typeof movie !== 'undefined' && movie && movie.name ? movie.name : 'Đang tải...' %> Vietsub Thuyết Minh Full HD - <%= typeof movie !== 'undefined' && movie && movie.origin_name ? movie.origin_name : '' %></span>
+                        <span class="block text-4xl sm:text-5xl lg:text-7xl cinematic-gold-title" aria-hidden="true"><%= typeof movie !== 'undefined' && movie && movie.name ? movie.name : 'Đang tải...' %></span>
+                        <span class="text-xl sm:text-3xl lg:text-4xl cinematic-sub-title" aria-hidden="true"><%= typeof movie !== 'undefined' && movie && movie.origin_name ? movie.origin_name : '' %></span>
                     </h1>
 
                     <div
@@ -190,10 +191,10 @@
 
                     <!-- MOBILE EPISODES (Hidden on desktop) -->
                     <div class="block lg:hidden w-full mt-1 sm:mt-1.5 mb-3">
-                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1.5 h-6 rounded-full cinematic-gold-bar"></span>
                             Danh sách tập phim
-                        </h3>
+                        </h2>
                         <div id="server-list-mobile" class="flex flex-nowrap overflow-x-auto gap-2 mb-3 w-full pb-2 hide-scrollbar"></div>
                         
                         <!-- Thanh tìm kiếm tập phim (Mobile) -->
@@ -217,10 +218,10 @@
                     </div>
 
                     <div id="movie-content-section" class="mb-8 w-full text-left">
-                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1.5 h-6 rounded-full cinematic-gold-bar"></span>
                             Nội dung phim
-                        </h3>
+                        </h2>
                         <div id="movie-content"
                             class="text-gray-300 leading-relaxed text-sm md:text-lg font-light text-justify px-2 md:px-0">
                             Đang tải nội dung phim...
@@ -229,10 +230,10 @@
 
                     <!-- THƯ VIỆN HÌNH ẢNH (GALLERY) -->
                     <div id="movie-gallery-container" class="mb-8 max-w-full text-left w-full hidden">
-                        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
                             <span class="w-1.5 h-6 rounded-full cinematic-gold-bar"></span>
                             Hình ảnh <span id="movie-gallery-count" class="text-gray-400 text-sm font-normal ml-1"></span>
-                        </h3>
+                        </h2>
                         <div class="relative w-full group">
                             <!-- Nút Cuộn Trái -->
                             <button id="btn-scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/60 hover:bg-[#d69f3d] rounded-full text-white hover:text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-1/2 shadow-lg backdrop-blur-sm border border-white/20">
@@ -291,10 +292,10 @@
             <!-- Cột trái: Bình luận -->
             <div id="comments-section" class="ap-comments-main mb-8">
                 <div class="mt-0 bg-[#1e2130] border border-white/5 rounded-2xl p-4 md:p-8 text-white w-full">
-                    <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-white">
+                    <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-white">
                         <span class="material-icons-round text-primary outline-none">sentiment_satisfied_alt</span>
                         Bình luận
-                    </h3>
+                    </h2>
 
                     <!-- Tabs: Bình luận / Đánh giá -->
                     <div class="flex gap-2 mb-6">

@@ -55,7 +55,10 @@ app.get('/', async (req, res) => {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
             currentPage: 'home',
             movies: movies,
+            metaDescription: 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.',
             canonicalUrl: 'https://aphim.top/',
+            ogTitle: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub',
+            ogImage: 'https://aphim.top/android-chrome-512x512.png',
             ogUrl: 'https://aphim.top/'
         });
     } catch (error) {
@@ -92,13 +95,16 @@ app.get('/phim/:slug', async (req, res) => {
             const rawContent = movie.content ? movie.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim() : '';
             const content = rawContent.substring(0, 100);
 
-            const title = `Phim ${name} Vietsub + Thuyết Minh - Full HD`;
+            // Chuẩn SEO Title: "Xem Phim [Tên Phim] Tập Mới Nhất - Vietsub Thuyết Minh HD [Năm]"
+            const seoEps = movie.episode_current && movie.episode_current.toLowerCase() !== 'full' ? `Tập ${movie.episode_current}` : 'Full HD';
+            const title = `Xem Phim ${name} ${seoEps} - Vietsub Thuyết Minh HD ${year}`;
+            
             const isSeries = movie.type === 'series';
             let desc;
             if (isSeries) {
-                desc = `${name} (${originName}) là bộ phim ${genre} ${country} ra mắt năm ${year}, gồm ${eps} tập. ${content}... Xem miễn phí tại APhim.`;
+                desc = `Xem phim ${name} (${originName}) ${year} Vietsub Thuyết Minh Full HD. Bộ phim ${genre} ${country} siêu hay gồm ${eps} tập. ${content}... Xem phim online chất lượng cao, không quảng cáo tại APhim.`;
             } else {
-                desc = `${name} (${originName}) là phim ${genre} ${country} năm ${year}. ${content}... Xem Vietsub Full HD miễn phí tại APhim.`;
+                desc = `Xem phim ${name} (${originName}) ${year} Vietsub Thuyết Minh Full HD. Phim chiếu rạp ${genre} ${country} cực đỉnh. ${content}... Xem phim online chất lượng cao, không quảng cáo tại APhim.`;
             }
             desc = desc.substring(0, 155);
 
@@ -134,7 +140,9 @@ app.get('/xem-phim', (req, res) => {
         currentPage: 'watch',
         movie: null,
         episodes: [],
-        episode: 'tap-1'
+        episode: 'tap-1',
+        metaDescription: 'Xem phim online chất lượng cao, miễn phí tại APhim. Cập nhật phim mới mỗi ngày.',
+        canonicalUrl: 'https://aphim.top/xem-phim'
     });
 });
 
@@ -173,8 +181,27 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
         const movie = data && data.movie ? data.movie : null;
         const episodes = data && data.episodes ? data.episodes : [];
 
+        let title = 'Xem Phim - APhim';
+        let metaDescription = 'Xem phim online chất lượng cao, miễn phí tại APhim. Cập nhật phim mới mỗi ngày.';
+        let ogImage = 'https://aphim.top/android-chrome-512x512.png';
+        
+        if (movie) {
+            const name = movie.name || movie.title || '';
+            const year = movie.year || '';
+            let currentEpStr = episode ? episode.replace('-', ' ') : 'tập mới nhất';
+            currentEpStr = currentEpStr.replace(/\b\w/g, l => l.toUpperCase()); // Tap 1
+            
+            title = `Xem Phim ${name} ${currentEpStr} - Vietsub Thuyết Minh HD ${year}`;
+            metaDescription = `Xem phim ${name} ${currentEpStr} Vietsub Thuyết Minh Full HD trực tuyến. Xem ngay không quảng cáo, tải trang siêu tốc tại APhim.`;
+            ogImage = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophim.live/uploads/movies/' + movie.thumb_url) : ogImage;
+        }
+
         res.render('watch', {
-            title: movie ? `Xem ${movie.name} - APhim` : 'Xem Phim - APhim',
+            title: title,
+            metaDescription: metaDescription,
+            canonicalUrl: `https://aphim.top/xem-phim/${slug}/${episode || 'tap-1'}`,
+            ogTitle: title,
+            ogImage: ogImage,
             currentPage: 'watch',
             movie: movie,
             episodes: episodes,
