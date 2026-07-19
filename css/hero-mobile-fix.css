@@ -12,6 +12,7 @@
         max-height: none !important;
         position: relative !important;
         display: flex !important;
+        overflow: visible !important;
         flex-direction: column !important;
         justify-content: flex-start !important; /* Chảy mượt từ trên xuống dưới */
         padding-bottom: 0 !important; /* Xóa đệm đáy */
