@@ -312,11 +312,11 @@
     
     /* 6. Fix lỗi viền đen chia cắt và DỜI BXH LÊN ĐỂ LẤP KHOẢNG TRỐNG */
     body .bg-void, div.bg-void {
-        margin-top: -32px !important; /* Dời toàn bộ nội dung dưới lên sát interests-section */
+        margin-top: 0px !important; /* Để margin 0px để khoảng cách mượt mà 24px với mục trên */
         position: relative !important;
-        z-index: 30 !important; /* Giảm z-index xuống 30 để luồn DƯỚI interests-section (40), không cắt ngang thẻ */
-        padding-top: 24px !important; /* Trả lại 24px để cân bằng khoảng cách với các section dưới */
-        background: transparent !important; /* Ép trong suốt để không tạo đường kẻ cắt ngang */
+        z-index: 30 !important; /* Giảm z-index xuống 30 để luôn DƯỚI interests-section (40) */
+        padding-top: 0px !important; /* Không dùng padding ảo để dễ kiểm soát khoảng cách */
+        background: transparent !important; 
         background-color: transparent !important;
     }
     body .bg-void::before, div.bg-void::before {
