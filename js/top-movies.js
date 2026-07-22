@@ -61,7 +61,7 @@ function renderTopMovies(movies) {
 
         return `
             <div class="ranking-item group" data-rank="${rank}">
-                <a href="${detailUrl}">
+                <a href="${detailUrl}" class="flex flex-col gap-[12px] h-full w-full">
                     <div class="ranking-poster-w">
                         <img src="${optimizedUrl}" 
                              alt="${movie.name}" 

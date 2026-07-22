@@ -1436,7 +1436,7 @@
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
-                                <a href="/phim/${movie.slug}">
+                                <a href="/phim/${movie.slug}" class="flex flex-col gap-[12px] h-full w-full">
                                     <div class="ranking-poster-w">
                                         <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                                         ${window.renderMovieBadges(movie.lang, movie.episode_current)}
@@ -1485,7 +1485,7 @@
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
-                                <a href="/phim/${movie.slug}">
+                                <a href="/phim/${movie.slug}" class="flex flex-col gap-[12px] h-full w-full">
                                     <div class="ranking-poster-w">
                                         <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                                         ${window.renderMovieBadges(movie.lang, movie.episode_current)}
