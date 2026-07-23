@@ -298,7 +298,7 @@
         right: auto !important;
         z-index: 40 !important;
         padding-top: 0 !important; /* Margin 24px từ Thumbnails đã lo việc này */
-        padding-bottom: 8px !important; /* Giảm khoảng trống dưới */
+        padding-bottom: 0px !important; /* Xóa khoảng trống đáy để ép sát BXH */
         margin-bottom: 0 !important;
         background: transparent !important; /* Chìm vào nền gradient tối gốc */
         transform: translateY(0) !important;
@@ -312,7 +312,7 @@
     
     /* 6. Fix lỗi viền đen chia cắt và DỜI BXH LÊN ĐỂ LẤP KHOẢNG TRỐNG */
     body .bg-void, div.bg-void {
-        margin-top: 0px !important; /* Để margin 0px để khoảng cách mượt mà 24px với mục trên */
+        margin-top: -12px !important; /* KÉO BXH LÊN NGƯỢC LẠI ĐỂ LẤP KHOẢNG TRỐNG */
         position: relative !important;
         z-index: 30 !important; /* Giảm z-index xuống 30 để luôn DƯỚI interests-section (40) */
         padding-top: 0px !important; /* Không dùng padding ảo để dễ kiểm soát khoảng cách */
