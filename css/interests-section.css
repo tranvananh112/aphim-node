@@ -253,3 +253,75 @@
         height: 1.6rem !important;
     }
 }
+
+/* --- MOBILE UI OVERRIDES (FLEX WRAP + 2 COLUMNS + SPACING FIX) --- */
+@media (max-width: 767px) {
+    .interests-section {
+        overflow: visible !important;
+        margin-bottom: 110px !important; /* Force space for the 3rd row to prevent overlap */
+    }
+    .interests-wrapper {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 0.6rem !important;
+        overflow: visible !important;
+        padding-bottom: 1rem !important;
+    }
+    .interest-card {
+        flex: 0 0 calc(50% - 0.3rem) !important; /* 2 columns, perfectly spaced */
+        width: auto !important;
+        height: 95px !important;
+        border-radius: 12px !important;
+    }
+    .interest-content {
+        padding: 0.7rem !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        justify-content: flex-end !important;
+    }
+    .interest-title {
+        font-size: 1.05rem !important; 
+        font-weight: 900 !important;
+        margin-bottom: 0.2rem !important;
+        line-height: 1.1 !important;
+        text-shadow: 0 2px 6px rgba(0,0,0,1), 0 1px 2px rgba(0,0,0,1) !important;
+    }
+    .interest-action {
+        font-size: 0.65rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.5px !important;
+    }
+    .interest-lottie-circle {
+        top: 0.7rem !important;
+        left: 0.7rem !important;
+        width: 1.8rem !important;
+        height: 1.8rem !important;
+    }
+    .interest-bg-img {
+        width: 100% !important; 
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%) !important;
+        mask-image: linear-gradient(to right, transparent 0%, black 50%) !important;
+    }
+}
+
+/* FINAL MOBILE LAYOUT FIX - OVERRIDE TAILWIND ABSOLUTE */
+@media (max-width: 767px) {
+    .interests-section, body .interests-section {
+        position: relative !important;
+        bottom: auto !important;
+        margin-bottom: 0px !important; /* Proper margin to push BXH down */
+        height: auto !important;
+    }
+    .interests-wrapper {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between !important;
+        gap: 0.6rem !important;
+        padding-bottom: 10px !important; /* MASSIVE PADDING TO FIX OVERLAP */
+    }
+    .interest-card {
+        flex: 0 0 calc(50% - 0.3rem) !important;
+        margin-bottom: 0 !important;
+    }
+}

@@ -21,9 +21,9 @@ function lockMobileHeroHeight() {
     const isMobile = window.innerWidth < 768;
     if (isMobile) {
         const stableHeight = Math.min(window.innerHeight, 800);
-        heroEl.style.setProperty('height', `${stableHeight}px`, 'important');
-        heroEl.style.setProperty('min-height', `${stableHeight}px`, 'important');
-        heroEl.style.setProperty('max-height', `${stableHeight}px`, 'important');
+        // heroEl.style.setProperty('height', `${stableHeight}px`, 'important');
+        // heroEl.style.setProperty('min-height', `${stableHeight}px`, 'important');
+        // heroEl.style.setProperty('max-height', `${stableHeight}px`, 'important');
     } else {
         heroEl.style.removeProperty('height');
         heroEl.style.removeProperty('min-height');

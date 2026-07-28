@@ -27,6 +27,10 @@
         z-index: 0 !important;
     }
 
+    #heroBg, #heroBgNext {
+        height: 100svh !important; /* GIỮ NGUYÊN TỶ LỆ HÌNH ẢNH BAN ĐẦU, KHÔNG ZOOM CẮT HÌNH KHI MAIN DÀI RA */
+    }
+
     #heroImage {
         position: absolute !important;
         top: 0 !important;
@@ -239,6 +243,8 @@
         width: 100% !important;
         padding: 0 18px !important;
         overflow: visible !important;
+        margin-top: 24px !important; /* CANH ĐỀU TRÊN DƯỚI */
+        margin-bottom: 8px !important;
     }
 
     #heroThumbnails {
@@ -312,7 +318,7 @@
     
     /* 6. Fix lỗi viền đen chia cắt và DỜI BXH LÊN ĐỂ LẤP KHOẢNG TRỐNG */
     body .bg-void, div.bg-void {
-        margin-top: -12px !important; /* KÉO BXH LÊN NGƯỢC LẠI ĐỂ LẤP KHOẢNG TRỐNG */
+        margin-top: -2px !important; /* KÉO BXH LÊN NGƯỢC LẠI ĐỂ LẤP KHOẢNG TRỐNG */
         position: relative !important;
         z-index: 30 !important; /* Giảm z-index xuống 30 để luôn DƯỚI interests-section (40) */
         padding-top: 0px !important; /* Không dùng padding ảo để dễ kiểm soát khoảng cách */
