@@ -76,6 +76,7 @@
     position: relative;
     overflow: visible;
     min-width: 0;
+    touch-action: manipulation;
 }
 
 .bn-tab:active {
@@ -168,7 +169,7 @@
     z-index: 9400;
     background: rgba(0, 0, 0, 0);
     pointer-events: none;
-    transition: background 0.35s ease, visibility 0.35s;
+    transition: background 0.22s ease, visibility 0.22s;
     visibility: hidden;
 }
 #bn-sheet-overlay.open {
@@ -197,13 +198,14 @@
         0 12px 40px rgba(0, 0, 0, 0.6),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transform: translateY(120%);
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0.4s;
+    transition: transform 0.25s cubic-bezier(0.32, 0.94, 0.6, 1), visibility 0.25s;
     will-change: transform;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     padding-bottom: 12px;
     visibility: hidden;  /* Ẩn hoàn toàn khi chưa open */
+    touch-action: pan-y;
 }
 #bn-sheet.open {
     transform: translateY(0);
@@ -298,9 +300,10 @@
     gap: 4px;
     color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
-    transition: background 0.2s;
+    transition: background 0.12s;
     min-width: 0;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 .bn-sf-quick-btn:active { background: rgba(255, 255, 255, 0.15); }
 .bn-sf-quick-btn .material-icons-round { font-size: 22px; }
@@ -328,8 +331,9 @@
     text-decoration: none;
     cursor: pointer;
     background: transparent;
-    transition: background 0.2s;
+    transition: background 0.12s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    touch-action: manipulation;
 }
 .bn-sf-list-item:active { background: rgba(255, 255, 255, 0.05); }
 .bn-sf-list-left {
@@ -384,6 +388,7 @@
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     font-weight: 400;
+    touch-action: manipulation;
 }
 .bn-sub-item:active { color: #fcd576; }
 
