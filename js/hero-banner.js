@@ -128,7 +128,7 @@ function getHeroImageUrl(movie) {
     const isMobile = window.innerWidth < 768;
     const isAdminBanner = (movie === heroSlides[0]);
     if (isMobile) {
-        return movie.thumb_url || movie.poster_url;
+        return movie.poster_url || movie.thumb_url;
     } else {
         return isAdminBanner ? (movie.poster_url || movie.thumb_url) : (movie.thumb_url || movie.poster_url);
     }
@@ -636,6 +636,8 @@ function attachSwipeHandler() {
     }, { passive: true });
 
     heroEl.addEventListener('touchmove', (e) => {
+        if (swipeDir === 'v') return; // Trả quyền cuộn ngay lập tức cho trình duyệt, bỏ qua hoàn toàn xử lý JS
+        
         if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section, .overflow-x-auto, .scrollbar-hide, [class*="overflow-x"], [class*="snap-"], .movie-card, .portrait-card, .action-premium-card, img')) return;
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
@@ -643,6 +645,7 @@ function attachSwipeHandler() {
         // Xác định hướng sau khi di chuyển AXIS_LOCK_PX
         if (!swipeDir && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
             swipeDir = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v';
+            if (swipeDir === 'v') return; // Trả quyền cuộn ngay lập tức
         }
 
         // Chỉ parallax nếu đang swipe ngang
