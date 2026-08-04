@@ -26,7 +26,7 @@ class ImageOptimizer {
 
         // Use wsrv.nl proxy for advanced compression and resizing
         // This dramatically reduces image size from MBs to KBs
-        if (url.includes('ophim') || url.includes('opstream')) {
+        if (!url.includes('localhost') && !url.includes('127.0.0.1')) {
             let targetWidth = width;
             let targetQuality = quality;
 

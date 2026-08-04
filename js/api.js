@@ -518,16 +518,17 @@ class MovieAPI {
     getImageURL(imagePath, width = 400, quality = 80, isPriority = false) {
         if (!imagePath) return '/apple-touch-icon.png';
 
-        if (typeof imageOptimizer !== 'undefined' && typeof imageOptimizer.resolveUrl === 'function') {
-            return imageOptimizer.resolveUrl(imagePath);
-        }
-
         let fullUrl = imagePath;
         if (!imagePath.startsWith('http')) {
             const filename = imagePath.replace(/^uploads\/movies\//, '');
-            fullUrl = `${API_CONFIG.IMAGE_BASE}${filename}`;
+            fullUrl = `${API_CONFIG.IMAGE_BASE || 'https://img.ophim.live/uploads/movies/'}${filename}`;
         }
 
+        // Use imageOptimizer for advanced compression and caching
+        if (typeof imageOptimizer !== 'undefined' && typeof imageOptimizer.optimizeImageUrl === 'function') {
+            return imageOptimizer.optimizeImageUrl(fullUrl, width, quality, isPriority);
+        }
+        
         return fullUrl;
     }
 
