@@ -744,7 +744,7 @@ async function loadMovieGallery(movie) {
                 
                 scrollContainer.innerHTML = backdrops.map((img, index) => `
                     <div style="flex-shrink: 0; width: 280px; aspect-ratio: 16/9; max-width: 80vw;" class="rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-white/30 transition-colors relative cursor-pointer" onclick="openLightbox(window.movieGalleryImageUrls, ${index})">
-                        <img src="https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img.file_path}" alt="Cảnh phim ${movie.name}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" class="transform transition-transform duration-500 hover:scale-110">
+                        <img src="https://image.tmdb.org/t/p/w780${img.file_path}" alt="Cảnh phim ${movie.name}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" class="transform transition-transform duration-500 hover:scale-110">
                     </div>
                 `).join('');
                 
@@ -780,9 +780,9 @@ async function loadMovieGallery(movie) {
                     const img2 = backdrops[1]?.file_path || img1;
                     const img3 = backdrops[2]?.file_path || img2;
                     
-                    if (img1) svapBg1.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img1}')`;
-                    if (img2) svapBg2.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img2}')`;
-                    if (img3) svapBg3.style.backgroundImage = `url('https://wsrv.nl/?url=image.tmdb.org/t/p/w780${img3}')`;
+                    if (img1) svapBg1.style.backgroundImage = `url('https://image.tmdb.org/t/p/w780${img1}')`;
+                    if (img2) svapBg2.style.backgroundImage = `url('https://image.tmdb.org/t/p/w780${img2}')`;
+                    if (img3) svapBg3.style.backgroundImage = `url('https://image.tmdb.org/t/p/w780${img3}')`;
                 }
             }
         }
@@ -1596,3 +1596,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+

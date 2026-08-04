@@ -22,12 +22,34 @@ class ImageOptimizer {
         return 'https://img.ophim.live/uploads/movies/' + raw;
     }
 
-    optimizeImageUrl(url, width = 400, quality = 80, isPriority = false, fallbackUrl = '') {
-        return this.resolveUrl(url, fallbackUrl);
+    optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
+        if (!url) return 'https://via.placeholder.com/400x600?text=No+Image';
+        
+        // Ensure absolute URL
+        let resolvedUrl = url;
+        if (!resolvedUrl.startsWith('http')) {
+            // Check if the url already contains 'uploads/movies/'
+            if (resolvedUrl.startsWith('uploads/movies/')) {
+                resolvedUrl = `https://img.ophim.live/${resolvedUrl}`;
+            } else {
+                resolvedUrl = `https://img.ophim.live/uploads/movies/${resolvedUrl}`;
+            }
+        }
+
+        // Bỏ qua wsrv.nl vì server proxy này hiện tại đang bị quá tải/chặn ở VN dẫn tới treo ảnh load mãi không xong
+        return resolvedUrl;
     }
 
     getProgressiveUrls(url) {
-        const full = this.resolveUrl(url);
+        if (!url) return { placeholder: null, full: 'https://via.placeholder.com/400x600?text=No+Image' };
+
+        // Đảm bảo absolute URL
+        let full = url;
+        if (!full.startsWith('http')) {
+            full = `https://img.ophim.live/uploads/movies/${full}`;
+        }
+
+        // Tạm thời tắt wsrv.nl vì proxy này đang treo, trả về ảnh gốc luôn
         return { placeholder: null, full };
     }
 

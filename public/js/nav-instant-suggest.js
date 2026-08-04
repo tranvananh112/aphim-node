@@ -167,7 +167,7 @@
     function buildImgSrc(thumb) {
         if (!thumb) return '';
         const full = thumb.startsWith('http') ? thumb : IMG_CDN + thumb;
-        return `https://wsrv.nl/?url=${encodeURIComponent(full)}&w=114&h=162&fit=cover&output=webp&q=100`;
+        return full;
     }
 
     async function fetchMovies(keyword, limit) {

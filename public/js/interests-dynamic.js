@@ -72,7 +72,7 @@
         // Dùng wsrv.nl để resize + convert sang webp
         try {
             const encoded = encodeURIComponent(rawUrl);
-            return `https://wsrv.nl/?url=${encoded}&w=400&q=70&output=webp`;
+            return imgUrl;
         } catch {
             return rawUrl;
         }
@@ -152,3 +152,4 @@
 
     await Promise.all(fetchPromises);
 })();
+
