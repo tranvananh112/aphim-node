@@ -167,7 +167,10 @@
         let html = '';
         display.forEach(function (movie) {
             const thumb = movie.thumb_url || movie.poster_url || '';
-            const poster = thumb ? `https://img.ophim.live/uploads/movies/${thumb}` : '';
+            const rawImg = thumb || '';
+            const poster = (typeof imageOptimizer !== 'undefined' && rawImg)
+                ? imageOptimizer.optimizeImageUrl(rawImg, 100, 70)
+                : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophim.live/${rawImg}` : `https://img.ophim.live/uploads/movies/${rawImg}`));
             const badge = movie.year || movie.episode_current || 'HD';
             const title = (movie.name || '').replace(/</g, '&lt;');
             const enTitle = (movie.origin_name || '').replace(/</g, '&lt;');

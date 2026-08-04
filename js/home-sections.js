@@ -1,7 +1,7 @@
 // Load and render all movie sections from home API
 async function loadHomeMovies() {
     try {
-        const response = await fetch('https://ophim1.com/v1/api/home', {
+        const response = await movieAPI.fetchWithFallback('/home', {
             method: 'GET',
             headers: { 'accept': 'application/json' }
         });
@@ -9,7 +9,7 @@ async function loadHomeMovies() {
         const data = await response.json();
         console.log('Home API data:', data);
 
-        if (data.status === 'success' && data.data) {
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
             // Home API trả về flat array của movies, không phải sections
             // Chúng ta sẽ group chúng theo category hoặc hiển thị như "Phim Mới Cập Nhật"
             if (Array.isArray(data.data.items) && data.data.items.length > 0) {
@@ -48,12 +48,13 @@ async function loadHomeMovies() {
                 if (loading) loading.style.display = 'block';
                 if (container) container.style.display = 'block';
 
-                // Nếu data.data có sections (v1/api/home version mới)
-                if (data.data.sections) {
+                // Ophim /home trả về flat array movies (không có sections)
+                // Nếu có sections, render sections; nếu không, render flat list
+                if (data.data.sections && Array.isArray(data.data.sections) && data.data.sections.length > 0) {
                     renderAllSections(data.data.sections);
                 } else {
-                    // Fallback render flat list if no sections
-                    // renderLatestMoviesSection(movies);
+                    // Ophim API trả về flat array - render thẳng
+                    renderLatestMoviesSection(movies);
                 }
 
                 // Load Vietnamese movies separately
@@ -111,7 +112,7 @@ function renderLatestMoviesSection(movies) {
                         <span class="w-1.5 h-8 bg-primary rounded-full block shadow-[0_0_10px_rgba(242,242,13,0.5)]"></span>
                         Phim Mới Cập Nhật
                     </h2>
-                    <a href="/danh-sach?list=phim-moi"
+                    <a href="/danh-sach/phim-moi"
                         class="text-primary text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group">
                         Xem tất cả <span class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
@@ -146,8 +147,8 @@ function renderLatestMoviesSection(movies) {
                                         <span class="material-icons-round text-[10px]">check_circle</span>
                                     </div>` : ''}
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                        <div class="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300" style="background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 75%, #C48600 100%) !important; border: 1.5px solid rgba(255, 248, 210, 0.8) !important; box-shadow: 0 8px 18px rgba(230, 168, 23, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(160, 100, 0, 0.9) !important;">
-                                            <span class="material-icons-round text-[#0d0f1a] text-2xl font-bold" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));">play_arrow</span>
+                                        <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                            <span class="material-icons-round text-black text-xl">play_arrow</span>
                                         </div>
                                     </div>
                                 </div>
@@ -233,7 +234,7 @@ function renderAllSections(sections) {
                             ${section.name || 'Phim'}
                         </h2>
                         ${section.slug ? `
-                        <a href="/search?category=${section.slug}"
+                        <a href="/tim-kiem?category=${section.slug}"
                             class="text-primary text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group">
                             Xem tất cả <span class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </a>
@@ -269,8 +270,8 @@ function renderAllSections(sections) {
                                             <span class="material-icons-round text-[10px]">check_circle</span>
                                         </div>` : ''}
                                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                            <div class="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300" style="background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 75%, #C48600 100%) !important; border: 1.5px solid rgba(255, 248, 210, 0.8) !important; box-shadow: 0 8px 18px rgba(230, 168, 23, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(160, 100, 0, 0.9) !important;">
-                                                <span class="material-icons-round text-[#0d0f1a] text-2xl font-bold" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));">play_arrow</span>
+                                            <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                                                <span class="material-icons-round text-black text-xl">play_arrow</span>
                                             </div>
                                         </div>
                                     </div>
@@ -301,24 +302,32 @@ function renderAllSections(sections) {
 
 // Fallback function - load Vietnamese movies
 async function loadVietnameseMoviesHome() {
-    try {
-        const response = await fetch('https://ophim1.com/v1/api/quoc-gia/viet-nam?page=1&limit=20', {
-            method: 'GET',
-            headers: { 'accept': 'application/json' }
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'success' && data.data && data.data.items) {
-            const movies = data.data.items.slice(0, 20);
-            renderVietnameseMovies(movies);
+    // Danh sách endpoint thử lần lượt
+    const endpoints = [
+        '/quoc-gia/viet-nam?page=1',
+        '/the-loai/phim-le?page=1',
+        '/danh-sach/phim-bo?page=1'
+    ];
+    for (const ep of endpoints) {
+        try {
+            const response = await movieAPI.fetchWithFallback(ep, {
+                method: 'GET',
+                headers: { 'accept': 'application/json' }
+            });
+            const data = await response.json();
+            if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items && data.data.items.length > 0) {
+                const movies = data.data.items.slice(0, 20);
+                renderVietnameseMovies(movies);
+                return; // success, stop trying
+            }
+        } catch (error) {
+            console.warn('Error loading Vietnamese movies from', ep, ':', error.message);
         }
-    } catch (error) {
-        console.error('Error loading Vietnamese movies:', error);
-        const loading = document.getElementById('vietnamLoading');
-        if (loading) {
-            loading.innerHTML = `<p class="text-red-400">Không thể tải phim Việt Nam</p>`;
-        }
+    }
+    // All failed
+    const loading = document.getElementById('vietnamLoading');
+    if (loading) {
+        loading.innerHTML = `<p class="text-red-400">Không thể tải phim Việt Nam</p>`;
     }
 }
 
@@ -361,8 +370,8 @@ function renderVietnameseMovies(movies) {
                     <span class="material-icons-round text-[10px]">check_circle</span> Có link
                 </div>` : ''}
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                    <div class="w-11 h-11 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300" style="background: linear-gradient(135deg, #FFF6CC 0%, #FCD576 40%, #E6A817 75%, #C48600 100%) !important; border: 1.5px solid rgba(255, 248, 210, 0.8) !important; box-shadow: 0 8px 18px rgba(230, 168, 23, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(160, 100, 0, 0.9) !important;">
-                        <span class="material-icons-round text-[#0d0f1a] text-2xl font-bold" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));">play_arrow</span>
+                    <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
+                        <span class="material-icons-round text-black text-xl">play_arrow</span>
                     </div>
                 </div>
             </div>
@@ -395,5 +404,3 @@ window.addEventListener('hiddenMoviesSynced', () => {
     console.log('Hidden movies synced, re-rendering home sections...');
     loadHomeMovies();
 });
-
-

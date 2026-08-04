@@ -39,9 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isTop3 = num <= 3;
             const numColor = isTop3 ? '#FFD700' : '#4b5563'; // Vàng cho 1-3, xám cho 4-10
             
-            const imgBase = imgDomain.endsWith('/') ? imgDomain.slice(0, -1) : imgDomain;
-            const fullImgPath = imgBase.includes('uploads/movies') ? imgBase : `${imgBase}/uploads/movies`;
-            const thumbUrl = item.thumb_url.startsWith('http') ? item.thumb_url : `${fullImgPath}/${item.thumb_url}`;
+            const rawThumb = item.thumb_url || item.poster_url || '';
+            const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophim.live/${rawThumb}` : `https://img.ophim.live/uploads/movies/${rawThumb}`));
             const title = item.name || item.origin_name;
             const badge = item.quality || 'HD';
             const episode = item.episode_current || 'Tập 1';

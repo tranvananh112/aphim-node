@@ -163,11 +163,13 @@
 
     const IMG_CDN = 'https://img.ophim.live/uploads/movies/';
 
-    // Proxy qua wsrv.nl để resize ngay về 38x54 WebP → tải cực nhanh
     function buildImgSrc(thumb) {
-        if (!thumb) return '';
-        const full = thumb.startsWith('http') ? thumb : IMG_CDN + thumb;
-        return `https://wsrv.nl/?url=${encodeURIComponent(full)}&w=114&h=162&fit=cover&output=webp&q=100`;
+        const rawImg = thumb || '';
+        const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+            ? imageOptimizer.optimizeImageUrl(rawImg, 100, 70)
+            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophim.live/${rawImg}` : `https://img.ophim.live/uploads/movies/${rawImg}`));
+        
+        return `https://wsrv.nl/?url=${encodeURIComponent(posterUrl)}&w=114&h=162&fit=cover&output=webp&q=100`;
     }
 
     async function fetchMovies(keyword, limit) {

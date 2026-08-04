@@ -16,7 +16,12 @@ class ImageOptimizer {
         
         // Ensure absolute URL
         if (!url.startsWith('http')) {
-            url = `https://img.ophim.live/uploads/movies/${url}`;
+            // Check if the url already contains 'uploads/movies/'
+            if (url.startsWith('uploads/movies/')) {
+                url = `https://img.ophim.live/${url}`;
+            } else {
+                url = `https://img.ophim.live/uploads/movies/${url}`;
+            }
         }
 
         // Use wsrv.nl proxy for advanced compression and resizing

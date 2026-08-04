@@ -91,7 +91,7 @@ async function loadMoviesList(listSlug, page = 1) {
         const data = await response.json();
         console.log('API Response:', data);
 
-        if (data.status === 'success' && data.data) {
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
             const movies = data.data.items || [];
             const params = data.data.params || data.params || {};
             const pagination_data = params.pagination || data.data.pagination || {};
@@ -160,8 +160,10 @@ function renderMoviesTable(movies, listName, totalItems, totalPages_api) {
     let gridHTML = '';
 
     movies.forEach((movie) => {
-        const thumbUrl = movie.thumb_url || movie.poster_url || '';
-        const posterUrl = thumbUrl ? `https://img.ophim.live/uploads/movies/${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
+        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+            ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
+            : (rawImg.startsWith('http') ? rawImg : (rawImg ? (rawImg.startsWith('uploads/') ? `https://img.ophim.live/${rawImg}` : `https://img.ophim.live/uploads/movies/${rawImg}`) : 'https://via.placeholder.com/200x300?text=No+Image'));
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const episodeCurrent = movie.episode_current || 'N/A';
@@ -202,15 +204,15 @@ function renderMoviesTable(movies, listName, totalItems, totalPages_api) {
                     
                     <!-- Rating -->
                     ${tmdbRating ? `
-                        <div class="absolute bottom-2 left-2 flex items-center gap-0.5 bg-primary/90 backdrop-blur-sm shadow-[0_2px_8px_rgba(232,185,79,0.5)] px-1.5 py-0.5 rounded">
-                            <span class="material-icons-round text-black text-[12px]">star</span>
-                            <span class="text-black text-[10px] font-bold">${tmdbRating}</span>
+                        <div class="absolute bottom-2 left-2 flex items-center gap-1 bg-black/80 px-2 py-1 rounded">
+                            <span class="material-icons-round text-primary text-sm">star</span>
+                            <span class="text-white text-xs font-bold">${tmdbRating}</span>
                         </div>
                     ` : ''}
                     
                     <!-- Year -->
-                    <div class="absolute bottom-2 right-2 bg-green-600 shadow-lg px-1.5 py-0.5 rounded">
-                        <span class="text-white text-[10px] font-bold">${year}</span>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded">
+                        <span class="text-white text-xs font-bold">${year}</span>
                     </div>
                     
                     <!-- Play icon on hover -->
@@ -242,9 +244,97 @@ function renderPagination(paginationData) {
         pagination.innerHTML = '';
         return;
     }
+
     const totalPages_api = paginationData.totalPages;
     const currentPage_api = paginationData.currentPage || currentPage;
-    pagination.innerHTML = window.renderModernPagination(currentPage_api, totalPages_api, "goToPage(PAGE)");
+    const totalItems = paginationData.totalItems || 0;
+
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage_api - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages_api, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    let paginationHTML = `
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2 overflow-x-auto">
+    `;
+
+    // Previous button
+    if (currentPage_api > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPage_api - 1})" 
+                    class="px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-colors flex-shrink-0">
+                <span class="material-icons-round text-sm">chevron_left</span>
+            </button>
+        `;
+    }
+
+    // First page
+    if (startPage > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(1)" 
+                    class="px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-colors flex-shrink-0">
+                1
+            </button>
+        `;
+        if (startPage > 2) {
+            paginationHTML += `<span class="text-gray-400 flex-shrink-0">...</span>`;
+        }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        if (Number(i) === Number(currentPage_api)) {
+            paginationHTML += `
+                <button class="px-4 py-2 bg-primary text-black font-bold rounded-lg flex-shrink-0 transition-all duration-300">
+                    ${i}
+                </button>
+            `;
+        } else {
+            paginationHTML += `
+                <button onclick="goToPage(${i})" 
+                        class="px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all duration-300 flex-shrink-0">
+                    ${i}
+                </button>
+            `;
+        }
+    }
+
+    // Last page
+    if (endPage < totalPages_api) {
+        if (endPage < totalPages_api - 1) {
+            paginationHTML += `<span class="text-gray-400 flex-shrink-0">...</span>`;
+        }
+        paginationHTML += `
+            <button onclick="goToPage(${totalPages_api})" 
+                    class="px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-colors flex-shrink-0">
+                ${totalPages_api}
+            </button>
+        `;
+    }
+
+    // Next button
+    if (currentPage_api < totalPages_api) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPage_api + 1})" 
+                    class="px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-colors flex-shrink-0">
+                <span class="material-icons-round text-sm">chevron_right</span>
+            </button>
+        `;
+    }
+
+    paginationHTML += `
+            </div>
+            <div class="text-gray-400 text-sm whitespace-nowrap">
+                Trang ${currentPage_api}/${totalPages_api} | Tổng ${totalItems.toLocaleString()} kết quả
+            </div>
+        </div>
+    `;
+
+    pagination.innerHTML = paginationHTML;
 }
 
 // Go to page
@@ -302,5 +392,3 @@ window.addEventListener('hiddenMoviesSynced', () => {
         loadMoviesList(typeParam, pageParam);
     }
 });
-
-

@@ -201,7 +201,7 @@
                 const data = await res.json();
                 if (data?.data?.items?.length > 0) {
                     const latestMovie = data.data.items[0];
-                    const url = `https://img.ophim.live/uploads/movies/${latestMovie.thumb_url || latestMovie.poster_url}`;
+                    const url = `https://img.ophim.live/ + (.startsWith('uploads/') ?  : 'uploads/movies/' + )`;
                     dynamicPosterURL = url;
                     const img = new Image();
                     img.src = url;
