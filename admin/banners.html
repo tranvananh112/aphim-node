@@ -1,25 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
-    <!-- B?O M?T: Ch?n Google Index trang Admin -->
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta charset="UTF-8">
-    <meta name="description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="og:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="twitter:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Qu?n l� Banner - A Phim Admin</title>
+    <title>Quản lý Banner - A Phim Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
     <style>
-        /* -- Banner thumb (table) -- */
+        /* ── Banner thumb (table) ── */
         .banner-thumb {
             width: 60px;
             height: 84px;
@@ -29,7 +29,7 @@
             display: block;
         }
 
-        /* -- Active banner poster -- */
+        /* ── Active banner poster ── */
         .banner-active-poster {
             width: 120px;
             height: 180px;
@@ -39,7 +39,7 @@
             background: var(--surface-3);
         }
 
-        /* -- Movie pick cards (modal grid) -- */
+        /* ── Movie pick cards (modal grid) ── */
         .movie-pick-card {
             background: var(--surface-2);
             border: 1px solid var(--border);
@@ -70,7 +70,7 @@
             display: flex;
             flex-direction: column;
             min-height: 110px;
-            /* Th�m min-height d? d?ng d?u c�c th? */
+            /* Thêm min-height để đồng đều các thẻ */
         }
 
         .movie-pick-title {
@@ -108,12 +108,12 @@
             text-overflow: ellipsis;
         }
 
-        /* -- Modal search customization -- */
+        /* ── Modal search customization ── */
         .modal-box-lg {
             max-width: 920px !important;
         }
 
-        /* -- Thumbnail strip card (drag-and-drop) -- */
+        /* ── Thumbnail strip card (drag-and-drop) ── */
         .thumb-card {
             width: 100px;
             background: var(--surface-2);
@@ -202,12 +202,13 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    <link rel="stylesheet" href="css/bottom-nav.css?v=138">
 </head>
 
 <body>
     <div class="admin-layout">
 
-        <!-- ---SIDEBAR ----->
+        <!-- ───SIDEBAR ───-->
         <aside class="admin-sidebar">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-icon"
@@ -223,68 +224,68 @@
 
             <nav class="sidebar-nav">
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">T?ng quan</p>
-                    <a href="/dashboard" class="sidebar-nav-item" id="nav-dashboard">
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="dashboard.html" class="sidebar-nav-item" id="nav-dashboard">
                         <i data-lucide="layout-dashboard" style="width: 1em; height: 1em;"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
 
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">N?I DUNG</p>
-                    <a href="/movies" class="sidebar-nav-item" id="nav-movies">
+                    <p class="sidebar-nav-label">NỘI DUNG</p>
+                    <a href="movies.html" class="sidebar-nav-item" id="nav-movies">
                         <i data-lucide="film" style="width: 1em; height: 1em;"></i>
-                        <span>Qu?n l� phim</span>
+                        <span>Quản lý phim</span>
                     </a>
-                    <a href="/categories" class="sidebar-nav-item" id="nav-categories">
+                    <a href="categories.html" class="sidebar-nav-item" id="nav-categories">
                         <i data-lucide="list-tree" style="width: 1em; height: 1em;"></i>
-                        <span>Danh m?c</span>
+                        <span>Danh mục</span>
                     </a>
-                    <a href="/banners" class="sidebar-nav-item active" id="nav-banners">
+                    <a href="banners.html" class="sidebar-nav-item active" id="nav-banners">
                         <i data-lucide="image" style="width: 1em; height: 1em;"></i>
                         <span>Banner &amp; Ads</span>
                     </a>
                 </div>
 
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">NGU?I D�NG</p>
-                    <a href="/users" class="sidebar-nav-item" id="nav-users">
+                    <p class="sidebar-nav-label">NGƯỜI DÙNG</p>
+                    <a href="users.html" class="sidebar-nav-item" id="nav-users">
                         <i data-lucide="users" style="width: 1em; height: 1em;"></i>
-                        <span>Ngu?i d�ng</span>
+                        <span>Người dùng</span>
                     </a>
-                    <a href="/chat" class="sidebar-nav-item" id="nav-chat">
+                    <a href="chat.html" class="sidebar-nav-item" id="nav-chat">
                         <i data-lucide="message-square" style="width: 1em; height: 1em;"></i>
-                        <span>Qu?n l� Chat</span>
+                        <span>Quản lý Chat</span>
                     </a>
-                    <a href="/comments" class="sidebar-nav-item" id="nav-comments">
+                    <a href="comments.html" class="sidebar-nav-item" id="nav-comments">
                         <i data-lucide="message-circle" style="width: 1em; height: 1em;"></i>
-                        <span>B�nh lu?n</span>
+                        <span>Bình luận</span>
                     </a>
-                    <a href="/subscriptions" class="sidebar-nav-item" id="nav-subscriptions">
+                    <a href="subscriptions.html" class="sidebar-nav-item" id="nav-subscriptions">
                         <i data-lucide="credit-card" style="width: 1em; height: 1em;"></i>
-                        <span>G�i th�nh vi�n</span>
+                        <span>Gói thành viên</span>
                     </a>
                 </div>
 
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">T�I CH�NH</p>
-                    <a href="/payments" class="sidebar-nav-item" id="nav-payments">
+                    <p class="sidebar-nav-label">TÀI CHÍNH</p>
+                    <a href="payments.html" class="sidebar-nav-item" id="nav-payments">
                         <i data-lucide="circle-dollar-sign" style="width: 1em; height: 1em;"></i>
-                        <span>Thanh to�n</span>
+                        <span>Thanh toán</span>
                     </a>
-                    <a href="/supporters" class="sidebar-nav-item" id="nav-supporters">
+                    <a href="supporters.html" class="sidebar-nav-item" id="nav-supporters">
                         <i data-lucide="heart" style="width: 1em; height: 1em;"></i>
-                        <span>?ng h?</span>
+                        <span>Ủng hộ</span>
                     </a>
                 </div>
 
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">H? TH?NG</p>
-                    <a href="/settings" class="sidebar-nav-item" id="nav-settings">
+                    <p class="sidebar-nav-label">HỆ THỐNG</p>
+                    <a href="settings.html" class="sidebar-nav-item" id="nav-settings">
                         <i data-lucide="settings" style="width: 1em; height: 1em;"></i>
-                        <span>C�i d?t</span>
+                        <span>Cài đặt</span>
                     </a>
-                    <a href="/partner" class="sidebar-nav-item" id="nav-partner">
+                    <a href="partner.html" class="sidebar-nav-item" id="nav-partner">
                         <i data-lucide="handshake" style="width: 1em; height: 1em;"></i>
                         <span>Partner DT99</span>
                     </a>
@@ -293,9 +294,9 @@
 
             <div class="sidebar-footer">
                 <button class="sidebar-logout"
-                    onclick="adminAuthService ? adminAuthService.logout() : (location.href = '/dashboard')">
+                    onclick="adminAuthService ? adminAuthService.logout() : (location.href='dashboard.html')">
                     <i data-lucide="log-out" style="width: 1em; height: 1em;"></i>
-                    <span>�ang xu?t</span>
+                    <span>Đăng xuất</span>
                 </button>
             </div>
         </aside>
@@ -304,19 +305,19 @@
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-left">
-                    <h2>Qu?n l� Banner</h2>
-                    <p>Ch?n phim d? hi?n th? l�m Hero Banner trang ch?</p>
+                    <h2>Quản lý Banner</h2>
+                    <p>Chọn phim để hiển thị làm Hero Banner trang chủ</p>
                 </div>
                 <div class="header-right">
                     <button class="btn btn-primary" onclick="showLoadMoviesModal()">
                         <i data-lucide="plus-circle"></i>
-                        Th�m Banner M?i
+                        Thêm Banner Mới
                     </button>
                     <div class="header-separator"></div>
                     <div class="header-admin">
                         <div class="header-admin-avatar">A</div>
                         <div class="header-admin-info">
-                            <p>Admin</p><span>Qu?n tr? vi�n</span>
+                            <p>Admin</p><span>Quản trị viên</span>
                         </div>
                     </div>
                 </div>
@@ -328,7 +329,7 @@
                     <div class="admin-card-header">
                         <span class="admin-card-title flex items-center gap-2">
                             <i data-lucide="check-circle" class="text-success"></i>
-                            Banner �ang Hi?n Th?
+                            Banner Đang Hiển Thị
                         </span>
                     </div>
                     <div class="admin-card-body">
@@ -340,28 +341,28 @@
                     </div>
                 </div>
 
-                <!-- -- THUMBNAIL STRIP MANAGER -- -->
+                <!-- ── THUMBNAIL STRIP MANAGER ── -->
                 <div class="admin-card mb-4">
                     <div class="admin-card-header">
                         <span class="admin-card-title flex items-center gap-2">
                             <i data-lucide="layout-list" class="text-primary"></i>
-                            Thumbnail Phim Du?i Hero Banner
-                            <span class="badge badge-gray" style="font-size:11px;margin-left:4px">T?i da 10</span>
+                            Thumbnail Phim Dưới Hero Banner
+                            <span class="badge badge-gray" style="font-size:11px;margin-left:4px">Tối đa 10</span>
                         </span>
                         <div class="flex items-center gap-2">
                             <span id="thumbCount" style="font-size:12px;color:var(--text-muted)">0/10 phim</span>
                             <button class="btn btn-secondary btn-sm" onclick="showAddThumbnailModal()">
-                                <i data-lucide="plus-circle"></i> Th�m phim
+                                <i data-lucide="plus-circle"></i> Thêm phim
                             </button>
                             <button class="btn btn-primary btn-sm" onclick="saveThumbnailOrder()" id="btnSaveThumb"
                                 style="display:none">
-                                <i data-lucide="save"></i> Luu th? t?
+                                <i data-lucide="save"></i> Lưu thứ tự
                             </button>
                         </div>
                     </div>
                     <div class="admin-card-body">
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">
-                            K�o th? d? s?p x?p th? t?. Nh?n <strong>Luu th? t?</strong> sau khi thay d?i.
+                            Kéo thả để sắp xếp thứ tự. Nhấn <strong>Lưu thứ tự</strong> sau khi thay đổi.
                         </p>
                         <div id="thumbnailStripLoading" class="loading-spinner p-4">
                             <div class="spinner animate-spin"></div>
@@ -370,8 +371,8 @@
                             style="display:none; flex-wrap:wrap; gap:12px; min-height:80px; padding:4px 0;"></div>
                         <div id="thumbnailStripEmpty"
                             style="display:none; text-align:center; padding:24px; color:var(--text-muted);">
-                            <p style="font-size:13px">Chua c� phim thumbnail. Nh?n <strong>Th�m phim</strong> d? b?t
-                                d?u.</p>
+                            <p style="font-size:13px">Chưa có phim thumbnail. Nhấn <strong>Thêm phim</strong> để bắt
+                                đầu.</p>
                         </div>
                     </div>
                 </div>
@@ -381,29 +382,29 @@
                     <div class="admin-card-header">
                         <span class="admin-card-title flex items-center gap-2">
                             <i data-lucide="image" class="text-primary"></i>
-                            H�nh N?n Chuy�n M?c
-                            <span class="badge badge-gray" style="font-size:11px;margin-left:4px">Trang ch?</span>
+                            Hình Nền Chuyên Mục
+                            <span class="badge badge-gray" style="font-size:11px;margin-left:4px">Trang chủ</span>
                         </span>
                         <div class="flex items-center gap-2">
                             <button class="btn btn-primary btn-sm" onclick="saveCategoryBackgrounds()"
                                 id="btnSaveCategoryBg">
-                                <i data-lucide="save"></i> Luu c�i d?t
+                                <i data-lucide="save"></i> Lưu cài đặt
                             </button>
                         </div>
                     </div>
                     <div class="admin-card-body">
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">
-                            D�n link URL ?nh d? l�m h�nh n?n cho c�c chuy�n m?c. N?u d? tr?ng, h? th?ng s? t? d?ng l?y
-                            ?nh c?a b? phim m?i nh?t.
+                            Dán link URL ảnh để làm hình nền cho các chuyên mục. Nếu để trống, hệ thống sẽ tự động lấy
+                            ảnh của bộ phim mới nhất.
                         </p>
 
                         <div
                             style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
-                            <!-- Phim B? -->
+                            <!-- Phim Bộ -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold text-primary"
-                                    style="display:flex; justify-content:space-between;"><span>Phim B?</span><i
+                                    style="display:flex; justify-content:space-between;"><span>Phim Bộ</span><i
                                         data-lucide="tv" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_phim_bo" src="https://via.placeholder.com/80x45?text=Auto"
@@ -411,16 +412,16 @@
                                     <input type="hidden" id="bg_phim_bo">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('danh-sach/phim-bo')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('phim_bo')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
-                            <!-- Phim M?i -->
+                            <!-- Phim Mới -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold text-danger"
-                                    style="display:flex; justify-content:space-between;"><span>Phim M?i</span><i
+                                    style="display:flex; justify-content:space-between;"><span>Phim Mới</span><i
                                         data-lucide="bolt" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_phim_moi" src="https://via.placeholder.com/80x45?text=Auto"
@@ -428,16 +429,16 @@
                                     <input type="hidden" id="bg_phim_moi">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('danh-sach/phim-moi-cap-nhat')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('phim_moi')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
-                            <!-- H�nh �?ng -->
+                            <!-- Hành Động -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold text-warning"
-                                    style="display:flex; justify-content:space-between;"><span>H�nh �?ng</span><i
+                                    style="display:flex; justify-content:space-between;"><span>Hành Động</span><i
                                         data-lucide="swords" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_hanh_dong" src="https://via.placeholder.com/80x45?text=Auto"
@@ -445,50 +446,50 @@
                                     <input type="hidden" id="bg_hanh_dong">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('the-loai/hanh-dong')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('hanh_dong')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
-                            <!-- T�nh C?m -->
+                            <!-- Tình Cảm -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold"
-                                    style="color:#ec4899; display:flex; justify-content:space-between;"><span>T�nh
-                                        C?m</span><i data-lucide="heart" style="width:16px;height:16px;"></i></label>
+                                    style="color:#ec4899; display:flex; justify-content:space-between;"><span>Tình
+                                        Cảm</span><i data-lucide="heart" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_tinh_cam" src="https://via.placeholder.com/80x45?text=Auto"
                                         style="width:80px; height:45px; object-fit:cover; border-radius:4px; background:var(--surface-3);">
                                     <input type="hidden" id="bg_tinh_cam">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('the-loai/tinh-cam')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('tinh_cam')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
-                            <!-- H�i Hu?c -->
+                            <!-- Hài Hước -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold"
-                                    style="color:#eab308; display:flex; justify-content:space-between;"><span>H�i
-                                        Hu?c</span><i data-lucide="smile" style="width:16px;height:16px;"></i></label>
+                                    style="color:#eab308; display:flex; justify-content:space-between;"><span>Hài
+                                        Hước</span><i data-lucide="smile" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_hai_huoc" src="https://via.placeholder.com/80x45?text=Auto"
                                         style="width:80px; height:45px; object-fit:cover; border-radius:4px; background:var(--surface-3);">
                                     <input type="hidden" id="bg_hai_huoc">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('the-loai/hai-huoc')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('hai_huoc')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
-                            <!-- Ho?t H�nh -->
+                            <!-- Hoạt Hình -->
                             <div class="form-group mb-0 p-3"
                                 style="background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border);">
                                 <label class="form-label font-bold text-success"
-                                    style="display:flex; justify-content:space-between;"><span>Ho?t H�nh</span><i
+                                    style="display:flex; justify-content:space-between;"><span>Hoạt Hình</span><i
                                         data-lucide="cat" style="width:16px;height:16px;"></i></label>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <img id="preview_bg_hoat_hinh" src="https://via.placeholder.com/80x45?text=Auto"
@@ -496,9 +497,9 @@
                                     <input type="hidden" id="bg_hoat_hinh">
                                     <button class="btn btn-secondary btn-sm flex-1"
                                         onclick="showCategoryBgModal('danh-sach/hoat-hinh')"><i
-                                            data-lucide="image-plus"></i> Ch?n phim</button>
+                                            data-lucide="image-plus"></i> Chọn phim</button>
                                     <button class="btn btn-danger btn-sm" onclick="clearCategoryBg('hoat_hinh')"
-                                        title="X�a n?n"><i data-lucide="trash-2"></i></button>
+                                        title="Xóa nền"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -508,23 +509,23 @@
                 <!-- Banners List -->
                 <div class="admin-card">
                     <div class="admin-card-header">
-                        <span class="admin-card-title">Danh s�ch Hero Banner (L?n)</span>
+                        <span class="admin-card-title">Danh sách Hero Banner (Lớn)</span>
                         <div class="filter-bar mb-0">
                             <div class="filter-search" style="min-width: 200px;">
                                 <i data-lucide="search" class="search-icon"></i>
-                                <input type="text" id="localSearchInput" placeholder="T�m trong danh s�ch...">
+                                <input type="text" id="localSearchInput" placeholder="Tìm trong danh sách...">
                             </div>
                             <select id="localStatusFilter" class="form-select" style="width: 130px;">
-                                <option value="">T?t c?</option>
-                                <option value="active">�ang hi?n</option>
-                                <option value="hidden">�ang ?n</option>
+                                <option value="">Tất cả</option>
+                                <option value="active">Đang hiện</option>
+                                <option value="hidden">Đang ẩn</option>
                             </select>
                         </div>
                     </div>
 
                     <div id="bannersLoading" class="loading-spinner p-8">
                         <div class="spinner animate-spin"></div>
-                        <p class="mt-4 text-muted text-sm">�ang t?i danh s�ch banner...</p>
+                        <p class="mt-4 text-muted text-sm">Đang tải danh sách banner...</p>
                     </div>
 
                     <div id="bannersTable" class="hidden">
@@ -533,11 +534,11 @@
                                 <thead>
                                     <tr>
                                         <th>Poster</th>
-                                        <th>T�n Phim</th>
-                                        <th>Nam</th>
-                                        <th>Tr?ng th�i</th>
-                                        <th>Th? t?</th>
-                                        <th class="text-right">H�nh d?ng</th>
+                                        <th>Tên Phim</th>
+                                        <th>Năm</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thứ tự</th>
+                                        <th class="text-right">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bannersTableBody"></tbody>
@@ -546,7 +547,7 @@
                     </div>
 
                     <div class="pag-wrap p-4 flex items-center justify-between border-t border-white/5">
-                        <div id="localPagInfo" class="pag-info text-xs text-muted">�ang hi?n th? 0 banner</div>
+                        <div id="localPagInfo" class="pag-info text-xs text-muted">Đang hiển thị 0 banner</div>
                         <div id="localPagination" class="pagination"></div>
                     </div>
                 </div>
@@ -561,13 +562,13 @@
             <div class="modal-header">
                 <div class="flex items-center gap-2">
                     <i data-lucide="image-plus" class="text-primary"></i>
-                    <h3>T�m ki?m &amp; Th�m Banner</h3>
+                    <h3>Tìm kiếm &amp; Thêm Banner</h3>
                 </div>
                 <div class="flex items-center gap-2">
                     <button onclick="toggleModalFullScreen()" class="btn btn-secondary btn-icon btn-sm"
-                        title="Ph�ng to/Thu nh?"><i data-lucide="maximize"></i></button>
+                        title="Phóng to/Thu nhỏ"><i data-lucide="maximize"></i></button>
                     <button onclick="closeLoadMoviesModal()" class="btn btn-secondary btn-icon btn-sm text-danger"
-                        title="��ng"><i data-lucide="x"></i></button>
+                        title="Đóng"><i data-lucide="x"></i></button>
                 </div>
             </div>
 
@@ -576,22 +577,22 @@
                 <div class="filter-bar mb-6">
                     <div class="filter-search">
                         <i data-lucide="search" class="search-icon"></i>
-                        <input type="text" id="searchBannerInput" placeholder="Nh?p t�n phim d? t�m ki?m l?p t?c...">
+                        <input type="text" id="searchBannerInput" placeholder="Nhập tên phim để tìm kiếm lập tức...">
                     </div>
                     <div class="filter-select-wrapper">
                         <select id="filterCategory" class="form-select">
-                            <option value="danh-sach/phim-moi-cap-nhat">Phim m?i n?i b?t</option>
-                            <option value="danh-sach/phim-bo">Phim B?</option>
-                            <option value="danh-sach/phim-le">Phim L?</option>
-                            <optgroup label="Th? lo?i">
-                                <option value="the-loai/hanh-dong">H�nh �?ng</option>
-                                <option value="the-loai/tinh-cam">T�nh C?m</option>
-                                <option value="the-loai/hai-huoc">H�i Hu?c</option>
-                                <option value="danh-sach/hoat-hinh">Ho?t H�nh</option>
+                            <option value="danh-sach/phim-moi-cap-nhat">Phim mới nổi bật</option>
+                            <option value="danh-sach/phim-bo">Phim Bộ</option>
+                            <option value="danh-sach/phim-le">Phim Lẻ</option>
+                            <optgroup label="Thể loại">
+                                <option value="the-loai/hanh-dong">Hành Động</option>
+                                <option value="the-loai/tinh-cam">Tình Cảm</option>
+                                <option value="the-loai/hai-huoc">Hài Hước</option>
+                                <option value="danh-sach/hoat-hinh">Hoạt Hình</option>
                             </optgroup>
-                            <optgroup label="Qu?c gia">
-                                <option value="quoc-gia/viet-nam">Vi?t Nam</option>
-                                <option value="quoc-gia/han-quoc">H�n Qu?c</option>
+                            <optgroup label="Quốc gia">
+                                <option value="quoc-gia/viet-nam">Việt Nam</option>
+                                <option value="quoc-gia/han-quoc">Hàn Quốc</option>
                             </optgroup>
                         </select>
                     </div>
@@ -600,13 +601,13 @@
                 <!-- Loading State -->
                 <div id="loadingMovies" class="hidden flex-1 flex flex-col items-center justify-center">
                     <div class="spinner animate-spin"></div>
-                    <p class="mt-4 text-muted text-sm">�ang t�m phim...</p>
+                    <p class="mt-4 text-muted text-sm">Đang tìm phim...</p>
                 </div>
 
                 <!-- Results Grid -->
                 <div id="moviesGrid" class="flex-1 overflow-y-auto pr-2">
                     <div class="flex items-center justify-between mb-4">
-                        <h4 id="gridTitle" class="text-sm font-bold text-primary">Phim m?i n?i b?t</h4>
+                        <h4 id="gridTitle" class="text-sm font-bold text-primary">Phim mới nổi bật</h4>
                         <span id="resultCount" class="text-xs text-muted"></span>
                     </div>
                     <div id="moviesGridContent"
@@ -629,7 +630,7 @@
     <script src="../js/admin/auth.js"></script>
     <script src="../js/admin/banners.js"></script>
     <script>
-        // T? d?ng render Lucide Icons khi DOM thay d?i
+        // Tự động render Lucide Icons khi DOM thay đổi
         document.addEventListener("DOMContentLoaded", () => {
             if (window.lucide) lucide.createIcons();
             let isUpdating = false;
@@ -642,8 +643,8 @@
             observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
+    <script src="js/bottom-nav.js?v=1783518514288" defer></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </body>
 
 </html>
-
-

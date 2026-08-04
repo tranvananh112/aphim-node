@@ -1,0 +1,1 @@
+// Disabled to allow native smooth scrolling
