@@ -22,35 +22,64 @@ class ImageOptimizer {
         return 'https://img.ophim.live/uploads/movies/' + raw;
     }
 
-    optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
+        optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
         if (!url) return 'https://via.placeholder.com/400x600?text=No+Image';
         
-        // Ensure absolute URL
         let resolvedUrl = url;
         if (!resolvedUrl.startsWith('http')) {
-            // Check if the url already contains 'uploads/movies/'
             if (resolvedUrl.startsWith('uploads/movies/')) {
-                resolvedUrl = `https://img.ophim.live/${resolvedUrl}`;
+                resolvedUrl = "https://img.ophim.live/" + resolvedUrl;
             } else {
-                resolvedUrl = `https://img.ophim.live/uploads/movies/${resolvedUrl}`;
+                resolvedUrl = "https://img.ophim.live/uploads/movies/" + resolvedUrl;
             }
         }
 
-        // Bỏ qua wsrv.nl vì server proxy này hiện tại đang bị quá tải/chặn ở VN dẫn tới treo ảnh load mãi không xong
+        if (!resolvedUrl.includes('localhost') && !resolvedUrl.includes('127.0.0.1')) {
+            let targetWidth = width;
+            let targetQuality = quality;
+
+            if (typeof this.isMobile !== 'undefined' && !this.isMobile) {
+                targetQuality = Math.min(quality || 85, 90);
+                if (targetQuality < 80) targetQuality = 85;
+                targetWidth = Math.max(width, 800);
+                if (isPriority) {
+                    targetWidth = Math.max(width, 1920);
+                    targetQuality = 90;
+                }
+            } else {
+                if (isPriority) {
+                    targetWidth = Math.max(width, 1200); 
+                    targetQuality = Math.max(quality || 90, 90); 
+                } else {
+                    targetWidth = Math.min(width, 600);
+                    targetQuality = Math.min(quality || 75, 75);
+                }
+            }
+            
+            const cleanUrl = resolvedUrl.replace(/^https?:\/\//, '');
+            return "https://i0.wp.com/" + cleanUrl + "?w=" + targetWidth + "&quality=" + targetQuality + "&strip=all";
+        }
+
         return resolvedUrl;
     }
 
     getProgressiveUrls(url) {
         if (!url) return { placeholder: null, full: 'https://via.placeholder.com/400x600?text=No+Image' };
 
-        // Đảm bảo absolute URL
         let full = url;
         if (!full.startsWith('http')) {
-            full = `https://img.ophim.live/uploads/movies/${full}`;
+            full = "https://img.ophim.live/uploads/movies/" + full;
         }
 
-        // Tạm thời tắt wsrv.nl vì proxy này đang treo, trả về ảnh gốc luôn
-        return { placeholder: null, full };
+        if ((typeof this.isMobile !== 'undefined' && !this.isMobile) || (!full.includes('ophim') && !full.includes('opstream'))) {
+            return { placeholder: null, full: full };
+        }
+
+        const cleanUrl = full.replace(/^https?:\/\//, '');
+        return {
+            placeholder: "https://i0.wp.com/" + cleanUrl + "?w=20&quality=20&strip=all",
+            full: "https://i0.wp.com/" + cleanUrl + "?w=600&quality=82&strip=all"
+        };
     }
 
     applyProgressiveLoad(imgEl, originalUrl) {
@@ -144,3 +173,4 @@ _progressiveMutationObserver.observe(document.body, {
 });
 
 const mutationObserver = _progressiveMutationObserver;
+

@@ -3,6 +3,7 @@ let currentMovie = null;
 let currentEpisode = null;
 let player = null;
 let currentServerIndex = 0; // Track the current server index for failover
+let _isInitializingPlayer = false; // Guard: chỉ cho phép 1 lần initializePlayer chạy cùng lúc
 
 document.addEventListener('DOMContentLoaded', async function () {
     const urlParams = new URLSearchParams(window.location.search);
@@ -56,8 +57,8 @@ async function loadMovieAndPlay(slug, episodeSlug) {
             if (requestedServer !== null && !isNaN(requestedServer) && parseInt(requestedServer) < currentMovie.episodes.length) {
                 currentServerIndex = parseInt(requestedServer);
             } else {
-                const validIdx = currentMovie.episodes.findIndex(s => s.server_data && s.server_data.some(ep => ep.link_m3u8 || ep.link_embed));
-                currentServerIndex = validIdx !== -1 ? validIdx : 0;
+                // Luôn ưu tiên Nguồn 1 (OPhim, index 0) - chỉ dùng nguồn khác khi người dùng tự chọn
+                currentServerIndex = 0;
             }
 
             const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
@@ -101,8 +102,8 @@ async function loadMovieAndPlay(slug, episodeSlug) {
                     if (requestedServer !== null && !isNaN(requestedServer) && parseInt(requestedServer) < currentMovie.episodes.length) {
                         currentServerIndex = parseInt(requestedServer);
                     } else {
-                        const validIdx = currentMovie.episodes.findIndex(s => s.server_data && s.server_data.some(ep => ep.link_m3u8 || ep.link_embed));
-                        currentServerIndex = validIdx !== -1 ? validIdx : 0;
+                        // Luôn ưu tiên Nguồn 1 (OPhim, index 0) - chỉ dùng nguồn khác khi người dùng tự chọn
+                        currentServerIndex = 0;
                     }
 
                     const serverData = currentMovie.episodes[currentServerIndex]?.server_data || currentMovie.episodes[0].server_data;
@@ -298,24 +299,8 @@ async function fetchAndMergeSecondaryServers(slug, isPrimary = false, episodeSlu
         if (added > 0) {
             console.log(`✅ Đã thêm ${added} máy chủ mới (Tổng: ${currentMovie.episodes.length} nguồn)`);
             renderServerList(currentMovie.episodes);
-
-            // Tự động chuyển sang server được chỉ định trên URL nếu có (VD: server=1 cho Nguồn 2)
-            const urlParams = new URLSearchParams(window.location.search);
-            const requestedServer = urlParams.get('server');
-            if (requestedServer !== null && !isNaN(requestedServer)) {
-                const reqIdx = parseInt(requestedServer);
-                if (reqIdx >= 0 && reqIdx < currentMovie.episodes.length && reqIdx !== currentServerIndex) {
-                    console.log(`🎯 [Watch] Tự động chuyển sang Nguồn ${reqIdx + 1} theo đúng yêu cầu trên URL (server=${reqIdx})`);
-                    changeServer(reqIdx);
-                    return;
-                }
-            }
-
-            // Cập nhật màn hình 404 nếu player đang trong trạng thái báo lỗi link
-            const catLottie = document.querySelector('.aspect-video dotlottie-wc');
-            if (catLottie) {
-                showError('Máy chủ 1 không tìm thấy link phim.');
-            }
+            // ❌ KHÔNG tự động gọi changeServer hay initializePlayer ở đây
+            // → tránh gọi player nhiều lần gây xung đột luồng video
         }
     } catch (err) {
         console.warn('⚠️ Nguồn phụ thất bại:', err.message);
@@ -1308,6 +1293,14 @@ function renderEpisodeList(episodes) {
 
 // Initialize video player
 function initializePlayer(episode) {
+    // Guard: nếu đang trong quá trình khởi tạo, bỏ qua lần gọi này
+    if (_isInitializingPlayer) {
+        console.warn('⚠️ initializePlayer đang chạy, bỏ qua lần gọi trùng lặp.');
+        return;
+    }
+    _isInitializingPlayer = true;
+    setTimeout(() => { _isInitializingPlayer = false; }, 5000);
+
     console.log('🎥 Initializing player with episode:', episode);
 
     if (!episode) {
@@ -1379,7 +1372,7 @@ function initializePlayer(episode) {
         // Hide mobile overlay controls since iframe has its own
         const mobCtrl = document.getElementById('mob-player-ctrl');
         if (mobCtrl) mobCtrl.style.display = 'none';
-        
+        _isInitializingPlayer = false; // Reset guard
         return; // Skip HLS setup
     }
 
@@ -1613,10 +1606,17 @@ function initializePlayer(episode) {
 
     player.addEventListener('error', (e) => {
         console.error('❌ Video element error:', e);
+        _isInitializingPlayer = false; // Reset guard khi lỗi
         handleStreamError();
     });
+    
+    // Reset guard sau khi player bắt đầu load thành công
+    player.addEventListener('loadstart', () => {
+        _isInitializingPlayer = false;
+    }, { once: true });
 }
 
+// Server error handler
 function handleStreamError() {
     if (!currentMovie || !currentMovie.episodes || currentMovie.episodes.length <= 1) {
         showError('Không thể phát video từ máy chủ này. Vui lòng thử lại sau.');
@@ -1692,22 +1692,23 @@ function handleStreamError() {
         }
     }
 
+    // Trên PC, tự động nhảy sang máy chủ tiếp theo (giống dự án Node)
     const nextServerIndex = currentServerIndex + 1;
     if (nextServerIndex < currentMovie.episodes.length) {
         currentServerIndex = nextServerIndex;
         const nextServer = currentMovie.episodes[nextServerIndex];
         console.warn(`🔄 Stream error detected. Switching to backup server: ${nextServer.server_name}`);
         
-        // Find corresponding episode in the new server
+        // Tìm tập tương ứng ở server mới
         const matchingEpisode = nextServer.server_data.find(ep => ep.name === currentEpisode.name) || nextServer.server_data[0];
         
         if (matchingEpisode) {
             currentEpisode = matchingEpisode;
             
-            // Re-render episode list to match new server data context
+            // Render lại danh sách
             renderEpisodeList(currentMovie.episodes);
             
-            // Show custom alert message in seeking container
+            // Hiển thị thông báo đang chuyển
             showSeekOverlay(`Đang chuyển: ${nextServer.server_name}...`, true);
             
             setTimeout(() => {
@@ -1973,9 +1974,7 @@ function showError(message) {
     const playerContainer = document.querySelector('.aspect-video');
     if (playerContainer) {
         playerContainer.innerHTML = `
-            <div class="w-full h-full bg-black flex flex-col items-center justify-center p-4 text-center">
-                <dotlottie-wc src="/icons/404-cat.lottie" style="width: 150px; height: 150px; max-width: 100%; margin-bottom: -10px;" autoplay loop></dotlottie-wc>
-                <p class="text-red-400 font-bold text-base sm:text-lg mt-1">${message || 'Không thể phát video này'}</p>
+            <div class="w-full h-full bg-black flex flex-col items-center justify-center text-center overflow-y-auto" style="padding: 16px; box-sizing: border-box;">
                 ${altServerHTML}
             </div>
         `;
