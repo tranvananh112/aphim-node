@@ -946,15 +946,17 @@
 
     <%- include('partials/footer') %>
     <%- include('partials/chat') %>
-    <script src="/js/api.js?v=19"></script>
+    <script src="/js/api.js?v=100"></script>
     <script src="/js/premium-ad-blocker.js?v=3"></script>
-    <script src="/js/data-cache.js?v=15"></script>
+    <script src="/js/data-cache.js?v=100"></script>
     <script src="/js/user.js?v=15"></script>
     <script src="/js/rating.js?v=15"></script>
-    <script src="/js/playlist-service.js"></script>
-    <script src="/js/playlist-modal.js"></script>
-    <script src="/js/tmdb-api.js?v=17"></script>
-    <script src="/js/watch.js?v=21"></script>
+    <script>
+        window.initialMovie = <%- JSON.stringify(typeof movie !== 'undefined' && movie ? movie : null) %>;
+        window.initialEpisodes = <%- JSON.stringify(typeof episodes !== 'undefined' && episodes ? episodes : []) %>;
+        window.initialEpisodeSlug = <%- JSON.stringify(typeof episode !== 'undefined' && episode ? episode : null) %>;
+    </script>
+    <script src="/js/watch.js?v=55"></script>
     <script src="/js/categories-dropdown.js?v=17"></script>
     <script src="/js/countries-dropdown.js?v=17"></script>
     <script src="/js/dropdown-hover-fix.js?v=15"></script>

@@ -1,17 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
-    <!-- B?O M?T: Ch?n Google Index trang Admin -->
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta charset="UTF-8">
-    <meta name="description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="og:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="twitter:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qu?n l� Chat - A Phim Admin</title>
+    <title>Quản lý Chat - A Phim Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
@@ -225,6 +225,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    <link rel="stylesheet" href="css/bottom-nav.css?v=138">
 </head>
 
 <body>
@@ -242,15 +243,15 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">T?ng quan</p>
-                    <a href="/dashboard" class="sidebar-nav-item"><i
+                    <p class="sidebar-nav-label">Tổng quan</p>
+                    <a href="dashboard.html" class="sidebar-nav-item"><i
                             data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
                 </div>
                 <div class="sidebar-nav-section">
-                    <p class="sidebar-nav-label">Ngu?i d�ng</p>
-                    <a href="/users" class="sidebar-nav-item"><i data-lucide="users"></i><span>Ngu?i d�ng</span></a>
-                    <a href="/chat" class="sidebar-nav-item active"><i data-lucide="message-square"></i><span>Qu?n
-                            l� Chat</span></a>
+                    <p class="sidebar-nav-label">Người dùng</p>
+                    <a href="users.html" class="sidebar-nav-item"><i data-lucide="users"></i><span>Người dùng</span></a>
+                    <a href="chat.html" class="sidebar-nav-item active"><i data-lucide="message-square"></i><span>Quản
+                            lý Chat</span></a>
                 </div>
             </nav>
         </aside>
@@ -258,13 +259,13 @@
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-left">
-                    <h2>Qu?n l� Chat C?ng �?ng</h2>
+                    <h2>Quản lý Chat Cộng Đồng</h2>
                 </div>
                 <div class="header-right">
                     <div class="header-admin">
                         <div class="header-admin-avatar">A</div>
                         <div class="header-admin-info">
-                            <p>Admin</p><span>Qu?n tr? vi�n</span>
+                            <p>Admin</p><span>Quản trị viên</span>
                         </div>
                     </div>
                 </div>
@@ -274,12 +275,12 @@
                 <div class="chat-mgmt-grid">
                     <div class="admin-card">
                         <div class="admin-card-header">
-                            <span class="admin-card-title">L?ch s? tin nh?n (MongoDB)</span>
+                            <span class="admin-card-title">Lịch sử tin nhắn (MongoDB)</span>
                             <div class="flex gap-8">
                                 <select id="tabFilter" class="form-select" onchange="loadChatHistory()">
                                     <option value="general">Chung</option>
                                     <option value="movies">Phim</option>
-                                    <option value="support">H? tr?</option>
+                                    <option value="support">Hỗ trợ</option>
                                 </select>
                                 <button class="btn btn-secondary btn-sm" onclick="loadChatHistory()"><i
                                         data-lucide="refresh-cw"></i></button>
@@ -290,10 +291,10 @@
                                 <table class="admin-table">
                                     <thead>
                                         <tr>
-                                            <th>Th?i gian</th>
-                                            <th>Ngu?i d�ng</th>
-                                            <th>N?i dung</th>
-                                            <th>Thao t�c</th>
+                                            <th>Thời gian</th>
+                                            <th>Người dùng</th>
+                                            <th>Nội dung</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody id="chatHistoryTable"></tbody>
@@ -304,16 +305,16 @@
 
                     <div class="admin-card">
                         <div class="admin-card-header">
-                            <span class="admin-card-title">Ngu?i d�ng h? th?ng</span>
+                            <span class="admin-card-title">Người dùng hệ thống</span>
                             <div style="width: 200px;">
-                                <input type="text" id="userSearch" class="form-input" placeholder="T�m t�n/email..."
+                                <input type="text" id="userSearch" class="form-input" placeholder="Tìm tên/email..."
                                     style="width: 100%; height: 32px; font-size: 12px;" autocomplete="off">
                             </div>
                         </div>
                         <div class="admin-card-body">
                             <div id="userSearchDropdown" class="search-dropdown" style="display: none;"></div>
                             <div id="chatUserList" style="max-height: 520px; overflow-y: auto;">
-                                <div class="text-muted text-center p-4">�ang t?i danh s�ch...</div>
+                                <div class="text-muted text-center p-4">Đang tải danh sách...</div>
                             </div>
                         </div>
                     </div>
@@ -375,7 +376,7 @@
                 });
 
                 if (res.status === 401) {
-                    list.innerHTML = '<div class="text-danger text-center p-4">401: Kh�ng c� quy?n. Vui l�ng dang nh?p l?i.</div>';
+                    list.innerHTML = '<div class="text-danger text-center p-4">401: Không có quyền. Vui lòng đăng nhập lại.</div>';
                     return;
                 }
 
@@ -383,14 +384,14 @@
                 if (data.success) {
                     let users = data.data || data.users;
                     if (!users || users.length === 0) {
-                        list.innerHTML = '<div class="text-muted text-center p-4">Kh�ng t�m th?y ngu?i d�ng</div>';
+                        list.innerHTML = '<div class="text-muted text-center p-4">Không tìm thấy người dùng</div>';
                         return;
                     }
 
                     // Debug: Log user data
                     console.log('Users loaded:', users.map(u => ({ name: u.name, chatRole: u.chatRole })));
 
-                    // N?u c� selectedUserName, dua user d� l�n d?u
+                    // Nếu có selectedUserName, đưa user đó lên đầu
                     if (selectedUserName) {
                         const selectedIndex = users.findIndex(u => u.name === selectedUserName);
                         if (selectedIndex > 0) {
@@ -407,13 +408,13 @@
                                 ${u.name} ${u.chatRole === 'admin' ? '<span class="badge-admin">Admin</span>' : ''}
                             </div>
                             <div class="chat-user-role">${u.email}</div>
-                            <div style="margin-top:2px;">${u.isChatBanned ? '<span class="badge-banned">B? C?M CHAT</span>' : ''}</div>
+                            <div style="margin-top:2px;">${u.isChatBanned ? '<span class="badge-banned">BỊ CẤM CHAT</span>' : ''}</div>
                         </div>
                         <div class="flex gap-4">
-                            <button class="btn btn-icon btn-sm ${u.chatRole === 'admin' ? 'text-primary' : ''}" title="�?i quy?n Admin" onclick="toggleChatRole('${u._id}', '${u.chatRole}')">
+                            <button class="btn btn-icon btn-sm ${u.chatRole === 'admin' ? 'text-primary' : ''}" title="Đổi quyền Admin" onclick="toggleChatRole('${u._id}', '${u.chatRole}')">
                                 <i data-lucide="${u.chatRole === 'admin' ? 'shield-off' : 'shield-check'}"></i>
                             </button>
-                            <button class="btn btn-icon btn-sm ${u.isChatBanned ? 'text-danger' : ''}" title="${u.isChatBanned ? 'G? c?m' : 'C?m Chat'}" onclick="toggleChatBan('${u._id}', ${u.isChatBanned})">
+                            <button class="btn btn-icon btn-sm ${u.isChatBanned ? 'text-danger' : ''}" title="${u.isChatBanned ? 'Gỡ cấm' : 'Cấm Chat'}" onclick="toggleChatBan('${u._id}', ${u.isChatBanned})">
                                 <i data-lucide="${u.isChatBanned ? 'unlock' : 'lock'}"></i>
                             </button>
                         </div>
@@ -421,19 +422,19 @@
                 `).join('');
                     lucide.createIcons();
 
-                    // Scroll v? d?u danh s�ch
+                    // Scroll về đầu danh sách
                     if (selectedUserName) {
                         list.scrollTop = 0;
                     }
                 }
             } catch (e) {
                 console.error('Load users error:', e);
-                list.innerHTML = '<div class="text-danger text-center p-4">L?i k?t n?i server</div>';
+                list.innerHTML = '<div class="text-danger text-center p-4">Lỗi kết nối server</div>';
             }
         }
 
         async function toggleChatBan(uid, current) {
-            if (!confirm(`${current ? 'G? c?m' : 'C?m'} chat ngu?i d�ng n�y?`)) return;
+            if (!confirm(`${current ? 'Gỡ cấm' : 'Cấm'} chat người dùng này?`)) return;
 
             try {
                 console.log(`[Admin] Toggling chat ban for ${uid}, current: ${current}`);
@@ -446,11 +447,11 @@
                 console.log('[Admin] Response:', data);
 
                 if (data.success) {
-                    alert(`? �� ${current ? 'g? c?m' : 'c?m'} chat ngu?i d�ng\n\n?? Ngu?i d�ng c?n logout/login d? th?y thay d?i`);
-                    // Reload danh s�ch d? hi?n th? tr?ng th�i m?i
+                    alert(`✅ Đã ${current ? 'gỡ cấm' : 'cấm'} chat người dùng\n\n⚠️ Người dùng cần logout/login để thấy thay đổi`);
+                    // Reload danh sách để hiển thị trạng thái mới
                     const query = document.getElementById('userSearch').value;
                     await loadChatUsers(query);
-                    // Scroll v? user v?a c?p nh?t
+                    // Scroll về user vừa cập nhật
                     setTimeout(() => {
                         const userCard = document.querySelector(`[onclick*="${uid}"]`)?.closest('.chat-user-card');
                         if (userCard) {
@@ -460,17 +461,17 @@
                         }
                     }, 300);
                 } else {
-                    alert('? L?i: ' + (data.message || 'Kh�ng th? c?p nh?t'));
+                    alert('❌ Lỗi: ' + (data.message || 'Không thể cập nhật'));
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('? L?i k?t n?i server');
+                alert('❌ Lỗi kết nối server');
             }
         }
 
         async function toggleChatRole(uid, current) {
             const newRole = current === 'admin' ? 'user' : 'admin';
-            if (!confirm(`�?i quy?n Admin cho ngu?i d�ng n�y?`)) return;
+            if (!confirm(`Đổi quyền Admin cho người dùng này?`)) return;
 
             try {
                 console.log(`[Admin] Updating chat role for ${uid} to ${newRole}`);
@@ -484,11 +485,11 @@
                 console.log('[Admin] Response:', data);
 
                 if (data.success) {
-                    alert(`? �� ${newRole === 'admin' ? 'c?p' : 'thu h?i'} quy?n Admin chat\n\n?? Ngu?i d�ng c?n logout/login d? th?y thay d?i`);
-                    // Reload danh s�ch d? c?p nh?t icon
+                    alert(`✅ Đã ${newRole === 'admin' ? 'cấp' : 'thu hồi'} quyền Admin chat\n\n⚠️ Người dùng cần logout/login để thấy thay đổi`);
+                    // Reload danh sách để cập nhật icon
                     const query = document.getElementById('userSearch').value;
                     await loadChatUsers(query);
-                    // Scroll v? user v?a c?p nh?t
+                    // Scroll về user vừa cập nhật
                     setTimeout(() => {
                         const userCard = document.querySelector(`[onclick*="${uid}"]`)?.closest('.chat-user-card');
                         if (userCard) {
@@ -498,16 +499,16 @@
                         }
                     }, 300);
                 } else {
-                    alert('? L?i: ' + (data.message || 'Kh�ng th? c?p nh?t quy?n'));
+                    alert('❌ Lỗi: ' + (data.message || 'Không thể cập nhật quyền'));
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('? L?i k?t n?i server');
+                alert('❌ Lỗi kết nối server');
             }
         }
 
         async function deleteMessage(id) {
-            if (!confirm('X�a tin nh?n n�y?')) return;
+            if (!confirm('Xóa tin nhắn này?')) return;
             await fetch(`${API_CONFIG.BACKEND_URL}/chat/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -563,7 +564,7 @@
             ).slice(0, 8); // Limit to 8 suggestions
 
             if (filtered.length === 0) {
-                dropdown.innerHTML = '<div class="search-dropdown-empty">Kh�ng t�m th?y ngu?i d�ng</div>';
+                dropdown.innerHTML = '<div class="search-dropdown-empty">Không tìm thấy người dùng</div>';
                 dropdown.style.display = 'block';
                 return;
             }
@@ -587,7 +588,7 @@
                     const userName = item.dataset.name;
                     searchInput.value = userName;
                     dropdown.style.display = 'none';
-                    // Load users v?i selectedUserName d? dua l�n d?u
+                    // Load users với selectedUserName để đưa lên đầu
                     loadChatUsers(userName, userName);
                 });
             });
@@ -604,7 +605,7 @@
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value;
             debouncedAutocomplete(query);
-            // L?c danh s�ch user theo th?i gian th?c
+            // Lọc danh sách user theo thời gian thực
             debouncedSearch(query);
         });
 
@@ -657,8 +658,8 @@
             lucide.createIcons();
         });
     </script>
+    <script src="js/bottom-nav.js?v=1783518514288" defer></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </body>
 
 </html>
-
-

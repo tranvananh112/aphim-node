@@ -48,28 +48,28 @@ function queuedFetch(url, options) {
 
 // Trang chủ
 app.get('/', async (req, res) => {
+    let movies = [];
     try {
-        const response = await axios.get('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1', { timeout: 5000 });
-        const movies = response.data && response.data.data ? response.data.data.items || [] : [];
-        res.render('index', {
-            title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
-            currentPage: 'home',
-            movies: movies,
-            metaDescription: 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.',
-            canonicalUrl: 'https://aphim.top/',
-            ogTitle: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub',
-            ogImage: 'https://aphim.top/android-chrome-512x512.png',
-            ogUrl: 'https://aphim.top/'
-        });
-    } catch (error) {
-        console.error('Lỗi lấy dữ liệu trang chủ:', error.message);
-        res.render('index', {
-            title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
-            currentPage: 'home',
-            movies: [],
-            canonicalUrl: 'https://aphim.top/'
-        });
+        const response = await axios.get('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1', { timeout: 5000 });
+        movies = response.data && response.data.items ? response.data.items : (response.data && response.data.data ? response.data.data.items || [] : []);
+    } catch (e) {
+        try {
+            const response2 = await axios.get('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1', { timeout: 5000 });
+            movies = response2.data && response2.data.items ? response2.data.items : (response2.data && response2.data.data ? response2.data.data.items || [] : []);
+        } catch (err) {
+            console.error('Lỗi lấy dữ liệu trang chủ:', err.message);
+        }
     }
+    res.render('index', {
+        title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
+        currentPage: 'home',
+        movies: movies,
+        metaDescription: 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.',
+        canonicalUrl: 'https://aphim.top/',
+        ogTitle: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub',
+        ogImage: 'https://aphim.top/android-chrome-512x512.png',
+        ogUrl: 'https://aphim.top/'
+    });
 });
 
 // Trang chi tiết phim (SEO-friendly URL: /phim/:slug)
@@ -461,29 +461,59 @@ app.get('/sitemap.xml', (req, res) => {
 // API PROXY CHO OPHIM (cho client-side JS)
 // ==========================================
 app.use('/v1/api', async (req, res) => {
-    try {
-        const targetUrl = `https://ophim1.com/v1/api${req.path}`;
-        const response = await axios({
-            method: req.method,
-            url: targetUrl,
-            params: req.query,
-            data: req.method === 'POST' || req.method === 'PUT' ? req.body : undefined,
-            timeout: 10000,
-            headers: {
-                'Accept': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            },
-            responseType: 'json'
-        });
-        res.status(response.status).json(response.data);
-    } catch (error) {
-        if (error.response) {
-            res.status(error.response.status).json(error.response.data);
-        } else {
-            console.error('Proxy error:', error.message);
-            res.status(500).json({ status: false, message: error.message });
+    let cleanPath = req.path || '/';
+    if (!cleanPath.startsWith('/')) cleanPath = '/' + cleanPath;
+    
+    // Chuẩn hóa đường dẫn: phimapi.com không cần /v1/api prefix
+    // ophim1.com không dùng /v1/api (đã bỏ, chỉ dùng /danh-sach/... trực tiếp)
+    const targets = [
+        `https://phimapi.com${cleanPath}`,           // ✅ PRIMARY - không cần /v1/api
+        `https://ophim1.com${cleanPath}`,            // phimapi mirror
+        `https://ophim17.cc/v1/api${cleanPath}`,
+        `https://ophim10.cc/v1/api${cleanPath}`
+    ];
+
+    // Đặc biệt cho endpoint phim mới nhất / home
+    if (cleanPath.includes('phim-moi-cap-nhat') || cleanPath.includes('home')) {
+        targets.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat`);
+    }
+    // Đặc biệt cho the-loai, quoc-gia
+    if (cleanPath.includes('the-loai') || cleanPath.includes('quoc-gia')) {
+        targets.unshift(`https://phimapi.com${cleanPath}`);
+    }
+
+    for (const targetUrl of targets) {
+        try {
+            const response = await axios({
+                method: req.method,
+                url: targetUrl,
+                params: req.query,
+                data: req.method === 'POST' || req.method === 'PUT' ? req.body : undefined,
+                timeout: 6000,
+                headers: {
+                    'Accept': 'application/json',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                },
+                responseType: 'json'
+            });
+
+            // Validate response has actual data (not just HTTP 200 with empty/error body)
+            if (response.status === 200 && response.data) {
+                const d = response.data;
+                // Check for items or data.items (phim list endpoints)
+                const hasItems = d.items || d.data?.items || d.status || d.movies;
+                if (hasItems) {
+                    return res.status(200).json(d);
+                }
+                // For non-list endpoints (search, detail, etc.), accept any 200
+                return res.status(200).json(d);
+            }
+        } catch (error) {
+            // Silently try next mirror
         }
     }
+
+    res.status(500).json({ status: false, message: 'All API proxy mirrors failed' });
 });
 
 // ==========================================
@@ -528,15 +558,96 @@ app.get(['/api/isports/schedule', '/v1/api/isports/schedule'], async (req, res) 
     }
 });
 
-app.get(['/api/isports/summary', '/v1/api/isports/summary'], async (req, res) => {
-    try {
-        const url = `http://api.isportsapi.com/sport/football/summary?api_key=${ISPORTS_API_KEY}`;
-        const response = await axios.get(url);
-        res.status(200).json(response.data);
-    } catch (error) {
-        console.error("iSports Summary Error:", error.message);
-        res.status(500).json({ error: 'Failed to fetch summary from iSports' });
+// ==========================================
+// VSMOV PROXY: Fetch episodes từ nguồn phụ (server-side, tránh CORS)
+// GET /api/vsmov/:slug → thử phimapi.com, nguonc.com, rồi ophim1.com
+// ==========================================
+const vsmovCache = new Map();
+const VSMOV_CACHE_TTL = 5 * 60 * 1000; // 5 phút
+
+app.get('/api/vsmov/:slug', async (req, res) => {
+    const slug = req.params.slug;
+    if (!slug || slug.length > 200) {
+        return res.status(400).json({ status: false, message: 'Invalid slug' });
     }
+
+    const cacheEntry = vsmovCache.get(slug);
+    if (cacheEntry && Date.now() - cacheEntry.ts < VSMOV_CACHE_TTL) {
+        res.setHeader('X-Cache', 'HIT');
+        return res.json(cacheEntry.data);
+    }
+
+    const mirrors = [
+        {
+            url: `https://phimapi.com/phim/${slug}`,
+            parse: d => ({
+                episodes: d?.episodes,
+                movie: d?.movie
+            })
+        },
+        {
+            url: `https://phim.nguonc.com/api/film/${slug}`,
+            parse: d => {
+                if (!d || !d.movie || !d.movie.episodes) return null;
+                const mappedEps = d.movie.episodes.map(s => ({
+                    server_name: s.server_name || 'Vietsub',
+                    server_data: (s.items || []).map(it => ({
+                        name: it.name && !it.name.toLowerCase().includes('tập') ? `Tập ${it.name}` : (it.name || 'Tập 1'),
+                        slug: it.slug || `tap-${it.name}`,
+                        link_embed: it.embed || '',
+                        link_m3u8: it.m3u8 || ''
+                    }))
+                }));
+                return {
+                    episodes: mappedEps,
+                    movie: {
+                        name: d.movie.name,
+                        origin_name: d.movie.original_name,
+                        thumb_url: d.movie.thumb_url,
+                        poster_url: d.movie.poster_url,
+                        content: d.movie.description,
+                        quality: d.movie.quality,
+                        lang: d.movie.language,
+                        year: d.movie.created ? new Date(d.movie.created).getFullYear() : ''
+                    }
+                };
+            }
+        },
+        {
+            url: `https://ophim1.com/phim/${slug}`,
+            parse: d => ({
+                episodes: d?.data?.item?.episodes || d?.movie?.episodes,
+                movie: d?.data?.item || d?.movie
+            })
+        }
+    ];
+
+    for (const { url, parse } of mirrors) {
+        try {
+            const response = await axios.get(url, {
+                timeout: 8000,
+                headers: {
+                    'Accept': 'application/json',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+            });
+
+            const parsed = parse(response.data);
+            const episodes = parsed?.episodes;
+
+            if (episodes && Array.isArray(episodes) && episodes.length > 0) {
+                const movieMeta = parsed?.movie || null;
+                const result = { status: true, source: url, episodes, movie: movieMeta };
+                vsmovCache.set(slug, { data: result, ts: Date.now() });
+                res.setHeader('X-Cache', 'MISS');
+                return res.json(result);
+            }
+        } catch (err) {
+            console.warn(`[VSMOV] Lỗi fetch ${url}:`, err.message);
+        }
+    }
+
+    res.status(200).json({ status: false, episodes: [], message: 'Không tìm thấy nguồn phim phụ' });
 });
 
 app.get(['/api/isports/livetext', '/v1/api/isports/livetext'], async (req, res) => {

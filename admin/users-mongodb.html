@@ -19,6 +19,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    <link rel="stylesheet" href="css/bottom-nav.css?v=138">
 </head> 
  
 <body class="bg-gray-900 text-white"> 
@@ -31,7 +32,7 @@
   <span class="material-icons-outlined text-sm align-middle">refresh</span> 
   Refresh 
  </button> 
- <a href="/dashboard"class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"> 
+ <a href="dashboard.html"class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600"> 
   Dashboard 
  </a> 
  </div> 
@@ -106,7 +107,7 @@
  async function loadUsers() { 
  const token = getToken(); 
  if (!token) { 
- showStatus('Vui lòng ăng nhập tại <a href="/login"class="underline">admin/login.html</a>', 'error'); 
+ showStatus('Vui lòng ăng nhập tại <a href="login.html"class="underline">admin/login.html</a>', 'error'); 
  return; 
  } 
  
@@ -122,7 +123,7 @@
  
  if (!response.ok) { 
   if (response.status === 401) { 
-  showStatus('Token không hợp lệ. <a href="/login"class="underline">Đăng nhập lại</a>', 'error'); 
+  showStatus('Token không hợp lệ. <a href="login.html"class="underline">Đăng nhập lại</a>', 'error'); 
   sessionStorage.removeItem('admin_token'); 
   return; 
   } 
@@ -260,9 +261,9 @@
  } 
  }; 
  </script> 
+    <script src="js/bottom-nav.js?v=1783518061480" defer></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </body> 
  
 </html> 
-
-
 

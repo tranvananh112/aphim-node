@@ -1,17 +1,17 @@
-<!DOCTYPE html> 
+﻿<!DOCTYPE html> 
 <html class="dark"lang="vi"> 
  
 <head>
-    <!-- B?O M?T: Ch?n Google Index trang Admin -->
+    <!-- BẢO MẬT: Chặn Google Index trang Admin -->
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta charset="UTF-8">
-    <meta name="description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="og:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." />
-    <meta property="twitter:description" content="APhim - Website xem phim online Full HD mi?n ph�, c?p nh?t phim m?i nh?t 2026, Phim Vietsub, Thuy?t Minh, Phim L?ng Ti?ng ch?t lu?ng cao." /> 
+    <meta name="description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
+    <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." /> 
   
  <meta name="viewport"content="width=device-width, initial-scale=1.0"/> 
- <title>Qu?n l� Ngu?i d�ng - Simple</title> 
+ <title>Quản lý Người dùng - Simple</title> 
  <script src="https://cdn.tailwindcss.com"></script> 
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet"/> 
  <script> 
@@ -33,11 +33,12 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    <link rel="stylesheet" href="css/bottom-nav.css?v=138">
 </head> 
  
 <body class="bg-background-dark text-gray-200"> 
  <div class="container mx-auto p-8"> 
- <h1 class="text-3xl font-bold text-white mb-6">Qu?n l� Ngu?i d�ng</h1> 
+ <h1 class="text-3xl font-bold text-white mb-6">Quản lý Người dùng</h1> 
  
  <div class="mb-4"> 
  <button onclick="loadUsers()"class="px-4 py-2 bg-primary text-black font-bold rounded"> 
@@ -58,17 +59,17 @@
  <thead class="bg-white/5"> 
   <tr> 
   <th class="p-4 text-left">ID</th> 
-  <th class="p-4 text-left">T�n</th> 
+  <th class="p-4 text-left">Tên</th> 
   <th class="p-4 text-left">Email</th> 
-  <th class="p-4 text-left">G�i</th> 
-  <th class="p-4 text-left">Tr?ng th�i</th> 
-  <th class="p-4 text-left">Thao t�c</th> 
+  <th class="p-4 text-left">Gói</th> 
+  <th class="p-4 text-left">Trạng thái</th> 
+  <th class="p-4 text-left">Thao tác</th> 
   </tr> 
  </thead> 
  <tbody id="usersTable"> 
   <tr> 
   <td colspan="6"class="p-4 text-center text-gray-400"> 
-  Click "Load Users"? t?i danh s�ch 
+  Click "Load Users"Ồ tải danh sách 
   </td> 
   </tr> 
  </tbody> 
@@ -94,7 +95,7 @@
  const demoUsers = [ 
  { 
   id: 'user_' + Date.now() + '_1', 
-  name: 'Nguy?n Van An', 
+  name: 'Nguyễn Văn An', 
   email: 'an@example.com', 
   phone: '0912345678', 
   password: btoa('password123'), 
@@ -105,7 +106,7 @@
  }, 
  { 
   id: 'user_' + Date.now() + '_2', 
-  name: 'Tr?n Th? B�nh', 
+  name: 'Trần Thị Bình', 
   email: 'binh@example.com', 
   phone: '0987654321', 
   password: btoa('password123'), 
@@ -116,7 +117,7 @@
  }, 
  { 
   id: 'user_' + Date.now() + '_3', 
-  name: 'L� Ho�ng Cu?ng', 
+  name: 'Lê Hoàng Cường', 
   email: 'cuong@example.com', 
   phone: '0901234567', 
   password: btoa('password123'), 
@@ -128,7 +129,7 @@
  ]; 
  
  localStorage.setItem('A Phim_all_users', JSON.stringify(demoUsers)); 
- showStatus('�� t?o ' + demoUsers.length + ' demo users', 'success'); 
+ showStatus('Đã tạo ' + demoUsers.length + ' demo users', 'success'); 
  loadUsers(); 
  } 
  
@@ -138,14 +139,14 @@
  const usersStr = localStorage.getItem('A Phim_all_users'); 
  
  if (!usersStr) { 
- showStatus('Kh�ng c� user n�o. Click "Create Demo Users"? t?o.', 'error'); 
+ showStatus('Không có user nào. Click "Create Demo Users"Ồ tạo.', 'error'); 
  return; 
  } 
  
  const users = JSON.parse(usersStr); 
  console.log('Found users:', users); 
  
- showStatus('�� t?i ' + users.length + ' users', 'success'); 
+ showStatus('Đã tải ' + users.length + ' users', 'success'); 
  
  const tbody = document.getElementById('usersTable'); 
  tbody.innerHTML = users.map(user => ` 
@@ -164,15 +165,15 @@
   <td class="p-4"> 
   <span class="px-2 py-1 rounded text-xs ${user.status === 'active' ? 'bg-green-600' : 'bg-red-600' 
  }"> 
-  ${user.status === 'active' ? 'Ho?t d?ng' : 'B? kh�a'} 
+  ${user.status === 'active' ? 'Hoạt động' : 'Bị khóa'} 
   </span> 
   </td> 
   <td class="p-4"> 
   <button onclick="toggleStatus('${user.id}')"class="px-3 py-1 bg-blue-600 rounded text-sm"> 
-  ${user.status === 'active' ? 'Kh�a' : 'M?kh�a'} 
+  ${user.status === 'active' ? 'Khóa' : 'M✖khóa'} 
   </button> 
   <button onclick="deleteUser('${user.id}')"class="px-3 py-1 bg-red-600 rounded text-sm ml-2"> 
-  X�a 
+  Xóa 
   </button> 
   </td> 
  </tr> 
@@ -187,32 +188,32 @@
  if (user) { 
  user.status = user.status === 'active' ? 'blocked' : 'active'; 
  localStorage.setItem('A Phim_all_users', JSON.stringify(users)); 
- showStatus('�� c?p nh?t?tr?ng th�i user: ' + user.name, 'success'); 
+ showStatus('Đã cập nhậtốtrạng thái user: ' + user.name, 'success'); 
  loadUsers(); 
  } 
  } 
  
  function deleteUser(userId) { 
- if (!confirm('B?n c� ch?c mu n x�a user n�y?')) return; 
+ if (!confirm('Bạn có chắc mu n xóa user này?')) return; 
  
  const usersStr = localStorage.getItem('A Phim_all_users'); 
  const users = JSON.parse(usersStr); 
  
  const filtered = users.filter(u => u.id !== userId); 
  localStorage.setItem('A Phim_all_users', JSON.stringify(filtered)); 
- showStatus('�� x�a user', 'success'); 
+ showStatus('Đã xóa user', 'success'); 
  loadUsers(); 
  } 
  
  function clearUsers() { 
- if (!confirm('B?n c� ch?c mu n x�a t?t c? users?')) return; 
+ if (!confirm('Bạn có chắc mu n xóa tất cả users?')) return; 
  
  localStorage.removeItem('A Phim_all_users'); 
- showStatus('�� x�a t?t c? users', 'success'); 
+ showStatus('Đã xóa tất cả users', 'success'); 
  document.getElementById('usersTable').innerHTML = ` 
  <tr> 
   <td colspan="6"class="p-4 text-center text-gray-400"> 
-  Kh�ng c� user n�o 
+  Không có user nào 
   </td> 
  </tr> 
  `; 
@@ -221,7 +222,7 @@
  // Auto load on page load 
  window.onload = function () { 
  console.log('Page loaded'); 
- showStatus('Trang d� s?n s�ng. Click "Load Users"ho?c "Create Demo Users"'); 
+ showStatus('Trang đã sẵn sàng. Click "Load Users"hoặc "Create Demo Users"'); 
  
  // Try to auto load if users exist 
  const usersStr = localStorage.getItem('A Phim_all_users'); 
@@ -230,10 +231,10 @@
  } 
  }; 
  </script> 
+    <script src="js/bottom-nav.js?v=1783518514292" defer></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </body> 
  
 </html> 
  
-
-
 
