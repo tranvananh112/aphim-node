@@ -1623,94 +1623,74 @@ function handleStreamError() {
         return;
     }
 
-    // Trên mobile, hiển thị nút chọn thủ công (không tự nhảy nguồn để tránh lỗi kẹt player)
+    // Trên mobile: Nếu có iframe (trừ opstream) thì dùng tạm để tránh kẹt, nếu không thì NHẢY SANG MÁY CHỦ KẾ TIẾP (VSMOV)
     if (window.innerWidth <= 768) {
         console.warn('⚠️ Stream error detected on Mobile.');
         
-        // Fallback sang iframe nếu có và KHÔNG PHẢI là máy chủ OPhim (tránh lỗi quay vòng vòng của opstream)
+        // 1. Fallback sang iframe CỦA NGUỒN HIỆN TẠI nếu có (không phải opstream)
         if (currentEpisode && currentEpisode.link_embed && !currentEpisode.link_embed.includes('opstream')) {
-            console.log('🔄 Mobile native player failed. Falling back to iframe embed:', currentEpisode.link_embed);
-            const playerContainer = document.querySelector('.aspect-video') || document.getElementById('player-container');
-            if (playerContainer) {
-                playerContainer.innerHTML = `
-                    <iframe id="videoIframe" 
-                        src="${currentEpisode.link_embed}" 
-                        class="w-full h-full bg-black border-0" 
-                        allowfullscreen 
-                        allow="autoplay; fullscreen">
-                    </iframe>
-                `;
-                
-                // Mock player to prevent JS errors
-                window.player = {
-                    currentTime: 0, duration: 0, paused: false,
-                    play: async () => {}, pause: () => {},
-                    addEventListener: () => {}, removeEventListener: () => {},
-                    canPlayType: () => false,
-                    requestFullscreen: async () => {
-                        const iframe = document.getElementById('videoIframe');
-                        if (iframe && iframe.requestFullscreen) iframe.requestFullscreen();
-                    }
-                };
+            console.log('🔄 Mobile native player failed. Falling back to current iframe:', currentEpisode.link_embed);
+            loadIframeFallback(currentEpisode.link_embed);
+            return;
+        }
 
-                const mobCtrl = document.getElementById('mob-player-ctrl');
-                if (mobCtrl) mobCtrl.style.display = 'none';
+        // 2. Chuyển sang MÁY CHỦ TIẾP THEO (Tự động nhảy nguồn trên Mobile luôn)
+        const nextServerIndex = currentServerIndex + 1;
+        if (nextServerIndex < currentMovie.episodes.length) {
+            currentServerIndex = nextServerIndex;
+            const nextServer = currentMovie.episodes[nextServerIndex];
+            console.warn(`🔄 Mobile switching to backup server: ${nextServer.server_name}`);
+            
+            const matchingEpisode = nextServer.server_data.find(ep => ep.name === currentEpisode.name) || nextServer.server_data[0];
+            if (matchingEpisode) {
+                currentEpisode = matchingEpisode;
+                renderEpisodeList(currentMovie.episodes);
+                
+                // Nếu nguồn mới (VSMOV) có iframe, NÊN ưu tiên dùng iframe trên Mobile để tránh lỗi "Require User Gesture" khi auto-play
+                if (currentEpisode.link_embed && !currentEpisode.link_embed.includes('opstream')) {
+                    console.log('🔄 Mobile loading backup iframe:', currentEpisode.link_embed);
+                    loadIframeFallback(currentEpisode.link_embed);
+                } else {
+                    // Nếu phải dùng HLS, load nhưng không auto-play (để người dùng bấm)
+                    showSeekOverlay(`Chuyển sang: ${nextServer.server_name}... Vui lòng bấm Phát!`, true);
+                    setTimeout(() => {
+                        initializePlayer(currentEpisode);
+                        // Force pause to wait for user gesture
+                        if (player) {
+                            player.pause();
+                            // Show play button overlay
+                            const mobCtrl = document.getElementById('mob-player-ctrl');
+                            if (mobCtrl) mobCtrl.style.display = 'flex';
+                        }
+                    }, 500);
+                }
                 return;
             }
         }
         
-        showError('Không thể phát video từ máy chủ này. Vui lòng thử máy chủ khác.');
+        showError('Không thể phát video từ máy chủ này. Vui lòng chọn máy chủ khác.');
         return;
     }
 
-    // Trên PC: Fallback sang iframe nếu có (không phải opstream)
+    // Trên PC: Ưu tiên iframe hiện tại (nếu có, loại trừ opstream)
     if (currentEpisode && currentEpisode.link_embed && !currentEpisode.link_embed.includes('opstream')) {
         console.log('🔄 PC native player failed. Falling back to iframe embed:', currentEpisode.link_embed);
-        const playerContainer = document.querySelector('.aspect-video') || document.getElementById('player-container');
-        if (playerContainer) {
-            playerContainer.innerHTML = `
-                <iframe id="videoIframe" 
-                    src="${currentEpisode.link_embed}" 
-                    class="w-full h-full bg-black border-0" 
-                    allowfullscreen 
-                    allow="autoplay; fullscreen">
-                </iframe>
-            `;
-            
-            // Mock player
-            window.player = {
-                currentTime: 0, duration: 0, paused: false,
-                play: async () => {}, pause: () => {},
-                addEventListener: () => {}, removeEventListener: () => {},
-                canPlayType: () => false,
-                requestFullscreen: async () => {
-                    const iframe = document.getElementById('videoIframe');
-                    if (iframe && iframe.requestFullscreen) iframe.requestFullscreen();
-                }
-            };
-            return;
-        }
+        loadIframeFallback(currentEpisode.link_embed);
+        return;
     }
 
-    // Trên PC, tự động nhảy sang máy chủ tiếp theo (giống dự án Node)
+    // Trên PC: Tự động nhảy sang máy chủ tiếp theo
     const nextServerIndex = currentServerIndex + 1;
     if (nextServerIndex < currentMovie.episodes.length) {
         currentServerIndex = nextServerIndex;
         const nextServer = currentMovie.episodes[nextServerIndex];
         console.warn(`🔄 Stream error detected. Switching to backup server: ${nextServer.server_name}`);
         
-        // Tìm tập tương ứng ở server mới
         const matchingEpisode = nextServer.server_data.find(ep => ep.name === currentEpisode.name) || nextServer.server_data[0];
-        
         if (matchingEpisode) {
             currentEpisode = matchingEpisode;
-            
-            // Render lại danh sách
             renderEpisodeList(currentMovie.episodes);
-            
-            // Hiển thị thông báo đang chuyển
             showSeekOverlay(`Đang chuyển: ${nextServer.server_name}...`, true);
-            
             setTimeout(() => {
                 initializePlayer(currentEpisode);
             }, 1200);
@@ -1719,6 +1699,36 @@ function handleStreamError() {
         }
     } else {
         showError('Không thể phát video từ tất cả các máy chủ. Vui lòng thử lại sau.');
+    }
+}
+
+// Hàm hỗ trợ load iframe nhanh chóng
+function loadIframeFallback(embedUrl) {
+    const playerContainer = document.querySelector('.aspect-video') || document.getElementById('player-container');
+    if (playerContainer) {
+        playerContainer.innerHTML = `
+            <iframe id="videoIframe" 
+                src="${embedUrl}" 
+                class="w-full h-full bg-black border-0" 
+                allowfullscreen 
+                allow="autoplay; fullscreen">
+            </iframe>
+        `;
+        
+        window.player = {
+            currentTime: 0, duration: 0, paused: false,
+            play: async () => {}, pause: () => {},
+            addEventListener: () => {}, removeEventListener: () => {},
+            canPlayType: () => false,
+            requestFullscreen: async () => {
+                const iframe = document.getElementById('videoIframe');
+                if (iframe && iframe.requestFullscreen) iframe.requestFullscreen();
+            }
+        };
+
+        const mobCtrl = document.getElementById('mob-player-ctrl');
+        if (mobCtrl) mobCtrl.style.display = 'none';
+        _isInitializingPlayer = false;
     }
 }
 
