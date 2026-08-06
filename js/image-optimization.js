@@ -11,41 +11,31 @@ class ImageOptimizer {
     }
 
     // Optimize image URL with CDN parameters
-    optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
-        if (!url) return 'https://via.placeholder.com/400x600?text=No+Image';
+            optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
+        if (!url) return 'https://placehold.co/400x600?text=No+Image';
         
-        // Ensure absolute URL
-        if (!url.startsWith('http')) {
-            // Check if the url already contains 'uploads/movies/'
-            if (url.startsWith('uploads/movies/')) {
-                url = `https://phimimg.com/${url}`;
-            } else {
-                url = `https://phimimg.com/${url}`;
-            }
+        let resolvedUrl = url;
+        if (!resolvedUrl.startsWith('http')) {
+            resolvedUrl = "https://phimimg.com/" + resolvedUrl.replace(/^\//, '');
+        }
+        if (resolvedUrl.includes('phimimg.com') || resolvedUrl.includes('tmdb.org')) {
+            return resolvedUrl;
         }
 
-        if (url.includes('phimimg.com')) {
-            return url;
-        }
 
-        // Use wsrv.nl proxy for advanced compression and resizing
-        // This dramatically reduces image size from MBs to KBs
-        if (!url.includes('localhost') && !url.includes('127.0.0.1')) {
+        if (!resolvedUrl.includes('localhost') && !resolvedUrl.includes('127.0.0.1')) {
             let targetWidth = width;
             let targetQuality = quality;
 
-            if (!this.isMobile) {
-                // Trên Desktop: Dùng quality 85-90 là cực nét rồi, tránh 100% tốn dung lượng
+            if (typeof this.isMobile !== 'undefined' && !this.isMobile) {
                 targetQuality = Math.min(quality || 85, 90);
                 if (targetQuality < 80) targetQuality = 85;
-                // Nếu width gốc nhỏ hơn 800 thì ép lên 800 để khỏi vỡ hạt trên màn hình to
                 targetWidth = Math.max(width, 800);
                 if (isPriority) {
-                    targetWidth = Math.max(width, 1920); // Banner chính thì chơi nguyên con HD
+                    targetWidth = Math.max(width, 1920);
                     targetQuality = 90;
                 }
             } else {
-                // Trên Mobile: Nén mạnh hơn để load nhanh
                 if (isPriority) {
                     targetWidth = Math.max(width, 1200); 
                     targetQuality = Math.max(quality || 90, 90); 
@@ -55,36 +45,29 @@ class ImageOptimizer {
                 }
             }
             
-            // Format: https://wsrv.nl/?url=URL&w=WIDTH&q=QUALITY&output=webp
-            return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${targetWidth}&q=${targetQuality}&output=webp&il`;
+            const cleanUrl = resolvedUrl.replace(/^https?:\/\//, '');
+            return "https://i0.wp.com/" + cleanUrl + "?w=" + targetWidth + "&quality=" + targetQuality + "&strip=all";
         }
 
-        return url;
+        return resolvedUrl;
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // PROGRESSIVE LOADING (Blur-Up Technique)
-    // Trả về { placeholder, full } URLs cho một ảnh
-    // ─────────────────────────────────────────────────────────────────
     getProgressiveUrls(url) {
-        if (!url) return { placeholder: null, full: 'https://via.placeholder.com/400x600?text=No+Image' };
+        if (!url) return { placeholder: null, full: 'https://placehold.co/400x600?text=No+Image' };
 
-        // Đảm bảo absolute URL
-        if (!url.startsWith('http')) {
-            url = `https://phimimg.com/${url}`;
+        let full = url;
+        if (!full.startsWith('http')) {
+            full = "https://phimimg.com/" + full.replace(/^\//, "");
         }
 
-        // Desktop: không cần progressive, load thẳng full
-        if (!this.isMobile || (!url.includes('ophim') && !url.includes('opstream'))) {
-            return { placeholder: null, full: url };
+        if ((typeof this.isMobile !== 'undefined' && !this.isMobile) || (!full.includes('ophim') && !full.includes('opstream'))) {
+            return { placeholder: null, full: full };
         }
 
-        const enc = encodeURIComponent(url);
+        const cleanUrl = full.replace(/^https?:\/\//, '');
         return {
-            // Placeholder: 20px wide, quality 20, blur nhẹ → ~300-500 bytes
-            placeholder: `https://wsrv.nl/?url=${enc}&w=20&q=20&output=webp&blur=2`,
-            // Full: 600px wide, quality 82, interlaced webp
-            full: `https://wsrv.nl/?url=${enc}&w=600&q=82&output=webp&il`
+            placeholder: "https://i0.wp.com/" + cleanUrl + "?w=20&quality=20&strip=all",
+            full: "https://i0.wp.com/" + cleanUrl + "?w=600&quality=82&strip=all"
         };
     }
 
@@ -235,7 +218,7 @@ class ImageOptimizer {
                 class="img-progressive img-loading ${extraClasses}"
                 data-original-src="${originalUrl}"
                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
-                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                onerror="this.src='https://placehold.co/400x600?text=No+Image'"
                 ${extraAttrs}
             />`;
         } else {
@@ -244,7 +227,7 @@ class ImageOptimizer {
                 alt="${altText}"
                 class="img-progressive img-desktop ${extraClasses}"
                 src="${originalUrl}"
-                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                onerror="this.src='https://placehold.co/400x600?text=No+Image'"
                 loading="lazy"
                 ${extraAttrs}
             />`;
@@ -275,5 +258,6 @@ _progressiveMutationObserver.observe(document.body, {
 
 // Legacy mutation observer (kept for backward compatibility)
 const mutationObserver = _progressiveMutationObserver;
+
 
 

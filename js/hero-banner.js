@@ -432,6 +432,9 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
 // -- Build optimized image URL ------------------------------------
 function buildImageUrl(rawUrl, width) {
     if (!rawUrl) return '';
+    // BYPASS image optimizer for TMDB images as they are already on a fast CDN!
+    if (rawUrl.includes('tmdb.org')) return rawUrl;
+    
     if (typeof movieAPI !== 'undefined' && movieAPI.getImageURL) {
         return movieAPI.getImageURL(rawUrl, width, 90, true);
     }
@@ -803,21 +806,18 @@ function preloadSlideImages(movies) {
 
         movies.forEach((movie, i) => {
             handleTMDBSync(movie, i + 1);
-
-            const isMobile = window.innerWidth < 768;
             const rawUrl = getHeroImageUrl(movie);
             if (!rawUrl) return;
             const url = buildImageUrl(rawUrl, 1200);
             if (url) {
                 const img = new Image();
                 img.src = url;
-                // Kh�ng c?n x? l� onload/onerror � ch? c?n trigger cache
             }
         });
-    }, 800); // Delay 800ms d? hero image d?u ti�n load tru?c
+    }, 300); // Giảm từ 800ms → 300ms để bắt đầu preload TMDB sớm hơn
 }
 
-// -- Render thumbnail DOM v?i click handler -----------------------
+// -- Render thumbnail DOM với click handler -----------------------
 function renderThumbnails(movies) {
     const container = document.getElementById('heroThumbnails');
     if (!container || !Array.isArray(movies) || movies.length === 0) return;
@@ -827,7 +827,7 @@ function renderThumbnails(movies) {
             ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 300, 75)
             : buildImageUrl(movie.thumb_url || movie.poster_url, 300);
 
-        const slideIndex = i + 1; // +1 v� index 0 l� admin banner
+        const slideIndex = i + 1;
 
         return `
         <div class="hero-thumb-item flex-shrink-0 snap-start"
@@ -859,22 +859,15 @@ function renderThumbnails(movies) {
         });
     });
 
-    // -- Cu?n v? d?u: item d?u ti�n lu�n hi?n th? tru?c ----------
-    // D�ng setTimeout 0 d? d?m b?o DOM d� render xong
     setTimeout(() => { container.scrollLeft = 0; }, 0);
 
-    // ?? Th�m scroll listener cho thumbnails d? reset auto return ??
     let thumbScrollTimer = null;
     container.addEventListener('scroll', () => {
         if (currentSlideIndex !== 0) {
             clearTimeout(thumbScrollTimer);
-            thumbScrollTimer = setTimeout(() => {
-                resetAutoReturn();
-            }, 100);
+            thumbScrollTimer = setTimeout(() => { resetAutoReturn(); }, 100);
         }
     }, { passive: true });
-
-    // Hover preview removed per user request
 }
 
 // ================================================================
@@ -883,26 +876,14 @@ function renderThumbnails(movies) {
 function previewHeroPoster(movie) {
     const heroImage = document.getElementById('heroImage');
     if (!heroImage || !movie) return;
-
-    // Smart selection cho Desktop & Mobile
     const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
-
     const optUrl = buildImageUrl(posterUrl, 1200);
     if (!optUrl) return;
-
-    // Fade out current image
     heroImage.style.opacity = '0.3';
-
-    // Preload new image
     const img = new Image();
-    img.onload = () => {
-        heroImage.src = optUrl;
-        heroImage.style.opacity = '1';
-    };
+    img.onload = () => { heroImage.src = optUrl; heroImage.style.opacity = '1'; };
     img.src = optUrl;
-
-    // Update text content
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
 }
@@ -911,26 +892,16 @@ function returnToCurrentSlide(slideIndex) {
     if (slideIndex < 0 || slideIndex >= heroSlides.length) return;
     const movie = heroSlides[slideIndex];
     if (!movie) return;
-
-    // Restore original slide
     const heroImage = document.getElementById('heroImage');
     if (!heroImage) return;
-
     const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
-
     const optUrl = buildImageUrl(posterUrl, 1200);
     if (!optUrl) return;
-
     heroImage.style.opacity = '0.3';
-
     const img = new Image();
-    img.onload = () => {
-        heroImage.src = optUrl;
-        heroImage.style.opacity = '1';
-    };
+    img.onload = () => { heroImage.src = optUrl; heroImage.style.opacity = '1'; };
     img.src = optUrl;
-
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
 }
@@ -939,7 +910,6 @@ function returnToCurrentSlide(slideIndex) {
 // INITIAL RENDER (first load)
 // ================================================================
 function renderHeroBannerContent(movie, isInstant) {
-    // Hi?n text ngay l?p t?c � kh�ng ch? ?nh
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
     setupHeroActions(movie);
@@ -962,14 +932,26 @@ function renderHeroBannerContent(movie, isInstant) {
     const rawUrl = getHeroImageUrl(movie);
     const optUrl = buildImageUrl(rawUrl, 1200);
 
+    // 🚀 TURBO: Inject <link rel="preload"> cho ảnh hero ngay lập tức
+    // Trình duyệt sẽ bắt đầu tải ảnh ở mức ưu tiên cao nhất TRƯỚC khi JS chạy xong
+    if (optUrl && !document.querySelector('link[data-hero-preload]')) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'image';
+        preloadLink.href = optUrl;
+        preloadLink.setAttribute('data-hero-preload', '1');
+        preloadLink.fetchPriority = 'high';
+        document.head.appendChild(preloadLink);
+    }
+
+    // 🚀 TURBO: Set fetchpriority=high để trình duyệt ưu tiên tải ảnh này
+    heroImage.fetchPriority = 'high';
+    heroImage.loading = 'eager';
+    heroImage.decoding = 'async';
+
     heroImage.onerror = () => {
-        console.warn('Hero image primary load error, trying fallback URL:', rawUrl);
-        const fallbackUrl = rawUrl.startsWith('http')
-            ? rawUrl
-            : `https://phimimg.com/${rawUrl}`;
-        if (heroImage.src !== fallbackUrl) {
-            heroImage.src = fallbackUrl;
-        }
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl}`;
+        if (heroImage.src !== fallbackUrl) heroImage.src = fallbackUrl;
         showHeroImage();
     };
 
@@ -1003,9 +985,7 @@ function showHeroImage() {
     }
 }
 
-// ================================================================
-// EPISODE COUNT BADGE
-// ================================================================
+
 async function fetchLatestEpisodeCount(movie) {
     if (!movie?.slug) return;
     try {
