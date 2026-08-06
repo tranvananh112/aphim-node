@@ -63,16 +63,16 @@ class MovieAPI {
 
         let urlsToTry = [
             `/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`
+            `https://ophim1.com${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`
         ];
 
         if (basePath.includes('phim-moi-cap-nhat') || basePath === '/home') {
             urlsToTry.unshift(`/v1/api/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
         }
 
         const uniqueUrls = Array.from(new Set(urlsToTry.filter(Boolean)));
@@ -407,12 +407,6 @@ class MovieAPI {
         if (!imagePath.startsWith('http')) {
             const filename = imagePath.replace(/^\//, "");
             fullUrl = `${typeof API_CONFIG !== 'undefined' && API_CONFIG.IMAGE_BASE ? API_CONFIG.IMAGE_BASE : 'https://phimimg.com/'}${filename}`;
-        }
-
-        // Gọi thẳng qua Backend Proxy để ảnh luôn hiển thị đúng và không bị block
-        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.BACKEND_URL) {
-            const backendBase = API_CONFIG.BACKEND_URL.replace('/api', '');
-            return `${backendBase}/api/images/compress?url=${encodeURIComponent(fullUrl)}&w=${width}&q=${quality}&priority=${isPriority}`;
         }
 
         return fullUrl;

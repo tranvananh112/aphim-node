@@ -159,7 +159,7 @@ async function getSecondaryEpisodes(slug) {
     }
 
     try {
-        const directUrl = `https://phimapi.com/phim/${encodeURIComponent(slug)}`;
+        const directUrl = `https://ophim1.com/phim/${encodeURIComponent(slug)}`;
         const res = await fetch(directUrl);
         if (res.ok) {
             const json = await res.json();
@@ -867,7 +867,7 @@ async function loadMovieGallery(movie) {
     if (!galleryContainer || !scrollContainer) return;
 
     try {
-        const url = `https://phimapi.com/v1/api/phim/${movie.slug}/images`;
+        const url = `https://ophim1.com/v1/api/phim/${movie.slug}/images`;
         const options = {method: 'GET', headers: {accept: 'application/json'}};
         
         const res = await fetch(url, options);

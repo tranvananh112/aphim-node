@@ -158,7 +158,7 @@
     // ── API ──────────────────────────────────────────────────────────────────────
     function getOphimBase() {
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) return API_CONFIG.OPHIM_URL;
-        return 'https://phimapi.com/v1/api';
+        return 'https://ophim1.com/v1/api';
     }
 
     const IMG_CDN = 'https://phimimg.com/';

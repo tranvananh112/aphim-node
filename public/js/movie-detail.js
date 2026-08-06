@@ -132,7 +132,7 @@ async function getSecondaryEpisodes(slug) {
     }
 
     try {
-        const directUrl = `https://phimapi.com/phim/${encodeURIComponent(slug)}`;
+        const directUrl = `https://ophim1.com/phim/${encodeURIComponent(slug)}`;
         const res = await fetch(directUrl);
         if (res.ok) {
             const json = await res.json();
