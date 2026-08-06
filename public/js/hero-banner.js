@@ -84,14 +84,14 @@ async function loadFallbackBanner() {
 // -- Convert banner API format -> movie format --------------------
 function convertBannerToMovie(banner) {
     if (!banner) return null;
-    const landscape = banner.imageUrl || banner.bannerUrl || banner.image || banner.poster_url || banner.posterUrl || banner.thumb_url || banner.thumbUrl || '';
+    const landscape = banner.imageUrl || banner.bannerUrl || banner.image || banner.thumb_url || banner.thumbUrl || '';
     const portrait = banner.posterUrl || banner.poster_url || banner.thumbUrl || banner.thumb_url || landscape;
     return {
         slug: banner.movieSlug || banner.slug || '',
         name: banner.name || '',
         origin_name: banner.originName || banner.origin_name || '',
-        thumb_url: portrait,
-        poster_url: landscape,
+        thumb_url: landscape, // Ảnh ngang
+        poster_url: portrait,  // Ảnh dọc
         content: banner.content || '',
         year: banner.year || '2026',
         quality: banner.quality || 'HD',
@@ -123,11 +123,11 @@ function getHeroImageUrl(movie) {
     } catch(e) {}
     
     if (!isMobile) {
-        // Desktop: Ưu tiên ảnh ngang (poster_url)
-        return movie.poster_url || movie.thumb_url || '';
-    } else {
-        // Mobile: Ưu tiên ảnh dọc (thumb_url)
+        // Desktop: Ưu tiên ảnh ngang (thumb_url là ảnh ngang)
         return movie.thumb_url || movie.poster_url || '';
+    } else {
+        // Mobile: Ưu tiên ảnh dọc (poster_url là ảnh dọc)
+        return movie.poster_url || movie.thumb_url || '';
     }
 }
 
