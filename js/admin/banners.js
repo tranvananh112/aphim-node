@@ -9,6 +9,14 @@ let localFilters = {
 };
 let allBanners = []; // Cache from API
 
+function getValidImageUrl(url) {
+    if (!url) return 'https://placehold.co/400x600?text=No+Image';
+    if (url.startsWith('http')) return url;
+    const imageBase = (window.API_CONFIG && window.API_CONFIG.IMAGE_BASE) ? window.API_CONFIG.IMAGE_BASE : 'https://phimimg.com/';
+    const base = imageBase.endsWith('/') ? imageBase.slice(0, -1) : imageBase;
+    return base + '/' + url.replace(new RegExp('^/'), '');
+}
+
 // Check authentication
 document.addEventListener('DOMContentLoaded', () => {
     // Safely check auth early
@@ -147,10 +155,10 @@ function renderBanners() {
     tbody.innerHTML = pageItems.map(banner => `
         <tr class="hover:bg-white/5 transition-colors">
             <td>
-                <img src="https://phimimg.com/${banner.thumbUrl}"
+                <img src="${getValidImageUrl(banner.thumbUrl)}"
                      alt="${banner.name}"
                      class="banner-thumb"
-                     onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
+                     onerror="this.src='https://placehold.co/80x120?text=No+Image'">
             </td>
             <td>
                 <div class="movie-title" style="font-size:13.5px;font-weight:600; color:var(--text-primary);">${banner.name}</div>
@@ -251,10 +259,10 @@ function renderActiveBanner() {
         const cleanContent = activeBanner.content ? activeBanner.content.replace(/<[^>]*>/g, '') : 'Không có mô tả';
         content.innerHTML = `
             <div style="display:flex;gap:24px;align-items:flex-start">
-                <img src="https://phimimg.com/${activeBanner.thumbUrl}"
+                <img src="${getValidImageUrl(activeBanner.posterUrl)}"
                      alt="${activeBanner.name}"
                      class="banner-active-poster"
-                     onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                     onerror="this.src='https://placehold.co/200x300?text=No+Image'">
                 <div style="flex:1; min-width: 0;">
                     <h3 style="font-size:20px;font-weight:800;color:var(--text-primary);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${activeBanner.name}</h3>
                     <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${activeBanner.originName || activeBanner.origin_name || ''}</p>
@@ -376,15 +384,21 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
     loadingDiv.style.display = 'block';
     grid.style.display = 'none';
     
-    let apiUrl = `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
+    const ophimBase = (window.API_CONFIG && window.API_CONFIG.OPHIM_URL) ? window.API_CONFIG.OPHIM_URL : 'https://phimapi.com/v1/api';
+    const ophim17Base = (window.API_CONFIG && window.API_CONFIG.OPHIM17_URL) ? window.API_CONFIG.OPHIM17_URL : 'https://phimapi.com';
+    let apiUrl = `${ophim17Base}/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
     
     if (currentOphimSearchKeyword !== '') {
-        apiUrl = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
+        apiUrl = `${ophimBase}/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
         if (loadingText) loadingText.textContent = `Đang tìm "${currentOphimSearchKeyword}"...`;
         if (gridTitle) gridTitle.textContent = 'Kết quả tìm kiếm';
     } else {
         const filterVal = filterCategory ? filterCategory.value : 'danh-sach/phim-moi-cap-nhat';
-        apiUrl = `https://phimapi.com/v1/api/${filterVal}?page=${currentOphimSearchPage}`;
+        if (filterVal === 'danh-sach/phim-moi-cap-nhat') {
+            apiUrl = `${ophim17Base}/${filterVal}?page=${currentOphimSearchPage}`;
+        } else {
+            apiUrl = `${ophimBase}/${filterVal}?page=${currentOphimSearchPage}`;
+        }
         
         let filterName = filterCategory ? filterCategory.options[filterCategory.selectedIndex].text : 'Phim mới';
         if (loadingText) loadingText.textContent = `Đang tải ${filterName}...`;
@@ -399,8 +413,8 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
 
         const data = await response.json();
 
-        if (data.status === 'success' && data.data?.items) {
-            let newMovies = data.data.items;
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && (data.data?.items || data.items)) {
+            let newMovies = data.data?.items || data.items;
             
             const pagination = data.data.params?.pagination || data.data.paginate || data.data.pagination || {};
             const totalItems = pagination?.totalItems || pagination?.total_items || newMovies.length;
@@ -513,10 +527,10 @@ function displayMovies(movies) {
         
         return `
         <div class="movie-pick-card">
-            <img src="https://phimimg.com/${movie.thumb_url}"
+            <img src="${getValidImageUrl(movie.thumb_url)}"
                  alt="${movie.name}"
                  class="movie-pick-thumb"
-                 onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                 onerror="this.src='https://placehold.co/200x300?text=No+Image'">
             <div class="movie-pick-body">
                 <div class="movie-pick-title">${movie.name}</div>
                 <div class="movie-pick-meta">
@@ -791,9 +805,9 @@ function renderThumbnailGrid() {
              ondragend="onThumbDragEnd(event)">
             <span class="thumb-card-order">${idx + 1}</span>
             <button class="thumb-card-remove" onclick="removeFromThumbnail('${item.movieSlug}')" title="Xóa">✕</button>
-            <img src="https://phimimg.com/${item.thumbUrl}"
+            <img src="${getValidImageUrl(item.thumbUrl)}"
                  alt="${item.name}"
-                 onerror="this.src='https://via.placeholder.com/100x140?text=No+Img'">
+                 onerror="this.src='https://placehold.co/100x140?text=No+Img'">
             <div class="thumb-card-body">
                 <div class="thumb-card-name" title="${item.name}">${item.name}</div>
                 <div style="font-size:10px;color:var(--text-muted)">${item.year || ''}</div>
