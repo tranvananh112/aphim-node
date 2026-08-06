@@ -136,7 +136,7 @@ exports.getDashboardStats = async (req, res) => {
         let adultMovieCount = 0;
         
         try {
-            console.log(`🌐 Fetching Global Stats from: ${process.env.OPHIM_API_URL || 'https://ophim1.com'}`);
+            console.log(`🌐 Fetching Global Stats from: ${process.env.OPHIM_API_URL || 'https://phimapi.com'}`);
             const ophimData = await ophimService.fetchMovieList(1);
             
             // Comprehensive parsing for different API structures

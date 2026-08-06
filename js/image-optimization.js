@@ -18,10 +18,14 @@ class ImageOptimizer {
         if (!url.startsWith('http')) {
             // Check if the url already contains 'uploads/movies/'
             if (url.startsWith('uploads/movies/')) {
-                url = `https://img.ophim.live/${url}`;
+                url = `https://phimimg.com/${url}`;
             } else {
-                url = `https://img.ophim.live/uploads/movies/${url}`;
+                url = `https://phimimg.com/${url}`;
             }
+        }
+
+        if (url.includes('phimimg.com')) {
+            return url;
         }
 
         // Use wsrv.nl proxy for advanced compression and resizing
@@ -67,7 +71,7 @@ class ImageOptimizer {
 
         // Đảm bảo absolute URL
         if (!url.startsWith('http')) {
-            url = `https://img.ophim.live/uploads/movies/${url}`;
+            url = `https://phimimg.com/${url}`;
         }
 
         // Desktop: không cần progressive, load thẳng full

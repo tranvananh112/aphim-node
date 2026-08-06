@@ -24,7 +24,7 @@ async function loadMovies(page = 1) {
 
     try {
         // Load from ophim API
-        const response = await fetch(`https://ophim17.cc/danh-sach/phim-moi-cap-nhat?page=${page}`);
+        const response = await fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`);
         const data = await response.json();
 
         if (data && (data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
@@ -67,7 +67,7 @@ function renderMoviesTable(movies) {
             </td>
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                    <img src="https://img.ophim.live/uploads/movies/${movie.thumb_url}" 
+                    <img src="https://phimimg.com/${movie.thumb_url}" 
                          alt="${movie.name}"
                          class="w-12 h-16 object-cover rounded"
                          onerror="this.src='https://via.placeholder.com/100x150?text=No+Image'">

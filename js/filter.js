@@ -1,5 +1,5 @@
 // Filter Page Script
-const API_BASE = 'https://ophim1.com/v1/api';
+const API_BASE = 'https://phimapi.com/v1/api';
 
 // State
 let currentPage = 1;
@@ -206,7 +206,7 @@ function renderMovies(movies) {
         const rawImg = thumbUrl || movie.poster_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophim.live/${rawImg}` : `https://img.ophim.live/uploads/movies/${rawImg}`));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://phimimg.com/${rawImg}` : `https://phimimg.com/${rawImg}`));
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const episodeCurrent = movie.episode_current || 'N/A';

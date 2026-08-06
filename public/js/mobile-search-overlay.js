@@ -113,7 +113,7 @@
             // Nếu API 1 lỗi hoặc không có phim, lập tức chuyển sang API dự phòng
             if (!items || items.length === 0) {
                 try {
-                    const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://ophim1.com/v1/api';
+                    const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://phimapi.com/v1/api';
                     const res1 = await fetch(`${base1}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=10&page=1`);
                     const data1 = await res1.json();
                     if (data1 && data1.data && data1.data.items && data1.data.items.length > 0) {
@@ -125,7 +125,7 @@
                 } catch (err) {
                     console.warn('Primary API failed, immediately switching to backup API...');
                     try {
-                        const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://ophim17.cc/v1/api';
+                        const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://phimapi.com/v1/api';
                         const res2 = await fetch(`${base2}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=10&page=1`);
                         const data2 = await res2.json();
                         if (data2 && data2.data && data2.data.items) {
@@ -167,7 +167,7 @@
         let html = '';
         display.forEach(function (movie) {
             const thumb = movie.thumb_url || movie.poster_url || '';
-            const poster = thumb ? `https://img.ophim.live/uploads/movies/${thumb}` : '';
+            const poster = thumb ? `https://phimimg.com/${thumb}` : '';
             const badge = movie.year || movie.episode_current || 'HD';
             const title = (movie.name || '').replace(/</g, '&lt;');
             const enTitle = (movie.origin_name || '').replace(/</g, '&lt;');

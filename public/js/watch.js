@@ -867,7 +867,7 @@ async function loadMovieGallery(movie) {
     if (!galleryContainer || !scrollContainer) return;
 
     try {
-        const url = `https://ophim1.com/v1/api/phim/${movie.slug}/images`;
+        const url = `https://phimapi.com/v1/api/phim/${movie.slug}/images`;
         const options = {method: 'GET', headers: {accept: 'application/json'}};
         
         const res = await fetch(url, options);

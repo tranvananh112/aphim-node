@@ -44,8 +44,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="dns-prefetch" href="https://wsrv.nl">
-    <link rel="preconnect" href="https://ophim1.com">
-    <link rel="dns-prefetch" href="https://img.ophim.live">
+    <link rel="preconnect" href="https://phimapi.com">
+    <link rel="dns-prefetch" href="https://phimimg.com">
 
     <!-- Critical CSS inline to prevent FOUC -->
     <style>
@@ -663,7 +663,7 @@
 
             moviesList.innerHTML = movies.map(movie => {
                 const thumbUrl = movie.thumb_url || movie.poster_url || '';
-                const posterUrl = thumbUrl ? `https://img.ophim.live/uploads/movies/${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
+                const posterUrl = thumbUrl ? `https://phimimg.com/uploads/movies/${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
                 const year = movie.year || 'N/A';
                 const quality = movie.quality || movie.lang || '';
                 const episodeCurrent = movie.episode_current || 'N/A';

@@ -104,7 +104,7 @@ async function postToTikTok(videoUrl, caption) {
             await new Promise((resolve, reject) => {
                 ffmpeg(videoUrl)
                     .inputOptions([
-                        '-headers', 'Referer: https://ophim1.com/\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n',
+                        '-headers', 'Referer: https://phimapi.com/\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n',
                         '-protocol_whitelist', 'file,http,https,tcp,tls,crypto'
                     ])
                     .seekInput('00:03:00')
@@ -362,7 +362,7 @@ async function cutHighlightClip(m3u8Url, tempVideoPath) {
 async function getRandomUnpostedMovie() {
     return await withRetry(async () => {
         log.info("🌐 Đang kết nối OPhim API để lấy kho dữ liệu...");
-        const response = await axios.get('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1');
+        const response = await axios.get('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1');
         const movies = response.data.data.items;
 
         let postedIds = [];
@@ -379,7 +379,7 @@ async function getRandomUnpostedMovie() {
         const randomMovie = unpostedMovies[Math.floor(Math.random() * unpostedMovies.length)];
         log.info(`Đang truy xuất siêu dữ liệu (Metadata) cho phim: ${randomMovie.slug}`);
         
-        const detailRes = await axios.get(`https://ophim1.com/phim/${randomMovie.slug}`);
+        const detailRes = await axios.get(`https://phimapi.com/phim/${randomMovie.slug}`);
         const movieData = detailRes.data.movie;
         const episodes = detailRes.data.episodes || [];
         
@@ -432,7 +432,7 @@ async function autoPostMovie() {
     }
 
     // Trích xuất hình ảnh Poster từ Ophim
-    const imageDomain = "https://img.ophim.live/uploads/movies/";
+    const imageDomain = "https://phimimg.com/uploads/movies/";
     const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
                       (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
 

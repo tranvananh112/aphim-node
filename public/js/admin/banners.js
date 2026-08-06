@@ -147,7 +147,7 @@ function renderBanners() {
     tbody.innerHTML = pageItems.map(banner => `
         <tr class="hover:bg-white/5 transition-colors">
             <td>
-                <img src="https://img.ophim.live/uploads/movies/${banner.thumbUrl}"
+                <img src="https://phimimg.com/${banner.thumbUrl}"
                      alt="${banner.name}"
                      class="banner-thumb"
                      onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
@@ -251,7 +251,7 @@ function renderActiveBanner() {
         const cleanContent = activeBanner.content ? activeBanner.content.replace(/<[^>]*>/g, '') : 'Không có mô tả';
         content.innerHTML = `
             <div style="display:flex;gap:24px;align-items:flex-start">
-                <img src="https://img.ophim.live/uploads/movies/${activeBanner.thumbUrl}"
+                <img src="https://phimimg.com/${activeBanner.thumbUrl}"
                      alt="${activeBanner.name}"
                      class="banner-active-poster"
                      onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -376,15 +376,15 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
     loadingDiv.style.display = 'block';
     grid.style.display = 'none';
     
-    let apiUrl = `https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
+    let apiUrl = `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
     
     if (currentOphimSearchKeyword !== '') {
-        apiUrl = `https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
+        apiUrl = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
         if (loadingText) loadingText.textContent = `Đang tìm "${currentOphimSearchKeyword}"...`;
         if (gridTitle) gridTitle.textContent = 'Kết quả tìm kiếm';
     } else {
         const filterVal = filterCategory ? filterCategory.value : 'danh-sach/phim-moi-cap-nhat';
-        apiUrl = `https://ophim1.com/v1/api/${filterVal}?page=${currentOphimSearchPage}`;
+        apiUrl = `https://phimapi.com/v1/api/${filterVal}?page=${currentOphimSearchPage}`;
         
         let filterName = filterCategory ? filterCategory.options[filterCategory.selectedIndex].text : 'Phim mới';
         if (loadingText) loadingText.textContent = `Đang tải ${filterName}...`;
@@ -513,7 +513,7 @@ function displayMovies(movies) {
         
         return `
         <div class="movie-pick-card">
-            <img src="https://img.ophim.live/uploads/movies/${movie.thumb_url}"
+            <img src="https://phimimg.com/${movie.thumb_url}"
                  alt="${movie.name}"
                  class="movie-pick-thumb"
                  onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -791,7 +791,7 @@ function renderThumbnailGrid() {
              ondragend="onThumbDragEnd(event)">
             <span class="thumb-card-order">${idx + 1}</span>
             <button class="thumb-card-remove" onclick="removeFromThumbnail('${item.movieSlug}')" title="Xóa">✕</button>
-            <img src="https://img.ophim.live/uploads/movies/${item.thumbUrl}"
+            <img src="https://phimimg.com/${item.thumbUrl}"
                  alt="${item.name}"
                  onerror="this.src='https://via.placeholder.com/100x140?text=No+Img'">
             <div class="thumb-card-body">
@@ -980,7 +980,7 @@ function selectCategoryBgMovie(movie) {
     const inputId = pathMap[categoryBgSelectionMode];
     if (inputId) {
         const inputEl = document.getElementById(inputId);
-        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophim.live/uploads/movies/${movie.thumb_url}`;
+        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url}`;
         
         if (inputEl) {
             inputEl.value = imageUrl;
@@ -1028,7 +1028,7 @@ async function previewCatBg(input, previewId, apiPath = null) {
                 const data = await response.json();
                 if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items && data.data.items.length > 0) {
                     const thumbUrl = data.data.items[0].thumb_url;
-                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://img.ophim.live/uploads/movies/${thumbUrl}`;
+                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://phimimg.com/${thumbUrl}`;
                 } else {
                     img.src = 'https://via.placeholder.com/80x45?text=Auto';
                 }

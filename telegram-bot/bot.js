@@ -75,7 +75,7 @@ function convertToSlug(text) {
 // Hàm tìm kiếm phim từ API
 async function searchMovies(keyword) {
     try {
-        const searchUrl = `https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}`;
+        const searchUrl = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}`;
         console.log(`🔍 Tìm kiếm: ${searchUrl}`);
 
         const response = await axios.get(searchUrl, {
@@ -97,8 +97,8 @@ async function searchMovies(keyword) {
 // Hàm lấy thông tin phim từ API
 async function getMovieInfo(slug) {
     try {
-        // Gọi API ophim1.com để lấy thông tin phim
-        const movieApiUrl = `https://ophim1.com/v1/api/phim/${slug}`;
+        // Gọi API phimapi.com để lấy thông tin phim
+        const movieApiUrl = `https://phimapi.com/v1/api/phim/${slug}`;
         console.log(`🔍 Gọi API: ${movieApiUrl}`);
 
         const movieResponse = await axios.get(movieApiUrl, {
@@ -113,7 +113,7 @@ async function getMovieInfo(slug) {
 
             let posterUrl = null;
             if (posterFileName) {
-                posterUrl = `https://img.ophim.live/uploads/movies/${posterFileName}`;
+                posterUrl = `https://phimimg.com/${posterFileName}`;
                 console.log(`🖼️ Poster URL: ${posterUrl}`);
             }
 

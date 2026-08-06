@@ -31,7 +31,7 @@ async function loadCountryMovies(countrySlug, countryName, page = 1) {
 
         console.log(`Loading ${countryName} movies - Page ${page}...`);
 
-        const url = `https://ophim1.com/v1/api/quoc-gia/${countrySlug}?page=${page}`;
+        const url = `https://phimapi.com/v1/api/quoc-gia/${countrySlug}?page=${page}`;
         console.log('Fetching from:', url);
 
         const response = await fetch(url, {
@@ -105,7 +105,7 @@ function renderMovies(movies, countryName) {
                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                     <img alt="${movie.name}"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                        src="https://img.ophim.live/uploads/movies/${movie.thumb_url}"
+                        src="https://phimimg.com/${movie.thumb_url}"
                         loading="lazy"
                         onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                     ${hiddenUI.badge}

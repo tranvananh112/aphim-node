@@ -32,7 +32,7 @@
      */
     const fetchImageFromOphim = async (apiPath, page = 1) => {
         try {
-            const url = `https://ophim1.com/v1/api/${apiPath}?page=${page}`;
+            const url = `https://phimapi.com/v1/api/${apiPath}?page=${page}`;
             const res = await fetch(url, {
                 method: 'GET',
                 headers: { 'accept': 'application/json' }
@@ -65,7 +65,7 @@
 
         const rawUrl = thumbUrl.startsWith('http')
             ? thumbUrl
-            : `https://img.ophim.live/uploads/movies/${thumbUrl}`;
+            : `https://phimimg.com/${thumbUrl}`;
 
         if (typeof imageOptimizer !== 'undefined' && imageOptimizer.optimizeImageUrl) {
             return imageOptimizer.optimizeImageUrl(thumbUrl, 400, 70);
@@ -98,7 +98,7 @@
         img.onerror = () => {
             const rawUrl = thumbUrl.startsWith('http')
                 ? thumbUrl
-                : `https://img.ophim.live/uploads/movies/${thumbUrl}`;
+                : `https://phimimg.com/${thumbUrl}`;
             bgImgEl.style.backgroundImage = `url('${rawUrl}')`;
             bgImgEl.style.opacity = '0.85';
         };

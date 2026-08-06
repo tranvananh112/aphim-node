@@ -1,8 +1,8 @@
 // Simple Movie Controller - No MongoDB required
 const axios = require('axios');
 
-const OPHIM_BASE = 'https://ophim17.cc';
-const OPHIM_CDN = 'https://img.ophim.live';
+const OPHIM_BASE = 'https://phimapi.com';
+const OPHIM_CDN = 'https://phimimg.com';
 
 // In-memory cache
 let moviesCache = {};

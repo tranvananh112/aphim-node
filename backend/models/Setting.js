@@ -27,12 +27,12 @@ const SettingSchema = new mongoose.Schema({
     content: {
         enablePhimX: { type: Boolean, default: false },
         enableWatermark: { type: Boolean, default: true },
-        watermarkUrl: { type: String, default: 'https://ophim1.com/logo.png' },
+        watermarkUrl: { type: String, default: 'https://phimapi.com/logo.png' },
         autoplayDelay: { type: String, default: '5 giây' },
         defaultServer: { type: String, default: 'Server #1 (OPhim)' },
         proxyUrl: { type: String, default: '' },
-        apiBase: { type: String, default: 'https://ophim1.com/v1/api' },
-        apiSecondary: { type: String, default: 'https://ophim17.cc/_next/data/9QkyZ8-jLzIfTtyR2y41x' },
+        apiBase: { type: String, default: 'https://phimapi.com/v1/api' },
+        apiSecondary: { type: String, default: 'https://phimapi.com/_next/data/9QkyZ8-jLzIfTtyR2y41x' },
         enableMultipleSources: { type: Boolean, default: false },
         heroThumbnails: { type: [Object], default: [] },
         categoryBackgrounds: {

@@ -374,7 +374,7 @@ function renderResults(movies) {
         const rawImg = movie.thumb_url || movie.poster_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://img.ophim.live/uploads/movies/${rawImg}` : 'https://via.placeholder.com/400x600?text=No+Image'));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://phimimg.com/${rawImg}` : 'https://via.placeholder.com/400x600?text=No+Image'));
 
         return `
             <a href="movie-detail.html?slug=${movie.slug}"

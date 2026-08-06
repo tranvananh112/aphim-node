@@ -9,17 +9,17 @@ class ImageOptimizer {
         }, { passive: true });
     }
 
-    // Helper: Normalize image URL to absolute OPhim CDN URL (img.ophim.live)
+    // Helper: Normalize image URL to absolute OPhim CDN URL (phimimg.com)
     resolveUrl(url, fallbackUrl = '') {
         let raw = url || fallbackUrl;
         if (!raw) return 'https://via.placeholder.com/400x600?text=No+Image';
 
-        // Strip any repeated uploads/movies/ prefixes or domain prefix
-        raw = raw.replace(/^(https?:\/\/[^\/]+\/)?(\/)?(uploads\/movies\/)+/i, '');
-        raw = raw.replace(/^uploads\//i, '');
-
-        if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
-        return 'https://img.ophim.live/uploads/movies/' + raw;
+        if (raw.startsWith('http')) return raw;
+        
+        if (!raw.startsWith('uploads/movies/')) {
+            raw = 'uploads/movies/' + raw.replace(/^\//, '');
+        }
+        return 'https://phimimg.com/' + raw;
     }
 
         optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
@@ -27,12 +27,12 @@ class ImageOptimizer {
         
         let resolvedUrl = url;
         if (!resolvedUrl.startsWith('http')) {
-            if (resolvedUrl.startsWith('uploads/movies/')) {
-                resolvedUrl = "https://img.ophim.live/" + resolvedUrl;
-            } else {
-                resolvedUrl = "https://img.ophim.live/uploads/movies/" + resolvedUrl;
-            }
+            resolvedUrl = "https://phimimg.com/" + resolvedUrl.replace(/^\//, '');
         }
+        if (resolvedUrl.includes('phimimg.com')) {
+            return resolvedUrl;
+        }
+
 
         if (!resolvedUrl.includes('localhost') && !resolvedUrl.includes('127.0.0.1')) {
             let targetWidth = width;
@@ -68,7 +68,7 @@ class ImageOptimizer {
 
         let full = url;
         if (!full.startsWith('http')) {
-            full = "https://img.ophim.live/uploads/movies/" + full;
+            full = "https://phimimg.com/" + full.replace(/^\//, "");
         }
 
         if ((typeof this.isMobile !== 'undefined' && !this.isMobile) || (!full.includes('ophim') && !full.includes('opstream'))) {
@@ -143,7 +143,7 @@ class ImageOptimizer {
 
     createProgressiveImgTag({ originalUrl, altText, extraClasses = '', extraAttrs = '' }) {
         const full = this.resolveUrl(originalUrl);
-        const fallbackHandler = "if(!this.dataset.triedOphimCdn && this.src.includes('img.ophim.live')){this.dataset.triedOphimCdn=1;this.src=this.src.replace('img.ophim.live','img.ophim1.com');}else{this.onerror=null;this.src='https://via.placeholder.com/400x600?text=No+Image';}";
+        const fallbackHandler = "if(!this.dataset.triedOphimCdn && this.src.includes('phimimg.com')){this.dataset.triedOphimCdn=1;this.src=this.src.replace('phimimg.com','img.phimapi.com');}else{this.onerror=null;this.src='https://via.placeholder.com/400x600?text=No+Image';}";
         return `<img
             alt="${altText}"
             class="img-progressive img-desktop ${extraClasses}"

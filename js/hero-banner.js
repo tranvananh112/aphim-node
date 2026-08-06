@@ -85,7 +85,7 @@ async function loadHeroBanner() {
 // ── Fallback từ ophim API ────────────────────────────────────────
 async function loadFallbackBanner() {
     try {
-        const res = await fetch('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1', {
+        const res = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1', {
             headers: { accept: 'application/json' }
         });
         const data = await res.json();
@@ -507,7 +507,7 @@ function buildImageUrl(rawUrl, width) {
     }
     return rawUrl.startsWith('http')
         ? rawUrl
-        : `https://img.ophim.live/uploads/movies/${rawUrl}`;
+        : `https://phimimg.com/${rawUrl}`;
 }
 
 // ── Update chỉ phần text của hero banner ───────────────────────
@@ -817,7 +817,7 @@ function convertThumbnailsFromAPI(banners) {
 
 async function loadVietnameseThumbnailsFallback() {
     try {
-        const res = await fetch('https://ophim1.com/v1/api/quoc-gia/viet-nam?page=1', {
+        const res = await fetch('https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1', {
             headers: { accept: 'application/json' }
         });
         const data = await res.json();
@@ -1058,7 +1058,7 @@ function showHeroImage() {
 async function fetchLatestEpisodeCount(movie) {
     if (!movie?.slug) return;
     try {
-        const res = await fetch(`https://ophim1.com/v1/api/phim/${movie.slug}`, {
+        const res = await fetch(`https://phimapi.com/v1/api/phim/${movie.slug}`, {
             headers: { accept: 'application/json' }
         });
         const data = await res.json();

@@ -9,7 +9,7 @@ app.use(cors());
 // Proxy function
 function proxyOphim(path, res) {
     const options = {
-        hostname: 'ophim1.com',
+        hostname: 'phimapi.com',
         port: 443,
         path: path,
         method: 'GET',
@@ -162,7 +162,7 @@ app.get('/health', (req, res) => {
 const PORT = 5001;
 app.listen(PORT, () => {
     console.log(`\n🔄 Simple Proxy Server running on http://localhost:${PORT}`);
-    console.log(`   Proxying requests to ophim1.com`);
+    console.log(`   Proxying requests to phimapi.com`);
     console.log(`   Using v1/api/home for homepage`);
     console.log(`   Test: http://localhost:${PORT}/health\n`);
 });

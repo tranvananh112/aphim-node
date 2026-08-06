@@ -59,7 +59,7 @@ function renderMoviesGrid(movies) {
 
     movies.forEach((movie) => {
         const thumbUrl = movie.thumb_url || movie.poster_url || '';
-        const posterUrl = thumbUrl ? `https://img.ophim.live/uploads/movies/${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
+        const posterUrl = thumbUrl ? `https://phimimg.com/${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const episodeCurrent = movie.episode_current || 'N/A';

@@ -1,4 +1,4 @@
-// API Service for ophim1.com and Backend
+// API Service for phimapi.com and Backend
 class MovieAPI {
     constructor() {
         this.useBackend = API_CONFIG.USE_BACKEND_FOR_MOVIES || false;
@@ -44,7 +44,7 @@ class MovieAPI {
         };
     }
 
-    // Bypass local proxy and use direct ophim1.com URL so browser VPNs can work
+    // Bypass local proxy and use direct phimapi.com URL so browser VPNs can work
     async fetchWithFallback(endpoint, options = {}) {
         let cleanEndpoint = endpoint || '';
         if (cleanEndpoint.startsWith('http')) {
@@ -520,8 +520,8 @@ class MovieAPI {
 
         let fullUrl = imagePath;
         if (!imagePath.startsWith('http')) {
-            const filename = imagePath.replace(/^uploads\/movies\//, '');
-            fullUrl = `${API_CONFIG.IMAGE_BASE || 'https://img.ophim.live/uploads/movies/'}${filename}`;
+            const filename = imagePath.replace(/^\//, "");
+            fullUrl = `${API_CONFIG.IMAGE_BASE || 'https://phimimg.com/'}${filename}`;
         }
 
         // Use imageOptimizer for advanced compression and caching

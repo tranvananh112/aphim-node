@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!sidebar) return;
 
     try {
-        const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1&limit=100');
+        const response = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1&limit=100');
         const result = await response.json();
         
         if (!result.data || !result.data.items) return;
 
         let items = result.data.items;
-        const imgDomain = result.data.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies/';
+        const imgDomain = result.data.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/';
 
         // Sort theo IMDb/TMDB (vote_average) giảm dần, nếu bằng thì ưu tiên vote_count
         items.sort((a, b) => {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const numColor = isTop3 ? '#FFD700' : '#4b5563'; // Vàng cho 1-3, xám cho 4-10
             
             const rawThumb = item.thumb_url || item.poster_url || '';
-            const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophim.live/${rawThumb}` : `https://img.ophim.live/uploads/movies/${rawThumb}`));
+            const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://phimimg.com/${rawThumb}` : `https://phimimg.com/${rawThumb}`));
             const title = item.name || item.origin_name;
             const badge = item.quality || 'HD';
             const episode = item.episode_current || 'Tập 1';

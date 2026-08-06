@@ -38,9 +38,9 @@
         }
 
         const posterUrl = mainMovie.poster_url
-            ? (mainMovie.poster_url.startsWith('http') ? mainMovie.poster_url : 'https://img.ophim.live/uploads/movies/' + mainMovie.poster_url)
+            ? (mainMovie.poster_url.startsWith('http') ? mainMovie.poster_url : 'https://phimimg.com/' +  mainMovie.poster_url)
             : (mainMovie.thumb_url
-                ? (mainMovie.thumb_url.startsWith('http') ? mainMovie.thumb_url : 'https://img.ophim.live/uploads/movies/' + mainMovie.thumb_url)
+                ? (mainMovie.thumb_url.startsWith('http') ? mainMovie.thumb_url : 'https://phimimg.com/' +  mainMovie.thumb_url)
                 : 'https://via.placeholder.com/1920x1080?text=No+Image');
         const title = mainMovie.name || 'Phim Kinh Dị';
         const originName = mainMovie.origin_name || '';
@@ -130,7 +130,7 @@
             let movieThumb = movie.thumb_url || movie.poster_url || '';
             // Thêm base URL nếu chưa có
             if (movieThumb && !movieThumb.startsWith('http')) {
-                movieThumb = 'https://img.ophim.live/uploads/movies/' + movieThumb;
+                movieThumb = 'https://phimimg.com/' +  movieThumb;
             }
             if (!movieThumb) {
                 movieThumb = 'https://via.placeholder.com/300x450?text=No+Image';
@@ -167,7 +167,7 @@
                         ${allMovies.map((movie, index) => {
             let mobileThumb = movie.thumb_url || movie.poster_url || '';
             if (mobileThumb && !mobileThumb.startsWith('http')) {
-                mobileThumb = 'https://img.ophim.live/uploads/movies/' + mobileThumb;
+                mobileThumb = 'https://phimimg.com/' +  mobileThumb;
             }
             if (!mobileThumb) { mobileThumb = 'https://via.placeholder.com/60x90?text=Phim'; }
             const isActiveMobile = index === activeIndex;

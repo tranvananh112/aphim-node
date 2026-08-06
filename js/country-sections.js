@@ -5,26 +5,26 @@ const COUNTRY_CONFIGS = {
     korea: {
         id: 'korea',
         title: 'Phim Hàn Quốc mới',
-        url: 'https://ophim1.com/v1/api/quoc-gia/han-quoc?limit=20',
+        url: 'https://phimapi.com/v1/api/quoc-gia/han-quoc?limit=20',
         linkUrl: '/phim-theo-quoc-gia?country=han-quoc'
     },
     china: {
         id: 'china',
         title: 'Phim Trung Quốc mới',
-        url: 'https://ophim1.com/v1/api/quoc-gia/trung-quoc?limit=20',
+        url: 'https://phimapi.com/v1/api/quoc-gia/trung-quoc?limit=20',
         linkUrl: '/phim-theo-quoc-gia?country=trung-quoc'
     },
     usuk: {
         id: 'usuk',
         title: 'Phim US-UK mới',
-        url: 'https://ophim1.com/v1/api/quoc-gia/au-my?limit=20',
+        url: 'https://phimapi.com/v1/api/quoc-gia/au-my?limit=20',
         linkUrl: '/phim-theo-quoc-gia?country=au-my'
     }
 };
 
 // Create Landscape Movie Card
 function createLandscapeMovieCard(movie) {
-    const posterUrl = `https://img.ophim.live/uploads/movies/${movie.thumb_url}`;
+    const posterUrl = `https://phimimg.com/${movie.thumb_url}`;
     const detailUrl = `/phim/${movie.slug}`;
     const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
     

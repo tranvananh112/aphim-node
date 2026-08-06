@@ -5,7 +5,7 @@ const fs = require('fs');
 
 // Configuration
 const DOMAIN = 'https://aphim.top'; // Replace with your main domain
-const API_URL = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1';
+const API_URL = 'https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1';
 const KEY_FILE = path.join(__dirname, '../tactile-vial-502112-j8-e14ec813058e.json'); // JSON Key from Google Cloud
 
 async function getJwtClient() {

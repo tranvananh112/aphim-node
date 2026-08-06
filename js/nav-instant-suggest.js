@@ -158,23 +158,23 @@
     // ── API ──────────────────────────────────────────────────────────────────────
     function getOphimBase() {
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) return API_CONFIG.OPHIM_URL;
-        return 'https://ophim1.com/v1/api';
+        return 'https://phimapi.com/v1/api';
     }
 
-    const IMG_CDN = 'https://img.ophim.live/uploads/movies/';
+    const IMG_CDN = 'https://phimimg.com/';
 
     function buildImgSrc(thumb) {
         const rawImg = thumb || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 100, 70)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophim.live/${rawImg}` : `https://img.ophim.live/uploads/movies/${rawImg}`));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://phimimg.com/${rawImg}` : `https://phimimg.com/${rawImg}`));
         
         return `https://wsrv.nl/?url=${encodeURIComponent(posterUrl)}&w=114&h=162&fit=cover&output=webp&q=100`;
     }
 
     async function fetchMovies(keyword, limit) {
         let items = [];
-        const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://ophim1.com/v1/api';
+        const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://phimapi.com/v1/api';
         const url1 = `${base1}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
         
         try {
@@ -190,7 +190,7 @@
         } catch (err) {
             console.warn('Primary API failed, switching to backup API...', err);
             try {
-                const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://ophim17.cc/v1/api';
+                const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://phimapi.com/v1/api';
                 const url2 = `${base2}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
                 const ctrl2 = typeof AbortController !== 'undefined' ? new AbortController() : null;
                 const timer2 = ctrl2 ? setTimeout(() => ctrl2.abort(), 5000) : null;

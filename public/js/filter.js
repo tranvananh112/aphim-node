@@ -1,5 +1,5 @@
 // Filter Page Script
-const API_BASE = 'https://ophim1.com/v1/api';
+const API_BASE = 'https://phimapi.com/v1/api';
 
 // State
 let currentPage = 1;
@@ -203,7 +203,7 @@ function renderMovies(movies) {
         const rawImg = movie.thumb_url || movie.poster_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://img.ophim.live/uploads/movies/${rawImg}` : 'https://via.placeholder.com/300x450?text=No+Image'));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://phimimg.com/${rawImg}` : 'https://via.placeholder.com/300x450?text=No+Image'));
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };

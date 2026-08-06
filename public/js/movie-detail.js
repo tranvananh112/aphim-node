@@ -531,7 +531,7 @@ function renderVersions(movie) {
         displayLang = movie.lang;
     }
 
-    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80, true) : 'https://img.ophim.live/uploads/movies/' + (movie.thumb_url || movie.poster_url);
+    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80, true) : 'https://phimimg.com/' +  (movie.thumb_url || movie.poster_url);
 
     const currentDomain = window.location.hostname;
     const isSvap1 = currentDomain.includes('aphim.top') || currentDomain === 'localhost' || currentDomain === '127.0.0.1';

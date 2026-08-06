@@ -90,7 +90,7 @@ function renderMovies(movies, countryName) {
         const rawImg = movie.thumb_url || movie.poster_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophim.live/uploads/movies/${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
 
         return `
             <a href="${linkUrl}"

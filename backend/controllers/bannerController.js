@@ -212,7 +212,7 @@ exports.loadMoviesFromAPI = async (req, res) => {
         for (let page = startPage; page <= endPage; page++) {
             try {
                 const response = await axios.get(
-                    `https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${page}`,
+                    `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`,
                     {
                         headers: { 'accept': 'application/json' },
                         timeout: 10000

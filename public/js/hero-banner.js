@@ -423,7 +423,7 @@ function buildImageUrl(rawUrl, width) {
     }
     return rawUrl.startsWith('http')
         ? rawUrl
-        : `https://img.ophim.live/uploads/movies/${rawUrl}`;
+        : `https://phimimg.com/${rawUrl}`;
 }
 
 // -- Update ch? ph?n text c?a hero banner -----------------------
@@ -925,7 +925,7 @@ function renderHeroBannerContent(movie, isInstant) {
         console.warn('Hero image primary load error, trying fallback URL:', rawUrl);
         const fallbackUrl = rawUrl.startsWith('http')
             ? rawUrl
-            : `https://img.ophim.live/uploads/movies/${rawUrl}`;
+            : `https://phimimg.com/${rawUrl}`;
         if (heroImage.src !== fallbackUrl) {
             heroImage.src = fallbackUrl;
         }
@@ -936,7 +936,7 @@ function renderHeroBannerContent(movie, isInstant) {
         heroImage.setAttribute('data-current-src', optUrl);
         heroImage.src = optUrl;
     } else if (rawUrl) {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophim.live/uploads/movies/${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl}`;
         heroImage.src = fallbackUrl;
     }
     showHeroImage();

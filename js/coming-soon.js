@@ -17,7 +17,7 @@
 
         try {
             // Fetch from phim-chieu-rap API
-            const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-chieu-rap?page=1&limit=10', {
+            const response = await fetch('https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?page=1&limit=10', {
                 method: 'GET',
                 headers: { 'accept': 'application/json' }
             });
@@ -50,8 +50,8 @@
             const poster = movie.poster_url || '';
             
             const posterUrl = thumb ? 
-                (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : 
-                (poster ? (poster.startsWith('http') ? poster : `https://img.ophim.live/uploads/movies/${poster}`) : '');
+                (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : 
+                (poster ? (poster.startsWith('http') ? poster : `https://phimimg.com/${poster}`) : '');
                 
             const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;

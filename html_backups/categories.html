@@ -594,7 +594,7 @@
             try {
                 console.log('Fetching categories from API...');
 
-                const response = await fetch('https://ophim1.com/v1/api/the-loai', {
+                const response = await fetch('https://phimapi.com/v1/api/the-loai', {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });
@@ -682,7 +682,7 @@
             // Load sample movies for each category to get poster images
             const categoryPromises = allCategories.map(async (category) => {
                 try {
-                    const response = await fetch(`https://ophim1.com/v1/api/the-loai/${category.slug}?page=1&limit=1`, {
+                    const response = await fetch(`https://phimapi.com/v1/api/the-loai/${category.slug}?page=1&limit=1`, {
                         method: 'GET',
                         headers: { 'accept': 'application/json' }
                     });
@@ -690,7 +690,7 @@
 
                     if (data.status === 'success' && data.data && data.data.items && data.data.items.length > 0) {
                         const movie = data.data.items[0];
-                        const posterUrl = movie.thumb_url ? `https://img.ophim.live/uploads/movies/${movie.thumb_url}` : null;
+                        const posterUrl = movie.thumb_url ? `https://phimimg.com/uploads/movies/${movie.thumb_url}` : null;
                         return { ...category, posterUrl };
                     }
                     return { ...category, posterUrl: null };
@@ -763,7 +763,7 @@
             try {
                 console.log(`Fetching movies for category: ${slug}, page: ${page}`);
 
-                const response = await fetch(`https://ophim1.com/v1/api/the-loai/${slug}?page=${page}&limit=24`, {
+                const response = await fetch(`https://phimapi.com/v1/api/the-loai/${slug}?page=${page}&limit=24`, {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });

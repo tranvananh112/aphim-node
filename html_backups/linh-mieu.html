@@ -16,13 +16,13 @@
     <meta property="og:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
     <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
     <!-- 🚀 TURBO LOAD — Preconnect ngay lập tức để giảm độ trễ mạng -->
-    <link rel="preconnect" href="https://ophim1.com" crossorigin>
-    <link rel="preconnect" href="https://img.ophim.live" crossorigin>
+    <link rel="preconnect" href="https://phimapi.com" crossorigin>
+    <link rel="preconnect" href="https://phimimg.com" crossorigin>
     <link rel="preconnect" href="https://wsrv.nl" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://ophim1.com">
-    <link rel="dns-prefetch" href="https://img.ophim.live">
+    <link rel="dns-prefetch" href="https://phimapi.com">
+    <link rel="dns-prefetch" href="https://phimimg.com">
 
 
     <script src="js/chat-init-guard.js?v=37" fetchpriority="high"></script>
@@ -410,8 +410,8 @@
 
             // Gửi các request API quan trọng ngay lập tức (Pre-fetch data)
             const apiEndpoints = [
-                'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1',
-                'https://ophim1.com/v1/api/danh-sach/phim-le?page=1'
+                'https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1',
+                'https://phimapi.com/v1/api/danh-sach/phim-le?page=1'
             ];
             apiEndpoints.forEach(url => {
                 const link = document.createElement('link');
@@ -449,11 +449,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://ophim1.com" crossorigin>
-    <link rel="preconnect" href="https://img.ophim.live" crossorigin>
+    <link rel="preconnect" href="https://phimapi.com" crossorigin>
+    <link rel="preconnect" href="https://phimimg.com" crossorigin>
     <link rel="preconnect" href="https://wsrv.nl" crossorigin>
-    <link rel="dns-prefetch" href="https://ophim1.com">
-    <link rel="dns-prefetch" href="https://img.ophim.live">
+    <link rel="dns-prefetch" href="https://phimapi.com">
+    <link rel="dns-prefetch" href="https://phimimg.com">
     <link rel="dns-prefetch" href="https://wsrv.nl">
 
     <!-- Tailwind local build (không CDN - không còn warning) -->
@@ -2135,7 +2135,7 @@
             }
 
             try {
-                const response = await fetch('https://ophim1.com/v1/api/quoc-gia/viet-nam?page=1', {
+                const response = await fetch('https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1', {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });
@@ -2181,8 +2181,8 @@
 
                 const finalImgUrl = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                    (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) :
-                        (poster ? (poster.startsWith('http') ? poster : `https://img.ophim.live/uploads/movies/${poster}`) : ''));
+                    (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) :
+                        (poster ? (poster.startsWith('http') ? poster : `https://phimimg.com/uploads/movies/${poster}`) : ''));
 
                 return `
                     <div class="portrait-card group ${hiddenUI.containerClass}">
@@ -2222,8 +2222,8 @@
             const grid = document.getElementById('latestMoviesGrid');
 
             try {
-                // Use ophim1.com API to get latest movies
-                const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=1', {
+                // Use phimapi.com API to get latest movies
+                const response = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1', {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });
@@ -2263,7 +2263,7 @@
                         <div class="portrait-poster-w">
                             <img alt="${movie.name}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : `https://img.ophim.live/uploads/movies/${movie.thumb_url}`}"
+                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : `https://phimimg.com/uploads/movies/${movie.thumb_url}`}"
                                 onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
                                 fetchpriority="high"
                                 decoding="async" />
@@ -2305,7 +2305,7 @@
                 console.log('Loading action movies for homepage...');
 
                 // Load movies from category "hanh-dong"
-                const response = await fetch('https://ophim1.com/v1/api/the-loai/hanh-dong?page=1', {
+                const response = await fetch('https://phimapi.com/v1/api/the-loai/hanh-dong?page=1', {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });
@@ -2346,13 +2346,13 @@
                 const backdropUrl = poster || thumb;
                 const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                    (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophim.live/uploads/movies/${backdropUrl}`);
+                    (backdropUrl.startsWith('http') ? backdropUrl : `https://phimimg.com/uploads/movies/${backdropUrl}`);
 
                 // Poster prioritized for portrait (thumb_url)
                 const posterUrl = thumb || poster;
                 const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                    (posterUrl.startsWith('http') ? posterUrl : `https://img.ophim.live/uploads/movies/${posterUrl}`);
+                    (posterUrl.startsWith('http') ? posterUrl : `https://phimimg.com/uploads/movies/${posterUrl}`);
 
                 return `
                 <div class="action-premium-card group">
@@ -2444,7 +2444,7 @@
             const container = document.getElementById(containerId);
             try {
                 // Tăng lên 18 phim để load "đủ" hình cho scroll ngang
-                const response = await fetch(`https://ophim1.com/v1/api/the-loai/${slug}?page=1`);
+                const response = await fetch(`https://phimapi.com/v1/api/the-loai/${slug}?page=1`);
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 18);
@@ -2459,12 +2459,12 @@
                             const backdropUrl = poster || thumb;
                             const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                                (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophim.live/uploads/movies/${backdropUrl}`);
+                                (backdropUrl.startsWith('http') ? backdropUrl : `https://phimimg.com/uploads/movies/${backdropUrl}`);
 
                             const posterUrl = thumb || poster;
                             const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                                (posterUrl.startsWith('http') ? posterUrl : `https://img.ophim.live/uploads/movies/${posterUrl}`);
+                                (posterUrl.startsWith('http') ? posterUrl : `https://phimimg.com/uploads/movies/${posterUrl}`);
 
                             return `
                             <div class="action-premium-card group">
@@ -2507,7 +2507,7 @@
             const loading = document.getElementById('animationLoading');
             const container = document.getElementById('animationContainer');
             try {
-                const response = await fetch('https://ophim1.com/v1/api/danh-sach/hoat-hinh?page=1');
+                const response = await fetch('https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1');
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 18);
@@ -2519,7 +2519,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -2558,7 +2558,7 @@
             const loading = document.getElementById('adventureLoading');
             const container = document.getElementById('adventureContainer');
             try {
-                const response = await fetch('https://ophim1.com/v1/api/the-loai/phieu-luu?page=1');
+                const response = await fetch('https://phimapi.com/v1/api/the-loai/phieu-luu?page=1');
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 18);
@@ -2570,7 +2570,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -2607,7 +2607,7 @@
             const container = document.getElementById('sofaflixContainer');
             const loading = document.getElementById('sofaflixLoading');
             try {
-                const response = await fetch('https://ophim1.com/v1/api/danh-sach/phim-bo-dang-chieu?page=1');
+                const response = await fetch('https://phimapi.com/v1/api/danh-sach/phim-bo-dang-chieu?page=1');
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 10);
@@ -2620,7 +2620,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
@@ -2659,7 +2659,7 @@
             const container = document.getElementById('mythologyRankingContainer');
             const loading = document.getElementById('mythologyLoading');
             try {
-                const response = await fetch('https://ophim1.com/v1/api/the-loai/than-thoai?page=1');
+                const response = await fetch('https://phimapi.com/v1/api/the-loai/than-thoai?page=1');
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 10);
@@ -2672,7 +2672,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophim.live/uploads/movies/${thumb}`) : `https://img.ophim.live/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">

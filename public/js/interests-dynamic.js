@@ -63,7 +63,7 @@
 
         const rawUrl = thumbUrl.startsWith('http')
             ? thumbUrl
-            : `https://img.ophim.live/uploads/movies/${thumbUrl}`;
+            : `https://phimimg.com/${thumbUrl}`;
 
         if (typeof imageOptimizer !== 'undefined' && imageOptimizer.optimizeImageUrl) {
             return imageOptimizer.optimizeImageUrl(thumbUrl, 400, 70);
@@ -96,7 +96,7 @@
         img.onerror = () => {
             const rawUrl = thumbUrl.startsWith('http')
                 ? thumbUrl
-                : `https://img.ophim.live/uploads/movies/${thumbUrl}`;
+                : `https://phimimg.com/${thumbUrl}`;
             bgImgEl.style.backgroundImage = `url('${rawUrl}')`;
             bgImgEl.style.opacity = '0.85';
         };
