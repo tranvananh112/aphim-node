@@ -1164,3 +1164,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+// -- Smart Object-Fit for Vertical Posters on Desktop --
+document.addEventListener('DOMContentLoaded', () => {
+    const heroImage = document.getElementById('heroImage');
+    if (heroImage) {
+        const updateObjectFit = () => {
+            if (heroImage.naturalHeight > heroImage.naturalWidth && window.innerWidth >= 768) {
+                heroImage.style.setProperty('object-fit', 'contain', 'important');
+                heroImage.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            } else {
+                heroImage.style.setProperty('object-fit', 'cover', 'important');
+                heroImage.style.backgroundColor = 'transparent';
+            }
+        };
+        heroImage.addEventListener('load', updateObjectFit);
+        window.addEventListener('resize', () => {
+            if (heroImage.complete && heroImage.naturalWidth > 0) {
+                updateObjectFit();
+            }
+        });
+    }
+});
