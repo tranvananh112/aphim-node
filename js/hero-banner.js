@@ -84,14 +84,14 @@ async function loadFallbackBanner() {
 // -- Convert banner API format -> movie format --------------------
 function convertBannerToMovie(banner) {
     if (!banner) return null;
-    const poster = banner.posterUrl || banner.poster_url || banner.imageUrl || banner.bannerUrl || banner.image || banner.thumbUrl || banner.thumb_url || '';
-    const thumb = banner.thumbUrl || banner.thumb_url || banner.posterUrl || banner.poster_url || poster;
+    const landscape = banner.imageUrl || banner.bannerUrl || banner.image || banner.poster_url || banner.posterUrl || banner.thumb_url || banner.thumbUrl || '';
+    const portrait = banner.posterUrl || banner.poster_url || banner.thumbUrl || banner.thumb_url || landscape;
     return {
         slug: banner.movieSlug || banner.slug || '',
         name: banner.name || '',
         origin_name: banner.originName || banner.origin_name || '',
-        thumb_url: thumb,
-        poster_url: poster,
+        thumb_url: portrait,
+        poster_url: landscape,
         content: banner.content || '',
         year: banner.year || '2026',
         quality: banner.quality || 'HD',
@@ -121,7 +121,14 @@ function getHeroImageUrl(movie) {
             }
         }
     } catch(e) {}
-    return movie.poster_url || movie.thumb_url || '';
+    
+    if (!isMobile) {
+        // Desktop: Ưu tiên ảnh ngang (poster_url)
+        return movie.poster_url || movie.thumb_url || '';
+    } else {
+        // Mobile: Ưu tiên ảnh dọc (thumb_url)
+        return movie.thumb_url || movie.poster_url || '';
+    }
 }
 
 // -- State Logo Cache & ID ch?ng xung d?t (Race Condition Protection) --
