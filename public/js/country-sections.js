@@ -24,7 +24,7 @@ const COUNTRY_CONFIGS = {
 
 // Create Landscape Movie Card
 function createLandscapeMovieCard(movie) {
-    const rawImg = movie.thumb_url || movie.poster_url || '';
+    const rawImg = movie.poster_url || movie.thumb_url || '';
     const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
         ? imageOptimizer.optimizeImageUrl(rawImg, 480, 70)
         : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);

@@ -129,7 +129,7 @@ function renderLatestMoviesSection(movies) {
                                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                                             <img alt="Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                                data-src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.thumb_url}`}"
+                                                data-src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
                                                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 3'%3E%3C/svg%3E"
                                                 onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                                     ${hiddenUI.badge}
@@ -252,7 +252,7 @@ function renderAllSections(sections) {
                                     <div class="aspect-[2/3] w-full overflow-hidden relative">
                                         <img alt="Xem Phim ${movie.name} (${movie.year}) Vietsub"
                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                            data-src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.thumb_url}`}"
+                                            data-src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
                                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 3'%3E%3C/svg%3E"
                                             onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                                         ${hiddenUI.badge}
@@ -344,7 +344,7 @@ function renderVietnameseMovies(movies) {
             <div class="aspect-[2/3] w-full overflow-hidden relative">
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Thuyết Minh Vietsub"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                    src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.thumb_url}`}"
+                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
                     onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
                     loading="lazy" />
                 ${hiddenUI.badge}

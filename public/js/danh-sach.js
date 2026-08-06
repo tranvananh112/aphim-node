@@ -160,7 +160,7 @@ function renderMoviesTable(movies, listName, totalItems, totalPages_api) {
     let gridHTML = '';
 
     movies.forEach((movie) => {
-        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
             : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://phimimg.com/${rawImg}` : 'https://via.placeholder.com/200x300?text=No+Image'));

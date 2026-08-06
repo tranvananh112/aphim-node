@@ -119,7 +119,7 @@ function renderMovies(movies) {
     const moviesGrid = document.getElementById('moviesGrid');
 
     const html = movies.map(movie => {
-        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
             : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);

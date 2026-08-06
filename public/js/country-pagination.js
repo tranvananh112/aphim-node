@@ -87,7 +87,7 @@ function renderMovies(movies, countryName) {
         const hasCustomLink = !!movieLinks[movie.slug];
         const linkUrl = hasCustomLink ? `watch-simple.html?slug=${movie.slug}` : `movie-detail.html?slug=${movie.slug}`;
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
-        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
             : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);

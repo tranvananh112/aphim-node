@@ -82,7 +82,10 @@ class MovieAPI {
             try {
                 const response = await this.fetchWithTimeout(url, options);
                 if (response.ok) {
-                    return response;
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response;
+                    }
                 }
             } catch (err) {
                 lastError = err;

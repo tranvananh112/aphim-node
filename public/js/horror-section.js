@@ -127,7 +127,7 @@
                     <div class="px-16 horror-thumbnails-container" style="position:static">
                     <div class="flex items-center gap-3 horror-thumbnail-scroll pb-2">
                         ${allMovies.map((movie, index) => {
-            let movieThumb = movie.thumb_url || movie.poster_url || '';
+            let movieThumb = movie.poster_url || movie.thumb_url || '';
             // Thêm base URL nếu chưa có
             if (movieThumb && !movieThumb.startsWith('http')) {
                 movieThumb = 'https://phimimg.com/' +  movieThumb;
@@ -143,7 +143,7 @@
                                     <img 
                                         alt="${movie.name || 'Phim'}" 
                                         class="w-full h-full object-cover ${hiddenUI.imgClass}" 
-                                        src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 300, 70) : movieThumb}"
+                                        src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.poster_url || movie.thumb_url, 300, 70) : movieThumb}"
                                         onerror="this.src='https://via.placeholder.com/300x450?text=No+Image'"
                                         loading="lazy"
                                     />
@@ -165,7 +165,7 @@
                 <div class="absolute bottom-0 left-0 w-full z-10 lg:hidden px-3 pb-2">
                     <div class="flex items-center gap-2 horror-thumbnail-scroll">
                         ${allMovies.map((movie, index) => {
-            let mobileThumb = movie.thumb_url || movie.poster_url || '';
+            let mobileThumb = movie.poster_url || movie.thumb_url || '';
             if (mobileThumb && !mobileThumb.startsWith('http')) {
                 mobileThumb = 'https://phimimg.com/' +  mobileThumb;
             }
@@ -173,7 +173,7 @@
             const isActiveMobile = index === activeIndex;
             return `
                             <div class="flex-shrink-0 ${isActiveMobile ? 'w-12 h-16 horror-thumbnail-active' : 'w-10 h-14 opacity-50'} rounded-lg overflow-hidden horror-thumbnail cursor-pointer transition-all duration-300" data-movie-index="${index}">
-                                <img alt="${movie.name || 'Phim'}" class="w-full h-full object-cover" src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 150, 65) : mobileThumb}" onerror="this.src='https://via.placeholder.com/60x90?text=No'">
+                                <img alt="${movie.name || 'Phim'}" class="w-full h-full object-cover" src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.poster_url || movie.thumb_url, 150, 65) : mobileThumb}" onerror="this.src='https://via.placeholder.com/60x90?text=No'">
                             </div>`;
         }).join('')}
                     </div>
