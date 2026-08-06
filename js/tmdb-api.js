@@ -306,6 +306,29 @@ async function getHeroImagesFromTMDB(movie) {
     try {
         let tmdbMovie = null;
 
+        // Ưu tiên tải ảnh từ PhimAPI images endpoint vì rất nhanh và chính xác
+        try {
+            const imagesUrl = `https://phimapi.com/v1/api/phim/${movie.slug}/images`;
+            const response = await fetch(imagesUrl);
+            if (response.ok) {
+                const json = await response.json();
+                if (json.success && json.data && json.data.images && json.data.images.length > 0) {
+                    const backdropImg = json.data.images.find(img => img.type === 'backdrop' || img.aspect_ratio > 1);
+                    const posterImg = json.data.images.find(img => img.type === 'poster' || img.aspect_ratio < 1);
+                    if (backdropImg || posterImg) {
+                        const result = {
+                            backdrop: backdropImg ? `https://image.tmdb.org/t/p/original${backdropImg.file_path}` : null,
+                            poster: posterImg ? `https://image.tmdb.org/t/p/w780${posterImg.file_path}` : null
+                        };
+                        sessionStorage.setItem(cacheKey, JSON.stringify(result));
+                        return result;
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('Failed to load images from PhimAPI, trying TMDB API...', err);
+        }
+
         // 1. Exact ID match (if Ophim provides tmdb.id)
         if (movie.tmdb && movie.tmdb.id && String(movie.tmdb.id).trim() !== '') {
             try {
