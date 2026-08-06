@@ -3,7 +3,7 @@
 
 const TMDB_API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5'; // TMDB API Key (v3)
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_IMAGE_BASE = 'https://wsrv.nl/?url=image.tmdb.org/t/p/w185';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w185';
 
 // Wrapper to bypass VN ISP blocking via multiple fallback proxies
 async function fetchWithProxy(targetUrl) {
@@ -292,9 +292,81 @@ function removeVietnameseAccents(str) {
         .replace(/Đ/g, 'D');
 }
 
-// Export for use in other files
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { loadActorImagesFromTMDB };
+// --- NEW: HERO BANNER IMAGE FETCHING ---
+async function getHeroImagesFromTMDB(movie) {
+    if (!TMDB_API_KEY || TMDB_API_KEY === 'YOUR_TMDB_API_KEY_HERE') return null;
+    if (!movie) return null;
+
+    const cacheKey = `tmdb_hero_${movie.slug}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+        return JSON.parse(cached);
+    }
+
+    try {
+        let tmdbMovie = null;
+
+        // 1. Exact ID match (if Ophim provides tmdb.id)
+        if (movie.tmdb && movie.tmdb.id && String(movie.tmdb.id).trim() !== '') {
+            try {
+                const tmdbType = movie.tmdb.type === 'tv' ? 'tv' : 'movie';
+                const tmdbId = movie.tmdb.id;
+                const detailUrl = `${TMDB_BASE_URL}/${tmdbType}/${tmdbId}?api_key=${TMDB_API_KEY}&language=vi-VN`;
+                const response = await fetchWithProxy(detailUrl);
+                if (response.ok) {
+                    tmdbMovie = await response.json();
+                }
+            } catch (err) {}
+        }
+
+        // 2. Fallback to Search
+        if (!tmdbMovie) {
+            const searchStrategies = [
+                { query: movie.origin_name, year: movie.year },
+                { query: movie.name, year: movie.year },
+                { query: movie.origin_name, year: null },
+                { query: movie.name, year: null }
+            ];
+
+            for (const strategy of searchStrategies) {
+                if (!strategy.query) continue;
+                const query = encodeURIComponent(strategy.query);
+                const yearParam = strategy.year ? `&year=${strategy.year}` : '';
+                const searchUrl = `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${query}${yearParam}&language=vi-VN`;
+
+                try {
+                    const res = await fetchWithProxy(searchUrl);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.results && data.results.length > 0) {
+                            tmdbMovie = data.results[0];
+                            break;
+                        }
+                    }
+                } catch (err) { continue; }
+            }
+        }
+
+        if (tmdbMovie && (tmdbMovie.backdrop_path || tmdbMovie.poster_path)) {
+            // Build original/high-res URLs
+            const result = {
+                backdrop: tmdbMovie.backdrop_path ? `https://image.tmdb.org/t/p/original${tmdbMovie.backdrop_path}` : null,
+                poster: tmdbMovie.poster_path ? `https://image.tmdb.org/t/p/w780${tmdbMovie.poster_path}` : null
+            };
+            sessionStorage.setItem(cacheKey, JSON.stringify(result));
+            return result;
+        }
+    } catch (e) {}
+    
+    // Cache null so we don't retry failed movies
+    sessionStorage.setItem(cacheKey, JSON.stringify(null));
+    return null;
 }
 
+// Export for use in other files
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { loadActorImagesFromTMDB, getHeroImagesFromTMDB };
+} else {
+    window.getHeroImagesFromTMDB = getHeroImagesFromTMDB;
+}
 
