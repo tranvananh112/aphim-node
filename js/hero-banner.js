@@ -996,13 +996,11 @@ function showHeroImage() {
 async function fetchLatestEpisodeCount(movie) {
     if (!movie?.slug) return;
     try {
-        const res = await movieAPI.fetchWithFallback(`/phim/${movie.slug}`, {
-            headers: { accept: 'application/json' }
-        });
-        const data = await res.json();
-        if (data.status !== 'success' || !data.data?.item) return;
+        const data = await movieAPI.getMovieDetail(movie.slug);
+        if (!data) return;
 
-        const item = data.data.item;
+        const item = data.movie || data.data?.item;
+        if (!item) return;
 
         // Sync and update real description from database/API
         if (item.content) {
@@ -1017,7 +1015,7 @@ async function fetchLatestEpisodeCount(movie) {
         }
 
         let latestEpLabel = item.episode_current || '';
-        const eps = item.episodes;
+        const eps = data.episodes || item.episodes;
         if (Array.isArray(eps) && eps.length > 0) {
             const serverData = eps[0]?.server_data;
             if (Array.isArray(serverData) && serverData.length > 0) {
