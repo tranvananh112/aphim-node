@@ -1,5 +1,5 @@
 // Filter Page Script
-const API_BASE = 'https://ophim1.com/v1/api';
+const API_BASE = 'https://phimapi.com/v1/api';
 
 // State
 let currentPage = 1;

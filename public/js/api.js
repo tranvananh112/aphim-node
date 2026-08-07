@@ -63,16 +63,16 @@ class MovieAPI {
 
         let urlsToTry = [
             `/v1/api${basePath}${paramStr}`,
-            `https://ophim1.com${basePath}${paramStr}`,
-            `https://ophim1.com/v1/api${basePath}${paramStr}`,
-            `https://ophim1.com/v1/api${basePath}${paramStr}`,
-            `https://ophim1.com/v1/api${basePath}${paramStr}`
+            `https://phimapi.com${basePath}${paramStr}`,
+            `https://phimapi.com/v1/api${basePath}${paramStr}`,
+            `https://phimapi.com/v1/api${basePath}${paramStr}`,
+            `https://phimapi.com/v1/api${basePath}${paramStr}`
         ];
 
         if (basePath.includes('phim-moi-cap-nhat') || basePath === '/home') {
             urlsToTry.unshift(`/v1/api/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
         }
 
         const uniqueUrls = Array.from(new Set(urlsToTry.filter(Boolean)));
