@@ -198,7 +198,7 @@ class MovieAPI {
                 // Always return data if we got a response
                 // The backend should handle the format
                 return data;
-                        } else {
+            } else {
                 const response = await this.fetchWithFallback(`/phim/${slug}`, {
                     headers: { 'accept': 'application/json' }
                 });
@@ -206,10 +206,10 @@ class MovieAPI {
                 
                 // --- LẤY DỮ LIỆU TỪ NGUỒN PHỤ (SONG SONG ĐỂ TĂNG TỐC) ---
                 try {
-                    const fetchNguonC = this.fetchWithTimeout(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 8000 })
+                    const fetchNguonC = this.fetchWithTimeout(`/api/proxy/nguonc/${slug}`, { timeout: 8000 })
                         .then(res => res.ok ? res.json() : Promise.reject('NguonC error'));
                         
-                    const fetchVSMov = this.fetchWithTimeout(`https://vsmov.com/api/phim/${slug}`, { timeout: 8000 })
+                    const fetchVSMov = this.fetchWithTimeout(`/api/proxy/vsmov/${slug}`, { timeout: 8000 })
                         .then(res => res.ok ? res.json() : Promise.reject('VSMov error'));
 
                     const [ncResult, vsResult] = await Promise.allSettled([fetchNguonC, fetchVSMov]);

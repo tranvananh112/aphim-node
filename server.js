@@ -46,6 +46,58 @@ function queuedFetch(url, options) {
 // ROUTES: PAGES (SSR với EJS)
 // ==========================================
 
+// Helper lấy dữ liệu gộp từ 3 nguồn (Ophim, NguonC, VSMov) cho SSR
+async function fetchAndMergeMovieData(slug) {
+    try {
+        const [ophimRes, ncRes, vsRes] = await Promise.allSettled([
+            axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 }),
+            axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 5000 }),
+            axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 5000 })
+        ]);
+        
+        let ophimData = null;
+        if (ophimRes.status === 'fulfilled' && ophimRes.value && ophimRes.value.data) {
+            ophimData = ophimRes.value.data;
+        } else {
+            return null; // OPhim is required
+        }
+        
+        if (ncRes.status === 'fulfilled' && ncRes.value && ncRes.value.data && ncRes.value.data.movie && ncRes.value.data.movie.episodes) {
+            const ncData = ncRes.value.data;
+            const mappedEps = ncData.movie.episodes.map(s => ({
+                server_name: s.server_name || 'Vietsub',
+                server_data: (s.items || []).map(it => ({
+                    name: it.name && !it.name.toLowerCase().includes('tập') ? `Tập ${it.name}` : (it.name || 'Tập 1'),
+                    slug: it.slug || `tap-${it.name}`,
+                    link_embed: it.embed || '',
+                    link_m3u8: it.m3u8 || ''
+                }))
+            }));
+            if (!ophimData.episodes) ophimData.episodes = [];
+            mappedEps.forEach(s => ophimData.episodes.push(s));
+        }
+        
+        if (vsRes.status === 'fulfilled' && vsRes.value && vsRes.value.data && vsRes.value.data.episodes) {
+            const vsData = vsRes.value.data;
+            if (!ophimData.episodes) ophimData.episodes = [];
+            ophimData.episodes.forEach(s => {
+                if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+            });
+            vsData.episodes.forEach(vsServer => {
+                if (vsServer.server_data && vsServer.server_data.length > 0) {
+                    if (vsServer.server_name) vsServer.server_name = vsServer.server_name.replace(/ #\d+/g, '').trim();
+                    ophimData.episodes.push(vsServer);
+                }
+            });
+        }
+        
+        return ophimData;
+    } catch (e) {
+        console.error('Lỗi khi fetch và gộp dữ liệu SSR:', e.message);
+        return null;
+    }
+}
+
 // Trang chủ
 app.get('/', async (req, res) => {
     try {
@@ -80,8 +132,7 @@ app.get('/phim/:slug', async (req, res) => {
         return res.redirect(301, cleanUrl);
     }
     try {
-        const response = await axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 });
-        const data = response.data;
+        const data = await fetchAndMergeMovieData(slug);
 
         if (data && data.status && data.movie) {
             const movie = data.movie;
@@ -179,8 +230,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
         return res.redirect(301, `/xem-phim/${slug}/tap-${cleanEp}`);
     }
     try {
-        const response = await axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 });
-        const data = response.data;
+        const data = await fetchAndMergeMovieData(slug);
         const movie = data && data.movie ? data.movie : null;
         const episodes = data && data.episodes ? data.episodes : [];
 
@@ -776,98 +826,23 @@ app.get('/api/image/team/:id', async (req, res) => {
 // ==========================================
 
 // ==========================================
-// VSMOV PROXY: Fetch episodes từ nguồn phụ (server-side, tránh CORS)
-// GET /api/vsmov/:slug => thử ophim1.com, nguonc.com, rồi ophim1.com
+// API PROXY TỪ NGUỒN PHỤ (Server-side bypass CORS)
 // ==========================================
-const vsmovCache = new Map();
-const VSMOV_CACHE_TTL = 5 * 60 * 1000; // 5 phút
-
-app.get('/api/vsmov/:slug', async (req, res) => {
-    const slug = req.params.slug;
-    if (!slug || slug.length > 200) {
-        return res.status(400).json({ status: false, message: 'Invalid slug' });
+app.get('/api/proxy/nguonc/:slug', async (req, res) => {
+    try {
+        const response = await axios.get(`https://phim.nguonc.com/api/film/${req.params.slug}`, { timeout: 8000 });
+        res.json(response.data);
+    } catch (e) {
+        res.status(500).json({ status: false });
     }
-
-    const cacheEntry = vsmovCache.get(slug);
-    if (cacheEntry && Date.now() - cacheEntry.ts < VSMOV_CACHE_TTL) {
-        res.setHeader('X-Cache', 'HIT');
-        return res.json(cacheEntry.data);
+});
+app.get('/api/proxy/vsmov/:slug', async (req, res) => {
+    try {
+        const response = await axios.get(`https://vsmov.com/api/phim/${req.params.slug}`, { timeout: 8000 });
+        res.json(response.data);
+    } catch (e) {
+        res.status(500).json({ status: false });
     }
-
-    const mirrors = [
-        {
-            // Mirror 1: OPhim v1/api (endpoint mới, có đầy đủ episodes)
-            url: `https://ophim1.com/v1/api/phim/${slug}`,
-            parse: d => ({
-                episodes: d?.data?.item?.episodes || d?.episodes,
-                movie: d?.data?.item || d?.movie
-            })
-        },
-        {
-            // Mirror 2: phimapi.com (thường ít CORS hơn)
-            url: `https://phimapi.com/phim/${slug}`,
-            parse: d => ({
-                episodes: d?.episodes || d?.data?.item?.episodes,
-                movie: d?.movie || d?.data?.item
-            })
-        },
-        {
-            // Mirror 3: nguonc.com (backup cuối)
-            url: `https://phim.nguonc.com/api/film/${slug}`,
-            parse: d => {
-                if (!d || !d.movie || !d.movie.episodes) return null;
-                const mappedEps = d.movie.episodes.map(s => ({
-                    server_name: s.server_name || 'Vietsub',
-                    server_data: (s.items || []).map(it => ({
-                        name: it.name && !it.name.toLowerCase().includes('tập') ? `Tập ${it.name}` : (it.name || 'Tập 1'),
-                        slug: it.slug || `tap-${it.name}`,
-                        link_embed: it.embed || '',
-                        link_m3u8: it.m3u8 || ''
-                    }))
-                }));
-                return {
-                    episodes: mappedEps,
-                    movie: {
-                        name: d.movie.name,
-                        origin_name: d.movie.original_name,
-                        thumb_url: d.movie.thumb_url,
-                        poster_url: d.movie.poster_url,
-                        content: d.movie.description,
-                        quality: d.movie.quality,
-                        lang: d.movie.language,
-                        year: d.movie.created ? new Date(d.movie.created).getFullYear() : ''
-                    }
-                };
-            }
-        }
-    ];
-
-    for (const { url, parse } of mirrors) {
-        try {
-            const response = await axios.get(url, {
-                timeout: 8000,
-                headers: {
-                    'Accept': 'application/json',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
-            });
-
-            const parsed = parse(response.data);
-            const episodes = parsed?.episodes;
-
-            if (episodes && Array.isArray(episodes) && episodes.length > 0) {
-                const movieMeta = parsed?.movie || null;
-                const result = { status: true, source: url, episodes, movie: movieMeta };
-                vsmovCache.set(slug, { data: result, ts: Date.now() });
-                res.setHeader('X-Cache', 'MISS');
-                return res.json(result);
-            }
-        } catch (err) {
-            console.warn(`[VSMOV] Lỗi fetch ${url}:`, err.message);
-        }
-    }
-
-    res.status(500).json({ status: false, message: 'All API proxy mirrors failed' });
 });
 
 // 404 HANDLER
