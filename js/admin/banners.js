@@ -416,7 +416,7 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
         if ((data && (data.status === 'success' || data.status === true || data.status)) && (data.data?.items || data.items)) {
             let newMovies = data.data?.items || data.items;
             
-            const pagination = data.data.params?.pagination || data.data.paginate || data.data.pagination || {};
+            const pagination = data.data?.params?.pagination || data.data?.paginate || data.data?.pagination || data.pagination || {};
             const totalItems = pagination?.totalItems || pagination?.total_items || newMovies.length;
             const perPage = pagination?.totalItemsPerPage || 24;
             

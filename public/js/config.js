@@ -155,7 +155,7 @@ try {
                 
                 // Override runtime values
                 if (configMap.apiBase) API_CONFIG.OPHIM_URL = configMap.apiBase;
-                if (configMap.apiSecondary) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
+                if (configMap.apiSecondary && !configMap.apiSecondary.includes('_next/data')) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
                 if (typeof configMap.enableMultipleSources === 'boolean') API_CONFIG.USE_MULTIPLE_SOURCES = configMap.enableMultipleSources;
                 if (configMap.watermarkUrl) API_CONFIG.WATERMARK_URL = configMap.watermarkUrl;
                 if (typeof configMap.enableWatermark === 'boolean') API_CONFIG.ENABLE_WATERMARK = configMap.enableWatermark;

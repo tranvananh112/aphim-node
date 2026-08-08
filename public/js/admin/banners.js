@@ -9,6 +9,25 @@ let localFilters = {
 };
 let allBanners = []; // Cache from API
 
+function getValidImageUrl(url) {
+    if (!url) return 'https://placehold.co/400x600?text=No+Image';
+    if (url.startsWith('http')) {
+        return url.replace('phimimg.com', 'img.ophimimg.com').replace('img.ophim.live', 'img.ophimimg.com');
+    }
+    const imageBase = (window.API_CONFIG && window.API_CONFIG.IMAGE_BASE) ? window.API_CONFIG.IMAGE_BASE : 'https://img.ophimimg.com/';
+    const base = imageBase.endsWith('/') ? imageBase.slice(0, -1) : imageBase;
+    return base + '/' + normalizeImagePath(url);
+}
+
+function normalizeImagePath(url) {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    if (!url.startsWith('uploads/movies/')) {
+        return 'uploads/movies/' + url.replace(new RegExp('^/'), '');
+    }
+    return url;
+}
+
 // Check authentication
 document.addEventListener('DOMContentLoaded', () => {
     // Safely check auth early
@@ -147,7 +166,7 @@ function renderBanners() {
     tbody.innerHTML = pageItems.map(banner => `
         <tr class="hover:bg-white/5 transition-colors">
             <td>
-                <img src="https://img.ophimimg.com/uploads/movies/${banner.thumbUrl}"
+                <img src="${getValidImageUrl(banner.thumbUrl)}"
                      alt="${banner.name}"
                      class="banner-thumb"
                      onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
@@ -251,7 +270,7 @@ function renderActiveBanner() {
         const cleanContent = activeBanner.content ? activeBanner.content.replace(/<[^>]*>/g, '') : 'Không có mô tả';
         content.innerHTML = `
             <div style="display:flex;gap:24px;align-items:flex-start">
-                <img src="https://img.ophimimg.com/uploads/movies/${activeBanner.thumbUrl}"
+                <img src="${getValidImageUrl(activeBanner.thumbUrl)}"
                      alt="${activeBanner.name}"
                      class="banner-active-poster"
                      onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -402,7 +421,7 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
         if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data?.items) {
             let newMovies = data.data.items;
             
-            const pagination = data.data.params?.pagination || data.data.paginate || data.data.pagination || {};
+            const pagination = data.data?.params?.pagination || data.data?.paginate || data.data?.pagination || data.pagination || {};
             const totalItems = pagination?.totalItems || pagination?.total_items || newMovies.length;
             const perPage = pagination?.totalItemsPerPage || 24;
             
@@ -513,7 +532,7 @@ function displayMovies(movies) {
         
         return `
         <div class="movie-pick-card">
-            <img src="https://img.ophimimg.com/uploads/movies/${movie.thumb_url}"
+            <img src="${getValidImageUrl(movie.thumb_url)}"
                  alt="${movie.name}"
                  class="movie-pick-thumb"
                  onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -791,7 +810,7 @@ function renderThumbnailGrid() {
              ondragend="onThumbDragEnd(event)">
             <span class="thumb-card-order">${idx + 1}</span>
             <button class="thumb-card-remove" onclick="removeFromThumbnail('${item.movieSlug}')" title="Xóa">✕</button>
-            <img src="https://img.ophimimg.com/uploads/movies/${item.thumbUrl}"
+            <img src="${getValidImageUrl(item.thumbUrl)}"
                  alt="${item.name}"
                  onerror="this.src='https://via.placeholder.com/100x140?text=No+Img'">
             <div class="thumb-card-body">
