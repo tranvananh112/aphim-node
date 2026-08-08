@@ -12,7 +12,7 @@ let allBanners = []; // Cache from API
 function getValidImageUrl(url) {
     if (!url) return 'https://placehold.co/400x600?text=No+Image';
     if (url.startsWith('http')) return url;
-    const imageBase = (window.API_CONFIG && window.API_CONFIG.IMAGE_BASE) ? window.API_CONFIG.IMAGE_BASE : 'https://phimimg.com/';
+    const imageBase = (window.API_CONFIG && window.API_CONFIG.IMAGE_BASE) ? window.API_CONFIG.IMAGE_BASE : 'https://img.ophimimg.com/';
     const base = imageBase.endsWith('/') ? imageBase.slice(0, -1) : imageBase;
     return base + '/' + url.replace(new RegExp('^/'), '');
 }
@@ -994,7 +994,7 @@ function selectCategoryBgMovie(movie) {
     const inputId = pathMap[categoryBgSelectionMode];
     if (inputId) {
         const inputEl = document.getElementById(inputId);
-        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url}`;
+        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
         
         if (inputEl) {
             inputEl.value = imageUrl;
@@ -1042,7 +1042,7 @@ async function previewCatBg(input, previewId, apiPath = null) {
                 const data = await response.json();
                 if (data.status === 'success' && data.data && data.data.items && data.data.items.length > 0) {
                     const thumbUrl = data.data.items[0].thumb_url;
-                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://phimimg.com/${thumbUrl}`;
+                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
                 } else {
                     img.src = 'https://via.placeholder.com/80x45?text=Auto';
                 }

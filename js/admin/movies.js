@@ -67,7 +67,7 @@ function renderMoviesTable(movies) {
             </td>
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                    <img src="https://phimimg.com/${movie.thumb_url}" 
+                    <img src="https://img.ophimimg.com/uploads/movies/${movie.thumb_url}" 
                          alt="${movie.name}"
                          class="w-12 h-16 object-cover rounded"
                          onerror="this.src='https://via.placeholder.com/100x150?text=No+Image'">

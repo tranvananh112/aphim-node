@@ -17,12 +17,12 @@
     <meta property="twitter:description" content="APhim - Website xem phim online Full HD miễn phí, cập nhật phim mới nhất 2026, Phim Vietsub, Thuyết Minh, Phim Lồng Tiếng chất lượng cao." />
     <!-- 🚀 TURBO LOAD — Preconnect ngay lập tức để giảm độ trễ mạng -->
     <link rel="preconnect" href="https://phimapi.com" crossorigin>
-    <link rel="preconnect" href="https://phimimg.com" crossorigin>
+    <link rel="preconnect" href="https://img.ophimimg.com" crossorigin>
     <link rel="preconnect" href="https://wsrv.nl" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://phimapi.com">
-    <link rel="dns-prefetch" href="https://phimimg.com">
+    <link rel="dns-prefetch" href="https://img.ophimimg.com">
 
 
     <script src="js/chat-init-guard.js?v=37" fetchpriority="high"></script>
@@ -450,10 +450,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://phimapi.com" crossorigin>
-    <link rel="preconnect" href="https://phimimg.com" crossorigin>
+    <link rel="preconnect" href="https://img.ophimimg.com" crossorigin>
     <link rel="preconnect" href="https://wsrv.nl" crossorigin>
     <link rel="dns-prefetch" href="https://phimapi.com">
-    <link rel="dns-prefetch" href="https://phimimg.com">
+    <link rel="dns-prefetch" href="https://img.ophimimg.com">
     <link rel="dns-prefetch" href="https://wsrv.nl">
 
     <!-- Tailwind local build (không CDN - không còn warning) -->
@@ -2169,8 +2169,8 @@
 
                 const finalImgUrl = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                    (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) :
-                        (poster ? (poster.startsWith('http') ? poster : `https://phimimg.com/uploads/movies/${poster}`) : ''));
+                    (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/uploads/movies/${thumb}`) :
+                        (poster ? (poster.startsWith('http') ? poster : `https://img.ophimimg.com/uploads/movies/${poster}`) : ''));
 
                 return `
                     <div class="portrait-card group ${hiddenUI.containerClass}">
@@ -2251,7 +2251,7 @@
                         <div class="portrait-poster-w">
                             <img alt="${movie.name}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : `https://phimimg.com/uploads/movies/${movie.thumb_url}`}"
+                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : `https://img.ophimimg.com/uploads/movies/${movie.thumb_url}`}"
                                 onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
                                 fetchpriority="high"
                                 decoding="async" />
@@ -2334,13 +2334,13 @@
                 const backdropUrl = poster || thumb;
                 const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                    (backdropUrl.startsWith('http') ? backdropUrl : `https://phimimg.com/uploads/movies/${backdropUrl}`);
+                    (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophimimg.com/uploads/movies/${backdropUrl}`);
 
                 // Poster prioritized for portrait (thumb_url)
                 const posterUrl = thumb || poster;
                 const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                    (posterUrl.startsWith('http') ? posterUrl : `https://phimimg.com/uploads/movies/${posterUrl}`);
+                    (posterUrl.startsWith('http') ? posterUrl : `https://img.ophimimg.com/uploads/movies/${posterUrl}`);
 
                 return `
                 <div class="action-premium-card group">
@@ -2447,12 +2447,12 @@
                             const backdropUrl = poster || thumb;
                             const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                                (backdropUrl.startsWith('http') ? backdropUrl : `https://phimimg.com/uploads/movies/${backdropUrl}`);
+                                (backdropUrl.startsWith('http') ? backdropUrl : `https://img.ophimimg.com/uploads/movies/${backdropUrl}`);
 
                             const posterUrl = thumb || poster;
                             const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                                (posterUrl.startsWith('http') ? posterUrl : `https://phimimg.com/uploads/movies/${posterUrl}`);
+                                (posterUrl.startsWith('http') ? posterUrl : `https://img.ophimimg.com/uploads/movies/${posterUrl}`);
 
                             return `
                             <div class="action-premium-card group">
@@ -2507,7 +2507,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/uploads/movies/${thumb}`) : `https://img.ophimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -2558,7 +2558,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/uploads/movies/${thumb}`) : `https://img.ophimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -2608,7 +2608,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/uploads/movies/${thumb}`) : `https://img.ophimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
@@ -2660,7 +2660,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/uploads/movies/${thumb}`) : `https://phimimg.com/uploads/movies/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/uploads/movies/${thumb}`) : `https://img.ophimimg.com/uploads/movies/${poster}`);
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">

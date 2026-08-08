@@ -24,7 +24,7 @@ const COUNTRY_CONFIGS = {
 
 // Create Landscape Movie Card
 function createLandscapeMovieCard(movie) {
-    const posterUrl = `https://phimimg.com/${movie.thumb_url}`;
+    const posterUrl = `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
     const detailUrl = `/phim/${movie.slug}`;
     const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
     

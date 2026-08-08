@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('highlight') === 'true') {
         // Show message
-        showMessage('Vui lòng dang ký tài kho?n th? công bên du?i', 'info');
+        showMessage('Vui lï¿½ng dang kï¿½ tï¿½i kho?n th? cï¿½ng bï¿½n du?i', 'info');
 
         // Wait a bit then scroll and highlight
         setTimeout(() => {
@@ -31,7 +31,7 @@ function setupAuthLeftPanel() {
             const data = await res.json();
             if (data?.data?.items?.length > 0) {
                 const latestMovie = data.data.items[0];
-                const url = `https://phimimg.com/${latestMovie.thumb_url}`;
+                const url = `https://img.ophimimg.com/${latestMovie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url}`;
                 panel.style.background = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}') center / cover no-repeat`;
             }
         } catch (e) {
@@ -53,32 +53,32 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
     // Validation
     if (!name || !email || !phone || !password || !confirmPassword) {
-        showMessage('Vui lòng di?n d?y d? thông tin', 'error');
+        showMessage('Vui lï¿½ng di?n d?y d? thï¿½ng tin', 'error');
         return;
     }
 
     if (!validateEmail(email)) {
-        showMessage('Email không h?p l?', 'error');
+        showMessage('Email khï¿½ng h?p l?', 'error');
         return;
     }
 
     if (!validatePhone(phone)) {
-        showMessage('S? di?n tho?i không h?p l?', 'error');
+        showMessage('S? di?n tho?i khï¿½ng h?p l?', 'error');
         return;
     }
 
     if (!validatePassword(password)) {
-        showMessage('M?t kh?u ph?i có ít nh?t 8 ký t?, bao g?m ch? hoa, ch? thu?ng và s?', 'error');
+        showMessage('M?t kh?u ph?i cï¿½ ï¿½t nh?t 8 kï¿½ t?, bao g?m ch? hoa, ch? thu?ng vï¿½ s?', 'error');
         return;
     }
 
     if (password !== confirmPassword) {
-        showMessage('M?t kh?u xác nh?n không kh?p', 'error');
+        showMessage('M?t kh?u xï¿½c nh?n khï¿½ng kh?p', 'error');
         return;
     }
 
     if (!terms) {
-        showMessage('Vui lòng d?ng ý v?i di?u kho?n s? d?ng', 'error');
+        showMessage('Vui lï¿½ng d?ng ï¿½ v?i di?u kho?n s? d?ng', 'error');
         return;
     }
 
@@ -86,13 +86,13 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const result = await authService.register(email, password, name, phone, rememberMe);
 
     if (result.success) {
-        showMessage('Ðang ký thành công!', 'success');
+        showMessage('ï¿½ang kï¿½ thï¿½nh cï¿½ng!', 'success');
         setTimeout(() => {
             const redirectParam = new URLSearchParams(window.location.search).get('redirect');
             window.location.href = redirectParam ? decodeURIComponent(redirectParam) : 'index.html';
         }, 800);
     } else {
-        showMessage(result.message || 'Ðang ký th?t b?i', 'error');
+        showMessage(result.message || 'ï¿½ang kï¿½ th?t b?i', 'error');
     }
 });
 
@@ -185,12 +185,12 @@ function showMessage(message, type = 'info') {
 
 // Social login functions
 function loginWithGoogle() {
-    showMessage('Hi?n t?i chua h? tr? dang ký b?ng Google. Vui lòng dang ký th? công bên du?i.', 'error');
+    showMessage('Hi?n t?i chua h? tr? dang kï¿½ b?ng Google. Vui lï¿½ng dang kï¿½ th? cï¿½ng bï¿½n du?i.', 'error');
     scrollToManualForm();
 }
 
 function loginWithFacebook() {
-    showMessage('Hi?n t?i chua h? tr? dang ký b?ng Facebook. Vui lòng dang ký th? công bên du?i.', 'error');
+    showMessage('Hi?n t?i chua h? tr? dang kï¿½ b?ng Facebook. Vui lï¿½ng dang kï¿½ th? cï¿½ng bï¿½n du?i.', 'error');
     scrollToManualForm();
 }
 

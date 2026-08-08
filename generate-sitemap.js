@@ -29,7 +29,7 @@ const MAX_URLS_PER_SITEMAP = 10000; // An toàn dưới 50,000
         
         await Promise.all(batch.map(async (page) => {
             try {
-                const r = await axios.get(`https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`, { timeout: 15000 });
+                const r = await axios.get(`https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=${page}`, { timeout: 15000 });
                 if (r.data && r.data.data && r.data.data.items) {
                     allMovies.push(...r.data.data.items);
                 }
@@ -102,10 +102,10 @@ const MAX_URLS_PER_SITEMAP = 10000; // An toàn dưới 50,000
         // 1. URL Trang Chi Tiết (có đính kèm ảnh để ăn SEO Image)
         currentXml += `  <url>\n    <loc>${detailUrl}</loc>\n    <lastmod>${modDate}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n`;
         if (m.thumb_url) {
-            currentXml += `    <image:image>\n      <image:loc>https://phimimg.com/${m.thumb_url}</image:loc>\n      <image:title><![CDATA[${m.name}]]></image:title>\n    </image:image>\n`;
+            currentXml += `    <image:image>\n      <image:loc>https://img.ophimimg.com/uploads/movies/${m.thumb_url}</image:loc>\n      <image:title><![CDATA[${m.name}]]></image:title>\n    </image:image>\n`;
         }
         if (m.poster_url) {
-            currentXml += `    <image:image>\n      <image:loc>https://phimimg.com/${m.poster_url}</image:loc>\n      <image:title><![CDATA[${m.name} - Poster]]></image:title>\n    </image:image>\n`;
+            currentXml += `    <image:image>\n      <image:loc>https://img.ophimimg.com/uploads/movies/${m.poster_url}</image:loc>\n      <image:title><![CDATA[${m.name} - Poster]]></image:title>\n    </image:image>\n`;
         }
         currentXml += `  </url>\n`;
         currentUrlCount++;

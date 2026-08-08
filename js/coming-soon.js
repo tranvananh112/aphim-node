@@ -50,8 +50,8 @@
             const poster = movie.poster_url || '';
             
             const posterUrl = thumb ? 
-                (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : 
-                (poster ? (poster.startsWith('http') ? poster : `https://phimimg.com/${poster}`) : '');
+                (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumb}`) : 
+                (poster ? (poster.startsWith('http') ? poster : `https://img.ophimimg.com/${poster.startsWith('uploads/') ? '' : 'uploads/movies/'}${poster}`) : '');
                 
             const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;

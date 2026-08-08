@@ -52,7 +52,7 @@ const API_CONFIG = {
         CATEGORY: '/the-loai',
         COUNTRY: '/quoc-gia'
     },
-    IMAGE_BASE: 'https://phimimg.com/',
+    IMAGE_BASE: 'https://img.ophimimg.com/',
     STREAM_BASE: 'https://vip.opstream13.com',
 
     // Use backend or direct Ophim FOR MOVIES

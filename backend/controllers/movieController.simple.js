@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 const OPHIM_BASE = 'https://phimapi.com';
-const OPHIM_CDN = 'https://phimimg.com';
+const OPHIM_CDN = 'https://img.ophimimg.com';
 
 // In-memory cache
 let moviesCache = {};

@@ -520,8 +520,11 @@ class MovieAPI {
 
         let fullUrl = imagePath;
         if (!imagePath.startsWith('http')) {
-            const filename = imagePath.replace(/^\//, "");
-            fullUrl = `${API_CONFIG.IMAGE_BASE || 'https://phimimg.com/'}${filename}`;
+            let filename = imagePath.replace(/^\//, "");
+            if (!filename.startsWith('uploads/')) {
+                filename = 'uploads/movies/' + filename;
+            }
+            fullUrl = `${typeof API_CONFIG !== 'undefined' && API_CONFIG.IMAGE_BASE ? API_CONFIG.IMAGE_BASE : 'https://img.ophimimg.com/'}${filename}`;
         }
 
         // Use imageOptimizer for advanced compression and caching

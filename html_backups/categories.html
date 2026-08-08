@@ -690,7 +690,7 @@
 
                     if (data.status === 'success' && data.data && data.data.items && data.data.items.length > 0) {
                         const movie = data.data.items[0];
-                        const posterUrl = movie.thumb_url ? `https://phimimg.com/uploads/movies/${movie.thumb_url}` : null;
+                        const posterUrl = movie.thumb_url ? `https://img.ophimimg.com/uploads/movies/${movie.thumb_url}` : null;
                         return { ...category, posterUrl };
                     }
                     return { ...category, posterUrl: null };

@@ -161,15 +161,15 @@
         return 'https://phimapi.com/v1/api';
     }
 
-    const IMG_CDN = 'https://phimimg.com/';
+    const IMG_CDN = 'https://img.ophimimg.com/';
 
     function buildImgSrc(thumb) {
         const rawImg = thumb || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 100, 70)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://phimimg.com/${rawImg}` : `https://phimimg.com/${rawImg}`));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`));
         
-        return `https://wsrv.nl/?url=${encodeURIComponent(posterUrl)}&w=114&h=162&fit=cover&output=webp&q=100`;
+        return posterUrl;
     }
 
     async function fetchMovies(keyword, limit) {

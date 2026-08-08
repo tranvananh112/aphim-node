@@ -74,8 +74,6 @@
                                 class="w-1.5 h-6 rounded-full cinematic-gold-bar"></span>
                             Danh sách tập phim
                         </h2>
-                        <div id="server-list-desktop" class="flex flex-wrap gap-2 mb-4 w-full"></div>
-                        
                         <!-- Thanh tìm kiếm tập phim (Desktop) -->
                         <div id="episode-search-desktop" class="flex items-center gap-2 mb-4 w-full" style="display: none;">
                             <div class="relative w-48 sm:w-56">
@@ -187,6 +185,14 @@
                             <span class="material-icons-round text-[22px] sm:text-[26px] lg:text-[24px]">videocam</span>
                             <span class="hidden lg:inline text-base whitespace-nowrap">Trailer</span>
                         </button>
+                    </div>
+
+                    <!-- DESKTOP SERVER LIST: Nằm dưới nút xem ngay, chỉ hiện trên Desktop -->
+                    <div id="desktop-server-wrapper" class="hidden lg:block w-full mb-4">
+                        <h3 class="text-sm font-bold text-gray-400 mb-2 uppercase flex items-center gap-2">
+                            <span class="material-icons-round text-sm">dns</span> CHỌN MÁY CHỦ:
+                        </h3>
+                        <div id="server-list-desktop" class="flex flex-wrap items-center gap-2 mb-4 w-full"></div>
                     </div>
 
                     <!-- MOBILE EPISODES (Hidden on desktop) -->
@@ -399,47 +405,47 @@
         document.addEventListener('keydown',function(e){if(e.key==='Escape')aphimCloseGuide();});
     </script>
 
-    <!-- <script src="/js/navigation-danh-sach.js?v=17"></script> -->
-    <script src="/js/search-icon-enhance.js?v=15"></script>
-    <script src="/js/image-optimization.js?v=999"></script>
-    <script src="/js/seo-optimizer.js?v=4"></script>
-    <script src="/js/api.js?v=19"></script>
-    <script src="/js/premium-ad-blocker.js?v=3"></script>
-    <script src="/js/user.js?v=40"></script>
-    <script src="/js/rating.js?v=15"></script>
-    <script src="/js/tmdb-api.js?v=17"></script>
+    <!-- <script src="/js/navigation-danh-sach.js?v=99"></script> -->
+    <script src="/js/search-icon-enhance.js?v=99"></script>
+    <script src="/js/image-optimization.js?v=99"></script>
+    <script src="/js/seo-optimizer.js?v=99"></script>
+    <script src="/js/api.js?v=99"></script>
+    <script src="/js/premium-ad-blocker.js?v=99"></script>
+    <script src="/js/user.js?v=99"></script>
+    <script src="/js/rating.js?v=99"></script>
+    <script src="/js/tmdb-api.js?v=99"></script>
     <script src="/js/playlist-service.js"></script>
     <script src="/js/playlist-modal.js"></script>
-    <script src="/js/movie-detail.js?v=54"></script>
-    <script src="/js/movie-slider.js?v=3"></script>
-    <script src="/js/categories-dropdown.js?v=17"></script>
-    <script src="/js/countries-dropdown.js?v=17"></script>
+    <script src="/js/movie-detail.js?v=1786111318"></script>
+    <script src="/js/movie-slider.js?v=99"></script>
+    <script src="/js/categories-dropdown.js?v=99"></script>
+    <script src="/js/countries-dropdown.js?v=99"></script>
 
-    <script src="/js/dropdown-hover-fix.js?v=15"></script>
+    <script src="/js/dropdown-hover-fix.js?v=99"></script>
 
-    <script src="/js/mobile-menu-modern.js?v=42"></script>
-    <script src="/js/nav-instant-suggest.js?v=7"></script>
+    <script src="/js/mobile-menu-modern.js?v=99"></script>
+    <script src="/js/nav-instant-suggest.js?v=99"></script>
 
     <!-- Sticky Navigation -->
-    <script src="/js/sticky-nav.js?v=19"></script>
+    <script src="/js/sticky-nav.js?v=99"></script>
 
 
     <!-- ====== Firebase SDK (Compat CDN) ====== -->
     <!-- Firebase Chat Service -->
-    <script src="/js/firebase-chat.js?v=44"></script>
-    <script src="/js/top-weekly-sidebar.js?v=4"></script>
+    <script src="/js/firebase-chat.js?v=99"></script>
+    <script src="/js/top-weekly-sidebar.js?v=99"></script>
     <!-- Chat Widget Logic -->
     <!-- Auth Modal (Login/Register popup) -->
-    <script src="/js/auth-modal.js?v=15"></script>
+    <script src="/js/auth-modal.js?v=99"></script>
     <!-- Firebase Comments (aphim-comments project) -->
-    <script src="/js/firebase-comments.js?v=21"></script>
+    <script src="/js/firebase-comments.js?v=99"></script>
 
 
 
 
 
     <!-- ====== End Chat Widget ====== -->
-    <script src="/js/nav-active-indicator.js?v=15"></script>
+    <script src="/js/nav-active-indicator.js?v=99"></script>
 
     <!-- Catfish banner disabled -->
 <%- include('partials/chat') %>
@@ -502,6 +508,10 @@
 </body>
 
 </html>
+
+
+
+
 
 
 

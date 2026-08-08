@@ -114,21 +114,15 @@ function getHeroImageUrl(movie) {
         if (cached) {
             const tmdbData = JSON.parse(cached);
             if (tmdbData) {
-                if (!isMobile && tmdbData.backdrop) return tmdbData.backdrop;
-                if (isMobile && tmdbData.poster) return tmdbData.poster;
+                // Luôn ưu tiên ảnh ngang (backdrop) cho Hero Banner trên cả PC & Mobile
                 if (tmdbData.backdrop) return tmdbData.backdrop;
                 if (tmdbData.poster) return tmdbData.poster;
             }
         }
     } catch(e) {}
     
-    if (!isMobile) {
-        // Desktop: Ưu tiên ảnh ngang (thumb_url là ảnh ngang)
-        return movie.thumb_url || movie.poster_url || '';
-    } else {
-        // Mobile: Ưu tiên ảnh dọc (poster_url là ảnh dọc)
-        return movie.poster_url || movie.thumb_url || '';
-    }
+    // Luôn ưu tiên ảnh ngang (thumb_url) cho Hero Banner
+    return movie.thumb_url || movie.poster_url || '';
 }
 
 // -- State Logo Cache & ID ch?ng xung d?t (Race Condition Protection) --
@@ -148,15 +142,15 @@ function _persistLogoCache() {
     } catch (e) {}
 }
 
-// -- TMDB & Custom Logo Fetcher Si�u T?c --------------------------
+// -- TMDB & Custom Logo Fetcher Siu T?c --------------------------
 async function loadHeroLogo(movie) {
     const heroTitle = document.getElementById('heroTitle');
     if (!heroTitle) return;
 
-    // Tang ID phi�n t?i logo hi?n t?i d? lo?i b? ngay c�c request cu dang ch?y ng?m
+    // Tang ID phin t?i logo hi?n t?i d? lo?i b? ngay cc request cu dang ch?y ng?m
     const loadId = ++currentLogoLoadId;
 
-    // Ngay l?p t?c x�a s?ch m?i logo cu tr�n DOM d? kh�ng bao gi? b? ch?ng ch�o
+    // Ngay l?p t?c xa s?ch m?i logo cu trn DOM d? khng bao gi? b? ch?ng cho
     document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
 
     if (!movie) {
@@ -164,9 +158,9 @@ async function loadHeroLogo(movie) {
         return;
     }
 
-    // H�m ph? tr? hi?n th? logo mu?t m�, an to�n
+    // Hm ph? tr? hi?n th? logo mu?t m, an ton
     function applyLogoToDOM(url) {
-        if (loadId !== currentLogoLoadId) return; // N?u user chuy?n slide kh�c -> h?y ngay
+        if (loadId !== currentLogoLoadId) return; // N?u user chuy?n slide khc -> h?y ngay
         document.querySelectorAll('#heroTitleImg').forEach(el => el.remove());
 
         // ? FIX: ?n heroTitle NGAY L?P T?C khi b?t d?u t?i logo
@@ -209,13 +203,13 @@ async function loadHeroLogo(movie) {
         }
     }
 
-    // 1. Uu ti�n tuy?t d?i: N?u c� Custom Logo t? Admin th� d�ng lu�n (kh�ng g?i TMDB n?a)
+    // 1. Uu tin tuy?t d?i: N?u c Custom Logo t? Admin th dng lun (khng g?i TMDB n?a)
     if (movie.logoUrl && movie.logoUrl.trim() !== '') {
         applyLogoToDOM(movie.logoUrl.trim());
         return;
     }
 
-    // 2. Ki?m tra b? nh? t?m (Cache): N?u d� t?ng t?i logo phim n�y r?i th� d�ng ngay l?p t?c
+    // 2. Ki?m tra b? nh? t?m (Cache): N?u d t?ng t?i logo phim ny r?i th dng ngay l?p t?c
     const cacheKey = movie.slug || movie.name;
     if (logoCache.has(cacheKey)) {
         const cachedUrl = logoCache.get(cacheKey);
@@ -227,10 +221,10 @@ async function loadHeroLogo(movie) {
         return;
     }
 
-    // Hi?n th? text title t?m th?i trong l�c truy v?n TMDB l?n d?u
+    // Hi?n th? text title t?m th?i trong lc truy v?n TMDB l?n d?u
     heroTitle.style.display = 'block';
 
-    // 3. N?u chua c� th� ti?n h�nh t�m tr�n TMDB
+    // 3. N?u chua c th ti?n hnh tm trn TMDB
     const API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
 
     // Robust proxy fetcher
@@ -261,7 +255,7 @@ async function loadHeroLogo(movie) {
             const query = encodeURIComponent(movie.origin_name || movie.name);
             const searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`;
             const searchRes = await secureFetch(searchUrl);
-            if (loadId !== currentLogoLoadId) return; // H?y n?u slide d� chuy?n
+            if (loadId !== currentLogoLoadId) return; // H?y n?u slide d chuy?n
 
             if (searchRes) {
                 const searchData = await searchRes.json();
@@ -315,11 +309,11 @@ async function loadHeroLogo(movie) {
 }
 
 // ================================================================
-// AUTO-RETURN TIMER � t? v? Admin Banner sau N gi�y b? tuong t�c
+// AUTO-RETURN TIMER  t? v? Admin Banner sau N giy b? tuong tc
 // ================================================================
 function startAutoReturnTimer() {
     clearAutoReturnTimer();
-    // Ch? d?t timer n?u dang ? slide kh�c 0
+    // Ch? d?t timer n?u dang ? slide khc 0
     if (currentSlideIndex !== 0) {
         autoReturnTimer = setTimeout(() => {
             if (currentSlideIndex !== 0) {
@@ -336,14 +330,14 @@ function clearAutoReturnTimer() {
     }
 }
 
-// -- Reset timer khi user tuong t�c ------------------------------
+// -- Reset timer khi user tuong tc ------------------------------
 function resetAutoReturn() {
     clearAutoReturnTimer();
     startAutoReturnTimer();
 }
 
 // ================================================================
-// SLIDE SWITCHING � Core Logic (n�ng c?p mu?t m�)
+// SLIDE SWITCHING  Core Logic (nng c?p mu?t m)
 // ================================================================
 function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
     if (isTransitioning) return;
@@ -360,8 +354,19 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
     const rawUrl = getHeroImageUrl(movie);
     const optUrl = buildImageUrl(rawUrl, 1200);
     if (optUrl) {
+        // Tăng tốc cực đại: báo cho trình duyệt tải ở mức ưu tiên cao nhất
+        if (!document.querySelector(`link[href="${optUrl}"]`)) {
+            const preloadLink = document.createElement('link');
+            preloadLink.rel = 'preload';
+            preloadLink.as = 'image';
+            preloadLink.href = optUrl;
+            preloadLink.fetchPriority = 'high';
+            document.head.appendChild(preloadLink);
+        }
+        
         const preImg = new Image();
-        preImg.src = optUrl; // b?t d?u t?i ngay, kh�ng ch?
+        preImg.fetchPriority = 'high'; // Đảm bảo mức độ ưu tiên
+        preImg.src = optUrl; // bắt đầu tải ngay, không chờ
     }
 
     // -- PHASE 1: Fade OUT (nhanh hon) --
@@ -370,7 +375,7 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
     if (heroImage) heroImage.classList.add('hero-img-out');
     if (heroContent) heroContent.classList.add('hero-content-out');
 
-    // -- PHASE 2 (160ms � d? d? fade out, ng?n nh?t c� th?) --
+    // -- PHASE 2 (160ms  d? d? fade out, ng?n nh?t c th?) --
     setTimeout(() => {
         currentSlideIndex = newIndex;
 
@@ -393,11 +398,11 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
             }
         }
 
-        // -- Swap ?nh: kh�ng ch? load xong, swap v� fade in lu�n --
+        // -- Swap ?nh: khng ch? load xong, swap v fade in lun --
         if (heroImage && optUrl) {
             heroImage.setAttribute('data-current-src', optUrl);
 
-            // Ki?m tra ?nh d� cache chua (n?u preload xong th� swap ngay)
+            // Ki?m tra ?nh d cache chua (n?u preload xong th swap ngay)
             const cached = new Image();
             cached.onload = () => {
                 heroImage.src = optUrl;
@@ -408,10 +413,10 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
             cached.onerror = () => {
                 heroImage.classList.remove('opacity-0', 'hero-img-out');
             };
-            // src d� du?c preload song song ? thu?ng complete ngay
+            // src d du?c preload song song ? thu?ng complete ngay
             cached.src = optUrl;
             if (cached.complete && cached.naturalWidth > 0) {
-                // ?nh d� c� trong cache browser ? hi?n ngay
+                // ?nh d c trong cache browser ? hi?n ngay
                 heroImage.src = optUrl;
                 heroImage.classList.remove('opacity-0', 'hero-img-out');
                 heroImage.classList.add('hero-img-in');
@@ -421,7 +426,7 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
             heroImage.classList.remove('opacity-0', 'hero-img-out');
         }
 
-        // -- Fade IN text ngay (kh�ng delay) --
+        // -- Fade IN text ngay (khng delay) --
         if (heroContent) {
             heroContent.classList.remove('opacity-0', 'hero-content-out');
             heroContent.classList.add('hero-content-in');
@@ -439,12 +444,15 @@ function switchHeroSlide(newIndex, skipThumbnailHighlight, isAutoReturn) {
 // -- Build optimized image URL ------------------------------------
 function buildImageUrl(rawUrl, width) {
     if (!rawUrl) return '';
+    // BYPASS image optimizer for TMDB images as they are already on a fast CDN!
+    if (rawUrl.includes('tmdb.org')) return rawUrl;
+    
     if (typeof movieAPI !== 'undefined' && movieAPI.getImageURL) {
         return movieAPI.getImageURL(rawUrl, width, 90, true);
     }
     return rawUrl.startsWith('http')
         ? rawUrl
-        : `https://phimimg.com/${rawUrl}`;
+        : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
 }
 
 // -- Update ch? ph?n text c?a hero banner -----------------------
@@ -457,7 +465,7 @@ function updateHeroBannerText(movie) {
 
     if (heroTitle) {
         heroTitle.textContent = movie.name || '';
-        // ? FIX: Ch? hi?n text title n?u ch?c ch?n kh�ng c� logo
+        // ? FIX: Ch? hi?n text title n?u ch?c ch?n khng c logo
         const cacheKeyCheck = movie.slug || movie.name;
         const hasLogoReady = (movie.logoUrl && movie.logoUrl.trim() !== '') ||
                              (logoCache.has(cacheKeyCheck) && logoCache.get(cacheKeyCheck) !== 'TEXT_ONLY');
@@ -474,7 +482,7 @@ function updateHeroBannerText(movie) {
         let epText = movie.episode_current || '';
         if (epText) {
             const lcText = epText.toLowerCase().trim();
-            if (lcText === 't?p' || lcText === 't?p ' || lcText.includes('ho�n t?t') || lcText.includes('full')) {
+            if (lcText === 't?p' || lcText === 't?p ' || lcText.includes('hon t?t') || lcText.includes('full')) {
                 epText = 'Full';
             }
         }
@@ -527,11 +535,11 @@ function updateHeroBannerText(movie) {
     if (heroDescription) {
         heroDescription.textContent = movie.content
             ? movie.content.replace(/<[^>]*>/g, '').substring(0, 180) + '...'
-            : '�ang t?i th�ng tin phim...';
+            : 'ang t?i thng tin phim...';
     }
 }
 
-// -- Update href n�t play + info ---------------------------------
+// -- Update href nt play + info ---------------------------------
 function updateHeroButtons(movie) {
     const heroPlayBtn = document.getElementById('heroPlayBtn');
     const heroInfoBtn = document.getElementById('heroInfoBtn');
@@ -543,7 +551,7 @@ function updateHeroButtons(movie) {
 function updateThumbnailActive(slideIndex) {
     const thumbItems = document.querySelectorAll('.hero-thumb-item');
     thumbItems.forEach((el, i) => {
-        // slideIndex 0 = admin banner ? kh�ng c� thumbnail active n�o
+        // slideIndex 0 = admin banner ? khng c thumbnail active no
         if (slideIndex > 0 && i === slideIndex - 1) {
             el.classList.add('hero-thumb-active');
         } else {
@@ -564,11 +572,11 @@ function attachSwipeHandler() {
     let isDragging = false;
     let swipeDir = null; // 'h' = horizontal, 'v' = vertical, null = unknown
     const SWIPE_THRESHOLD = 45;
-    const AXIS_LOCK_PX = 8;  // px di chuy?n d? x�c d?nh hu?ng
+    const AXIS_LOCK_PX = 8;  // px di chuy?n d? xc d?nh hu?ng
 
     // -- TOUCH (Mobile) -----------------------------------
     heroEl.addEventListener('touchstart', (e) => {
-        // B? qua n?u ch?m v�o thumbnail ho?c m?c quan t�m/section kh�c
+        // B? qua n?u ch?m vo thumbnail ho?c m?c quan tm/section khc
         if (e.target.closest('.hero-thumb-item, .interests-section, .interests-wrapper, .interest-card, .mobile-thumb-wrapper, a, button, section, .overflow-x-auto, .scrollbar-hide, [class*="overflow-x"], [class*="snap-"], .movie-card, .portrait-card, .action-premium-card, img')) return;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
@@ -581,7 +589,7 @@ function attachSwipeHandler() {
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
 
-        // X�c d?nh hu?ng sau khi di chuy?n AXIS_LOCK_PX
+        // Xc d?nh hu?ng sau khi di chuy?n AXIS_LOCK_PX
         if (!swipeDir && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
             swipeDir = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v';
         }
@@ -608,7 +616,7 @@ function attachSwipeHandler() {
             heroImage.style.transition = '';
         }
 
-        // B? qua n?u dang cu?n d?c ho?c kh�ng d? ngu?ng
+        // B? qua n?u dang cu?n d?c ho?c khng d? ngu?ng
         if (swipeDir !== 'h' || Math.abs(dx) < SWIPE_THRESHOLD) {
             startAutoReturnTimer();
             return;
@@ -729,7 +737,7 @@ async function loadThumbnailMovies() {
         console.warn('Thumbnail API error, fallback VN:', err);
     }
 
-    // 3. Fallback: phim Vi?t Nam (ch? khi kh�ng c� cache)
+    // 3. Fallback: phim Vi?t Nam (ch? khi khng c cache)
     if (!hasCache) {
         loadVietnameseThumbnailsFallback();
     }
@@ -764,7 +772,7 @@ async function loadVietnameseThumbnailsFallback() {
     } catch (e) { console.error('VN fallback error:', e); }
 }
 
-// -- �p d?ng danh s�ch thumbnail v�o slide system + DOM ----------
+// -- p d?ng danh sch thumbnail vo slide system + DOM ----------
 function applyThumbnails(movies) {
     if (!Array.isArray(movies) || movies.length === 0) return;
 
@@ -775,29 +783,53 @@ function applyThumbnails(movies) {
     updateThumbnailActive(currentSlideIndex);
 
     // Preload t?t c? ?nh thumbnail ngay sau khi render
-    // ? khi user click, ?nh d� s?n s�ng trong browser cache
+    // ? khi user click, ?nh d s?n sng trong browser cache
     preloadSlideImages(movies);
 }
 
 // -- Preload ?nh ng?m cho t?t c? slides --------------------------
 function preloadSlideImages(movies) {
-    // Delay nh? d? kh�ng tranh bang th�ng v?i initial hero image
+    // Delay nh? d? khng tranh bang thng v?i initial hero image
     setTimeout(() => {
+        const handleTMDBSync = (movie, slideIdx) => {
+            if (typeof getHeroImagesFromTMDB === 'function') {
+                getHeroImagesFromTMDB(movie).then(res => {
+                    if (res && currentSlideIndex === slideIdx) {
+                        const heroImage = document.getElementById('heroImage');
+                        if (heroImage) {
+                            const optUrl = getHeroImageUrl(movie);
+                            if (optUrl && heroImage.getAttribute('data-current-src') !== optUrl) {
+                                const preImg = new Image();
+                                preImg.onload = () => { 
+                                    heroImage.src = optUrl; 
+                                    heroImage.setAttribute('data-current-src', optUrl); 
+                                };
+                                preImg.src = optUrl;
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Sync admin banner
+        const adminBannerSlide = heroSlides[0] || currentAdminBanner;
+        if (adminBannerSlide) handleTMDBSync(adminBannerSlide, 0);
+
         movies.forEach((movie, i) => {
-            const isMobile = window.innerWidth < 768;
-            const rawUrl = movie.poster_url || movie.thumb_url;
+            handleTMDBSync(movie, i + 1);
+            const rawUrl = getHeroImageUrl(movie);
             if (!rawUrl) return;
             const url = buildImageUrl(rawUrl, 1200);
             if (url) {
                 const img = new Image();
                 img.src = url;
-                // Kh�ng c?n x? l� onload/onerror � ch? c?n trigger cache
             }
         });
-    }, 800); // Delay 800ms d? hero image d?u ti�n load tru?c
+    }, 300); // Giảm từ 800ms → 300ms để bắt đầu preload TMDB sớm hơn
 }
 
-// -- Render thumbnail DOM v?i click handler -----------------------
+// -- Render thumbnail DOM với click handler -----------------------
 function renderThumbnails(movies) {
     const container = document.getElementById('heroThumbnails');
     if (!container || !Array.isArray(movies) || movies.length === 0) return;
@@ -807,7 +839,7 @@ function renderThumbnails(movies) {
             ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 300, 75)
             : buildImageUrl(movie.thumb_url || movie.poster_url, 300);
 
-        const slideIndex = i + 1; // +1 v� index 0 l� admin banner
+        const slideIndex = i + 1;
 
         return `
         <div class="hero-thumb-item flex-shrink-0 snap-start"
@@ -839,22 +871,15 @@ function renderThumbnails(movies) {
         });
     });
 
-    // -- Cu?n v? d?u: item d?u ti�n lu�n hi?n th? tru?c ----------
-    // D�ng setTimeout 0 d? d?m b?o DOM d� render xong
     setTimeout(() => { container.scrollLeft = 0; }, 0);
 
-    // ?? Th�m scroll listener cho thumbnails d? reset auto return ??
     let thumbScrollTimer = null;
     container.addEventListener('scroll', () => {
         if (currentSlideIndex !== 0) {
             clearTimeout(thumbScrollTimer);
-            thumbScrollTimer = setTimeout(() => {
-                resetAutoReturn();
-            }, 100);
+            thumbScrollTimer = setTimeout(() => { resetAutoReturn(); }, 100);
         }
     }, { passive: true });
-
-    // Hover preview removed per user request
 }
 
 // ================================================================
@@ -863,26 +888,14 @@ function renderThumbnails(movies) {
 function previewHeroPoster(movie) {
     const heroImage = document.getElementById('heroImage');
     if (!heroImage || !movie) return;
-
-    // Smart selection cho Desktop & Mobile
     const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
-
     const optUrl = buildImageUrl(posterUrl, 1200);
     if (!optUrl) return;
-
-    // Fade out current image
     heroImage.style.opacity = '0.3';
-
-    // Preload new image
     const img = new Image();
-    img.onload = () => {
-        heroImage.src = optUrl;
-        heroImage.style.opacity = '1';
-    };
+    img.onload = () => { heroImage.src = optUrl; heroImage.style.opacity = '1'; };
     img.src = optUrl;
-
-    // Update text content
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
 }
@@ -891,26 +904,16 @@ function returnToCurrentSlide(slideIndex) {
     if (slideIndex < 0 || slideIndex >= heroSlides.length) return;
     const movie = heroSlides[slideIndex];
     if (!movie) return;
-
-    // Restore original slide
     const heroImage = document.getElementById('heroImage');
     if (!heroImage) return;
-
     const posterUrl = getHeroImageUrl(movie);
     if (!posterUrl) return;
-
     const optUrl = buildImageUrl(posterUrl, 1200);
     if (!optUrl) return;
-
     heroImage.style.opacity = '0.3';
-
     const img = new Image();
-    img.onload = () => {
-        heroImage.src = optUrl;
-        heroImage.style.opacity = '1';
-    };
+    img.onload = () => { heroImage.src = optUrl; heroImage.style.opacity = '1'; };
     img.src = optUrl;
-
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
 }
@@ -919,7 +922,6 @@ function returnToCurrentSlide(slideIndex) {
 // INITIAL RENDER (first load)
 // ================================================================
 function renderHeroBannerContent(movie, isInstant) {
-    // Hi?n text ngay l?p t?c � kh�ng ch? ?nh
     updateHeroBannerText(movie);
     updateHeroButtons(movie);
     setupHeroActions(movie);
@@ -942,14 +944,26 @@ function renderHeroBannerContent(movie, isInstant) {
     const rawUrl = getHeroImageUrl(movie);
     const optUrl = buildImageUrl(rawUrl, 1200);
 
+    // 🚀 TURBO: Inject <link rel="preload"> cho ảnh hero ngay lập tức
+    // Trình duyệt sẽ bắt đầu tải ảnh ở mức ưu tiên cao nhất TRƯỚC khi JS chạy xong
+    if (optUrl && !document.querySelector('link[data-hero-preload]')) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'image';
+        preloadLink.href = optUrl;
+        preloadLink.setAttribute('data-hero-preload', '1');
+        preloadLink.fetchPriority = 'high';
+        document.head.appendChild(preloadLink);
+    }
+
+    // 🚀 TURBO: Set fetchpriority=high để trình duyệt ưu tiên tải ảnh này
+    heroImage.fetchPriority = 'high';
+    heroImage.loading = 'eager';
+    heroImage.decoding = 'async';
+
     heroImage.onerror = () => {
-        console.warn('Hero image primary load error, trying fallback URL:', rawUrl);
-        const fallbackUrl = rawUrl.startsWith('http')
-            ? rawUrl
-            : `https://phimimg.com/${rawUrl}`;
-        if (heroImage.src !== fallbackUrl) {
-            heroImage.src = fallbackUrl;
-        }
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
+        if (heroImage.src !== fallbackUrl) heroImage.src = fallbackUrl;
         showHeroImage();
     };
 
@@ -957,7 +971,7 @@ function renderHeroBannerContent(movie, isInstant) {
         heroImage.setAttribute('data-current-src', optUrl);
         heroImage.src = optUrl;
     } else if (rawUrl) {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
         heroImage.src = fallbackUrl;
     }
     showHeroImage();
@@ -983,9 +997,7 @@ function showHeroImage() {
     }
 }
 
-// ================================================================
-// EPISODE COUNT BADGE
-// ================================================================
+
 async function fetchLatestEpisodeCount(movie) {
     if (!movie?.slug) return;
     try {
@@ -1092,3 +1104,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+// -- Smart Object-Fit for Vertical Posters on Desktop --
+document.addEventListener('DOMContentLoaded', () => {
+    const heroImage = document.getElementById('heroImage');
+    if (heroImage) {
+        const updateObjectFit = () => {
+            if (heroImage.naturalHeight > heroImage.naturalWidth && window.innerWidth >= 768) {
+                heroImage.style.setProperty('object-fit', 'contain', 'important');
+                heroImage.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            } else {
+                heroImage.style.setProperty('object-fit', 'cover', 'important');
+                heroImage.style.backgroundColor = 'transparent';
+            }
+        };
+        heroImage.addEventListener('load', updateObjectFit);
+        window.addEventListener('resize', () => {
+            if (heroImage.complete && heroImage.naturalWidth > 0) {
+                updateObjectFit();
+            }
+        });
+    }
+});

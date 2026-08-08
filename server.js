@@ -5,7 +5,7 @@ const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // ===== VIEW ENGINE: EJS =====
 app.set('view engine', 'ejs');
@@ -49,7 +49,7 @@ function queuedFetch(url, options) {
 // Trang chủ
 app.get('/', async (req, res) => {
     try {
-        const response = await axios.get('https://phimapi.com/v1/api/home', { timeout: 5000 });
+        const response = await axios.get('https://ophim1.com/v1/api/home', { timeout: 5000 });
         const movies = response.data && response.data.data ? response.data.data.items || [] : [];
         res.render('index', {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
@@ -80,7 +80,7 @@ app.get('/phim/:slug', async (req, res) => {
         return res.redirect(301, cleanUrl);
     }
     try {
-        const response = await axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 5000 });
+        const response = await axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 });
         const data = response.data;
 
         if (data && data.status && data.movie) {
@@ -109,7 +109,7 @@ app.get('/phim/:slug', async (req, res) => {
             desc = desc.substring(0, 155);
 
             const img = movie.thumb_url
-                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' +  movie.thumb_url)
+                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
                 : 'https://aphim.top/android-chrome-512x512.png';
             const pageUrl = `https://aphim.top/phim/${slug}`;
 
@@ -179,7 +179,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
         return res.redirect(301, `/xem-phim/${slug}/tap-${cleanEp}`);
     }
     try {
-        const response = await axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 5000 });
+        const response = await axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 });
         const data = response.data;
         const movie = data && data.movie ? data.movie : null;
         const episodes = data && data.episodes ? data.episodes : [];
@@ -196,7 +196,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
             
             title = `Xem Phim ${name} ${currentEpStr} - Vietsub Thuyết Minh HD ${year}`;
             metaDescription = `Xem phim ${name} ${currentEpStr} Vietsub Thuyết Minh Full HD trực tuyến. Xem ngay không quảng cáo, tải trang siêu tốc tại APhim.`;
-            ogImage = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' +  movie.thumb_url) : ogImage;
+            ogImage = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url) : ogImage;
         }
 
         res.render('watch', {
@@ -403,7 +403,7 @@ app.get('/sitemap-images.xml', async (req, res) => {
         await Promise.all(pages.slice(0, 1).map(async (page) => {
             try {
                 // /danh-sach/phim-moi-cap-nhat không còn tồn tại (404) - dùng /home
-                const r = await axios.get('https://phimapi.com/v1/api/home', { timeout: 6000 });
+                const r = await axios.get('https://ophim1.com/v1/api/home', { timeout: 6000 });
                 if (r.data && r.data.data && r.data.data.items) {
                     allMovies.push(...r.data.data.items);
                 }
@@ -415,10 +415,10 @@ app.get('/sitemap-images.xml', async (req, res) => {
             const name = (movie.name || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
             const pageUrl = 'https://aphim.top/phim/' + slug;
             const thumb = movie.thumb_url
-                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' +  movie.thumb_url)
+                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
                 : '';
             const poster = movie.poster_url
-                ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://phimimg.com/' +  movie.poster_url)
+                ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://img.ophimimg.com/' + (movie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.poster_url)
                 : '';
 
             let imageEntries = '';
@@ -467,9 +467,9 @@ app.get('/sitemap.xml', (req, res) => {
 // ==========================================
 app.use('/v1/api', async (req, res) => {
     const urlsToTry = [
-        `https://phimapi.com/v1/api${req.path}`,
-        `https://phimapi.com/v1/api${req.path}`,
-        `https://phimapi.com/v1/api${req.path}`
+        `https://ophim1.com/v1/api${req.path}`,
+        `https://ophim1.com/v1/api${req.path}`,
+        `https://ophim1.com/v1/api${req.path}`
     ];
     
     let lastError = null;
@@ -777,7 +777,7 @@ app.get('/api/image/team/:id', async (req, res) => {
 
 // ==========================================
 // VSMOV PROXY: Fetch episodes từ nguồn phụ (server-side, tránh CORS)
-// GET /api/vsmov/:slug => thử phimapi.com, nguonc.com, rồi phimapi.com
+// GET /api/vsmov/:slug => thử ophim1.com, nguonc.com, rồi ophim1.com
 // ==========================================
 const vsmovCache = new Map();
 const VSMOV_CACHE_TTL = 5 * 60 * 1000; // 5 phút
@@ -796,13 +796,23 @@ app.get('/api/vsmov/:slug', async (req, res) => {
 
     const mirrors = [
         {
-            url: `https://phimapi.com/phim/${slug}`,
+            // Mirror 1: OPhim v1/api (endpoint mới, có đầy đủ episodes)
+            url: `https://ophim1.com/v1/api/phim/${slug}`,
             parse: d => ({
-                episodes: d?.episodes,
-                movie: d?.movie
+                episodes: d?.data?.item?.episodes || d?.episodes,
+                movie: d?.data?.item || d?.movie
             })
         },
         {
+            // Mirror 2: phimapi.com (thường ít CORS hơn)
+            url: `https://phimapi.com/phim/${slug}`,
+            parse: d => ({
+                episodes: d?.episodes || d?.data?.item?.episodes,
+                movie: d?.movie || d?.data?.item
+            })
+        },
+        {
+            // Mirror 3: nguonc.com (backup cuối)
             url: `https://phim.nguonc.com/api/film/${slug}`,
             parse: d => {
                 if (!d || !d.movie || !d.movie.episodes) return null;
@@ -829,13 +839,6 @@ app.get('/api/vsmov/:slug', async (req, res) => {
                     }
                 };
             }
-        },
-        {
-            url: `https://phimapi.com/phim/${slug}`,
-            parse: d => ({
-                episodes: d?.data?.item?.episodes || d?.episodes || d?.movie?.episodes,
-                movie: d?.data?.item || d?.movie
-            })
         }
     ];
 

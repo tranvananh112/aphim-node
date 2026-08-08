@@ -27,7 +27,7 @@ function createLandscapeMovieCard(movie) {
     const rawImg = movie.poster_url || movie.thumb_url || '';
     const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
         ? imageOptimizer.optimizeImageUrl(rawImg, 480, 70)
-        : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
+        : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
     const detailUrl = `movie-detail.html?slug=${movie.slug}`;
     const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
     

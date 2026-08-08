@@ -105,7 +105,7 @@ function renderLatestMoviesSection(movies) {
 
     const html = `
         <section class="py-4 md:py-5 bg-transparent">
-            <div class="w-full px-4 md:px-10 lg:px-16">
+            <div class="w-full px-4 md:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-8">
                     <h2 class="text-3xl font-bold text-white flex items-center gap-3">
                         <span class="w-1.5 h-8 bg-primary rounded-full block shadow-[0_0_10px_rgba(242,242,13,0.5)]"></span>
@@ -129,7 +129,7 @@ function renderLatestMoviesSection(movies) {
                                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                                             <img alt="Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                                src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                                                src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                                 loading="lazy"
                                                 onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                                     ${hiddenUI.badge}
@@ -226,7 +226,7 @@ function renderAllSections(sections) {
 
         return `
             <section class="py-1 md:py-1 ${bgClass}">
-                <div class="w-full px-4 md:px-10 lg:px-16">
+                <div class="w-full px-4 md:px-6 lg:px-8">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-3xl font-bold text-white flex items-center gap-3">
                             <span class="w-1.5 h-8 bg-primary rounded-full block shadow-[0_0_10px_rgba(242,242,13,0.5)]"></span>
@@ -252,7 +252,7 @@ function renderAllSections(sections) {
                                     <div class="aspect-[2/3] w-full overflow-hidden relative">
                                         <img alt="Xem Phim ${movie.name} (${movie.year}) Vietsub"
                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                            src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                                            src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                             loading="lazy"
                                             onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                                         ${hiddenUI.badge}
@@ -344,7 +344,7 @@ function renderVietnameseMovies(movies) {
             <div class="aspect-[2/3] w-full overflow-hidden relative">
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Thuyết Minh Vietsub"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                     onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
                     loading="lazy" />
                 ${hiddenUI.badge}
@@ -395,3 +395,6 @@ window.addEventListener('hiddenMoviesSynced', () => {
     console.log('Hidden movies synced, re-rendering home sections...');
     loadHomeMovies();
 });
+
+
+

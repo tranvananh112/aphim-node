@@ -206,7 +206,7 @@ function renderMovies(movies) {
         const rawImg = thumbUrl || movie.poster_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://phimimg.com/${rawImg}` : `https://phimimg.com/${rawImg}`));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`));
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const episodeCurrent = movie.episode_current || 'N/A';

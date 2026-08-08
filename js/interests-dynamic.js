@@ -65,7 +65,7 @@
 
         const rawUrl = thumbUrl.startsWith('http')
             ? thumbUrl
-            : `https://phimimg.com/${thumbUrl}`;
+            : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
 
         if (typeof imageOptimizer !== 'undefined' && imageOptimizer.optimizeImageUrl) {
             return imageOptimizer.optimizeImageUrl(thumbUrl, 400, 70);
@@ -74,7 +74,7 @@
         // Dùng wsrv.nl để resize + convert sang webp
         try {
             const encoded = encodeURIComponent(rawUrl);
-            return `https://wsrv.nl/?url=${encoded}&w=400&q=70&output=webp`;
+            return url;
         } catch {
             return rawUrl;
         }
@@ -98,7 +98,7 @@
         img.onerror = () => {
             const rawUrl = thumbUrl.startsWith('http')
                 ? thumbUrl
-                : `https://phimimg.com/${thumbUrl}`;
+                : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
             bgImgEl.style.backgroundImage = `url('${rawUrl}')`;
             bgImgEl.style.opacity = '0.85';
         };

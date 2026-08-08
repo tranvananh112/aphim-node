@@ -147,7 +147,7 @@ function renderFeaturedComments(movies) {
         const user = FAKE_USERS[Math.floor(Math.random() * FAKE_USERS.length)];
         const text = FAKE_COMMENTS[Math.floor(Math.random() * FAKE_COMMENTS.length)];
         const rawThumb = m.thumb_url || m.poster_url || '';
-        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://phimimg.com/${rawThumb}` : `https://phimimg.com/${rawThumb}`));
+        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}` : `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}`));
         const avatarUrl = `https://i.pravatar.cc/150?img=${i + 10}`;
         const genderIcons = ['all_inclusive', 'female', 'male'];
         const gender = genderIcons[Math.floor(Math.random() * genderIcons.length)];
@@ -186,7 +186,7 @@ function renderMovieList(elementId, items, displayMode = 'views') {
     
     container.innerHTML = items.map((item, index) => {
         const rawThumb = item.thumb_url || item.poster_url || '';
-        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://phimimg.com/${rawThumb}` : `https://phimimg.com/${rawThumb}`));
+        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}` : `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}`));
         
         // Giả lập view cao và rating 9.5-10
         const views = Math.floor(Math.random() * 500) + 100; // 100k - 600k

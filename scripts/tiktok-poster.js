@@ -432,7 +432,7 @@ async function autoPostMovie() {
     }
 
     // Trích xuất hình ảnh Poster từ Ophim
-    const imageDomain = "https://phimimg.com/uploads/movies/";
+    const imageDomain = "https://img.ophimimg.com/uploads/movies/";
     const posterUrl = movie.poster_url ? (movie.poster_url.startsWith('http') ? movie.poster_url : imageDomain + movie.poster_url) : 
                       (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : imageDomain + movie.thumb_url) : null);
 

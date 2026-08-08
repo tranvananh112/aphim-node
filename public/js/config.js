@@ -47,10 +47,10 @@ const API_CONFIG = {
     BACKEND_URL: chosenBackend + '/api',
 
     // Default Ophim API (primary)
-    OPHIM_URL: 'https://phimapi.com/v1/api',
+    OPHIM_URL: 'https://ophim1.com/v1/api',
 
     // Default Ophim17 API (secondary - mirror)
-    OPHIM17_URL: 'https://phimapi.com',
+    OPHIM17_URL: 'https://ophim1.com',
 
     // Backup PhimAPI (unblocked mirror)
     
@@ -64,7 +64,7 @@ const API_CONFIG = {
         COUNTRY: '/quoc-gia',
         YEAR: '/nam-phat-hanh'
     },
-    IMAGE_BASE: 'https://phimimg.com/',
+    IMAGE_BASE: 'https://img.ophimimg.com/',
     IMAGE_BASE_BACKUP: 'https://img.phimapi.com/uploads/movies/',
     STREAM_BASE: 'https://vip.opstream13.com',
 
@@ -86,7 +86,7 @@ try {
         if (cachedContent.apiBase && !cachedContent.apiBase.includes('apii.online')) {
             API_CONFIG.OPHIM_URL = cachedContent.apiBase;
         } else {
-            API_CONFIG.OPHIM_URL = 'https://phimapi.com/v1/api';
+            API_CONFIG.OPHIM_URL = 'https://ophim1.com/v1/api';
             // Clear broken cached apiBase
             delete cachedContent.apiBase;
             localStorage.setItem('cinestream_public_settings', JSON.stringify(cachedContent));
@@ -121,10 +121,10 @@ try {
             // Resolve safe apiBase: prefer server value if valid, else fallback
             const safeApiBase = (content?.apiBase && !isBanned(content.apiBase))
                 ? content.apiBase
-                : 'https://phimapi.com';
+                : 'https://ophim1.com';
             const safeApiSecondary = (content?.apiSecondary && !isBanned(content.apiSecondary))
                 ? content.apiSecondary
-                : 'https://phimapi.com';
+                : 'https://ophim1.com';
 
             let configMap = {
                 apiBase: safeApiBase,

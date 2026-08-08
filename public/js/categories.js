@@ -122,7 +122,7 @@ function renderMovies(movies) {
         const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
         const quality = movie.quality || 'HD';
         const year = movie.year || '';
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };

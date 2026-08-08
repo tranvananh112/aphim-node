@@ -37,8 +37,21 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 // Load movie and play
 async function loadMovieAndPlay(slug, episodeSlug) {
-    let ophimOk = false;
-
+    // 🔄 Fetch secondary servers in background to append to SSR data
+    movieAPI.getMovieDetail(slug).then(fullData => {
+        if (fullData && fullData.data && fullData.data.item && fullData.data.item.episodes) {
+            if (fullData.data.item.episodes.length > currentMovie.episodes.length) {
+                currentMovie.episodes = fullData.data.item.episodes;
+                renderServerList(currentMovie.episodes, currentServerIndex);
+            }
+        } else if (fullData && fullData.episodes) {
+            if (fullData.episodes.length > currentMovie.episodes.length) {
+                currentMovie.episodes = fullData.episodes;
+                renderServerList(currentMovie.episodes, currentServerIndex);
+            }
+        }
+    }).catch(e => console.warn('Background secondary fetch failed:', e));
+    
     // Check if initialMovie from SSR is available
     if (window.initialMovie && (window.initialMovie.slug === slug || !slug)) {
         currentMovie = window.initialMovie;
@@ -131,8 +144,9 @@ async function loadMovieAndPlay(slug, episodeSlug) {
         }
     }
 
-    // Luôn luôn thử VSMOV
-    await fetchAndMergeSecondaryServers(slug, !ophimOk, episodeSlug);
+    if (!ophimOk) {
+        await fetchAndMergeSecondaryServers(slug, true, episodeSlug);
+    }
 }
 
 // 🔄 Fetch VSMOV qua proxy server-side (tránh CORS)
@@ -140,11 +154,6 @@ async function loadMovieAndPlay(slug, episodeSlug) {
 // 🔄 Helper fetch nguồn phụ thông minh: Thử proxy server-side trước, nếu fail thì gọi thẳng phimapi.com (có CORS)
 async function getSecondaryEpisodes(slug) {
     let proxyUrl = `/api/vsmov/${encodeURIComponent(slug)}`;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        if (window.location.port !== '3000') {
-            proxyUrl = `http://localhost:3000/api/vsmov/${encodeURIComponent(slug)}`;
-        }
-    }
 
     try {
         const res = await fetch(proxyUrl);
@@ -272,35 +281,10 @@ async function fetchAndMergeSecondaryServers(slug, isPrimary = false, episodeSlu
             return;
         }
 
-        // ── CASE 2: OPhim OK → merge thêm server phụ ────────────────────
-        if (!currentMovie) return;
-        if (!currentMovie.episodes) currentMovie.episodes = [];
-
-        // Đổi tên tất cả nguồn chính thành Nguồn 1, Nguồn 2...
-        currentMovie.episodes.forEach((s, idx) => {
-            if (!s.original_server_name) s.original_server_name = s.server_name;
-            s.server_name = `Nguồn ${idx + 1}`;
-        });
-
-        let added = 0;
-        data.episodes.forEach((server) => {
-            if (server.server_data && server.server_data.length > 0) {
-                const svrNum = currentMovie.episodes.length + 1;
-                const origName = server.original_server_name || server.server_name;
-                currentMovie.episodes.push({
-                    ...server,
-                    original_server_name: origName,
-                    server_name: `Nguồn ${svrNum}`
-                });
-                added++;
-            }
-        });
-
-        if (added > 0) {
-            console.log(`✅ Đã thêm ${added} máy chủ mới (Tổng: ${currentMovie.episodes.length} nguồn)`);
-            renderServerList(currentMovie.episodes);
-            // ❌ KHÔNG tự động gọi changeServer hay initializePlayer ở đây
-            // → tránh gọi player nhiều lần gây xung đột luồng video
+        // ── CASE 2: OPhim OK → Đã được xử lý gộp ở api.js ────
+        if (!isPrimary) {
+            console.log('✅ OPhim OK, dữ liệu nguồn phụ đã được api.js gộp tự động.');
+            return;
         }
     } catch (err) {
         console.warn('⚠️ Nguồn phụ thất bại:', err.message);
@@ -757,8 +741,12 @@ function renderVersions(movie) {
     wrapper.className = 'w-full';
     wrapper.innerHTML = versionsHTML;
 
-    // Chèn vào SAU danh sách tập phim (dưới cùng của block)
-    parentContainer.appendChild(wrapper);
+    const serverList = document.getElementById('server-list');
+    if (serverList) {
+        serverList.after(wrapper);
+    } else {
+        parentContainer.appendChild(wrapper);
+    }
 }
 
 // Logic chuyển hướng linh hoạt giữa Node và HTML
@@ -1119,21 +1107,27 @@ function renderServerList(episodes) {
         let borderColor = 'border-blue-500';
         let activeBg = 'bg-blue-500/20';
         let sepColor = 'text-blue-400';
+        let glowShadow = 'shadow-[0_0_12px_rgba(59,130,246,0.5)]';
+        let inactiveBg = 'bg-blue-500/10';
 
-        if (index === 0) { // Nguồn 1: Vàng
+        if (index === 0) { // Ngu?n 1: V�ng
             borderColor = 'border-yellow-500';
             activeBg = 'bg-yellow-500/20';
             sepColor = 'text-yellow-400';
-        } else if (index === 1) { // Nguồn 2: Xanh lá
+            glowShadow = 'shadow-[0_0_12px_rgba(234,179,8,0.5)]';
+            inactiveBg = 'bg-yellow-500/10';
+        } else if (index === 1) { // Ngu?n 2: Xanh l�
             borderColor = 'border-green-500';
             activeBg = 'bg-green-500/20';
             sepColor = 'text-green-400';
+            glowShadow = 'shadow-[0_0_12px_rgba(34,197,94,0.5)]';
+            inactiveBg = 'bg-green-500/10';
         }
 
         if (isActive) {
             return `
                 <button onclick="changeServer(${index})"
-                    class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 border-2 ${borderColor} ${activeBg} text-white shadow-md cursor-pointer">
+                    class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 border-2 ${borderColor} ${activeBg} text-white ${glowShadow} cursor-pointer hover:brightness-110">
                     <span class="text-white font-bold">${serverName}</span>
                     <span class="${sepColor} font-bold">|</span>
                     <span class="text-gray-200 font-medium">${epText}</span>
@@ -1142,7 +1136,7 @@ function renderServerList(episodes) {
         } else {
             return `
                 <button onclick="changeServer(${index})"
-                    class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 border ${borderColor}/60 bg-black/20 hover:bg-white/10 text-gray-300 hover:text-white cursor-pointer">
+                    class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 border border-white/10 bg-[#323447] hover:bg-white/20 text-gray-300 hover:text-white cursor-pointer">
                     <span>${serverName}</span>
                     <span class="text-gray-500">|</span>
                     <span class="text-gray-400">${epText}</span>
@@ -1151,8 +1145,11 @@ function renderServerList(episodes) {
         }
     }).join('');
 
-    container.innerHTML = labelHTML + buttonsHTML;
-    container.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
+    const btnHTML = labelHTML + buttonsHTML;
+    if (container) {
+        container.innerHTML = btnHTML;
+        container.className = "flex flex-wrap items-center gap-2 mb-4 w-full";
+    }
 }
 
 window.changeServer = function(index) {
@@ -2684,4 +2681,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const style = document.createElement('style');
 style.innerHTML = '#mpbFs, #mab-fs, #fullscreenBtn { display: none !important; }';
 document.head.appendChild(style);
+
+
+
 

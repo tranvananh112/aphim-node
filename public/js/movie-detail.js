@@ -78,6 +78,23 @@ async function loadMovieDetail(slug) {
         }, 50);
 
         ophimOk = true;
+
+        // Fetch secondary servers in background to append to SSR data
+        movieAPI.getMovieDetail(slug).then(fullData => {
+            if (fullData && fullData.data && fullData.data.item && fullData.data.item.episodes) {
+                // Check if we got more servers than we currently have
+                if (fullData.data.item.episodes.length > currentMovie.episodes.length) {
+                    currentMovie.episodes = fullData.data.item.episodes;
+                    renderEpisodes(currentMovie.episodes);
+                }
+            } else if (fullData && fullData.episodes) {
+                if (fullData.episodes.length > currentMovie.episodes.length) {
+                    currentMovie.episodes = fullData.episodes;
+                    renderEpisodes(currentMovie.episodes);
+                }
+            }
+        }).catch(e => console.warn('Background secondary fetch failed:', e));
+
     } else {
         try {
             const response = await movieAPI.getMovieDetail(slug);
@@ -97,27 +114,22 @@ async function loadMovieDetail(slug) {
 
                 ophimOk = true;
             } else {
-                console.warn('⚠️ [Detail] OPhim không có phim này, thử nguồn phụ (VSMOV)...');
+                console.warn('⚠️ [Detail] API không trả về phim này, thử proxy fallback...');
             }
         } catch (error) {
-            console.warn('⚠️ [Detail] OPhim lỗi:', error.message, '→ thử VSMOV...');
+            console.warn('⚠️ [Detail] API lỗi:', error.message, '→ thử proxy fallback...');
         }
     }
 
-    // Luôn luôn thử VSMOV:
-    // - Nếu OPhim OK: merge thêm server phụ
-    // - Nếu OPhim thất bại: dùng VSMOV làm nguồn chính
-    await fetchAndMergeSecondaryServersDetail(slug, !ophimOk);
+    // Nếu fetch chính qua API thất bại hoàn toàn, thử qua getSecondaryEpisodes làm fallback cuối
+    if (!ophimOk) {
+        await fetchAndMergeSecondaryServersDetail(slug, true);
+    }
 }
 
 // 🔄 Helper fetch nguồn phụ thông minh: Thử proxy server-side trước, nếu fail thì gọi thẳng phimapi.com (có CORS)
 async function getSecondaryEpisodes(slug) {
     let proxyUrl = `/api/vsmov/${encodeURIComponent(slug)}`;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        if (window.location.port !== '3000') {
-            proxyUrl = `http://localhost:3000/api/vsmov/${encodeURIComponent(slug)}`;
-        }
-    }
 
     try {
         const res = await fetch(proxyUrl);
@@ -241,32 +253,10 @@ async function fetchAndMergeSecondaryServersDetail(slug, isPrimary = false) {
             return;
         }
 
-        // ── CASE 2: OPhim OK → merge thêm server phụ ───────────────────────
-        if (!currentMovie) return;
-        if (!currentMovie.episodes) currentMovie.episodes = [];
-
-        currentMovie.episodes.forEach((s, idx) => {
-            if (!s.original_server_name) s.original_server_name = s.server_name;
-            s.server_name = `Nguồn ${idx + 1}`;
-        });
-
-        let added = 0;
-        data.episodes.forEach((server) => {
-            if (server.server_data && server.server_data.length > 0) {
-                const svrNum = currentMovie.episodes.length + 1;
-                const origName = server.original_server_name || server.server_name;
-                currentMovie.episodes.push({
-                    ...server,
-                    original_server_name: origName,
-                    server_name: `Nguồn ${svrNum}`
-                });
-                added++;
-            }
-        });
-
-        if (added > 0) {
-            console.log(`✅ [Detail] Đã thêm ${added} máy chủ mới`);
-            renderEpisodes(currentMovie.episodes);
+        // ── CASE 2: OPhim OK → Đã được gộp tự động bởi api.js ────────────
+        if (!isPrimary) {
+            console.log('✅ [Detail] OPhim OK, dữ liệu nguồn phụ đã được api.js gộp tự động.');
+            return;
         }
     } catch (err) {
         console.warn('⚠️ [Detail] Nguồn phụ thất bại:', err.message);
@@ -531,7 +521,7 @@ function renderVersions(movie) {
         displayLang = movie.lang;
     }
 
-    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 400, 80, true) : 'https://phimimg.com/' +  (movie.thumb_url || movie.poster_url);
+    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 400, 80, true) : 'https://img.ophimimg.com/' +  (movie.thumb_url || movie.poster_url);
 
     const currentDomain = window.location.hostname;
     const isSvap1 = currentDomain.includes('aphim.top') || currentDomain === 'localhost' || currentDomain === '127.0.0.1';
@@ -616,12 +606,27 @@ function renderVersions(movie) {
     const heroAd = document.getElementById('movie-detail-hero-ad');
     
     if (window.innerWidth < 1024 && mobileEpisodesWrapper) {
-        // Trên mobile, Danh sách tập phim nằm trên, Các bản chiếu nằm ngay bên dưới danh sách tập phim
-        mobileEpisodesWrapper.after(wrapper);
+        // Trên mobile, Các bản chiếu nằm dưới Máy Chủ
+        const mobileServerWrapper = document.getElementById('server-list-mobile')?.parentElement;
+        if (mobileServerWrapper) {
+            mobileServerWrapper.after(wrapper);
+        } else {
+            mobileEpisodesWrapper.after(wrapper);
+        }
     } else {
-        // Trên desktop, Các bản chiếu nằm ngay dưới cụm nút Xem Ngay
-        const targetAnchor = heroAd || actionsContainer;
-        targetAnchor.after(wrapper);
+        // Trên desktop, Các bản chiếu nằm dưới Máy Chủ
+        const desktopServerWrapper = document.getElementById('desktop-server-wrapper');
+        const actionsContainer = document.querySelector('.movie-actions-container');
+        const heroAd = document.getElementById('movie-detail-hero-ad');
+        
+        if (desktopServerWrapper) {
+            // Đảm bảo luôn nằm dưới danh sách Máy Chủ
+            desktopServerWrapper.after(wrapper);
+        } else if (heroAd) {
+            heroAd.after(wrapper);
+        } else if (actionsContainer) {
+            actionsContainer.after(wrapper);
+        }
     }
 }
 
@@ -1112,21 +1117,27 @@ function renderEpisodes(episodes) {
             let borderColor = 'border-blue-500';
             let activeBg = 'bg-blue-500/20';
             let sepColor = 'text-blue-400';
+            let glowShadow = 'shadow-[0_0_12px_rgba(59,130,246,0.5)]';
+            let inactiveBg = 'bg-blue-500/10';
 
-            if (index === 0) { // Nguồn 1: Vàng
+            if (index === 0) { // Ngu?n 1: V�ng
                 borderColor = 'border-yellow-500';
                 activeBg = 'bg-yellow-500/20';
                 sepColor = 'text-yellow-400';
-            } else if (index === 1) { // Nguồn 2: Xanh lá
+                glowShadow = 'shadow-[0_0_12px_rgba(234,179,8,0.5)]';
+                inactiveBg = 'bg-yellow-500/10';
+            } else if (index === 1) { // Ngu?n 2: Xanh l�
                 borderColor = 'border-green-500';
                 activeBg = 'bg-green-500/20';
                 sepColor = 'text-green-400';
+                glowShadow = 'shadow-[0_0_12px_rgba(34,197,94,0.5)]';
+                inactiveBg = 'bg-green-500/10';
             }
 
             if (isActive) {
                 return `
                     <button onclick="changeServerDetail(${index})"
-                        class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 border-2 ${borderColor} ${activeBg} text-white shadow-md cursor-pointer">
+                        class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-200 border-2 ${borderColor} ${activeBg} text-white ${glowShadow} cursor-pointer hover:brightness-110">
                         <span class="text-white font-bold">${serverName}</span>
                         <span class="${sepColor} font-bold">|</span>
                         <span class="text-gray-200 font-medium">${epText}</span>
@@ -1135,7 +1146,7 @@ function renderEpisodes(episodes) {
             } else {
                 return `
                     <button onclick="changeServerDetail(${index})"
-                        class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 border ${borderColor}/60 bg-black/20 hover:bg-white/10 text-gray-300 hover:text-white cursor-pointer">
+                        class="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 border border-white/10 bg-[#323447] hover:bg-white/20 text-gray-300 hover:text-white cursor-pointer">
                         <span>${serverName}</span>
                         <span class="text-gray-500">|</span>
                         <span class="text-gray-400">${epText}</span>
@@ -1148,12 +1159,11 @@ function renderEpisodes(episodes) {
         
         if (desktopServerContainer) {
             desktopServerContainer.innerHTML = serverHtml;
-            desktopServerContainer.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
-            desktopServerContainer.style.scrollbarWidth = ''; // Đã bỏ ẩn thanh cuộn
+            desktopServerContainer.className = "flex flex-wrap items-center gap-2 mb-4 w-full";
         }
         if (mobileServerContainer) {
             mobileServerContainer.innerHTML = serverHtml;
-            mobileServerContainer.className = "flex flex-nowrap overflow-x-auto items-center gap-2 mb-4 w-full pb-2 hide-scrollbar";
+            mobileServerContainer.className = "flex flex-wrap items-center gap-2 mb-4 w-full";
             mobileServerContainer.style.scrollbarWidth = ''; // Đã bỏ ẩn thanh cuộn
         }
     }
@@ -1596,4 +1606,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+
 

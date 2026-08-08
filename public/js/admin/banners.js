@@ -147,7 +147,7 @@ function renderBanners() {
     tbody.innerHTML = pageItems.map(banner => `
         <tr class="hover:bg-white/5 transition-colors">
             <td>
-                <img src="https://phimimg.com/${banner.thumbUrl}"
+                <img src="https://img.ophimimg.com/uploads/movies/${banner.thumbUrl}"
                      alt="${banner.name}"
                      class="banner-thumb"
                      onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
@@ -251,7 +251,7 @@ function renderActiveBanner() {
         const cleanContent = activeBanner.content ? activeBanner.content.replace(/<[^>]*>/g, '') : 'Không có mô tả';
         content.innerHTML = `
             <div style="display:flex;gap:24px;align-items:flex-start">
-                <img src="https://phimimg.com/${activeBanner.thumbUrl}"
+                <img src="https://img.ophimimg.com/uploads/movies/${activeBanner.thumbUrl}"
                      alt="${activeBanner.name}"
                      class="banner-active-poster"
                      onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -513,7 +513,7 @@ function displayMovies(movies) {
         
         return `
         <div class="movie-pick-card">
-            <img src="https://phimimg.com/${movie.thumb_url}"
+            <img src="https://img.ophimimg.com/uploads/movies/${movie.thumb_url}"
                  alt="${movie.name}"
                  class="movie-pick-thumb"
                  onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
@@ -791,7 +791,7 @@ function renderThumbnailGrid() {
              ondragend="onThumbDragEnd(event)">
             <span class="thumb-card-order">${idx + 1}</span>
             <button class="thumb-card-remove" onclick="removeFromThumbnail('${item.movieSlug}')" title="Xóa">✕</button>
-            <img src="https://phimimg.com/${item.thumbUrl}"
+            <img src="https://img.ophimimg.com/uploads/movies/${item.thumbUrl}"
                  alt="${item.name}"
                  onerror="this.src='https://via.placeholder.com/100x140?text=No+Img'">
             <div class="thumb-card-body">
@@ -980,7 +980,7 @@ function selectCategoryBgMovie(movie) {
     const inputId = pathMap[categoryBgSelectionMode];
     if (inputId) {
         const inputEl = document.getElementById(inputId);
-        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url}`;
+        const imageUrl = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
         
         if (inputEl) {
             inputEl.value = imageUrl;
@@ -1028,7 +1028,7 @@ async function previewCatBg(input, previewId, apiPath = null) {
                 const data = await response.json();
                 if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items && data.data.items.length > 0) {
                     const thumbUrl = data.data.items[0].thumb_url;
-                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://phimimg.com/${thumbUrl}`;
+                    img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
                 } else {
                     img.src = 'https://via.placeholder.com/80x45?text=Auto';
                 }

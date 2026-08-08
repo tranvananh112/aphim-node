@@ -105,7 +105,7 @@ function renderMovies(movies, countryName) {
                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                     <img alt="${movie.name}"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                        src="https://phimimg.com/${movie.thumb_url}"
+                        src="https://img.ophimimg.com/uploads/movies/${movie.thumb_url}"
                         loading="lazy"
                         onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
                     ${hiddenUI.badge}

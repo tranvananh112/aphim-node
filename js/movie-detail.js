@@ -511,7 +511,7 @@ function renderVersions(movie) {
         displayLang = movie.lang;
     }
 
-    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80, true) : 'https://phimimg.com/' +  (movie.thumb_url || movie.poster_url);
+    const imgUrl = typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80, true) : 'https://img.ophimimg.com/' +  (movie.thumb_url || movie.poster_url);
 
     // Check if we are in the Node app (which doesn't use .html extensions)
     const isNodeDomain = !window.location.pathname.includes('.html');

@@ -63,16 +63,16 @@ class MovieAPI {
 
         let urlsToTry = [
             `/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`,
-            `https://phimapi.com/v1/api${basePath}${paramStr}`
+            `https://ophim1.com${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`,
+            `https://ophim1.com/v1/api${basePath}${paramStr}`
         ];
 
         if (basePath.includes('phim-moi-cap-nhat') || basePath === '/home') {
             urlsToTry.unshift(`/v1/api/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
-            urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+            urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
         }
 
         const uniqueUrls = Array.from(new Set(urlsToTry.filter(Boolean)));
@@ -204,7 +204,69 @@ class MovieAPI {
                 });
                 const ophimData = await response.json();
                 
-                
+                // --- LẤY DỮ LIỆU TỪ NGUỒN PHỤ (SONG SONG ĐỂ TĂNG TỐC) ---
+                try {
+                    const fetchNguonC = this.fetchWithTimeout(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 8000 })
+                        .then(res => res.ok ? res.json() : Promise.reject('NguonC error'));
+                        
+                    const fetchVSMov = this.fetchWithTimeout(`https://vsmov.com/api/phim/${slug}`, { timeout: 8000 })
+                        .then(res => res.ok ? res.json() : Promise.reject('VSMov error'));
+
+                    const [ncResult, vsResult] = await Promise.allSettled([fetchNguonC, fetchVSMov]);
+
+                    // Xử lý dữ liệu NguonC (Nguồn 2, Nguồn 3)
+                    if (ncResult.status === 'fulfilled' && ncResult.value && ncResult.value.status === 'success' && ncResult.value.movie && ncResult.value.movie.episodes) {
+                        const ncData = ncResult.value;
+                        const mappedEps = ncData.movie.episodes.map(s => ({
+                            server_name: s.server_name || 'Vietsub',
+                            server_data: (s.items || []).map(it => ({
+                                name: it.name && !it.name.toLowerCase().includes('tập') ? `Tập ${it.name}` : (it.name || 'Tập 1'),
+                                slug: it.slug || `tap-${it.name}`,
+                                link_embed: it.embed || '',
+                                link_m3u8: it.m3u8 || ''
+                            }))
+                        }));
+                        mappedEps.forEach(ncServer => {
+                            if (ophimData.data && ophimData.data.item) {
+                                if (!ophimData.data.item.episodes) ophimData.data.item.episodes = [];
+                                ophimData.data.item.episodes.push(ncServer);
+                            } else if (ophimData.movie) {
+                                if (!ophimData.episodes) ophimData.episodes = [];
+                                ophimData.episodes.push(ncServer);
+                            }
+                        });
+                    }
+
+                    // Xử lý dữ liệu VSMov (Nguồn 4, Nguồn 5...)
+                    if (vsResult.status === 'fulfilled' && vsResult.value && vsResult.value.status && vsResult.value.episodes && vsResult.value.episodes.length > 0) {
+                        const vsData = vsResult.value;
+                        if (ophimData.data && ophimData.data.item) {
+                            if (!ophimData.data.item.episodes) ophimData.data.item.episodes = [];
+                            ophimData.data.item.episodes.forEach(s => {
+                                if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+                            });
+                            vsData.episodes.forEach(vsServer => {
+                                if (vsServer.server_data && vsServer.server_data.length > 0) {
+                                    if (vsServer.server_name) vsServer.server_name = vsServer.server_name.replace(/ #\d+/g, '').trim();
+                                    ophimData.data.item.episodes.push(vsServer);
+                                }
+                            });
+                        } else if (ophimData.movie) {
+                            if (!ophimData.episodes) ophimData.episodes = [];
+                            ophimData.episodes.forEach(s => {
+                                if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+                            });
+                            vsData.episodes.forEach(vsServer => {
+                                if (vsServer.server_data && vsServer.server_data.length > 0) {
+                                    if (vsServer.server_name) vsServer.server_name = vsServer.server_name.replace(/ #\d+/g, '').trim();
+                                    ophimData.episodes.push(vsServer);
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Lỗi gọi nguồn phụ song song:', e.message);
+                }
                 
                 return ophimData;
             }
@@ -257,7 +319,20 @@ class MovieAPI {
                 }
                 return null;
             } else {
-                const response = await this.fetchWithFallback(`/the-loai/${categorySlug}?page=${page}`, {
+                let endpoint = '/danh-sach/' + categorySlug + '?page=' + page;
+                if (categorySlug.startsWith('the-loai/') || categorySlug.startsWith('quoc-gia/')) {
+                    const actualSlug = categorySlug.split('/')[1];
+                    endpoint = '/' + categorySlug + '?page=' + page;
+                } else if (!categorySlug.includes('/')) {
+                    const mainCategories = ['hanh-dong', 'tinh-cam', 'hai-huoc', 'vien-tuong', 'vo-thuat', 'kinh-di', 'tam-ly', 'than-thoai', 'hoat-hinh', 'phieu-luu', 'chieu-rap'];
+                    if (mainCategories.includes(categorySlug)) {
+                        endpoint = '/the-loai/' + categorySlug + '?page=' + page;
+                    } else {
+                        endpoint = '/danh-sach/' + categorySlug + '?page=' + page;
+                    }
+                }
+                
+                const response = await this.fetchWithFallback(endpoint, {
                     headers: { 'accept': 'application/json' }
                 });
                 const data = await response.json();
@@ -331,7 +406,17 @@ class MovieAPI {
     // Get home movies (alias to getMovieList)
     async getHome() {
         try {
-            return await this.getMovieList(1);
+            if (this.useBackend) {
+                const response = await this.fetchWithAuth(`${this.backendURL}/movies/home`);
+                const data = await response.json();
+                return this.filterHiddenMovies(this.normalizeResponse(data));
+            } else {
+                const response = await this.fetchWithFallback('/home', {
+                    headers: { 'accept': 'application/json' }
+                });
+                const data = await response.json();
+                return this.filterHiddenMovies(this.normalizeResponse(data));
+            }
         } catch (e) {
             console.warn('Error in getHome:', e);
             return null;
@@ -405,8 +490,16 @@ class MovieAPI {
 
         let fullUrl = imagePath;
         if (!imagePath.startsWith('http')) {
-            const filename = imagePath.replace(/^\//, "");
-            fullUrl = `${typeof API_CONFIG !== 'undefined' && API_CONFIG.IMAGE_BASE ? API_CONFIG.IMAGE_BASE : 'https://phimimg.com/'}${filename}`;
+            let filename = imagePath.replace(/^\//, "");
+            if (!filename.startsWith('uploads/')) {
+                filename = 'uploads/movies/' + filename;
+            }
+            fullUrl = `${typeof API_CONFIG !== 'undefined' && API_CONFIG.IMAGE_BASE ? API_CONFIG.IMAGE_BASE : 'https://img.ophimimg.com/'}${filename}`;
+        }
+
+        // Use imageOptimizer for advanced compression and caching
+        if (typeof imageOptimizer !== 'undefined' && typeof imageOptimizer.optimizeImageUrl === 'function') {
+            return imageOptimizer.optimizeImageUrl(fullUrl, width, quality, isPriority);
         }
 
         return fullUrl;
@@ -514,7 +607,20 @@ class MovieAPI {
 
     async getMoviesByCategoryFromOphim17(categorySlug, page = 1) {
         try {
-            const response = await this.fetchWithTimeout(`${this.ophim17URL}/v1/api/the-loai/${categorySlug}?page=${page}`, {
+            let endpoint = '/the-loai/' + categorySlug + '.json?slug=' + categorySlug;
+            if (categorySlug.startsWith('the-loai/') || categorySlug.startsWith('quoc-gia/')) {
+                const actualSlug = categorySlug.split('/')[1];
+                endpoint = '/' + categorySlug + '.json?slug=' + actualSlug;
+            } else if (!categorySlug.includes('/')) {
+                const mainCategories = ['hanh-dong', 'tinh-cam', 'hai-huoc', 'vien-tuong', 'vo-thuat', 'kinh-di', 'tam-ly', 'than-thoai', 'hoat-hinh', 'phieu-luu', 'chieu-rap'];
+                if (mainCategories.includes(categorySlug)) {
+                    endpoint = '/the-loai/' + categorySlug + '.json?slug=' + categorySlug;
+                } else {
+                    endpoint = '/danh-sach/' + categorySlug + '.json?slug=' + categorySlug;
+                }
+            }
+            
+            const response = await this.fetchWithFallback('https://ophim17.cc/_next/data/9m2K2U6N0P-F6B_g0Y1M3' + endpoint, {
                 headers: { 'accept': 'application/json' }
             });
             return await response.json();
@@ -760,4 +866,7 @@ if (typeof window !== 'undefined') {
 document.addEventListener('DOMContentLoaded', () => {
     movieAPI.injectCanonical();
 });
+
+
+
 

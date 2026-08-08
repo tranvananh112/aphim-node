@@ -447,7 +447,7 @@ function buildImageUrl(rawUrl, width) {
     }
     return rawUrl.startsWith('http')
         ? rawUrl
-        : `https://phimimg.com/${rawUrl}`;
+        : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
 }
 
 // -- Update ch? ph?n text c?a hero banner -----------------------
@@ -957,7 +957,7 @@ function renderHeroBannerContent(movie, isInstant) {
     heroImage.decoding = 'async';
 
     heroImage.onerror = () => {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
         if (heroImage.src !== fallbackUrl) heroImage.src = fallbackUrl;
         showHeroImage();
     };
@@ -966,7 +966,7 @@ function renderHeroBannerContent(movie, isInstant) {
         heroImage.setAttribute('data-current-src', optUrl);
         heroImage.src = optUrl;
     } else if (rawUrl) {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
         heroImage.src = fallbackUrl;
     }
     showHeroImage();

@@ -17,15 +17,10 @@
 
         try {
             // Fetch from phim-chieu-rap API
-            const response = await movieAPI.fetchWithFallback('/danh-sach/phim-chieu-rap?page=1&limit=10', {
-                method: 'GET',
-                headers: { 'accept': 'application/json' }
-            });
+            const data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-chieu-rap');
 
-            const data = await response.json();
-
-            if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items) {
-                renderComingSoonMovies(data.data.items);
+            if (data && (data.status === 'success' || data.status === true) && data.data && data.data.items && data.data.items.length > 0) {
+                renderComingSoonMovies(data.data.items.slice(0, 10));
             } else {
                 loading.innerHTML = '<p class="text-gray-400">Không thể tải phim chiếu rạp</p>';
             }
@@ -46,16 +41,7 @@
 
         container.innerHTML = movies.map((movie, index) => {
             const rank = index + 1;
-            const thumb = movie.thumb_url || '';
-            const poster = movie.poster_url || '';
-            
-            const posterUrl = thumb ? 
-                (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : 
-                (poster ? (poster.startsWith('http') ? poster : `https://phimimg.com/${poster}`) : '');
-                
-            const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
-                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;
-            
+            const optimizedUrl = movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80);
             const detailUrl = `movie-detail.html?slug=${movie.slug}`;
             const episodes = movie.episode_current || '';
             
@@ -120,3 +106,6 @@
     // Expose to window
     window.loadComingSoonMovies = loadComingSoonMovies;
 })();
+
+
+

@@ -13,12 +13,12 @@
 <meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.' %>" />
 <meta property="twitter:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'APhim - Website xem phim trực tuyến chất lượng Full HD miễn phí. Kho phim mới khổng lồ, phim chiếu rạp, phim lẻ, phim bộ được cập nhật thường xuyên 2026.' %>" />
 <!-- 🚀 TURBO LOAD — Preconnect ngay lập tức để giảm độ trễ mạng -->
-<link rel="preconnect" href="https://phimapi.com" crossorigin>
-<link rel="preconnect" href="https://phimimg.com" crossorigin>
+<link rel="preconnect" href="https://ophim1.com" crossorigin>
+<link rel="preconnect" href="https://img.ophimimg.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="dns-prefetch" href="https://phimapi.com">
-<link rel="dns-prefetch" href="https://phimimg.com">
+<link rel="dns-prefetch" href="https://ophim1.com">
+<link rel="dns-prefetch" href="https://img.ophimimg.com">
 
 <!-- ⚡ TOUCH SPEED — Load NGAY, không defer/async -->
 <link rel="stylesheet" href="/css/touch-speed.css?v=13">
@@ -39,10 +39,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://phimapi.com" crossorigin>
-<link rel="preconnect" href="https://phimimg.com" crossorigin>
-<link rel="dns-prefetch" href="https://phimapi.com">
-<link rel="dns-prefetch" href="https://phimimg.com">
+<link rel="preconnect" href="https://ophim1.com" crossorigin>
+<link rel="preconnect" href="https://img.ophimimg.com" crossorigin>
+<link rel="dns-prefetch" href="https://ophim1.com">
+<link rel="dns-prefetch" href="https://img.ophimimg.com">
 <!-- Premium UI/UX Design System -->
 <link rel="stylesheet" href="/css/premium-ui.css?v=2">
 
@@ -312,8 +312,8 @@
         }
         const apiEndpoints = [
 
-            'https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1',
-            'https://phimapi.com/v1/api/danh-sach/phim-le?page=1'
+            'https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1',
+            'https://ophim1.com/v1/api/danh-sach/phim-le?page=1'
         ];
         apiEndpoints.forEach(url => {
             const link = document.createElement('link');
@@ -414,7 +414,7 @@
   "@type": "<%= movie.type === 'series' ? 'TVSeries' : 'Movie' %>",
   "name": "<%= movie.name ? movie.name.replace(/\"/g, '&quot;') : '' %>",
   "alternateName": "<%= movie.origin_name ? movie.origin_name.replace(/\"/g, '&quot;') : '' %>",
-  "image": "<%= typeof ogImage !== 'undefined' ? ogImage : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' +  movie.thumb_url) : 'https://aphim.top/android-chrome-512x512.png') %>",
+  "image": "<%= typeof ogImage !== 'undefined' ? ogImage : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url) : 'https://aphim.top/android-chrome-512x512.png') %>",
   "description": "<%= typeof metaDescription !== 'undefined' ? metaDescription.replace(/\"/g, '&quot;') : (movie.name || '') %>",
   "aggregateRating": {
     "@type": "AggregateRating",
