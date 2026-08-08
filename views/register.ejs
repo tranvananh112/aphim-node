@@ -24,6 +24,38 @@
     <%- include('partials/chat') %>
 
     <script src="/js/register.js?v=21"></script>
-</body>
+
+    <!-- Dynamic Auth Background Script -->
+    <script>
+        setTimeout(async () => {
+            try {
+                const res = await fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1');
+                const data = await res.json();
+                if (data?.items?.length > 0) {
+                    let bestMovie = data.items[0];
+                    for (const item of data.items) {
+                        if ((item.tmdb?.vote_average || 0) > (bestMovie.tmdb?.vote_average || 0)) {
+                            bestMovie = item;
+                        }
+                    }
+                    const imgPath = bestMovie.poster_url || bestMovie.thumb_url;
+                    let url = 'https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg';
+                    if (imgPath) {
+                        url = `https://img.ophimimg.com/uploads/movies/${imgPath}`;
+                    }
+                    if (url) {
+                        const bgEl = document.getElementById('auth-left-panel') || document.getElementById('dynamic-auth-bg');
+                        if (bgEl) {
+                            bgEl.style.backgroundImage = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}')`;
+                            bgEl.style.backgroundPosition = 'center';
+                            bgEl.style.backgroundSize = 'cover';
+                            bgEl.style.backgroundRepeat = 'no-repeat';
+                        }
+                    }
+                }
+            } catch(e) {}
+        }, 100);
+    </script>
+\n</body>
 </html>
 

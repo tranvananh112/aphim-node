@@ -197,14 +197,35 @@
     if (typeof window !== 'undefined') {
         setTimeout(async () => {
             try {
-                const res = await fetch('https://phimapi.com/v1/api/quoc-gia/viet-nam');
+                // Fetch t? ophim1.com d? l?y d? li?u d? tránh l?i CORS image t? phimapi
+                const res = await fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1');
                 const data = await res.json();
-                if (data?.data?.items?.length > 0) {
-                    const latestMovie = data.data.items[0];
-                    const url = `https://img.ophimimg.com/${latestMovie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url}`;
+                if (data?.items?.length > 0) {
+                    let bestMovie = data.items[0];
+                    for (const item of data.items) {
+                        if ((item.tmdb?.vote_average || 0) > (bestMovie.tmdb?.vote_average || 0)) {
+                            bestMovie = item;
+                        }
+                    }
+                    
+                    // Xây d?ng URL ?nh chu?n, img.ophimimg.com không ch?n hotlink
+                    const imgPath = bestMovie.poster_url || bestMovie.thumb_url;
+                    let url = 'https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg';
+                    if (imgPath) {
+                        url = `https://img.ophimimg.com/uploads/movies/${imgPath}`;
+                    }
+                    
                     dynamicPosterURL = url;
                     const img = new Image();
                     img.src = url;
+                    
+                    const leftPanels = document.querySelectorAll('.ap-auth-left, #auth-left-panel, #dynamic-auth-bg');
+                    leftPanels.forEach(p => {
+                        p.style.backgroundImage = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}')`;
+                        p.style.backgroundPosition = 'center';
+                        p.style.backgroundSize = 'cover';
+                        p.style.backgroundRepeat = 'no-repeat';
+                    });
                 }
             } catch(e) {}
         }, 100);
