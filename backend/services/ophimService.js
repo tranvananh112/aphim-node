@@ -32,8 +32,70 @@ class OphimService {
     // Fetch movie detail from Ophim API
     async fetchMovieDetail(slug) {
         try {
-            const response = await axiosInstance.get(`${this.baseURL}/phim/${slug}`);
-            return response.data;
+            const axios = require('axios');
+            
+            // Lấy từ Ophim
+            const ophimRes = await axiosInstance.get(`${this.baseURL}/phim/${slug}`);
+            let ophimData = ophimRes.data;
+            
+            // Xử lý chuẩn hóa data.movie sang data.item cho backend (Format mới của Ophim)
+            let movieItem = null;
+            if (ophimData.data && ophimData.data.item) {
+                movieItem = ophimData.data.item;
+            } else if (ophimData.movie) {
+                movieItem = ophimData.movie;
+                if (ophimData.episodes && !movieItem.episodes) {
+                    movieItem.episodes = ophimData.episodes;
+                }
+            }
+
+            if (!movieItem) {
+                throw new Error('Không tìm thấy thông tin phim từ Ophim');
+            }
+
+            // Gộp thêm NguonC và VSMov
+            try {
+                const [ncRes, vsRes] = await Promise.allSettled([
+                    axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 8000 }),
+                    axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 8000 })
+                ]);
+
+                if (ncRes.status === 'fulfilled' && ncRes.value.data?.movie?.episodes) {
+                    const ncEps = ncRes.value.data.movie.episodes.map(s => ({
+                        server_name: s.server_name || 'Vietsub',
+                        server_data: (s.items || []).map(it => ({
+                            name: it.name && !it.name.toLowerCase().includes('tập') ? `Tập ${it.name}` : (it.name || 'Tập 1'),
+                            slug: it.slug || `tap-${it.name}`,
+                            link_embed: it.embed || '',
+                            link_m3u8: it.m3u8 || ''
+                        }))
+                    }));
+                    if (!movieItem.episodes) movieItem.episodes = [];
+                    ncEps.forEach(s => movieItem.episodes.push(s));
+                }
+
+                if (vsRes.status === 'fulfilled' && vsRes.value.data?.episodes) {
+                    const vsEps = vsRes.value.data.episodes;
+                    if (!movieItem.episodes) movieItem.episodes = [];
+                    vsEps.forEach(s => {
+                        if (s.server_name) s.server_name = s.server_name.replace(/ #\d+/g, '').trim();
+                        if (s.server_data && s.server_data.length > 0) {
+                            movieItem.episodes.push(s);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Lỗi khi fetch và gộp server phụ:', e.message);
+            }
+
+            // Trả về format chuẩn để tương thích ngược với code cũ
+            return {
+                status: 'success',
+                data: {
+                    item: movieItem,
+                    seoOnPage: ophimData.data?.seoOnPage || ophimData.seoOnPage
+                }
+            };
         } catch (error) {
             console.error('Error fetching movie detail:', error.message);
             throw new Error('Không thể lấy thông tin phim từ Ophim');

@@ -211,7 +211,7 @@ class MovieAPI {
                 
                 // --- LẤY DỮ LIỆU TỪ NGUỒN PHỤ (SONG SONG ĐỂ TĂNG TỐC) ---
                 try {
-                    const fetchNguonC = this.fetchWithTimeout(`/api/proxy/nguonc/${slug}`, { timeout: 8000 })
+                    const fetchNguonC = this.fetchWithTimeout(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 8000 })
                         .then(res => res.ok ? res.json() : Promise.reject('NguonC error'));
                         
                     const fetchVSMov = this.fetchWithTimeout(`/api/proxy/vsmov/${slug}`, { timeout: 8000 })
