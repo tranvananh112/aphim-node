@@ -30,7 +30,12 @@ class MovieAPI {
     normalizeResponse(data) {
         if (!data) return null;
         const items = data.data?.items || data.items || [];
-        const item = data.data?.item || data.item || null;
+        const item = data.data?.item || data.item || data.movie || null;
+        
+        if (item && data.episodes && !item.episodes) {
+            item.episodes = data.episodes;
+        }
+
         const isSuccess = ((data && (data.status === 'success' || data.status === true || data.status)) || data.status === true || data.status);
         return {
             status: isSuccess ? 'success' : false,
@@ -268,7 +273,7 @@ class MovieAPI {
                     console.warn('⚠️ Lỗi gọi nguồn phụ song song:', e.message);
                 }
                 
-                return ophimData;
+                return this.normalizeResponse(ophimData);
             }
         } catch (error) {
             console.error('Error fetching movie detail:', error);
