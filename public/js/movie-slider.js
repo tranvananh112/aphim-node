@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Movie Slider - Drag to Scroll + Wheel to Horizontal
  * Works on all horizontal movie sliders across the site
  * Unified: distinguishes drag/swipe vs click for both Mouse and Touch, handles mouseup outside
@@ -17,7 +17,7 @@
         let hasDragged = false;
         let lockVertical = false;
 
-        // Quán tính (Inertia)
+        // Quï¿½n tï¿½nh (Inertia)
         let lastX = 0;
         let lastTime = 0;
         let velocity = 0;
@@ -33,15 +33,15 @@
             lockVertical = false;
             slider.classList.add('active');
 
-            // T?m th?i t?t cu?n mu?t và snap-scroll d? kéo mu?t mà 1:1 theo chu?t
-            if (!slider.hasAttribute('data-orig-behavior')) slider.setAttribute('data-orig-behavior', slider.style.scrollBehavior); slider.style.scrollBehavior = 'auto';
-            if (!slider.hasAttribute('data-orig-snap')) slider.setAttribute('data-orig-snap', slider.style.scrollSnapType); slider.style.scrollSnapType = 'none';
+            // T?m th?i t?t cu?n mu?t vï¿½ snap-scroll d? kï¿½o mu?t mï¿½ 1:1 theo chu?t
+            slider.classList.add('is-dragging');
+            
 
             startX = e.pageX - slider.offsetLeft;
             startY = e.pageY - slider.offsetTop;
             scrollLeft = slider.scrollLeft;
 
-            // Kh?i t?o tính toán quán tính
+            // Kh?i t?o tï¿½nh toï¿½n quï¿½n tï¿½nh
             lastX = e.pageX;
             lastTime = Date.now();
             velocity = 0;
@@ -58,9 +58,9 @@
             slider.classList.remove('active');
             lockVertical = false;
 
-            // Khôi ph?c thu?c tính CSS ban d?u
-            slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
-            slider.style.scrollSnapType = slider.getAttribute('data-orig-snap') || '';
+            // Khï¿½i ph?c thu?c tï¿½nh CSS ban d?u
+            slider.classList.remove('is-dragging');
+            
 
             if (hasDragged) {
                 slider.setAttribute('data-dragged', 'true');
@@ -68,13 +68,13 @@
                     slider.removeAttribute('data-dragged');
                 }, 300);
 
-                // Th?c hi?n lu?t quán tính t? t? mu?t mà
+                // Th?c hi?n lu?t quï¿½n tï¿½nh t? t? mu?t mï¿½
                 if (Math.abs(velocity) > 0.1) {
                     let tempVelocity = velocity;
                     const inertiaStep = function() {
-                        if (isDown) return; // D?ng l?i n?u ngu?i dùng click/ch?m ti?p
+                        if (isDown) return; // D?ng l?i n?u ngu?i dï¿½ng click/ch?m ti?p
 
-                        tempVelocity *= 0.93; // H? s? ma sát (gi?m d?n t?c d?)
+                        tempVelocity *= 0.93; // H? s? ma sï¿½t (gi?m d?n t?c d?)
                         if (Math.abs(tempVelocity) < 0.08) return;
 
                         slider.scrollLeft -= tempVelocity * 12;
@@ -93,31 +93,31 @@
             const dx = Math.abs(xVal - startX);
             const dy = Math.abs(yVal - startY);
 
-            // Phân bi?t cu?n d?c vs kéo ngang tru?c khi xác nh?n kéo slider
+            // Phï¿½n bi?t cu?n d?c vs kï¿½o ngang tru?c khi xï¿½c nh?n kï¿½o slider
             if (!hasDragged) {
                 if (dy > dx && dy > 4) {
-                    // C? ch? cu?n d?c -> H?y kéo slider d? trang cu?n d?c t? nhiên
+                    // C? ch? cu?n d?c -> H?y kï¿½o slider d? trang cu?n d?c t? nhiï¿½n
                     isDown = false;
                     slider.classList.remove('active');
-                    slider.style.scrollBehavior = slider.getAttribute('data-orig-behavior') || '';
-                    slider.style.scrollSnapType = slider.getAttribute('data-orig-snap') || '';
+                    slider.classList.remove('is-dragging');
+                    
                     return;
                 }
                 if (dx >= DRAG_THRESHOLD) {
                     hasDragged = true;
                     lockVertical = true;
                 } else {
-                    return; // Ð?i vu?t ngu?ng threshold
+                    return; // ï¿½?i vu?t ngu?ng threshold
                 }
             }
 
-            e.preventDefault(); // Ch?n hành vi kéo th? ?nh/ch? m?c d?nh c?a trình duy?t
+            e.preventDefault(); // Ch?n hï¿½nh vi kï¿½o th? ?nh/ch? m?c d?nh c?a trï¿½nh duy?t
 
             // Di chuy?n slider theo tay chu?t
             const walk = (xVal - startX) * 1.5;
             slider.scrollLeft = scrollLeft - walk;
 
-            // Tính v?n t?c kéo cho quán tính
+            // Tï¿½nh v?n t?c kï¿½o cho quï¿½n tï¿½nh
             const now = Date.now();
             const dt = now - lastTime;
             if (dt > 0) {
@@ -144,7 +144,7 @@
             touchStartY = e.touches[0].clientY;
             touchHasDragged = false;
 
-            // D?ng ho?t d?ng quán tính khi ngu?i dùng ch?m vào màn hình
+            // D?ng ho?t d?ng quï¿½n tï¿½nh khi ngu?i dï¿½ng ch?m vï¿½o mï¿½n hï¿½nh
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
