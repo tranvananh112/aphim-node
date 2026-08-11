@@ -297,7 +297,7 @@ function renderActiveBanner() {
         if (window.lucide) lucide.createIcons();
         
         // Load gallery automatically
-        loadActiveBannerGallery(activeBanner.movieSlug, activeBanner._id);
+        loadActiveBannerGallery(activeBanner);
     } else {
         content.innerHTML = '<div style="color:var(--text-muted);font-size:13.5px;padding:8px 0"><i data-lucide="alert-triangle"    style="vertical-align:middle;margin-right:6px;color:var(--warning)" style="width: 1em; height: 1em;"></i>Chưa có banner nào được kích hoạt. Hãy thêm phim và kích hoạt.</div>';
         if (window.lucide) lucide.createIcons();
@@ -730,29 +730,45 @@ async function updateDesktopImage(id, url) {
     }
 }
 
-async function loadActiveBannerGallery(slug, id) {
+async function loadActiveBannerGallery(activeBanner) {
+    const slug = activeBanner?.movieSlug;
+    const id = activeBanner?._id;
     const galleryContainer = document.getElementById('activeBannerGallery');
     if (!galleryContainer) return;
     
     galleryContainer.innerHTML = '<div class="p-2 flex items-center gap-2 text-muted text-sm"><div class="spinner animate-spin" style="width:14px;height:14px"></div> Đang tìm bộ sưu tập ảnh từ TMDB...</div>';
 
     try {
+        const TMDB_API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
+        const TMDB_BASE_URL = 'https://api.tmdb.org/3';
         let imagesList = [];
-        // Ưu tiên dùng window.movieAPI nếu có (từ api.js)
-        if (typeof window.movieAPI !== 'undefined' && window.movieAPI.getMovieImages) {
-            const json = await window.movieAPI.getMovieImages(slug);
-            if (json && json.data && json.data.images) {
-                imagesList = json.data.images;
-            } else if (json && json.images) {
-                imagesList = json.images;
+        let tmdbId = activeBanner?.tmdb?.id || null;
+        let mediaType = activeBanner?.tmdb?.type || 'movie';
+
+        // 1. Dùng tên phim (bỏ dấu) để search trên TMDB nếu không có id
+        if (!tmdbId) {
+            let bannerName = activeBanner?.movieName || slug.replace(/-/g, ' ');
+            const searchRes = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(bannerName)}&language=vi-VN`);
+            if (searchRes.ok) {
+                const searchData = await searchRes.json();
+                const firstResult = searchData.results?.[0];
+                if (firstResult) {
+                    tmdbId = firstResult.id;
+                    mediaType = firstResult.media_type || 'movie';
+                }
             }
-        } 
-        
-        // Nếu movieAPI thất bại hoặc không tồn tại, thử fetch thẳng qua Proxy
-        if (!imagesList || imagesList.length === 0) {
-            const fbResponse = await fetch(`/phim/${slug}/images`, { headers: { 'accept': 'application/json' } });
-            const fbData = await fbResponse.json();
-            imagesList = fbData.images || fbData.data?.images || [];
+        }
+
+        // 2. Nếu tìm thấy ID, get Images
+        if (tmdbId) {
+            const imgRes = await fetch(`${TMDB_BASE_URL}/${mediaType}/${tmdbId}/images?api_key=${TMDB_API_KEY}`);
+            if (imgRes.ok) {
+                const imgData = await imgRes.json();
+                // Gộp backdrops vào imagesList giả lập định dạng cũ
+                if (imgData.backdrops && imgData.backdrops.length > 0) {
+                    imagesList = imgData.backdrops.map(b => ({ ...b, type: 'backdrop' }));
+                }
+            }
         }
         
         const backdrops = imagesList.filter(img => img.type === 'backdrop' || img.aspect_ratio > 1);
