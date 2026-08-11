@@ -332,7 +332,7 @@ exports.addBanner = async (req, res) => {
 // @access  Private (Admin)
 exports.updateBanner = async (req, res) => {
     try {
-        const { isActive, priority, logoUrl } = req.body;
+        const { isActive, priority, logoUrl, thumbUrl, posterUrl } = req.body;
         const banner = await Banner.findById(req.params.id);
 
         if (!banner) {
@@ -353,6 +353,8 @@ exports.updateBanner = async (req, res) => {
         if (isActive !== undefined) banner.isActive = isActive;
         if (priority !== undefined) banner.priority = priority;
         if (logoUrl !== undefined) banner.logoUrl = logoUrl;
+        if (thumbUrl !== undefined) banner.thumbUrl = thumbUrl;
+        if (posterUrl !== undefined) banner.posterUrl = posterUrl;
 
         await banner.save();
 
