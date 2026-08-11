@@ -40,10 +40,23 @@ async function loadHeroBanner() {
             localStorage.setItem('cinestream_active_banner', JSON.stringify(data.data));
             const newMovie = convertBannerToMovie(data.data);
 
-            if (!currentAdminBanner || currentAdminBanner.slug !== newMovie.slug) {
+            if (!currentAdminBanner || 
+                currentAdminBanner.slug !== newMovie.slug || 
+                currentAdminBanner.thumb_url !== newMovie.thumb_url ||
+                currentAdminBanner.poster_url !== newMovie.poster_url) {
+                
                 currentAdminBanner = newMovie;
                 heroSlides[0] = currentAdminBanner;
-                if (currentSlideIndex === 0) renderHeroBannerContent(currentAdminBanner, false);
+                if (currentSlideIndex === 0) {
+                    renderHeroBannerContent(currentAdminBanner, false);
+                    
+                    // Force update the hero image if we are already on slide 0
+                    const heroImage = document.getElementById('heroImage');
+                    if (heroImage) {
+                        const optUrl = buildImageUrl(getHeroImageUrl(currentAdminBanner), 1200);
+                        if (optUrl) heroImage.src = optUrl;
+                    }
+                }
             }
         } else {
             localStorage.removeItem('cinestream_active_banner');
