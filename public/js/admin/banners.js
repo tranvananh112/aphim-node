@@ -285,13 +285,19 @@ function renderActiveBanner() {
                     <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${cleanContent}</p>
                     <div style="margin-top: 16px;">
                         <button onclick="editBannerDesktopImage('${activeBanner._id}', '${activeBanner.thumbUrl || ''}')" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                            <i data-lucide="image" style="width: 16px; height: 16px;"></i> Sửa ảnh nền Desktop (Khi TMDB mờ)
+                            <i data-lucide="image" style="width: 16px; height: 16px;"></i> Nhập Link Ảnh Thủ Công
                         </button>
                     </div>
                 </div>
             </div>
+            <div id="activeBannerGallery" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <!-- Gallery images will be loaded here -->
+            </div>
         `;
         if (window.lucide) lucide.createIcons();
+        
+        // Load gallery automatically
+        loadActiveBannerGallery(activeBanner.movieSlug, activeBanner._id);
     } else {
         content.innerHTML = '<div style="color:var(--text-muted);font-size:13.5px;padding:8px 0"><i data-lucide="alert-triangle"    style="vertical-align:middle;margin-right:6px;color:var(--warning)" style="width: 1em; height: 1em;"></i>Chưa có banner nào được kích hoạt. Hãy thêm phim và kích hoạt.</div>';
         if (window.lucide) lucide.createIcons();
@@ -688,6 +694,15 @@ async function editBannerDesktopImage(id, currentUrl) {
     const newUrl = prompt('Nhập link ảnh nền Desktop chất lượng cao (ưu tiên tỷ lệ 16:9, link từ Imgur, TMDB...):', currentUrl || '');
     if (newUrl === null) return; // cancelled
     
+    await updateDesktopImage(id, newUrl.trim());
+}
+
+async function selectDesktopImage(id, url) {
+    if (!confirm('Chọn ảnh này làm ảnh nền Desktop cho Banner?')) return;
+    await updateDesktopImage(id, url);
+}
+
+async function updateDesktopImage(id, url) {
     try {
         const token = localStorage.getItem('cinestream_admin_token');
         const apiUrl = window.getBackendBaseURL();
@@ -698,7 +713,7 @@ async function editBannerDesktopImage(id, currentUrl) {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ thumbUrl: newUrl.trim() })
+            body: JSON.stringify({ thumbUrl: url })
         });
 
         const data = await response.json();
@@ -712,6 +727,61 @@ async function editBannerDesktopImage(id, currentUrl) {
     } catch (error) {
         console.error('Error updating desktop image:', error);
         alert('Không thể cập nhật ảnh: ' + error.message);
+    }
+}
+
+async function loadActiveBannerGallery(slug, id) {
+    const galleryContainer = document.getElementById('activeBannerGallery');
+    if (!galleryContainer) return;
+    
+    galleryContainer.innerHTML = '<div class="p-2 flex items-center gap-2 text-muted text-sm"><div class="spinner animate-spin" style="width:14px;height:14px"></div> Đang tìm bộ sưu tập ảnh từ TMDB...</div>';
+
+    try {
+        let imagesList = [];
+        // Ưu tiên dùng window.movieAPI nếu có (từ api.js)
+        if (typeof window.movieAPI !== 'undefined' && window.movieAPI.getMovieImages) {
+            const json = await window.movieAPI.getMovieImages(slug);
+            if (json && json.data && json.data.images) {
+                imagesList = json.data.images;
+            } else if (json && json.images) {
+                imagesList = json.images;
+            }
+        } 
+        
+        // Nếu movieAPI thất bại hoặc không tồn tại, thử fetch thẳng qua Proxy
+        if (!imagesList || imagesList.length === 0) {
+            const fbResponse = await fetch(`/phim/${slug}/images`, { headers: { 'accept': 'application/json' } });
+            const fbData = await fbResponse.json();
+            imagesList = fbData.images || fbData.data?.images || [];
+        }
+        
+        const backdrops = imagesList.filter(img => img.type === 'backdrop' || img.aspect_ratio > 1);
+        
+        if (backdrops.length > 0) {
+            galleryContainer.innerHTML = `
+                <div style="margin-top: 8px;">
+                    <h4 style="font-size: 13.5px; font-weight: 600; margin-bottom: 12px; color: var(--text-primary); display:flex; align-items:center; gap: 6px;">
+                        <i data-lucide="image" style="width:16px; height:16px; color: var(--primary);"></i>
+                        Hoặc click chọn nhanh ảnh nền (Backdrop) từ TMDB:
+                    </h4>
+                    <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;" class="custom-scrollbar">
+                        ${backdrops.map(img => `
+                            <div style="flex-shrink: 0; width: 220px; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;" 
+                                 class="hover:border-primary hover:opacity-80"
+                                 onclick="selectDesktopImage('${id}', 'https://image.tmdb.org/t/p/w1280${img.file_path}')">
+                                <img src="https://image.tmdb.org/t/p/w500${img.file_path}" style="width: 100%; height: 100%; object-fit: cover;" title="Click để chọn ảnh này làm nền Desktop">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+        } else {
+            galleryContainer.innerHTML = `<p class="text-sm text-muted mt-2"><i data-lucide="info" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> Không tìm thấy bộ sưu tập ảnh nền ngang nào trên TMDB cho phim này.</p>`;
+            if (window.lucide) lucide.createIcons();
+        }
+    } catch (err) {
+        galleryContainer.innerHTML = `<p class="text-sm text-danger mt-2">Lỗi kết nối TMDB. Vui lòng nhập link thủ công.</p>`;
     }
 }
 
