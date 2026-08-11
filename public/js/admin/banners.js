@@ -169,7 +169,7 @@ function renderBanners() {
                 <img src="${getValidImageUrl(banner.thumbUrl)}"
                      alt="${banner.name}"
                      class="banner-thumb"
-                     onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
+                     onerror="this.src='https://placehold.co/80x120?text=No+Image'">
             </td>
             <td>
                 <div class="movie-title" style="font-size:13.5px;font-weight:600; color:var(--text-primary);">${banner.name}</div>
@@ -270,10 +270,10 @@ function renderActiveBanner() {
         const cleanContent = activeBanner.content ? activeBanner.content.replace(/<[^>]*>/g, '') : 'Không có mô tả';
         content.innerHTML = `
             <div style="display:flex;gap:24px;align-items:flex-start">
-                <img src="${getValidImageUrl(activeBanner.thumbUrl)}"
+                <img src="${getValidImageUrl(activeBanner.posterUrl)}"
                      alt="${activeBanner.name}"
                      class="banner-active-poster"
-                     onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                     onerror="this.src='https://placehold.co/200x300?text=No+Image'">
                 <div style="flex:1; min-width: 0;">
                     <h3 style="font-size:20px;font-weight:800;color:var(--text-primary);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${activeBanner.name}</h3>
                     <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${activeBanner.originName || activeBanner.origin_name || ''}</p>
@@ -283,6 +283,11 @@ function renderActiveBanner() {
                         <span class="badge badge-info"><i data-lucide="captions" style="width:14px; height:14px;"></i> ${activeBanner.lang || 'Vietsub'}</span>
                     </div>
                     <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${cleanContent}</p>
+                    <div style="margin-top: 16px;">
+                        <button onclick="editBannerDesktopImage('${activeBanner._id}', '${activeBanner.thumbUrl || ''}')" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <i data-lucide="image" style="width: 16px; height: 16px;"></i> Sửa ảnh nền Desktop (Khi TMDB mờ)
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -395,15 +400,21 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
     loadingDiv.style.display = 'block';
     grid.style.display = 'none';
     
-    let apiUrl = `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
+    const ophimBase = (window.API_CONFIG && window.API_CONFIG.OPHIM_URL) ? window.API_CONFIG.OPHIM_URL : 'https://phimapi.com/v1/api';
+    const ophim17Base = (window.API_CONFIG && window.API_CONFIG.OPHIM17_URL) ? window.API_CONFIG.OPHIM17_URL : 'https://phimapi.com';
+    let apiUrl = `${ophim17Base}/danh-sach/phim-moi-cap-nhat?page=${currentOphimSearchPage}`;
     
     if (currentOphimSearchKeyword !== '') {
-        apiUrl = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
+        apiUrl = `${ophimBase}/tim-kiem?keyword=${encodeURIComponent(currentOphimSearchKeyword)}&limit=24&page=${currentOphimSearchPage}`;
         if (loadingText) loadingText.textContent = `Đang tìm "${currentOphimSearchKeyword}"...`;
         if (gridTitle) gridTitle.textContent = 'Kết quả tìm kiếm';
     } else {
         const filterVal = filterCategory ? filterCategory.value : 'danh-sach/phim-moi-cap-nhat';
-        apiUrl = `https://phimapi.com/v1/api/${filterVal}?page=${currentOphimSearchPage}`;
+        if (filterVal === 'danh-sach/phim-moi-cap-nhat') {
+            apiUrl = `${ophim17Base}/${filterVal}?page=${currentOphimSearchPage}`;
+        } else {
+            apiUrl = `${ophimBase}/${filterVal}?page=${currentOphimSearchPage}`;
+        }
         
         let filterName = filterCategory ? filterCategory.options[filterCategory.selectedIndex].text : 'Phim mới';
         if (loadingText) loadingText.textContent = `Đang tải ${filterName}...`;
@@ -418,8 +429,8 @@ async function loadMoviesFromOphim(keyword = '', page = 1) {
 
         const data = await response.json();
 
-        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data?.items) {
-            let newMovies = data.data.items;
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && (data.data?.items || data.items)) {
+            let newMovies = data.data?.items || data.items;
             
             const pagination = data.data?.params?.pagination || data.data?.paginate || data.data?.pagination || data.pagination || {};
             const totalItems = pagination?.totalItems || pagination?.total_items || newMovies.length;
@@ -535,7 +546,7 @@ function displayMovies(movies) {
             <img src="${getValidImageUrl(movie.thumb_url)}"
                  alt="${movie.name}"
                  class="movie-pick-thumb"
-                 onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                 onerror="this.src='https://placehold.co/200x300?text=No+Image'">
             <div class="movie-pick-body">
                 <div class="movie-pick-title">${movie.name}</div>
                 <div class="movie-pick-meta">
@@ -570,8 +581,8 @@ async function addMovieToBanner(movie) {
             movieSlug: movie.slug,
             name: movie.name,
             originName: movie.origin_name,
-            thumbUrl: movie.thumb_url,
-            posterUrl: movie.poster_url,
+            thumbUrl: normalizeImagePath(movie.thumb_url),
+            posterUrl: normalizeImagePath(movie.poster_url),
             content: movie.content,
             year: movie.year,
             quality: movie.quality,
@@ -669,6 +680,38 @@ async function editBannerLogo(id, currentLogo) {
     } catch (error) {
         console.error('Error updating banner logo:', error);
         alert('Không thể cập nhật Logo: ' + error.message);
+    }
+}
+
+// Edit Desktop Image URL (Custom ThumbUrl)
+async function editBannerDesktopImage(id, currentUrl) {
+    const newUrl = prompt('Nhập link ảnh nền Desktop chất lượng cao (ưu tiên tỷ lệ 16:9, link từ Imgur, TMDB...):', currentUrl || '');
+    if (newUrl === null) return; // cancelled
+    
+    try {
+        const token = localStorage.getItem('cinestream_admin_token');
+        const apiUrl = window.getBackendBaseURL();
+
+        const response = await fetch(`${apiUrl}/api/banners/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ thumbUrl: newUrl.trim() })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Đã cập nhật ảnh nền Desktop thành công! Vui lòng tải lại trang Xem Phim để xem thay đổi.');
+            fetchBannersFromAPI(); // Refresh
+        } else {
+            throw new Error(data.message || 'Lỗi cập nhật ảnh');
+        }
+    } catch (error) {
+        console.error('Error updating desktop image:', error);
+        alert('Không thể cập nhật ảnh: ' + error.message);
     }
 }
 
@@ -812,7 +855,7 @@ function renderThumbnailGrid() {
             <button class="thumb-card-remove" onclick="removeFromThumbnail('${item.movieSlug}')" title="Xóa">✕</button>
             <img src="${getValidImageUrl(item.thumbUrl)}"
                  alt="${item.name}"
-                 onerror="this.src='https://via.placeholder.com/100x140?text=No+Img'">
+                 onerror="this.src='https://placehold.co/100x140?text=No+Img'">
             <div class="thumb-card-body">
                 <div class="thumb-card-name" title="${item.name}">${item.name}</div>
                 <div style="font-size:10px;color:var(--text-muted)">${item.year || ''}</div>
@@ -909,8 +952,8 @@ function addMovieToThumbnail(movie) {
         movieSlug: movie.slug,
         name: movie.name,
         originName: movie.origin_name,
-        thumbUrl: movie.thumb_url,
-        posterUrl: movie.poster_url,
+        thumbUrl: normalizeImagePath(movie.thumb_url),
+        posterUrl: normalizeImagePath(movie.poster_url),
         year: movie.year,
         tmdb: movie.tmdb || {}
     });
@@ -1037,7 +1080,7 @@ async function previewCatBg(input, previewId, apiPath = null) {
         img.src = val;
     } else {
         // Fetch from OPhim to show what is currently active
-        img.src = 'https://via.placeholder.com/80x45?text=Loading';
+        img.src = 'https://placehold.co/80x45?text=Loading';
         if (apiPath) {
             try {
                 const response = await movieAPI.fetchWithFallback(`/${apiPath}?page=1&limit=1`, {
@@ -1049,14 +1092,14 @@ async function previewCatBg(input, previewId, apiPath = null) {
                     const thumbUrl = data.data.items[0].thumb_url;
                     img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
                 } else {
-                    img.src = 'https://via.placeholder.com/80x45?text=Auto';
+                    img.src = 'https://placehold.co/80x45?text=Auto';
                 }
             } catch (e) {
                 console.error('Failed to preview auto bg:', e);
-                img.src = 'https://via.placeholder.com/80x45?text=Auto';
+                img.src = 'https://placehold.co/80x45?text=Auto';
             }
         } else {
-            img.src = 'https://via.placeholder.com/80x45?text=Auto';
+            img.src = 'https://placehold.co/80x45?text=Auto';
         }
     }
 }
