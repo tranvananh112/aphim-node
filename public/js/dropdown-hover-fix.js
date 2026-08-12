@@ -10,55 +10,9 @@
 
     function initDropdownHover() {
         // ── NEW: .nav-flat-dropdown (desktop v2) ──
-        const flatDropdowns = document.querySelectorAll('nav .nav-flat-dropdown');
-        flatDropdowns.forEach(group => {
-            const button = group.querySelector('button.nav-flat-link');
-            const panel = group.querySelector('.nav-dropdown-panel');
-            if (!button || !panel) return;
+        // Đã loại bỏ hoàn toàn JS can thiệp vào hover. 
+        // Trình duyệt sẽ sử dụng CSS :hover và GPU (will-change) để xử lý mượt mà ở 60FPS.
 
-            let hideTimeout;
-
-            button.addEventListener('mouseenter', () => {
-                // Close all other panels
-                flatDropdowns.forEach(g => {
-                    if (g !== group) {
-                        const p = g.querySelector('.nav-dropdown-panel');
-                        if (p) {
-                            p.style.opacity = '0';
-                            p.style.visibility = 'hidden';
-                            p.style.transform = 'translateY(-6px)';
-                        }
-                    }
-                });
-                clearTimeout(hideTimeout);
-                panel.style.opacity = '1';
-                panel.style.visibility = 'visible';
-                panel.style.transform = 'translateY(0)';
-            });
-
-            panel.addEventListener('mouseenter', () => {
-                clearTimeout(hideTimeout);
-                panel.style.opacity = '1';
-                panel.style.visibility = 'visible';
-                panel.style.transform = 'translateY(0)';
-            });
-
-            button.addEventListener('mouseleave', () => {
-                hideTimeout = setTimeout(() => {
-                    panel.style.opacity = '0';
-                    panel.style.visibility = 'hidden';
-                    panel.style.transform = 'translateY(-6px)';
-                }, 60);
-            });
-
-            panel.addEventListener('mouseleave', () => {
-                hideTimeout = setTimeout(() => {
-                    panel.style.opacity = '0';
-                    panel.style.visibility = 'hidden';
-                    panel.style.transform = 'translateY(-6px)';
-                }, 60);
-            });
-        });
 
         // ── OLD: .relative.group (fallback for other pages) ──
         const dropdownGroups = document.querySelectorAll('nav .relative.group');

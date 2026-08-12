@@ -232,14 +232,14 @@
         opacity: 0;
         visibility: hidden;
         transform: translateY(-6px);
-        filter: brightness(1) saturate(1);
+        /* Tối ưu hiệu năng: bỏ filter để chống lag */
         transition:
             opacity 0.1s ease,
             visibility 0.1s ease,
-            transform 0.1s cubic-bezier(0.16, 1, 0.3, 1),
-            filter 0.1s ease,
-            box-shadow 0.1s ease;
+            transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 10000;
+        /* Ép trình duyệt sử dụng GPU để render trước, chống giật lag tuyệt đối */
+        will-change: opacity, transform;
     }
 
     .nav-flat-dropdown:hover > .nav-dropdown-panel {
@@ -276,19 +276,7 @@
         z-index: 10000 !important;
     }
 
-    /* Khi dropdown mở: Làm SÁNG menu — phân biệt rõ với nền tối */
-    .nav-flat-dropdown:hover > .nav-dropdown-panel {
-        /* Tăng độ sáng vừa phải — không quá chói, vẫn nổi bật */
-        filter: brightness(1.05) saturate(1.05) !important;
-        box-shadow:
-            /* Viền xám sáng nhẹ giống hình số 1 */
-            0 0 0 1.5px rgba(255, 255, 255, 0.15),
-            /* Shadow độ sâu */
-            0 24px 60px rgba(0, 0, 0, 0.65) !important;
-        /* Scale nhẹ — không quá mạnh */
-        transform: translateY(0) scale(1.004) !important;
-        transform-origin: top center;
-    }
+    /* Xóa bỏ box-shadow ở thẻ ngoài cùng để tránh bị 2 lớp bóng chồng lên nhau gây lag GPU */
 
     /* Đè màu nền khung xanh đá giống hình 1 cho tất cả các dropdown */
     .nav-dropdown-panel > div {
