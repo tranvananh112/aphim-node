@@ -36,6 +36,18 @@
 <meta property="twitter:title" content="<%= locals.ogTitle || locals.title || 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí' %>" />
 <meta property="twitter:image" content="<%= locals.ogImage || 'https://aphim.top/android-chrome-512x512.png' %>" />
 
+<% if (typeof ogType !== 'undefined') { %>
+<meta property="og:type" content="<%= ogType %>" />
+<% } else { %>
+<meta property="og:type" content="website" />
+<% } %>
+<% if (typeof releaseDate !== 'undefined' && releaseDate) { %>
+<meta property="video:release_date" content="<%= releaseDate %>" />
+<% } %>
+<% if (typeof actors !== 'undefined' && actors) { %>
+<meta property="video:actor" content="<%= actors %>" />
+<% } %>
+
 <!-- Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -407,10 +419,15 @@
     }
 </style>
 
-<!-- Google Schema Markup (Gắn Ngôi Sao) -->
-<% if (typeof movie !== 'undefined' && movie) { %>
+<!-- Google Schema Markup (Gắn Ngôi Sao & Dữ liệu Cấu trúc) -->
+<% if (typeof structuredData !== 'undefined' && structuredData) { %>
 <script type="application/ld+json">
-[{
+<%- structuredData %>
+</script>
+<% } else if (typeof movie !== 'undefined' && movie) { %>
+<!-- Fallback -->
+<script type="application/ld+json">
+{
   "@context": "https://schema.org",
   "@type": "<%= movie.type === 'series' ? 'TVSeries' : 'Movie' %>",
   "name": "<%= movie.name ? movie.name.replace(/\"/g, '&quot;') : '' %>",
