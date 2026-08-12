@@ -13,8 +13,8 @@ const ADMIN_CONFIG = {
 // API Configuration
 // ─── RAILWAY BACKEND v4 (f6a2) — Deployed 2026-06-01 ───
 const BACKEND_OPTIONS = {
-    NEW: 'https://a-phim-production-953d.up.railway.app',  // ✅ ACTIVE — Railway mới
-    OLD: 'https://a-phim-production-953d.up.railway.app'   // ❌ Expired
+    NEW: 'https://a-phim-production-0fc1.up.railway.app',  // ✅ ACTIVE — Railway mới
+    OLD: 'https://a-phim-production-0fc1.up.railway.app'   // ❌ Expired
 };
 
 // Luôn dùng backend mới, chỉ fallback localhost khi dev

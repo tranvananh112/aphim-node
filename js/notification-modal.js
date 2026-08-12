@@ -141,7 +141,7 @@
             } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 API_URL = 'http://localhost:5000/api';
             } else {
-                API_URL = 'https://a-phim-production-953d.up.railway.app/api';
+                API_URL = 'https://a-phim-production-0fc1.up.railway.app/api';
             }
 
             console.log('Fetching donation data from:', API_URL);
