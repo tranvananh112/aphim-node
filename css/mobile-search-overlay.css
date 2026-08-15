@@ -228,3 +228,38 @@
     padding: 30px;
     color: rgba(255, 255, 255, 0.4);
 }
+
+/* ── Voice Search Button in Mobile Overlay ── */
+.mso-voice-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+.mso-voice-btn:hover,
+.mso-voice-btn:active {
+    background: rgba(242, 242, 13, 0.15);
+    border-color: rgba(242, 242, 13, 0.5);
+    color: #f2f20d;
+    box-shadow: 0 0 10px rgba(242, 242, 13, 0.25);
+}
+.mso-voice-btn.vs-listening {
+    background: rgba(234, 67, 53, 0.2);
+    border-color: rgba(234, 67, 53, 0.7);
+    color: #ea4335;
+    box-shadow: 0 0 12px rgba(234, 67, 53, 0.4);
+    animation: msoMicPulse 1.2s infinite;
+}
+@keyframes msoMicPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(234, 67, 53, 0.4); }
+    50%       { box-shadow: 0 0 18px rgba(234, 67, 53, 0.7); }
+}

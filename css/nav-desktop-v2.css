@@ -394,6 +394,39 @@
         font-size: 0.9rem;
     }
 
+    /* ── Voice Search mic button inside search bar ── */
+    .nav-search-v2 {
+        overflow: visible;
+    }
+    .vs-nav-mic-btn {
+        width: 30px !important;
+        height: 30px !important;
+        border-radius: 50% !important;
+        background: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+        margin-right: 6px !important;
+        transition: background 0.2s, border-color 0.2s, box-shadow 0.2s !important;
+        cursor: pointer;
+    }
+    .vs-nav-mic-btn:hover {
+        background: rgba(242, 242, 13, 0.15) !important;
+        border-color: rgba(242, 242, 13, 0.5) !important;
+        box-shadow: 0 0 10px rgba(242, 242, 13, 0.25) !important;
+    }
+    .vs-nav-mic-btn .material-icons-round {
+        font-size: 16px !important;
+        color: rgba(255,255,255,0.6) !important;
+        transition: color 0.2s !important;
+    }
+    .vs-nav-mic-btn:hover .material-icons-round {
+        color: #f2f20d !important;
+    }
+
+
     /* ✨ Auth / Login Button - 24K Royal Gold & 3D Cinematic Shadow ✨ */
     .nav-auth-btn {
         display: inline-flex !important;

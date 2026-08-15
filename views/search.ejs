@@ -52,6 +52,8 @@
 
     <!-- ===== SEARCH PAGE UI ===== -->
     <style>
+    /* Sửa lỗi position: sticky không hoạt động khi body có overflow-x: hidden */
+    html, body { overflow-x: clip !important; }
     /* ─── Mobile PWA gap fix ─── */
     @media (max-width: 767px) {
         /* Padding-top main: nav (~56px) + safe area + 8px thở */
@@ -85,10 +87,10 @@
     .sp-search-row { padding: 10px 0 0; }
     .sp-search-box {
         display: flex; align-items: center; gap: 10px;
-        background: #181a22;
-        border: 1.5px solid rgba(255,255,255,0.10);
+        background: #242834;
+          border: 1.5px solid rgba(255,255,255,0.15);
         border-radius: 50px;
-        padding: 7px 8px 7px 22px;
+          padding: 4px 6px 4px 18px;
         box-shadow: 0 4px 32px rgba(0,0,0,0.4);
         transition: border-color 0.2s, box-shadow 0.2s;
     }
@@ -347,7 +349,7 @@
         /* Shrink search box slightly on desktop */
         @media (min-width: 768px) {
             .sp-search-box {
-                padding: 5px 6px 5px 18px;
+                padding: 2px 6px 2px 16px;
             }
             #searchInput { font-size: 0.97rem; }
             .sp-search-btn {
@@ -367,7 +369,7 @@
 
     <main class="pt-safe-main pb-24 min-h-[80vh]">
         <!-- Nút Quay Lại: đồng bộ với categories.html dùng container chuẩn -->
-        <div style="max-width:1400px;margin:0 auto;padding:0 24px;" class="mb-2">
+        <div style="max-width:1400px;margin:0 auto;padding:0 24px;" class="mb-2 md:hidden block">
             <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white w-fit group">
                 <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
                     <span class="material-icons-round text-[14px]">chevron_left</span>
@@ -384,6 +386,17 @@
 
                 <!-- LEFT SIDEBAR: Filter (luôn mở trên desktop, toggle trên mobile) -->
                 <aside class="sp-sidebar sp-filter-drawer" id="spFilterDrawer">
+
+                    <!-- Nút Quay Lại cho Desktop (Sticky cùng sidebar) -->
+                    <div class="hidden md:block mb-5 pl-1">
+                        <button onclick="window.history.back()" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/5 transition-colors text-gray-300 hover:text-white w-fit group" style="background: rgba(255,255,255,0.03);">
+                            <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-colors">
+                                <span class="material-icons-round text-[14px]">chevron_left</span>
+                            </div>
+                            <span class="text-[13px] font-semibold pr-1">Quay Lại</span>
+                        </button>
+                    </div>
+
                     <div class="sp-filter-card">
                         <div class="flex items-center gap-2 mb-5">
                             <span class="material-icons-round" style="color:#f2c94c;font-size:22px;">tune</span>
@@ -502,10 +515,13 @@
                 <div class="sp-main">
                     <!-- Search Bar (nằm trong cột phải trên desktop) -->
                     <div class="sp-search-row">
-                        <div class="sp-search-box">
-                            <span class="material-icons-round sp-ic">search</span>
-                            <input type="text" id="searchInput" placeholder="Tìm phim, diễn viên..." autocomplete="off">
-                            <button class="sp-search-btn" onclick="spDoSearch()">Tìm</button>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div class="sp-search-box" style="flex: 1; padding-right: 8px;">
+                                <span class="material-icons-round sp-ic">search</span>
+                                <input type="text" id="searchInput" placeholder="Tìm phim, diễn viên..." autocomplete="off">
+                                <!-- Mic icon will be injected dynamically inside this box by voice-search.js -->
+                            </div>
+                            <button class="sp-search-btn" onclick="spDoSearch()" style="margin: 0; padding: 11px 28px; border-radius: 50px;">Tìm</button>
                         </div>
                     </div>
 
