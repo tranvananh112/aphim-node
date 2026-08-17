@@ -59,28 +59,26 @@ async function initTopCommentsDashboard() {
     renderTheLoaiHot();
     startRealtimeComments();
     
-    // Lấy phim từ nhiều danh mục khác nhau để đảm bảo sự đa dạng và chất lượng
+    // Lấy phim từ nhiều danh mục khác nhau của OPhim
     try {
         const endpoints = [
-            'https://phimapi.com/v1/api/danh-sach/phim-bo?page=1',
-            'https://phimapi.com/v1/api/danh-sach/phim-le?page=1',
-            'https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1',
-            'https://phimapi.com/v1/api/danh-sach/tv-shows?page=1',
-            'https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?page=1'
+            '/danh-sach/phim-bo?page=1',
+            '/danh-sach/phim-le?page=1',
+            '/danh-sach/hoat-hinh?page=1',
+            '/danh-sach/tv-shows?page=1',
+            '/danh-sach/phim-chieu-rap?page=1'
         ];
         
         const responses = await Promise.all(
-            endpoints.map(url => fetch(url).then(res => res.json()).catch(() => null))
+            endpoints.map(ep => movieAPI.fetchWithFallback(ep).then(res => res.json()).then(data => movieAPI.normalizeResponse(data)).catch(() => null))
         );
         
         let allMixedMovies = [];
         let featuredMovies = [];
         
-        // Mổi danh mục chọn 3 bộ phim HOT NHẤT đưa lên thẻ bình luận lớn ở trên (Featured) để lướt mỏi tay
-        // Lấy 3 bộ phim tiếp theo đưa xuống trộn vào 2 cột ở dưới
+        // Mỗi danh mục chọn 3 bộ phim HOT NHẤT đưa lên thẻ bình luận lớn ở trên (Featured)
         responses.forEach(data => {
             if (data && data.data && data.data.items && data.data.items.length > 0) {
-                // Sắp xếp theo lượt xem cao nhất của trang đó
                 const sortedList = data.data.items.sort((a,b) => (b.view || 0) - (a.view || 0));
                 
                 if (sortedList.length > 0) {
@@ -128,7 +126,6 @@ async function initTopCommentsDashboard() {
         
         // Tự động chuyển qua bài viết kế tiếp (Auto-play / auto scroll) sau mỗi 4 giây
         setInterval(() => {
-            // Kiểm tra nếu thanh scroll đã cuộn tận cùng bên phải, thì tự khởi động lại về bên trái
             if (featuredWrapper.scrollLeft + featuredWrapper.clientWidth >= featuredWrapper.scrollWidth - 10) {
                 featuredWrapper.scrollTo({ left: 0, behavior: 'smooth' });
             } else {
@@ -146,17 +143,26 @@ function renderFeaturedComments(movies) {
     container.innerHTML = movies.map((m, i) => {
         const user = FAKE_USERS[Math.floor(Math.random() * FAKE_USERS.length)];
         const text = FAKE_COMMENTS[Math.floor(Math.random() * FAKE_COMMENTS.length)];
-        const rawThumb = m.thumb_url || m.poster_url || '';
-        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}` : `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}`));
+        const rawImg = m.thumb_url || m.poster_url || '';
+        const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+            ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
         const avatarUrl = `https://i.pravatar.cc/150?img=${i + 10}`;
         const genderIcons = ['all_inclusive', 'female', 'male'];
         const gender = genderIcons[Math.floor(Math.random() * genderIcons.length)];
         
         return `
-        <a href="/phim/${m.slug}" class="tc-featured-card cursor-pointer">
+        <a href="movie-detail.html?slug=${m.slug}" class="tc-featured-card cursor-pointer">
             <div class="tc-featured-bg-blur" style="background-image: url('${thumbUrl}')"></div>
             <div class="tc-featured-bg-overlay"></div>
-            <img src="${thumbUrl}" alt="${m.name}" class="tc-featured-movie" onerror="this.src='https://placehold.co/40x60/1e293b/ffffff?text=?'"/>
+            <img data-src="${thumbUrl}" alt="${m.name}" class="tc-featured-movie" 
+                 data-tmdb-slug="${m.slug}"
+                 data-tmdb-id="${m.tmdb?.id || ''}"
+                 data-tmdb-name="${(m.name || '').replace(/"/g, '&quot;')}"
+                 data-tmdb-year="${m.year || ''}"
+                 data-tmdb-type="poster"
+                 src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3C/svg%3E"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"/>
             
             <div class="tc-featured-card-content">
                 <div class="tc-featured-user">
@@ -185,8 +191,10 @@ function renderMovieList(elementId, items, displayMode = 'views') {
     if (!container) return;
     
     container.innerHTML = items.map((item, index) => {
-        const rawThumb = item.thumb_url || item.poster_url || '';
-        const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}` : `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}`));
+        const rawImg = item.thumb_url || item.poster_url || '';
+        const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+            ? imageOptimizer.optimizeImageUrl(rawImg, 200, 75)
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
         
         // Giả lập view cao và rating 9.5-10
         const views = Math.floor(Math.random() * 500) + 100; // 100k - 600k
@@ -197,10 +205,17 @@ function renderMovieList(elementId, items, displayMode = 'views') {
             : `<div class="tc-list-meta" style="color:#ef4444;"><span class="material-icons-round" style="font-size:11px;vertical-align:-1px;">star</span> 10 / 10</div>`;
 
         return `
-        <a href="/phim/${item.slug}" class="tc-list-item group">
+        <a href="movie-detail.html?slug=${item.slug}" class="tc-list-item group">
             <span class="tc-list-rank">${index + 1}.</span>
             <span class="tc-list-dash material-icons-round">trending_up</span>
-            <img src="${thumbUrl}" class="tc-list-thumbnail" alt="${item.name}" onerror="this.src='https://placehold.co/32x44/1e293b/ffffff?text=?'">
+            <img data-src="${thumbUrl}" class="tc-list-thumbnail" alt="${item.name}" 
+                 data-tmdb-slug="${item.slug}"
+                 data-tmdb-id="${item.tmdb?.id || ''}"
+                 data-tmdb-name="${(item.name || '').replace(/"/g, '&quot;')}"
+                 data-tmdb-year="${item.year || ''}"
+                 data-tmdb-type="poster"
+                 src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3C/svg%3E"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
             <div class="tc-list-info">
                 <div class="tc-list-title">${item.name}</div>
                 ${metaHtml}
@@ -218,7 +233,9 @@ function renderTheLoaiHot() {
         { name: "Tâm Lý", colorCls: "tc-genre-c2", slug: "tam-ly" },
         { name: "Tình Cảm", colorCls: "tc-genre-c3", slug: "tinh-cam" },
         { name: "Hài Hước", colorCls: "tc-genre-c4", slug: "hai-huoc" },
-        { name: "Phiêu Lưu", colorCls: "tc-genre-c5", slug: "phieu-luu" }
+        { name: "Phiêu Lưu", colorCls: "tc-genre-c5", slug: "phieu-luu" },
+        { name: "Hành Động", colorCls: "tc-genre-c2", slug: "hanh-dong" },
+        { name: "Kinh Dị", colorCls: "tc-genre-c1", slug: "kinh-di" }
     ];
     
     container.innerHTML = genres.map((g, index) => {
@@ -271,7 +288,7 @@ function createRandomCommentElement() {
     
     const slug = generateSlug(movie);
     const el = document.createElement('a');
-    el.href = `/phim/${slug}`;
+    el.href = `movie-detail.html?slug=${slug}`;
     el.className = 'tc-realtime-comment group cursor-pointer';
     el.style.textDecoration = 'none';
     
@@ -297,5 +314,3 @@ function getRandomColor() {
     const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
-
-

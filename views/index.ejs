@@ -283,10 +283,8 @@
                         <div class="interest-content">
                             <h3 class="interest-title">Hoạt Hình</h3>
                             <div class="interest-action">XEM NGAY <span class="material-icons-round">chevron_right</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
         </section>
 
         <!-- Dynamic Category Lottie Icons script -->
@@ -494,7 +492,18 @@
         <!-- Top Comments Community Dashboard -->
         <section class="py-2 md:py-3 !bg-transparent" id="top-comments-section">
             <div class="w-full px-4 md:px-6 lg:px-8">
-                <div class="tc-container">
+                
+                                                                <div class="tc-main-wrapper">
+                    <!-- Mascot floating on top -->
+                    <div class="tc-mascot-absolute hidden lg:flex">
+                        <img src="/images/comment-mascot.png" alt="Comment Mascot" class="tc-mascot-img-absolute">
+                    </div>
+                    
+                    <!-- Full width container -->
+                    <div class="tc-container">
+
+                    <!-- Top Section -->
+                    <div class="tc-top-section">
                     <!-- Header -->
                     <div class="tc-header">
                         <span class="material-icons-round" style="color:#ffd700; font-size:24px;">emoji_events</span>
@@ -516,10 +525,14 @@
                         </button>
                     </div>
 
+                    
+                    </div>
                     <div class="tc-divider"></div>
 
+
                     <!-- Bottom Grid: 4 Columns -->
-                    <div class="tc-grid">
+                    <div class="tc-grid-container">
+                      <div class="tc-grid">
                         <!-- Column 1: Sôi Nổi Nhất -->
                         <div>
                             <div class="tc-col-header">
@@ -570,11 +583,12 @@
                                 <div id="tc-realtime-comments" class="flex flex-col gap-2 relative z-10 w-full h-full">
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
         <!-- Action Movies Section -->
 
@@ -1137,7 +1151,7 @@
             try {
                 console.log('Loading action movies for homepage...');
 
-                // Load movies from category "hanh-dong"
+                // Load movies from category "hanh-dong" page 1
                 const response = await movieAPI.fetchWithFallback('/the-loai/hanh-dong?page=1', {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
@@ -1273,11 +1287,11 @@
             if (el) el.scrollBy({ left: dir === 'right' ? 800 : -800, behavior: 'smooth' });
         };
 
-        async function loadCategoryToContainer(slug, containerId, loadingId) {
+        async function loadCategoryToContainer(slug, containerId, loadingId, page = 1) {
             const loading = document.getElementById(loadingId);
             const container = document.getElementById(containerId);
             try {
-                const endpoint = slug.includes('/') ? `/${slug}?page=1` : `/the-loai/${slug}?page=1`;
+                const endpoint = slug.includes('/') ? `/${slug}?page=${page}` : `/the-loai/${slug}?page=${page}`;
                 const response = await movieAPI.fetchWithFallback(endpoint);
                 const rawData = await response.json();
                 const data = movieAPI.normalizeResponse(rawData);

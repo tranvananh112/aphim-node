@@ -146,7 +146,7 @@ function renderFeaturedComments(movies) {
         const rawImg = m.thumb_url || m.poster_url || '';
         const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
         const avatarUrl = `https://i.pravatar.cc/150?img=${i + 10}`;
         const genderIcons = ['all_inclusive', 'female', 'male'];
         const gender = genderIcons[Math.floor(Math.random() * genderIcons.length)];
@@ -155,7 +155,14 @@ function renderFeaturedComments(movies) {
         <a href="movie-detail.html?slug=${m.slug}" class="tc-featured-card cursor-pointer">
             <div class="tc-featured-bg-blur" style="background-image: url('${thumbUrl}')"></div>
             <div class="tc-featured-bg-overlay"></div>
-            <img src="${thumbUrl}" alt="${m.name}" class="tc-featured-movie" onerror="this.onerror=null; this.src='https://via.placeholder.com/40x60?text=Poster'"/>
+            <img data-src="${thumbUrl}" alt="${m.name}" class="tc-featured-movie" 
+                 data-tmdb-slug="${m.slug}"
+                 data-tmdb-id="${m.tmdb?.id || ''}"
+                 data-tmdb-name="${(m.name || '').replace(/"/g, '&quot;')}"
+                 data-tmdb-year="${m.year || ''}"
+                 data-tmdb-type="poster"
+                 src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3C/svg%3E"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"/>
             
             <div class="tc-featured-card-content">
                 <div class="tc-featured-user">
@@ -187,7 +194,7 @@ function renderMovieList(elementId, items, displayMode = 'views') {
         const rawImg = item.thumb_url || item.poster_url || '';
         const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 200, 75)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
         
         // Giả lập view cao và rating 9.5-10
         const views = Math.floor(Math.random() * 500) + 100; // 100k - 600k
@@ -201,7 +208,14 @@ function renderMovieList(elementId, items, displayMode = 'views') {
         <a href="movie-detail.html?slug=${item.slug}" class="tc-list-item group">
             <span class="tc-list-rank">${index + 1}.</span>
             <span class="tc-list-dash material-icons-round">trending_up</span>
-            <img src="${thumbUrl}" class="tc-list-thumbnail" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/32x44?text=Movie'">
+            <img data-src="${thumbUrl}" class="tc-list-thumbnail" alt="${item.name}" 
+                 data-tmdb-slug="${item.slug}"
+                 data-tmdb-id="${item.tmdb?.id || ''}"
+                 data-tmdb-name="${(item.name || '').replace(/"/g, '&quot;')}"
+                 data-tmdb-year="${item.year || ''}"
+                 data-tmdb-type="poster"
+                 src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3C/svg%3E"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
             <div class="tc-list-info">
                 <div class="tc-list-title">${item.name}</div>
                 ${metaHtml}
@@ -219,7 +233,9 @@ function renderTheLoaiHot() {
         { name: "Tâm Lý", colorCls: "tc-genre-c2", slug: "tam-ly" },
         { name: "Tình Cảm", colorCls: "tc-genre-c3", slug: "tinh-cam" },
         { name: "Hài Hước", colorCls: "tc-genre-c4", slug: "hai-huoc" },
-        { name: "Phiêu Lưu", colorCls: "tc-genre-c5", slug: "phieu-luu" }
+        { name: "Phiêu Lưu", colorCls: "tc-genre-c5", slug: "phieu-luu" },
+        { name: "Hành Động", colorCls: "tc-genre-c2", slug: "hanh-dong" },
+        { name: "Kinh Dị", colorCls: "tc-genre-c1", slug: "kinh-di" }
     ];
     
     container.innerHTML = genres.map((g, index) => {
