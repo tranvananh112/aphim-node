@@ -1,3 +1,11 @@
+// Purge any stale apii.online from localStorage IMMEDIATELY
+try {
+    const cachedConfigStr = localStorage.getItem('cinestream_public_settings');
+    if (cachedConfigStr && cachedConfigStr.includes('apii.online')) {
+        localStorage.removeItem('cinestream_public_settings');
+    }
+} catch(e) {}
+
 const ADMIN_STORAGE_KEYS = {
     ADMIN_TOKEN: 'cinestream_admin_token',
     ADMIN_USER:  'cinestream_admin_user'
@@ -20,10 +28,9 @@ const BACKEND_OPTIONS = {
 // Luôn dùng backend mới, chỉ fallback localhost khi dev
 let chosenBackend = BACKEND_OPTIONS.NEW;
 
-// Tạm thời comment lại dòng này để localhost dùng Live Backend (tránh lỗi Failed to fetch khi không bật backend ở port 5000)
-// if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-//     chosenBackend = 'http://localhost:5000';
-// }
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    chosenBackend = 'http://localhost:5000';
+}
 
 // Clear cache cũ để không bị stuck ở backend đã hết hạn
 try {
@@ -40,19 +47,25 @@ const API_CONFIG = {
     BACKEND_URL: chosenBackend + '/api',
 
     // Default Ophim API (primary)
-    OPHIM_URL: 'https://phimapi.com/v1/api',
+    OPHIM_URL: 'https://ophim1.com/v1/api',
 
-    // Default Ophim17 API (secondary - more movies)
-    OPHIM17_URL: 'https://apii.online',
+    // Default Ophim17 API (secondary - mirror)
+    OPHIM17_URL: 'https://ophim1.com',
+
+    // Backup PhimAPI (unblocked mirror)
+    
 
     ENDPOINTS: {
-        MOVIE_LIST: '/danh-sach/phim-moi-cap-nhat',
+        HOME: '/home',
+        MOVIE_LIST: '/danh-sach/phim-bo',
         MOVIE_DETAIL: '/phim',
         SEARCH: '/tim-kiem',
         CATEGORY: '/the-loai',
-        COUNTRY: '/quoc-gia'
+        COUNTRY: '/quoc-gia',
+        YEAR: '/nam-phat-hanh'
     },
     IMAGE_BASE: 'https://img.ophimimg.com/',
+    IMAGE_BASE_BACKUP: 'https://img.phimapi.com/uploads/movies/',
     STREAM_BASE: 'https://vip.opstream13.com',
 
     // Use backend or direct Ophim FOR MOVIES
@@ -67,12 +80,20 @@ const API_CONFIG = {
 // ─ ─Dynamic Configuration Override ─ 
 // Apply cached config immediately for fast render
 try {
-    localStorage.removeItem('cinestream_public_settings'); // Force clear cache to fix API dead links
     const cachedConfigStr = localStorage.getItem('cinestream_public_settings');
     if (cachedConfigStr) {
         const cachedContent = JSON.parse(cachedConfigStr);
-        // if (cachedContent.apiBase) API_CONFIG.OPHIM_URL = cachedContent.apiBase;
-        // if (cachedContent.apiSecondary) API_CONFIG.OPHIM17_URL = cachedContent.apiSecondary;
+        if (cachedContent.apiBase && !cachedContent.apiBase.includes('apii.online')) {
+            API_CONFIG.OPHIM_URL = cachedContent.apiBase;
+        } else {
+            API_CONFIG.OPHIM_URL = 'https://ophim1.com/v1/api';
+            // Clear broken cached apiBase
+            delete cachedContent.apiBase;
+            localStorage.setItem('cinestream_public_settings', JSON.stringify(cachedContent));
+        }
+        if (cachedContent.apiSecondary && !cachedContent.apiSecondary.includes('apii.online')) {
+            API_CONFIG.OPHIM17_URL = cachedContent.apiSecondary;
+        }
         if (typeof cachedContent.enableMultipleSources === 'boolean') API_CONFIG.USE_MULTIPLE_SOURCES = cachedContent.enableMultipleSources;
         if (cachedContent.watermarkUrl) API_CONFIG.WATERMARK_URL = cachedContent.watermarkUrl;
         if (typeof cachedContent.enableWatermark === 'boolean') API_CONFIG.ENABLE_WATERMARK = cachedContent.enableWatermark;
@@ -92,9 +113,22 @@ try {
         const data = await res.json();
         if (data && data.success && data.data) {
             const { content, general } = data.data;
+
+            // ⚠️ SAFETY: Force-reject any apii.online URL - NEVER allow it to be used
+            const BANNED_DOMAINS = ['apii.online', 'api.apii', 'apii.vn'];
+            const isBanned = (url) => url && BANNED_DOMAINS.some(d => url.includes(d));
+
+            // Resolve safe apiBase: prefer server value if valid, else fallback
+            const safeApiBase = (content?.apiBase && !isBanned(content.apiBase))
+                ? content.apiBase
+                : 'https://ophim1.com';
+            const safeApiSecondary = (content?.apiSecondary && !isBanned(content.apiSecondary))
+                ? content.apiSecondary
+                : 'https://ophim1.com';
+
             let configMap = {
-                apiBase: content?.apiBase,
-                apiSecondary: content?.apiSecondary,
+                apiBase: safeApiBase,
+                apiSecondary: safeApiSecondary,
                 enableMultipleSources: content?.enableMultipleSources,
                 enableWatermark: content?.enableWatermark,
                 watermarkUrl: content?.watermarkUrl,
@@ -120,8 +154,8 @@ try {
                 window.dispatchEvent(new CustomEvent('configSynced', { detail: configMap }));
                 
                 // Override runtime values
-                // if (configMap.apiBase) API_CONFIG.OPHIM_URL = configMap.apiBase;
-                // if (configMap.apiSecondary) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
+                if (configMap.apiBase) API_CONFIG.OPHIM_URL = configMap.apiBase;
+                if (configMap.apiSecondary && !configMap.apiSecondary.includes('_next/data')) API_CONFIG.OPHIM17_URL = configMap.apiSecondary;
                 if (typeof configMap.enableMultipleSources === 'boolean') API_CONFIG.USE_MULTIPLE_SOURCES = configMap.enableMultipleSources;
                 if (configMap.watermarkUrl) API_CONFIG.WATERMARK_URL = configMap.watermarkUrl;
                 if (typeof configMap.enableWatermark === 'boolean') API_CONFIG.ENABLE_WATERMARK = configMap.enableWatermark;
@@ -336,33 +370,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     margin-right: -4px !important; /* Desktop: kéo chữ sát icon */
                 }
 
-                /* ── Mobile/Tablet: icon đứng một mình → reset margin, căn giữa thực sự ── */
-                @media (max-width: 1279.98px) {
+                /* ── Mobile: icon đứng một mình → reset margin, căn giữa thực sự ── */
+                @media (max-width: 768px) {
                     .user-lottie-icon {
                         margin: 0 !important;
-                        width: 26px !important; /* To hơn một chút (khoảng 1.625rem) */
-                        height: 26px !important;
-                        overflow: visible !important;
-                        position: absolute !important;
-                        top: 50% !important;
-                        left: 50% !important;
-                        transform: translate(-50%, -50%) !important;
+                        width: 36px !important;
+                        height: 36px !important;
+                        overflow: hidden !important;
                     }
-                    /* Đảm bảo căn giữa tuyệt đối và bù trừ khoảng trống bên trong file JSON */
+                    /* Scale SVG 2.2x → zoom vào hình người vốn chỉ chiếm 42% canvas 48x48 */
                     .user-lottie-icon svg {
-                        transform: scale(1.15) translateY(-3px) !important;
+                        transform: scale(1.9) translateY(-2px) !important;
                         transform-origin: center !important;
-                        width: 100% !important;
-                        height: 100% !important;
                     }
-                    /* Màu viền vàng y như viền ngoài */
+                    /* Giảm stroke vì scale đã phóng to rồi */
                     .user-lottie-icon svg path,
                     .user-lottie-icon svg [stroke] {
-                        stroke: #eab308 !important;
-                        stroke-width: 2px !important;
-                    }
-                    .user-lottie-icon svg path {
-                        fill: transparent !important;
+                        stroke-width: 1.8px !important;
                     }
                 }
             `;
@@ -479,6 +503,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-
 

@@ -304,5 +304,3 @@ window.bulkHide = async function() {
 
 // Also expose loadComments for the refresh button
 window.loadComments = loadComments;
-
-

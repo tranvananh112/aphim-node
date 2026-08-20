@@ -139,7 +139,7 @@ function initPaymentPage() {
     if (!plan) {
         if (typeof showMessage === 'function') showMessage('Không tìm thấy thông tin gói dịch vụ!', 'error');
         else alert('Không tìm thấy thông tin gói dịch vụ!');
-        window.location.href = '/pricing';
+        window.location.href = 'pricing.html';
         return;
     }
 
@@ -191,7 +191,7 @@ function initPaymentPage() {
             userInfoDiv.innerHTML = `
                 <div class="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-sm">
                     <p class="text-yellow-400 font-bold mb-1">⚠ Chưa đăng nhập</p>
-                    <p class="text-gray-300">Bạn có thể <a href="/login" class="text-primary hover:underline">đăng nhập</a> để nội dung chuyển khoản bao gồm tên tài khoản</p>
+                    <p class="text-gray-300">Bạn có thể <a href="login.html" class="text-primary hover:underline">đăng nhập</a> để nội dung chuyển khoản bao gồm tên tài khoản</p>
                 </div>
             `;
         }
@@ -276,7 +276,7 @@ function showSuccessMessage(plan) {
 
     // Chuyển về trang chủ sau 5 giây
     setTimeout(() => {
-        window.location.href = '/index';
+        window.location.href = 'index.html';
     }, 5000);
 }
 
@@ -285,5 +285,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initPaymentConfig();   // override PAYMENT_CONFIG + PLANS từ backend
     initPaymentPage();           // render với config mới nhất
 });
-
-

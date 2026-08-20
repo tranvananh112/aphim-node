@@ -88,14 +88,13 @@ async function loadCategoryMovies(categorySlug, page = 1) {
         }
 
         // Fetch movies
-        const response = await movieAPI.fetchWithFallback(`/the-loai/${categorySlug}?page=${page}`);
-        const data = await response.json();
+        const data = await movieAPI.getMoviesFromMultipleSources(page, categorySlug, 'phimapi');
 
         loading.classList.add('hidden');
 
-        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data.items) {
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items) {
             renderMovies(data.data.items);
-            renderPagination(data.data.params.pagination);
+            renderPagination(data.data.params.pagination || {});
         } else {
             moviesGrid.innerHTML = `
                 <div class="col-span-full text-center py-20">
@@ -119,23 +118,28 @@ function renderMovies(movies) {
     const moviesGrid = document.getElementById('moviesGrid');
 
     const html = movies.map(movie => {
-        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`));
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
         const quality = movie.quality || 'HD';
         const year = movie.year || '';
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
         return `
-            <a href="/phim/${movie.slug}" 
+            <a href="movie-detail.html?slug=${movie.slug}" 
                class="group relative block rounded-lg overflow-hidden bg-surface-dark hover:scale-105 transition-transform duration-300 ${hiddenUI.containerClass}">
                 <div class="relative aspect-[2/3]">
                     <img src="${posterUrl}" 
                          alt="${movie.name}"
                          class="w-full h-full object-cover ${hiddenUI.imgClass}"
+                         data-tmdb-slug="${movie.slug}"
+                         data-tmdb-id="${movie.tmdb?.id || ''}"
+                         data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                         data-tmdb-year="${movie.year || ''}"
+                         data-tmdb-type="poster"
                          loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/300x450?text=No+Image'">
+                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                     
                     ${hiddenUI.badge}
                     <!-- Quality Badge -->
@@ -304,7 +308,7 @@ function renderCategories(categories) {
         const icon = categoryIcons[category.slug] || '🎬';
 
         return `
-            <a href="/the-loai/${category.slug}"
+            <a href="categories.html?category=${category.slug}"
                 class="group relative block rounded-xl overflow-hidden bg-gradient-to-br from-surface-dark to-background-dark border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
                 <div class="p-8 text-center">
                     <div class="text-6xl mb-4 transform group-hover:scale-110 transition-transform duration-300">

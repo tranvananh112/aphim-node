@@ -111,7 +111,6 @@
     function cancelRipple() {
         if (_rippleEl) {
             _rippleEl.classList.remove('tap-ripple');
-            // Xóa tất cả dot đang animated
             var dots = _rippleEl.querySelectorAll('.tap-ripple-dot');
             dots.forEach(function(d) { if (d.parentNode) d.parentNode.removeChild(d); });
             _rippleEl = null;
@@ -253,5 +252,3 @@
     */
 
 })();
-
-

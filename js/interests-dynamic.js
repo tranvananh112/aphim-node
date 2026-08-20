@@ -32,25 +32,23 @@
      */
     const fetchImageFromOphim = async (apiPath, page = 1) => {
         try {
-            const url = `https://phimapi.com/v1/api/${apiPath}?page=${page}`;
-            const res = await fetch(url, {
-                method: 'GET',
-                headers: { 'accept': 'application/json' }
-            });
-            const data = await res.json();
+            const response = await movieAPI.fetchWithFallback(`/${apiPath}?page=${page}`);
+            const rawData = await response.json();
+            const data = movieAPI.normalizeResponse(rawData);
 
-            if (data.status !== 'success' || !data.data?.items?.length) return null;
+            const items = data?.data?.items || [];
+            if (!items.length) return null;
 
             // Chọn phim đầu tiên chưa dùng ảnh
-            for (const movie of data.data.items) {
-                const thumbUrl = movie.thumb_url;
+            for (const movie of items) {
+                const thumbUrl = movie.thumb_url || movie.poster_url;
                 if (thumbUrl && !usedImages.has(thumbUrl)) {
                     return thumbUrl;
                 }
             }
 
             // Nếu tất cả đã dùng, trả về ảnh đầu tiên
-            return data.data.items[0]?.thumb_url || null;
+            return items[0]?.thumb_url || items[0]?.poster_url || null;
         } catch (e) {
             console.warn(`[Interests] Fetch from Ophim error for ${apiPath}:`, e);
             return null;
@@ -74,7 +72,7 @@
         // Dùng wsrv.nl để resize + convert sang webp
         try {
             const encoded = encodeURIComponent(rawUrl);
-            return url;
+            return imgUrl;
         } catch {
             return rawUrl;
         }
@@ -154,3 +152,4 @@
 
     await Promise.all(fetchPromises);
 })();
+

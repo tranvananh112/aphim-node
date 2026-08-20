@@ -16,16 +16,18 @@
         }
 
         try {
-            // Fetch from phim-chieu-rap API
-            const response = await fetch('https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?page=1&limit=10', {
-                method: 'GET',
-                headers: { 'accept': 'application/json' }
-            });
+            // Fetch from phim-chieu-rap API using getMoviesFromMultipleSources for better normalization
+            let data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-chieu-rap');
 
-            const data = await response.json();
+            // Fallback to phim-le if phim-chieu-rap is empty or fails
+            if (!data || !data.status || !data.data || !data.data.items || data.data.items.length === 0) {
+                console.warn('Phim chieu rap is empty or failed, falling back to phim-le');
+                data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-le');
+            }
 
-            if (data.status === 'success' && data.data && data.data.items) {
-                renderComingSoonMovies(data.data.items);
+            if (data && data.status && data.data && data.data.items && data.data.items.length > 0) {
+                // Limit to top 10 movies
+                renderComingSoonMovies(data.data.items.slice(0, 10));
             } else {
                 loading.innerHTML = '<p class="text-gray-400">Không thể tải phim chiếu rạp</p>';
             }
@@ -46,22 +48,13 @@
 
         container.innerHTML = movies.map((movie, index) => {
             const rank = index + 1;
-            const thumb = movie.thumb_url || '';
-            const poster = movie.poster_url || '';
-            
-            const posterUrl = thumb ? 
-                (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumb}`) : 
-                (poster ? (poster.startsWith('http') ? poster : `https://img.ophimimg.com/${poster.startsWith('uploads/') ? '' : 'uploads/movies/'}${poster}`) : '');
-                
-            const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
-                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;
-            
-            const detailUrl = `/phim/${movie.slug}`;
+            const optimizedUrl = movieAPI.getImageURL(movie.thumb_url || movie.poster_url, 400, 80);
+            const detailUrl = `movie-detail.html?slug=${movie.slug}`;
             const episodes = movie.episode_current || '';
             
             return `
                 <div class="ranking-item group" data-rank="${rank}">
-                    <a href="${detailUrl}" class="flex flex-col gap-[12px] h-full w-full">
+                    <a href="${detailUrl}">
                         <div class="ranking-poster-w">
                             <img src="${optimizedUrl}" 
                                  alt="${movie.name}" 
@@ -69,7 +62,10 @@
                                  onerror="this.onerror=null; this.src='https://via.placeholder.com/400x600?text=No+Poster'"
                                  loading="lazy" />
                             
-                            ${window.renderMovieBadges(movie.lang, movie.episode_current)}
+                            <div class="ranking-badges-bottom">
+                                <span class="badge-pd">PĐ. ${episodes.replace(/[^0-9]/g, '') || 'HD'}</span>
+                                <span class="badge-lt">LT. ${episodes.replace(/[^0-9]/g, '') || 'Full'}</span>
+                            </div>
 
                             <div class="ranking-icon-circle"><span class="material-icons-round">theaters</span></div>
 
@@ -117,5 +113,6 @@
     // Expose to window
     window.loadComingSoonMovies = loadComingSoonMovies;
 })();
+
 
 

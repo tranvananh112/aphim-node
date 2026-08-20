@@ -1,4 +1,4 @@
-// Kịch bản để load động Dropdown danh sách các quốc gia (Menu Phim)
+﻿// Kịch bản để load động Dropdown danh sách các quốc gia (Menu Phim)
 async function loadCountriesDropdown() {
     try {
         const dropdown = document.getElementById('countryDropdown');
@@ -26,8 +26,8 @@ async function loadCountriesDropdown() {
             { slug: 'a-rap-xe-ut', name: 'Ả Rập Xê Út' }
         ];
 
-        // Khởi tạo mảng các quốc gia trực tiếp
-        const countries = [...countriesData];
+        // Gộp mục Tất Cả vào chung 1 lưới thiết kế để không vỡ khung grid-cols-4
+        const countries = [{ slug: 'all', name: 'Tất Cả Quốc Gia' }, ...countriesData];
 
         // Map mã ISO lấy cờ từ FlagCDN (Vì Window PC không hỗ trợ hiển thị Emoji quốc gia 🇻🇳)
         const flags = {
@@ -49,10 +49,10 @@ async function loadCountriesDropdown() {
         // Render as grid 4 columns — bọc trong nền xanh dương
         let gridHTML = `
             <div style="
-                background: #2b3a72;
+                background: linear-gradient(160deg, #1e4d8c 0%, #2563b8 40%, #1a3d7a 100%);
                 border-radius: 12px;
                 padding: 6px;
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(59,130,246,0.25);
                 box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
             ">
                 <div class="grid grid-cols-4 gap-0">`;
@@ -72,17 +72,19 @@ async function loadCountriesDropdown() {
                 : `<img src="https://flagcdn.com/16x12/${code}.png" alt="${code}" style="width:16px;height:12px;object-fit:cover;border-radius:2px;margin-right:8px;flex-shrink:0;">`;
 
             const url = (country.slug === 'all') 
-                ? '/phim-theo-quoc-gia' 
-                : `/phim-theo-quoc-gia?country=${country.slug}`;
+                ? 'phim-theo-quoc-gia.html' 
+                : `phim-theo-quoc-gia.html?country=${country.slug}`;
+
+            const fontWeight = (country.slug === 'all') ? 'font-weight:700;' : '';
 
             return `
                 <a href="${url}" 
                    style="
                        display: flex; align-items: center;
                        padding: 11px 16px;
-                       color: rgba(255, 255, 255, 0.88);
+                       color: rgba(255,255,255,0.88);
                        font-size: 0.82rem;
-                       font-weight: 700;
+                       ${fontWeight}
                        ${borderStyle}
                        white-space: nowrap;
                        transition: background 0.18s, color 0.18s;
@@ -90,7 +92,7 @@ async function loadCountriesDropdown() {
                        text-decoration: none;
                    "
                    onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
-                   onmouseout="this.style.background='';this.style.color='rgba(255, 255, 255, 0.88)';"
+                   onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';"
                 >
                     ${iconHtml}
                     <span style="overflow:hidden;text-overflow:ellipsis;">${country.name}</span>
@@ -125,5 +127,4 @@ if (document.readyState === 'loading') {
 } else {
     loadCountriesDropdown();
 }
-
 

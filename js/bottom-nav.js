@@ -9,18 +9,18 @@
        DATA: Danh mục nội dung
     ──────────────────────────────────────────── */
     const MOVIE_TYPES = [
-        { href: '/danh-sach?list=phim-moi', label: 'Phim Mới' },
-        { href: '/danh-sach?list=phim-bo', label: 'Phim Bộ' },
-        { href: '/danh-sach?list=phim-le', label: 'Phim Lẻ' },
-        { href: '/danh-sach?list=tv-shows', label: 'TV Shows' },
-        { href: '/danh-sach?list=hoat-hinh', label: 'Hoạt Hình' },
-        { href: '/danh-sach?list=phim-chieu-rap', label: 'Chiếu Rạp' },
-        { href: '/danh-sach?list=phim-vietsub', label: 'Vietsub' },
-        { href: '/danh-sach?list=phim-thuyet-minh', label: 'Thuyết Minh' },
-        { href: '/danh-sach?list=phim-long-tien', label: 'Lồng Tiếng' },
-        { href: '/danh-sach?list=phim-bo-dang-chieu', label: 'Đang Chiếu' },
-        { href: '/danh-sach?list=phim-bo-hoan-thanh', label: 'Đã Xong' },
-        { href: '/danh-sach?list=phim-sap-chieu', label: 'Sắp Chiếu' },
+        { href: 'danh-sach.html?list=phim-moi', label: 'Phim Mới' },
+        { href: 'danh-sach.html?list=phim-bo', label: 'Phim Bộ' },
+        { href: 'danh-sach.html?list=phim-le', label: 'Phim Lẻ' },
+        { href: 'danh-sach.html?list=tv-shows', label: 'TV Shows' },
+        { href: 'danh-sach.html?list=hoat-hinh', label: 'Hoạt Hình' },
+        { href: 'danh-sach.html?list=phim-chieu-rap', label: 'Chiếu Rạp' },
+        { href: 'danh-sach.html?list=phim-vietsub', label: 'Vietsub' },
+        { href: 'danh-sach.html?list=phim-thuyet-minh', label: 'Thuyết Minh' },
+        { href: 'danh-sach.html?list=phim-long-tien', label: 'Lồng Tiếng' },
+        { href: 'danh-sach.html?list=phim-bo-dang-chieu', label: 'Đang Chiếu' },
+        { href: 'danh-sach.html?list=phim-bo-hoan-thanh', label: 'Đã Xong' },
+        { href: 'danh-sach.html?list=phim-sap-chieu', label: 'Sắp Chiếu' },
     ];
 
     const CATEGORIES = [
@@ -80,28 +80,28 @@
         const path = window.location.pathname;
         
         // 1. Trang chủ
-        if (path === '/' || path === '/index.html' || path === '/index') {
+        if (path === '/' || path.includes('index.html') || path === '/index') {
             return 'home';
         }
         
         // 2. Khám phá
-        if (path.startsWith('/search')) {
+        if (path.includes('search.html')) {
             return 'search';
         }
         
         // 3. Lịch chiếu
-        if (path.startsWith('/lich-chieu')) {
+        if (path.includes('lich-chieu.html')) {
             return 'calendar';
         }
         
         // 4. Tài khoản
-        if (path.startsWith('/profile') || path.startsWith('/login') || path.startsWith('/register')) {
+        if ((path.includes('profile') || path.includes('login.html') || path.includes('register.html'))) {
             return 'account';
         }
         
         // 5. Thêm (Các trang xem phim, danh sách phim...)
-        const morePaths = ['/danh-sach', '/categories', '/filter', '/phim-theo-quoc-gia', '/phim'];
-        if (morePaths.some(p => path.startsWith(p))) {
+        const morePaths = ['danh-sach.html', 'categories.html', 'filter.html', 'phim-theo-quoc-gia.html', 'chi-tiet.html', 'movie-detail.html', 'watch.html', 'phim-x.html'];
+        if (morePaths.some(p => path.includes(p))) {
             return 'more';
         }
         
@@ -115,6 +115,7 @@
     function buildDock() {
         const active = getActiveTab();
         const existing = document.getElementById('bottom-nav-dock');
+        const user = getCurrentUser();
 
         if (existing) {
             existing.querySelectorAll('.bn-tab').forEach(t => t.classList.remove('active'));
@@ -128,26 +129,30 @@
         dock.id = 'bottom-nav-dock';
         dock.setAttribute('aria-label', 'Điều hướng chính');
 
-        dock.innerHTML = `
-            <a href="/search" class="bn-tab ${active === 'search' ? 'active' : ''}" id="bn-tab-search" aria-label="Khám phá">
-                <span class="material-icons-round bn-tab-icon">grid_view</span>
-                <span class="bn-tab-label">Khám phá</span>
-            </a>
-            <a href="/lich-chieu" class="bn-tab ${active === 'calendar' ? 'active' : ''}" id="bn-tab-calendar" aria-label="Lịch chiếu">
-                <span class="material-icons-round bn-tab-icon">calendar_today</span>
-                <span class="bn-tab-label">Lịch chiếu</span>
-            </a>
-            <a href="/" class="bn-tab bn-tab-center ${active === 'home' ? 'active' : ''}" id="bn-tab-home" aria-label="Trang chủ">
-                <span class="bn-tab-icon flex items-center justify-center">
-                    <dotlottie-player src="/icons/home-loading.lottie" background="transparent" speed="1" style="width:22px;height:22px;" loop autoplay></dotlottie-player>
-                </span>
-                <span class="bn-tab-label">Trang chủ</span>
-            </a>
-            <a href="/profile" class="bn-tab ${active === 'account' ? 'active' : ''}" id="bn-tab-account" aria-label="Tài khoản"
+        const accountHtml = !user ? `
+            <a href="profile.html" class="bn-tab ${active === 'account' ? 'active' : ''}" id="bn-tab-account" aria-label="Tài khoản"
                onclick="return handleAccountTabClick(event)">
                 <span class="material-icons-round bn-tab-icon" id="bn-account-icon">person</span>
                 <span class="bn-tab-label">Tài khoản</span>
             </a>
+        ` : '';
+
+        dock.innerHTML = `
+            <a href="search.html" class="bn-tab ${active === 'search' ? 'active' : ''}" id="bn-tab-search" aria-label="Khám phá">
+                <span class="material-icons-round bn-tab-icon">grid_view</span>
+                <span class="bn-tab-label">Khám phá</span>
+            </a>
+            <a href="lich-chieu.html" class="bn-tab ${active === 'calendar' ? 'active' : ''}" id="bn-tab-calendar" aria-label="Lịch chiếu">
+                <span class="material-icons-round bn-tab-icon">calendar_today</span>
+                <span class="bn-tab-label">Lịch chiếu</span>
+            </a>
+            <a href="index.html" class="bn-tab bn-tab-center ${active === 'home' ? 'active' : ''}" id="bn-tab-home" aria-label="Trang chủ">
+                <span class="bn-tab-icon flex items-center justify-center">
+                    <dotlottie-player src="icons/home-loading.lottie" background="transparent" speed="1" style="width:24px;height:24px;" loop autoplay></dotlottie-player>
+                </span>
+                <span class="bn-tab-label">Trang chủ</span>
+            </a>
+            ${accountHtml}
             <button class="bn-tab bn-tab-more ${active === 'more' ? 'active' : ''}" id="bn-tab-more" aria-label="Thêm">
                 <span class="material-icons-round bn-tab-icon">menu</span>
                 <span class="bn-tab-label">Thêm</span>
@@ -183,7 +188,7 @@
         const avatar = localStorage.getItem(avatarKey) || user.avatar || user.photoURL;
         if (avatar) {
             icon.outerHTML = `<img src="${esc(avatar)}" id="bn-account-icon"
-                style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,215,0,0.4);"
+                style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,215,0,0.4);"
                 onerror="this.outerHTML='<span class=\\'material-icons-round bn-tab-icon\\' id=\\'bn-account-icon\\'>person</span>'"
                 alt="avatar">`;
         }
@@ -204,11 +209,11 @@
         ).join('');
 
         const categoriesHtml = CATEGORIES.map(c =>
-            `<a href="/categories?category=${c.slug}" class="bn-sub-item">${esc(c.name)}</a>`
+            `<a href="categories.html?category=${c.slug}" class="bn-sub-item">${esc(c.name)}</a>`
         ).join('');
 
         const countriesHtml = COUNTRIES.map(c =>
-            `<a href="/phim-theo-quoc-gia?country=${c.slug}" class="bn-sub-item">
+            `<a href="phim-theo-quoc-gia.html?country=${c.slug}" class="bn-sub-item">
                 <img src="https://flagcdn.com/16x12/${c.code}.png" alt="${c.code}" width="16" height="12" style="margin-right:6px;border-radius:2px;">
                 ${esc(c.name)}
             </a>`
@@ -216,12 +221,12 @@
 
         const authHtml = user
             ? `<div class="bn-auth-footer">
-                 <button class="bn-auth-btn logout" onclick="try{authService.logout();window.location.reload()}catch(e){window.location.href='/login'}">
+                 <button class="bn-auth-btn logout" onclick="try{authService.logout();window.location.reload()}catch(e){window.location.href='login.html'}">
                      <span class="material-icons-round" style="font-size:18px;">logout</span>Đăng xuất
                  </button>
                </div>`
             : `<div class="bn-auth-footer">
-                 <a href="/login" onclick="if(window.showAuthModal){event.preventDefault();window.closeBnSheet&&window.closeBnSheet();window.showAuthModal('login');return false;}"
+                 <a href="login.html" onclick="if(window.showAuthModal){event.preventDefault();window.closeBnSheet&&window.closeBnSheet();window.showAuthModal('login');return false;}"
                     class="bn-auth-btn login">
                      <span class="material-icons-round" style="font-size:18px;">login</span>Đăng nhập
                  </a>
@@ -249,19 +254,19 @@
             <div id="bn-sheet-scroll">
                 <!-- Quick Nav Grid 5 ô -->
                 <div class="bn-sf-quick-nav">
-                    <a href="/" class="bn-sf-quick-btn">
+                    <a href="index.html" class="bn-sf-quick-btn">
                         <span class="material-icons-round">home</span>
                         <span>Trang chủ</span>
                     </a>
-                    <a href="/danh-sach" class="bn-sf-quick-btn">
+                    <a href="danh-sach.html" class="bn-sf-quick-btn">
                         <span class="material-icons-round">view_list</span>
                         <span>Lọc phim</span>
                     </a>
-                    <a href="/search" class="bn-sf-quick-btn">
+                    <a href="search.html" class="bn-sf-quick-btn">
                         <span class="material-icons-round">explore</span>
                         <span>Khám phá</span>
                     </a>
-                    <a href="/lich-chieu" class="bn-sf-quick-btn">
+                    <a href="lich-chieu.html" class="bn-sf-quick-btn">
                         <span class="material-icons-round">event_note</span>
                         <span>Lịch chiếu</span>
                     </a>
@@ -322,7 +327,7 @@
                         Nâng cấp trải nghiệm
                     </div>
                     <div class="bn-upgrade-desc">Xem phim không quảng cáo, chất lượng HD và tốc độ tải nhanh hơn.</div>
-                    <a href="/pricing" class="bn-upgrade-btn">NÂNG CẤP NGAY</a>
+                    <a href="pricing.html" class="bn-upgrade-btn">NÂNG CẤP NGAY</a>
                 </div>
 
                 ${authHtml}
@@ -389,7 +394,7 @@
             if (!isDragging) return;
             const dy = e.touches[0].clientY - startY;
             if (dy > 0) {
-                sheet.style.transform = `translate(-50%, ${dy}px)`;
+                sheet.style.transform = `translateY(${dy}px)`;
                 sheet.style.transition = 'none';
             }
         }, { passive: true });
@@ -418,10 +423,15 @@
         buildDock();
         updateAccountIcon();
         setTimeout(() => ensureSheetBuilt(), 600);
-        document.addEventListener('authStateChanged', () => {
-            _sheetBuilt = false;
-            updateAccountIcon();
+        
+        document.addEventListener('auth:profileSynced', () => {
+            if (window.rebuildBottomNav) window.rebuildBottomNav();
         });
+        document.addEventListener('auth:logout', () => {
+            if (window.rebuildBottomNav) window.rebuildBottomNav();
+        });
+        setTimeout(updateAccountIcon, 500);
+        
     }
 
     if (document.readyState === 'loading') {

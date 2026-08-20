@@ -303,7 +303,7 @@ class AuthService {
         // Thông báo cho các module khác (premium-ad-blocker, v.v.)
         window.dispatchEvent(new CustomEvent('auth:logout'));
 
-        window.location.href = '/index';
+        window.location.href = 'index.html';
     }
 
     // Check if logged in
@@ -627,5 +627,3 @@ class AuthService {
 
 // Initialize Auth Service
 const authService = new AuthService();
-
-

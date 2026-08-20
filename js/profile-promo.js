@@ -300,7 +300,7 @@ class ProfilePromo {
                         <p class="ap-promo-text">
                             Khoe khung Avatar, đổi banner cực ngầu và lưu lại hành trình điện ảnh của riêng bạn ngay hôm nay.
                         </p>
-                        <a href="/profile" class="ap-promo-btn">
+                        <a href="profile.html" class="ap-promo-btn">
                             TRUY CẬP NGAY
                             <span class="material-icons-round">arrow_forward</span>
                         </a>
@@ -342,6 +342,4 @@ if (document.readyState === 'loading') {
 } else {
     window.profilePromo = new ProfilePromo();
 }
-
-
 

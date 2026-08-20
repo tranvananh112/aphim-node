@@ -10,7 +10,7 @@ function injectSimpleMobileMenu() {
 
     const menuHTML = `
         <div class="container mx-auto px-6 py-4">
-            <a href="/" class="block py-3 ${currentPage === 'index.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
+            <a href="index.html" class="block py-3 ${currentPage === 'index.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 🏠 Trang chủ
             </a>
             
@@ -21,45 +21,50 @@ function injectSimpleMobileMenu() {
                     <span id="mobilePhimSectionIcon" class="material-icons-round text-sm transition-transform">expand_more</span>
                 </button>
                 <div id="mobilePhimSection" class="hidden pl-4 space-y-1">
-                    <a href="/phim-theo-quoc-gia" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🌍 Tất Cả Quốc Gia
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=viet-nam" class="flex items-center py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=viet-nam" class="flex items-center py-2 text-gray-400 hover:text-primary transition-colors">
                         <svg class="w-5 h-5 mr-2" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="20" fill="#DA251D"/>
                             <polygon points="15,4 16.5,9 21.5,9 17.5,12 19,17 15,14 11,17 12.5,12 8.5,9 13.5,9" fill="#FFFF00"/>
                         </svg>
                         Phim Việt Nam
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=han-quoc" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=han-quoc" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🇰🇷 Phim Hàn Quốc
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=trung-quoc" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=trung-quoc" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🇨🇳 Phim Trung Quốc
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=nhat-ban" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=nhat-ban" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🇯🇵 Phim Nhật Bản
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=thai-lan" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=thai-lan" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🇹🇭 Phim Thái Lan
                     </a>
-                    <a href="/phim-theo-quoc-gia?country=au-my" class="block py-2 text-gray-400 hover:text-primary transition-colors">
+                    <a href="phim-theo-quoc-gia.html?country=au-my" class="block py-2 text-gray-400 hover:text-primary transition-colors">
                         🇺🇸 Phim Âu Mỹ
                     </a>
                 </div>
             </div>
             
-            <a href="/danh-sach" class="block py-3 ${currentPage === 'danh-sach.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
+            <a href="danh-sach.html" class="block py-3 ${currentPage === 'danh-sach.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 📋 Danh Sách
             </a>
-            <a href="/categories" class="block py-3 ${currentPage === 'categories.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
+            <a href="categories.html" class="block py-3 ${currentPage === 'categories.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 🎬 Thể Loại
             </a>
-            <a href="/search" class="block py-3 ${currentPage === 'search.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
+            <a href="search.html" class="block py-3 ${currentPage === 'search.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 🔍 Khám phá
             </a>
-            <a href="/pricing" class="block py-3 ${currentPage === 'pricing.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
+            <a href="pricing.html" class="block py-3 ${currentPage === 'pricing.html' ? 'text-primary font-bold' : 'text-gray-300 hover:text-primary'} transition-colors">
                 💎 Gói cước
+            </a>
+            
+            <!-- Phim X (18+) -->
+            <a href="phim-x.html" class="block py-3 ${currentPage === 'phim-x.html' ? 'text-red-400 font-bold' : 'text-red-400 hover:text-red-300'} transition-colors font-bold">
+                🔞 Phim X
             </a>
         </div>
     `;
@@ -83,5 +88,3 @@ if (document.readyState === 'loading') {
 } else {
     injectSimpleMobileMenu();
 }
-
-

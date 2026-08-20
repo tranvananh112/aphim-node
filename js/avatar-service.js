@@ -220,5 +220,3 @@
     window.avatarService = new AvatarService();
 
 })();
-
-

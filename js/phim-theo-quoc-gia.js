@@ -27,23 +27,10 @@ async function loadCountryMovies(countrySlug, countryName, page = 1) {
 
         console.log(`Loading ${countryName} movies - Page ${page}...`);
 
-        // Use standard path layout
-        const endpoint = `/quoc-gia/${countrySlug}?page=${page}&limit=40`;
-        console.log('Fetching via proxy/mirrors:', endpoint);
-
-        const response = await movieAPI.fetchWithFallback(endpoint, {
-            method: 'GET',
-            headers: { 'accept': 'application/json' }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await movieAPI.getMoviesByCountry(countrySlug, page, 'phimapi');
         console.log(`${countryName} movies data:`, data);
 
-        if (data.status === 'success' && data.data && data.data.items) {
+        if (data && (data.status === 'success' || data.status === true || data.status) && data.data && data.data.items) {
             const movies = data.data.items;
             const params = data.data.params || {};
             const pagination = params.pagination || {};
@@ -104,7 +91,7 @@ function renderMovies(movies, countryName) {
                              alt="${movie.name}"
                              class="w-full h-full object-cover ${hiddenUI.imgClass}"
                              loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                             onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                         
                         ${hiddenUI.badge}
                         

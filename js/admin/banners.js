@@ -11,10 +11,21 @@ let allBanners = []; // Cache from API
 
 function getValidImageUrl(url) {
     if (!url) return 'https://placehold.co/400x600?text=No+Image';
-    if (url.startsWith('http')) return url;
+    if (url.startsWith('http')) {
+        return url.replace('phimimg.com', 'img.ophimimg.com').replace('img.ophim.live', 'img.ophimimg.com');
+    }
     const imageBase = (window.API_CONFIG && window.API_CONFIG.IMAGE_BASE) ? window.API_CONFIG.IMAGE_BASE : 'https://img.ophimimg.com/';
     const base = imageBase.endsWith('/') ? imageBase.slice(0, -1) : imageBase;
-    return base + '/' + url.replace(new RegExp('^/'), '');
+    return base + '/' + normalizeImagePath(url);
+}
+
+function normalizeImagePath(url) {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    if (!url.startsWith('uploads/movies/')) {
+        return 'uploads/movies/' + url.replace(new RegExp('^/'), '');
+    }
+    return url;
 }
 
 // Check authentication
@@ -272,10 +283,21 @@ function renderActiveBanner() {
                         <span class="badge badge-info"><i data-lucide="captions" style="width:14px; height:14px;"></i> ${activeBanner.lang || 'Vietsub'}</span>
                     </div>
                     <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${cleanContent}</p>
+                    <div style="margin-top: 16px;">
+                        <button onclick="editBannerDesktopImage('${activeBanner._id}', '${activeBanner.thumbUrl || ''}')" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <i data-lucide="image" style="width: 16px; height: 16px;"></i> Nhập Link Ảnh Thủ Công
+                        </button>
+                    </div>
                 </div>
+            </div>
+            <div id="activeBannerGallery" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <!-- Gallery images will be loaded here -->
             </div>
         `;
         if (window.lucide) lucide.createIcons();
+        
+        // Load gallery automatically
+        loadActiveBannerGallery(activeBanner);
     } else {
         content.innerHTML = '<div style="color:var(--text-muted);font-size:13.5px;padding:8px 0"><i data-lucide="alert-triangle"    style="vertical-align:middle;margin-right:6px;color:var(--warning)" style="width: 1em; height: 1em;"></i>Chưa có banner nào được kích hoạt. Hãy thêm phim và kích hoạt.</div>';
         if (window.lucide) lucide.createIcons();
@@ -565,8 +587,8 @@ async function addMovieToBanner(movie) {
             movieSlug: movie.slug,
             name: movie.name,
             originName: movie.origin_name,
-            thumbUrl: movie.thumb_url,
-            posterUrl: movie.poster_url,
+            thumbUrl: normalizeImagePath(movie.thumb_url),
+            posterUrl: normalizeImagePath(movie.poster_url),
             content: movie.content,
             year: movie.year,
             quality: movie.quality,
@@ -664,6 +686,118 @@ async function editBannerLogo(id, currentLogo) {
     } catch (error) {
         console.error('Error updating banner logo:', error);
         alert('Không thể cập nhật Logo: ' + error.message);
+    }
+}
+
+// Edit Desktop Image URL (Custom ThumbUrl)
+async function editBannerDesktopImage(id, currentUrl) {
+    const newUrl = prompt('Nhập link ảnh nền Desktop chất lượng cao (ưu tiên tỷ lệ 16:9, link từ Imgur, TMDB...):', currentUrl || '');
+    if (newUrl === null) return; // cancelled
+    
+    await updateDesktopImage(id, newUrl.trim());
+}
+
+async function selectDesktopImage(id, url) {
+    if (!confirm('Chọn ảnh này làm ảnh nền Desktop cho Banner?')) return;
+    await updateDesktopImage(id, url);
+}
+
+async function updateDesktopImage(id, url) {
+    try {
+        const token = localStorage.getItem('cinestream_admin_token');
+        const apiUrl = window.getBackendBaseURL();
+
+        const response = await fetch(`${apiUrl}/api/banners/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ thumbUrl: url })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Đã cập nhật ảnh nền Desktop thành công! Vui lòng tải lại trang Xem Phim để xem thay đổi.');
+            fetchBannersFromAPI(); // Refresh
+        } else {
+            throw new Error(data.message || 'Lỗi cập nhật ảnh');
+        }
+    } catch (error) {
+        console.error('Error updating desktop image:', error);
+        alert('Không thể cập nhật ảnh: ' + error.message);
+    }
+}
+
+async function loadActiveBannerGallery(activeBanner) {
+    const slug = activeBanner?.movieSlug;
+    const id = activeBanner?._id;
+    const galleryContainer = document.getElementById('activeBannerGallery');
+    if (!galleryContainer) return;
+    
+    galleryContainer.innerHTML = '<div class="p-2 flex items-center gap-2 text-muted text-sm"><div class="spinner animate-spin" style="width:14px;height:14px"></div> Đang tìm bộ sưu tập ảnh từ TMDB...</div>';
+
+    try {
+        const TMDB_API_KEY = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
+        const TMDB_BASE_URL = 'https://api.tmdb.org/3';
+        let imagesList = [];
+        let tmdbId = activeBanner?.tmdb?.id || null;
+        let mediaType = activeBanner?.tmdb?.type || 'movie';
+
+        // 1. Dùng tên phim (bỏ dấu) để search trên TMDB nếu không có id
+        if (!tmdbId) {
+            let bannerName = activeBanner?.movieName || slug.replace(/-/g, ' ');
+            const searchRes = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(bannerName)}&language=vi-VN`);
+            if (searchRes.ok) {
+                const searchData = await searchRes.json();
+                const firstResult = searchData.results?.[0];
+                if (firstResult) {
+                    tmdbId = firstResult.id;
+                    mediaType = firstResult.media_type || 'movie';
+                }
+            }
+        }
+
+        // 2. Nếu tìm thấy ID, get Images
+        if (tmdbId) {
+            const imgRes = await fetch(`${TMDB_BASE_URL}/${mediaType}/${tmdbId}/images?api_key=${TMDB_API_KEY}`);
+            if (imgRes.ok) {
+                const imgData = await imgRes.json();
+                // Gộp backdrops vào imagesList giả lập định dạng cũ
+                if (imgData.backdrops && imgData.backdrops.length > 0) {
+                    imagesList = imgData.backdrops.map(b => ({ ...b, type: 'backdrop' }));
+                }
+            }
+        }
+        
+        const backdrops = imagesList.filter(img => img.type === 'backdrop' || img.aspect_ratio > 1);
+        
+        if (backdrops.length > 0) {
+            galleryContainer.innerHTML = `
+                <div style="margin-top: 8px;">
+                    <h4 style="font-size: 13.5px; font-weight: 600; margin-bottom: 12px; color: var(--text-primary); display:flex; align-items:center; gap: 6px;">
+                        <i data-lucide="image" style="width:16px; height:16px; color: var(--primary);"></i>
+                        Hoặc click chọn nhanh ảnh nền (Backdrop) từ TMDB:
+                    </h4>
+                    <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;" class="custom-scrollbar">
+                        ${backdrops.map(img => `
+                            <div style="flex-shrink: 0; width: 220px; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;" 
+                                 class="hover:border-primary hover:opacity-80"
+                                 onclick="selectDesktopImage('${id}', 'https://image.tmdb.org/t/p/w1280${img.file_path}')">
+                                <img src="https://image.tmdb.org/t/p/w500${img.file_path}" style="width: 100%; height: 100%; object-fit: cover;" title="Click để chọn ảnh này làm nền Desktop">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+        } else {
+            galleryContainer.innerHTML = `<p class="text-sm text-muted mt-2"><i data-lucide="info" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> Không tìm thấy bộ sưu tập ảnh nền ngang nào trên TMDB cho phim này.</p>`;
+            if (window.lucide) lucide.createIcons();
+        }
+    } catch (err) {
+        galleryContainer.innerHTML = `<p class="text-sm text-danger mt-2">Lỗi kết nối TMDB. Vui lòng nhập link thủ công.</p>`;
     }
 }
 
@@ -904,8 +1038,8 @@ function addMovieToThumbnail(movie) {
         movieSlug: movie.slug,
         name: movie.name,
         originName: movie.origin_name,
-        thumbUrl: movie.thumb_url,
-        posterUrl: movie.poster_url,
+        thumbUrl: normalizeImagePath(movie.thumb_url),
+        posterUrl: normalizeImagePath(movie.poster_url),
         year: movie.year,
         tmdb: movie.tmdb || {}
     });
@@ -1032,26 +1166,26 @@ async function previewCatBg(input, previewId, apiPath = null) {
         img.src = val;
     } else {
         // Fetch from OPhim to show what is currently active
-        img.src = 'https://via.placeholder.com/80x45?text=Loading';
+        img.src = 'https://placehold.co/80x45?text=Loading';
         if (apiPath) {
             try {
-                const response = await fetch(`https://phimapi.com/v1/api/${apiPath}?page=1&limit=1`, {
+                const response = await movieAPI.fetchWithFallback(`/${apiPath}?page=1&limit=1`, {
                     method: 'GET',
                     headers: { 'accept': 'application/json' }
                 });
                 const data = await response.json();
-                if (data.status === 'success' && data.data && data.data.items && data.data.items.length > 0) {
+                if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items && data.data.items.length > 0) {
                     const thumbUrl = data.data.items[0].thumb_url;
                     img.src = thumbUrl.startsWith('http') ? thumbUrl : `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}`;
                 } else {
-                    img.src = 'https://via.placeholder.com/80x45?text=Auto';
+                    img.src = 'https://placehold.co/80x45?text=Auto';
                 }
             } catch (e) {
                 console.error('Failed to preview auto bg:', e);
-                img.src = 'https://via.placeholder.com/80x45?text=Auto';
+                img.src = 'https://placehold.co/80x45?text=Auto';
             }
         } else {
-            img.src = 'https://via.placeholder.com/80x45?text=Auto';
+            img.src = 'https://placehold.co/80x45?text=Auto';
         }
     }
 }
@@ -1131,6 +1265,4 @@ async function saveCategoryBackgrounds() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCategoryBackgrounds();
 });
-
-
 

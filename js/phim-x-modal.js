@@ -201,7 +201,7 @@
             btn.style.pointerEvents = 'none';
         }
         setTimeout(function () {
-            window.location.href = '/phim-x';
+            window.location.href = 'phim-x.html';
         }, 400);
     };
 
@@ -220,5 +220,3 @@
     });
 
 })();
-
-

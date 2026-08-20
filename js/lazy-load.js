@@ -37,5 +37,3 @@
     window.initLazyLoad = observeImages;
 
 })();
-
-

@@ -185,5 +185,3 @@ class RatingService {
 
 // Initialize Rating Service
 const ratingService = new RatingService();
-
-

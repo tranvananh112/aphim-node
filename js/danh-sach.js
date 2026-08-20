@@ -73,22 +73,8 @@ async function loadMoviesList(listSlug, page = 1) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
-        // Use movieAPI.fetchWithFallback wrapper to bypass ISP blocks and handle mirrors automatically
-        const endpoint = `/danh-sach/${listSlug}?page=${page}&limit=40`;
-        console.log('Fetching via proxy/mirrors:', endpoint);
-
-        const response = await movieAPI.fetchWithFallback(endpoint, {
-            method: 'GET',
-            headers: {
-                'accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await movieAPI.getMoviesFromMultipleSources(page, listSlug, 'phimapi');
+        console.log(`${listName} data:`, data);
         console.log('API Response:', data);
 
         if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
@@ -160,10 +146,10 @@ function renderMoviesTable(movies, listName, totalItems, totalPages_api) {
     let gridHTML = '';
 
     movies.forEach((movie) => {
-        const rawImg = movie.thumb_url || movie.poster_url || '';
+        const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg ? (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`) : 'https://via.placeholder.com/200x300?text=No+Image'));
+            : (rawImg.startsWith('http') ? rawImg : (rawImg ? `https://img.ophimimg.com/${rawImg}` : 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'));
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
         const episodeCurrent = movie.episode_current || 'N/A';
@@ -171,15 +157,20 @@ function renderMoviesTable(movies, listName, totalItems, totalPages_api) {
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
         gridHTML += `
-            <a href="/phim/${movie.slug}" 
+            <a href="movie-detail.html?slug=${movie.slug}" 
                class="group relative block rounded-xl overflow-hidden bg-surface-dark hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl ${hiddenUI.containerClass}">
                 <!-- Poster -->
                 <div class="relative aspect-[2/3]">
                     <img src="${posterUrl}" 
                          alt="${movie.name}"
                          class="w-full h-full object-cover ${hiddenUI.imgClass}"
+                         data-tmdb-slug="${movie.slug}"
+                         data-tmdb-id="${movie.tmdb?.id || ''}"
+                         data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                         data-tmdb-year="${movie.year || ''}"
+                         data-tmdb-type="poster"
                          loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                     
                     ${hiddenUI.badge}
                     

@@ -1,3 +1,2 @@
-// admin-tools.js stub
-// This file is loaded by the EJS layout, creating a stub to prevent 404 errors.
-console.log('admin-tools.js loaded.');
+// admin-tools.js - placeholder to prevent 404
+// Admin functionality is in /public/js/admin/ directory

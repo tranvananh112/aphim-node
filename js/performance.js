@@ -247,5 +247,3 @@ window.addEventListener('beforeunload', () => {
 });
 
 console.log('⚡ Performance optimizer initialized');
-
-

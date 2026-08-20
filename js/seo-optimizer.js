@@ -131,20 +131,12 @@ const SEO = {
                 url.searchParams.delete('page');
             }
             
-            // SEO FIX: If on watch.html or /xem-phim/, point canonical back to movie-detail.html or /phim/:slug
-            if (url.pathname.includes('watch.html') || url.pathname.startsWith('/xem-phim/')) {
-                if (url.pathname.startsWith('/xem-phim/')) {
-                    const parts = url.pathname.split('/').filter(Boolean); // ["xem-phim", "slug", "episode"]
-                    if (parts.length >= 2) {
-                        url.pathname = `/phim/${parts[1]}`;
-                        url.search = ''; // Strip episode parameter
-                    }
-                } else {
-                    const slug = url.searchParams.get('slug');
-                    if (slug) {
-                        url.pathname = url.pathname.replace('watch.html', 'movie-detail.html');
-                        url.search = `?slug=${slug}`; // Strip episode parameter to point to parent movie
-                    }
+            // SEO FIX: If on watch.html, point canonical back to movie-detail.html
+            if (url.pathname.includes('watch.html')) {
+                const slug = url.searchParams.get('slug');
+                if (slug) {
+                    url.pathname = url.pathname.replace('watch.html', 'movie-detail.html');
+                    url.search = `?slug=${slug}`; // Strip episode parameter to point to parent movie
                 }
             }
             
@@ -187,9 +179,9 @@ const SEO = {
             "genre": movie.category?.map(c => c.name) || ["Phim mới"],
             "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "9.5",
-                "bestRating": "10",
-                "ratingCount": Math.floor(Math.random() * 1000) + 500
+                "ratingValue": (Math.random() * (4.9 - 4.5) + 4.5).toFixed(1),
+                "bestRating": "5",
+                "ratingCount": Math.floor(Math.random() * (25000 - 8000) + 8000)
             }
         };
 
@@ -217,7 +209,7 @@ const SEO = {
             const img = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`) : `${siteOrigin}/apple-touch-icon.png`;
             const hasCustomLink = !!movieLinks[movie.slug];
             const slug = movie.slug || '';
-            const movieUrl = `${siteOrigin}/phim/${slug}`;
+            const movieUrl = `${siteOrigin}/${hasCustomLink ? 'watch-simple.html' : 'movie-detail.html'}?slug=${slug}`;
 
             return {
                 "@type": "ListItem",
@@ -278,7 +270,7 @@ const SEO = {
                 "@type": "ListItem",
                 "position": 2,
                 "name": categoryName,
-                "item": `${siteOrigin}/search?category=${categorySlug}`
+                "item": `${siteOrigin}/search.html?category=${categorySlug}`
             });
         }
 
@@ -347,6 +339,4 @@ const SEO = {
         document.head.appendChild(script);
     });
 })();
-
-
 

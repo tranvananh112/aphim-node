@@ -371,5 +371,3 @@ window.buyXPForStep = async function(targetMinLv, stepName) {
 window.handleAttendance = handleAttendance;
 window.scrollJourney = scrollJourney;
 window.loadJourney = initJourney;
-
-

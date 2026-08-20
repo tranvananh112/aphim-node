@@ -4,7 +4,7 @@ let loadedTabs = new Set(); // Track which tabs have been loaded
 document.addEventListener('DOMContentLoaded', function () {
     // Check if logged in
     if (!authService.isLoggedIn()) {
-        window.location.href = '/login';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -445,7 +445,7 @@ function loadFavorites() {
         container.innerHTML = favorites.map(movie => `
             <div class="relative flex gap-4 p-4 bg-black/30 border border-white/5 rounded-lg hover:border-primary/50 transition-all group">
                 <div class="relative w-24 aspect-[2/3] flex-shrink-0 rounded-md overflow-hidden bg-black/40">
-                    <a href="/phim/${movie.slug}" class="block w-full h-full">
+                    <a href="movie-detail.html?slug=${movie.slug}" class="block w-full h-full">
                         <img src="${movieAPI.getImageURL(movie.thumb_url)}" 
                              alt="${movie.name}"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -458,7 +458,7 @@ function loadFavorites() {
                         <span class="material-icons-round" style="font-size:14px;">close</span>
                     </button>
                 </div>
-                <a href="/phim/${movie.slug}" class="flex-1 min-w-0 flex flex-col justify-center" style="text-decoration:none;">
+                <a href="movie-detail.html?slug=${movie.slug}" class="flex-1 min-w-0 flex flex-col justify-center" style="text-decoration:none;">
                     <h4 class="font-bold text-white group-hover:text-primary transition-colors truncate text-[15px]">
                         ${movie.name}
                     </h4>
@@ -522,7 +522,7 @@ function loadHistory() {
             const progressPercent = progress.percentage || 0;
 
             return `
-                <a href="/xem-phim/${movie.slug}${movie.episode ? `/tap-${movie.episode}` : ''}" 
+                <a href="watch.html?slug=${movie.slug}${movie.episode ? `&episode=${movie.episode}` : ''}" 
                    class="flex gap-4 p-4 bg-black/30 border border-white/5 rounded-lg hover:border-primary/50 transition-all group">
                     <div class="w-24 aspect-[2/3] flex-shrink-0 rounded-md overflow-hidden">
                         <img src="${movieAPI.getImageURL(movie.thumb_url)}" 
@@ -742,7 +742,7 @@ window.viewPlaylist = function(id) {
                              class="playlist-item-card"
                              onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateX(5px)';this.style.borderColor='rgba(232,185,79,0.15)'" 
                              onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.transform='translateX(0)';this.style.borderColor='rgba(255,255,255,0.05)'">
-                            <a href="/phim/${movie.slug}" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-width:0;flex:1;">
+                            <a href="movie-detail.html?slug=${movie.slug}" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-width:0;flex:1;">
                                 <div style="position:relative;flex-shrink:0;">
                                     <img src="${movieAPI.getImageURL(movie.thumb_url)}" style="width:50px;height:75px;border-radius:10px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onerror="this.src='https://via.placeholder.com/50x75?text=?'" />
                                     <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.4), transparent);border-radius:10px;"></div>
@@ -880,6 +880,10 @@ window.showTab = function (tabName, isInitialOrPop = false) {
         if (sidebar) sidebar.style.display = 'none';
         if (contentHeader) contentHeader.style.display = 'flex';
         
+        // 🚀 NATIVE APP UX: Hide the global main navbar when inside a detailed Sub-Tab
+        // This permanently stops all header collisions and allows the Back Header to sit flush with the Safe Area Notch.
+        // mainNav.style.display = "none"; // Removed to keep header sticky
+        
         // Ensure hero card (banner) is hidden or smaller on mobile detail view to save space
         const heroCard = document.querySelector('.profile-hero-card');
         if (heroCard) heroCard.style.display = 'none';
@@ -939,7 +943,7 @@ window.goBackToMenu = function(isInitialOrPop = false) {
         // Show Sidebar, Hero & Restore Main Navbar
         if (sidebar) sidebar.style.display = 'flex';
         if (heroCard) heroCard.style.display = 'block';
-        if (mainNav) mainNav.style.display = ''; // Restore default display stylesheet styles
+        // mainNav.style.display = ""; // Removed to keep header sticky
         
         // Hide all tabs
         document.querySelectorAll('.tab-content').forEach(tab => {
@@ -1415,6 +1419,4 @@ window.saveEditProfile = async function() {
 
 // Selection logic is now handled by profile-shop.js to avoid duplication
 // and ensure consistency with the shop logic.
-
-
 

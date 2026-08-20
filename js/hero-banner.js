@@ -40,10 +40,23 @@ async function loadHeroBanner() {
             localStorage.setItem('cinestream_active_banner', JSON.stringify(data.data));
             const newMovie = convertBannerToMovie(data.data);
 
-            if (!currentAdminBanner || currentAdminBanner.slug !== newMovie.slug) {
+            if (!currentAdminBanner || 
+                currentAdminBanner.slug !== newMovie.slug || 
+                currentAdminBanner.thumb_url !== newMovie.thumb_url ||
+                currentAdminBanner.poster_url !== newMovie.poster_url) {
+                
                 currentAdminBanner = newMovie;
                 heroSlides[0] = currentAdminBanner;
-                if (currentSlideIndex === 0) renderHeroBannerContent(currentAdminBanner, false);
+                if (currentSlideIndex === 0) {
+                    renderHeroBannerContent(currentAdminBanner, false);
+                    
+                    // Force update the hero image if we are already on slide 0
+                    const heroImage = document.getElementById('heroImage');
+                    if (heroImage) {
+                        const optUrl = buildImageUrl(getHeroImageUrl(currentAdminBanner), 1200);
+                        if (optUrl) heroImage.src = optUrl;
+                    }
+                }
             }
         } else {
             localStorage.removeItem('cinestream_active_banner');
@@ -64,10 +77,8 @@ async function loadHeroBanner() {
 // -- Fallback từ ophim API ----------------------------------------
 async function loadFallbackBanner() {
     try {
-        const response = await movieAPI.fetchWithFallback('/danh-sach/phim-bo?page=1');
-        const rawData = await response.json();
-        const data = movieAPI.normalizeResponse(rawData);
-        const items = data?.data?.items || [];
+        const data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-bo');
+        const items = data?.data?.items || data?.items || [];
         if (items && items.length > 0) {
             currentAdminBanner = items[0];
             heroSlides[0] = currentAdminBanner;
@@ -108,6 +119,12 @@ function convertBannerToMovie(banner) {
 function getHeroImageUrl(movie) {
     if (!movie) return '';
     const isMobile = window.innerWidth < 768;
+
+    // TÍNH NĂNG MỚI: Nếu Admin cài link ảnh Custom trực tiếp (bắt đầu bằng http và không phải từ ophimimg), ưu tiên tuyệt đối lấy làm ảnh nền Desktop
+    if (!isMobile && movie.thumb_url && movie.thumb_url.startsWith('http') && !movie.thumb_url.includes('ophimimg.com') && !movie.thumb_url.includes('phimimg.com')) {
+        return movie.thumb_url;
+    }
+
     const cacheKey = `tmdb_hero_${movie.slug}`;
     try {
         const cached = sessionStorage.getItem(cacheKey);
@@ -259,7 +276,7 @@ async function loadHeroLogo(movie) {
         // Search by origin_name or name if TMDB ID is missing
         if (!tmdbId) {
             const query = encodeURIComponent(movie.origin_name || movie.name);
-            const searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`;
+            const searchUrl = `https://api.tmdb.org/3/search/multi?api_key=${API_KEY}&query=${query}`;
             const searchRes = await secureFetch(searchUrl);
             if (loadId !== currentLogoLoadId) return; // H?y n?u slide d chuy?n
 
@@ -281,7 +298,7 @@ async function loadHeroLogo(movie) {
             return;
         }
 
-        const url = `https://api.themoviedb.org/3/${type}/${tmdbId}/images?api_key=${API_KEY}`;
+        const url = `https://api.tmdb.org/3/${type}/${tmdbId}/images?api_key=${API_KEY}`;
         const res = await secureFetch(url);
         if (loadId !== currentLogoLoadId) return;
         if (!res) {
@@ -848,9 +865,15 @@ function renderThumbnails(movies) {
                 <img
                     alt="${movie.name || ''}"
                     class="w-full h-full object-cover object-center"
-                    src="${imgSrc}"
-                    onerror="this.src='https://via.placeholder.com/150x85?text=No+Image'"
-                    loading="lazy" />
+                    data-src="${imgSrc}"
+                    data-tmdb-slug="${movie.slug}"
+                    data-tmdb-id="${movie.tmdb?.id || ''}"
+                    data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                    data-tmdb-year="${movie.year || ''}"
+                    data-tmdb-type="backdrop"
+                    src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E"
+                    onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
+                     />
             </div>
             <div class="hero-thumb-glow"></div>
         </div>`;

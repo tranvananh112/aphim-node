@@ -28,10 +28,26 @@ async function loadFeaturedMovies() {
     container.innerHTML = '<div class="col-span-full text-center py-10"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div></div>';
 
     try {
-        const data = await movieAPI.getHome();
+        const data = await movieAPI.getMovieList(1, 'phimapi');
 
         if (data && (data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items) {
-            renderMovieGrid(data.data.items, container);
+            let movies = data.data.items;
+            
+            // Lọc và ưu tiên phim có điểm đánh giá cao (sao cao) lên trước
+            movies.sort((a, b) => {
+                const scoreA = a.tmdb?.vote_average || a.imdb?.vote_average || 0;
+                const scoreB = b.tmdb?.vote_average || b.imdb?.vote_average || 0;
+                
+                if (scoreA !== scoreB) {
+                    return scoreB - scoreA;
+                }
+                return (b.year || 0) - (a.year || 0);
+            });
+            
+            // Có thể lấy top 24 phim có điểm cao nhất để hiển thị cho đẹp
+            const topMovies = movies.slice(0, 24);
+            
+            renderMovieGrid(topMovies, container);
         } else {
             container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">Không thể tải danh sách phim</div>';
         }
@@ -44,13 +60,19 @@ async function loadFeaturedMovies() {
 // Render movie grid
 function renderMovieGrid(movies, container) {
     container.innerHTML = movies.map(movie => `
-        <a href="/phim/${movie.slug}"
+        <a href="movie-detail.html?slug=${movie.slug}"
             class="group relative block rounded-xl overflow-hidden bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-300">
             <div class="aspect-[2/3] w-full overflow-hidden relative">
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Vietsub HD"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    src="${movieAPI.getImageURL(movie.thumb_url)}"
-                    onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                    data-src="${movieAPI.getImageURL(movie.thumb_url)}"
+                    data-tmdb-slug="${movie.slug}"
+                    data-tmdb-id="${movie.tmdb?.id || ''}"
+                    data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                    data-tmdb-year="${movie.year || ''}"
+                    data-tmdb-type="poster"
+                    src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E"
+                    onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                 <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
                     ${movie.quality || 'HD'}
                 </div>

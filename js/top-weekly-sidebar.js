@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!sidebar) return;
 
     try {
-        const response = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1&limit=100');
+        const response = await movieAPI.fetchWithFallback('/danh-sach/phim-moi-cap-nhat?page=1&limit=100');
         const result = await response.json();
         
         if (!result.data || !result.data.items) return;
@@ -39,15 +39,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isTop3 = num <= 3;
             const numColor = isTop3 ? '#FFD700' : '#4b5563'; // Vàng cho 1-3, xám cho 4-10
             
-            const rawThumb = item.thumb_url || item.poster_url || '';
-            const thumbUrl = (typeof imageOptimizer !== 'undefined') ? imageOptimizer.optimizeImageUrl(rawThumb, 100, 70) : (rawThumb.startsWith('http') ? rawThumb : (rawThumb.startsWith('uploads/') ? `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}` : `https://img.ophimimg.com/${rawThumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawThumb}`));
+            const imgBase = imgDomain.endsWith('/') ? imgDomain.slice(0, -1) : imgDomain;
+            const fullImgPath = false ? imgBase : `${imgBase}/uploads/movies`;
+            const thumbUrl = item.thumb_url.startsWith('http') ? item.thumb_url : `${fullImgPath}/${item.thumb_url}`;
             const title = item.name || item.origin_name;
             const badge = item.quality || 'HD';
             const episode = item.episode_current || 'Tập 1';
             const score = item.tmdb?.vote_average || item.imdb?.vote_average || 0;
 
             html += `
-                <a href="/phim/${item.slug}" class="ap-top-weekly-item group">
+                <a href="movie-detail.html?slug=${item.slug}" class="ap-top-weekly-item group">
                     <div class="ap-top-num" style="--num-color: ${numColor};">${num}</div>
                     <img src="${thumbUrl}" alt="${title}" class="ap-top-thumb" loading="lazy" />
                     <div class="ap-top-info">
@@ -197,5 +198,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error fetching Top Weekly:', error);
     }
 });
-
-

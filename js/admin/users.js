@@ -704,5 +704,3 @@ function logout() {
         window.location.href = '/admin/login.html';
     }
 }
-
-

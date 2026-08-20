@@ -255,5 +255,3 @@ window.addEventListener('load', () => {
 window.PerformanceMonitor = PerformanceMonitor;
 
 console.log('✅ Performance Monitor initialized');
-
-

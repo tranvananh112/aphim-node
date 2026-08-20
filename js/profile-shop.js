@@ -452,5 +452,3 @@ window.renderOwnedFramesForEdit = renderOwnedFramesForEdit;
 window.renderOwnedBannersForEdit = renderOwnedBannersForEdit;
 window.epSelectFrame = epSelectFrame;
 window.epSelectCover = epSelectCover;
-
-

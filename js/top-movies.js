@@ -15,7 +15,10 @@ async function loadTopMovies() {
 
         // 2. Nếu chưa đủ phim, lấy thêm từ danh sách phim lẻ & phim bộ hot
         if (movies.length < 10) {
-            const fallbackRes = await movieAPI.fetchWithFallback('/danh-sach/phim-moi-cap-nhat?page=1');
+            const fallbackRes = await movieAPI.fetchWithFallback('/danh-sach/phim-moi-cap-nhat?page=1', {
+                method: 'GET',
+                headers: { 'accept': 'application/json' }
+            }, 'phimapi');
             const rawData = await fallbackRes.json();
             const normData = movieAPI.normalizeResponse(rawData);
             if (normData && normData.data && normData.data.items) {
@@ -74,7 +77,7 @@ function renderTopMovies(movies) {
         const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
             imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;
         
-        const detailUrl = `/phim/${movie.slug}`;
+        const detailUrl = `movie-detail.html?slug=${movie.slug}`;
         
         // Rating & Stars
         const ratingVal = (movie.tmdb?.vote_average || movie.rating || movie.imdb?.vote_average || (9.9 - index * 0.2)).toFixed(1);
@@ -98,7 +101,7 @@ function renderTopMovies(movies) {
                         <img src="${optimizedUrl}" 
                              alt="${movie.name}" 
                              class="w-full h-full object-cover"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x600?text=No+Poster'"
+                             onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
                              loading="lazy" />
                         
                         <div class="ranking-badges-bottom">
@@ -160,3 +163,5 @@ window.scrollTopMovies = (dir) => {
     const container = document.getElementById('topMoviesContainer');
     if (container) container.scrollBy({ left: dir === 'right' ? 800 : -800, behavior: 'smooth' });
 };
+
+

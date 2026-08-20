@@ -30,8 +30,46 @@
         return null;
     }
 
+    function escHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = String(str || '');
+        return d.innerHTML;
+    }
+
     function icon(name, style) {
         return `<span class="material-icons-round" style="${style || ''}">${name}</span>`;
+    }
+
+    /* ── SUPPRESS OLD MENU ── */
+    function suppressOldMenu() {
+        const selectors = [
+            '#mobile-menu', '#mobileMenu', '.mobile-menu',
+            '#nav-mobile', '.nav-mobile', '[data-mobile-menu]'
+        ];
+        selectors.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el && el.id !== 'mm-drawer' && el.id !== 'mm-overlay') {
+                el.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;';
+                el.classList.add('hidden');
+                el.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }
+
+    /* ── SETUP BURGER BUTTON ── */
+    function setupBtn() {
+        // Tìm nút hamburger hiện có hoặc tạo mới
+        let burgerBtn = document.querySelector('.mm-burger-btn');
+        if (!burgerBtn) {
+            // Tìm nút hamburger phổ biến
+            burgerBtn = document.querySelector(
+                '#mobile-menu-btn, #hamburger-btn, .hamburger, [data-toggle="mobile-menu"], button[aria-label*="menu"], button[aria-label*="Menu"]'
+            );
+        }
+        if (burgerBtn) {
+            burgerBtn.classList.add('mm-burger-btn');
+            burgerBtn.addEventListener('click', openMenu);
+        }
     }
 
     /* ── BUILD DRAWER ── */
@@ -60,7 +98,7 @@
 
         const userName = user ? escHtml(user.name || user.email || 'Người dùng') : 'Khách';
         const userBadge = user ? 'Thành viên Vàng' : 'Chưa đăng nhập';
-        const userHref = user ? 'profile.html' : '#';
+        const userHref = user ? '/profile' : '#';
         const userClick = user ? '' : `onclick="if(window.showAuthModal){event.preventDefault(); if(window.closeMobileMenu) window.closeMobileMenu(); window.showAuthModal('login'); return false;}"`;
 
         const frameClass = user ? (user.equippedFrameClass || localStorage.getItem('ap_frame_class') || '') : '';
@@ -103,7 +141,6 @@
                 <div class="mm-dropdown-panel-blue">
                     <div class="mm-dropdown-panel-blue-scroll">
                         <div class="mm-grid-2" id="mmPhimDropGrid">
-
                             <!-- Danh sách quốc gia loading -->
                         </div>
                     </div>
@@ -132,7 +169,7 @@
                     ${icon('view_list', 'font-size:22px;')}
                     <span class="mm-card-label">Danh Sách</span>
                 </a>
-                <a href="/search" class="mm-card-item mm-glass color-green" style="position:relative;">
+                <a href="search.html" class="mm-card-item mm-glass color-green" style="position:relative;">
                     <div class="mm-badge-new">Mới</div>
                     ${icon('explore', 'font-size:22px;')}
                     <span class="mm-card-label">Khám Phá</span>
@@ -147,8 +184,6 @@
                 </a>
             </div>
 
-
-
             <!-- UPGRADE BANNER -->
             <div class="mm-upgrade-banner mm-glass">
                 <div class="mm-upgrade-glow"></div>
@@ -162,7 +197,7 @@
                 </div>
             </div>
 
-            <!-- FOOTER chuyển vào trong nhánh Scroll để rộng chỗ -->
+            <!-- FOOTER -->
             <div class="mm-footer">
                 <div class="mm-footer-div"></div>
                 <div class="mm-footer-row">
@@ -173,11 +208,11 @@
                         </a>
                         ${user
                 ? `<button class="mm-footer-link danger" onclick="try{authService.logout()}catch(e){window.location.href = '/login'}">
-                                   ${icon('logout', 'font-size:16px;')} Đăng xuất
-                               </button>`
+                               ${icon('logout', 'font-size:16px;')} Đăng xuất
+                           </button>`
                 : `<a href="/login" onclick="if(window.showAuthModal){event.preventDefault(); if(window.closeMobileMenu) window.closeMobileMenu(); window.showAuthModal('login'); return false;}" class="mm-footer-link" style="color:#fcd576; font-weight:700; background: rgba(252,213,118,0.1); padding: 6px 12px; border-radius: 20px;">
-                                   ${icon('login', 'font-size:16px;')} Đăng nhập
-                               </a>`
+                               ${icon('login', 'font-size:16px;')} Đăng nhập
+                           </a>`
             }
                     </div>
                 </div>
@@ -196,7 +231,7 @@
         // 1. Phim dropdown toggle
         const phimBtn = document.getElementById('mmPhimBtn');
         const phimDrop = document.getElementById('mmPhimDrop');
-        const expandIconPhim = phimBtn?.querySelector('.material-icons-round:last-of-type');
+        const expandIconPhim = phimBtn ? phimBtn.querySelector('.material-icons-round:last-of-type') : null;
         let phimOpen = false;
         if (phimBtn && phimDrop) {
             phimBtn.addEventListener('click', () => {
@@ -209,9 +244,9 @@
         // 2. Thể Loại dropdown toggle
         const loaiBtn = document.getElementById('mmLoaiBtn');
         const loaiDrop = document.getElementById('mmLoaiDrop');
-        const expandIconLoai = loaiBtn?.querySelector('.material-icons-round:last-of-type');
+        const expandIconLoai = loaiBtn ? loaiBtn.querySelector('.material-icons-round:last-of-type') : null;
         let loaiOpen = false;
-        if (loaiBtn) {
+        if (loaiBtn && loaiDrop) {
             loaiBtn.addEventListener('click', () => {
                 loaiOpen = !loaiOpen;
                 loaiDrop.style.display = loaiOpen ? 'block' : 'none';
@@ -219,7 +254,7 @@
             });
         }
 
-        // --- Load động Quốc Gia vào menu mobile (Hardcoded Zero-latency) ---
+        // --- Load động Quốc Gia vào menu mobile ---
         const mmPhimDropGrid = document.getElementById('mmPhimDropGrid');
         if (mmPhimDropGrid) {
             const countries = [
@@ -254,14 +289,11 @@
                 'chau-phi': 'globe', 'nam-phi': 'za', 'ukraina': 'ua', 'a-rap-xe-ut': 'sa'
             };
 
-            let html = '';
-
-            html += countries.map(c => {
+            mmPhimDropGrid.innerHTML = countries.map(c => {
                 const code = flagCodes[c.slug] || 'globe';
                 const iconHtml = (code === 'globe')
                     ? `<span style="font-size: 20px; line-height: 1;">🌍</span>`
                     : `<img src="https://flagcdn.com/16x12/${code}.png" alt="${code}" style="width:16px;height:12px;object-fit:cover;border-radius:2px;">`;
-
                 return `
                     <a href="/phim-theo-quoc-gia?country=${c.slug}" class="mm-card-item mm-glass">
                         ${iconHtml}
@@ -269,11 +301,9 @@
                     </a>
                 `;
             }).join('');
-
-            mmPhimDropGrid.innerHTML = html;
         }
 
-        // --- Load động Thể Loại vào menu mobile (Hardcoded Zero-latency) ---
+        // --- Load động Thể Loại vào menu mobile ---
         const mmLoaiDropGrid = document.getElementById('mmLoaiDropGrid');
         if (mmLoaiDropGrid) {
             const categories = [
@@ -291,23 +321,15 @@
                 { slug: 'short-drama', name: 'Short Drama' }
             ];
 
-            let htmlLoai = '';
-
-            htmlLoai += categories.map(c => {
-                return `
-                    <a href="/categories?category=${c.slug}" class="mm-card-item mm-glass">
-                        <span class="mm-card-label">${c.name}</span>
-                    </a>
-                `;
-            }).join('');
-
-            mmLoaiDropGrid.innerHTML = htmlLoai;
+            mmLoaiDropGrid.innerHTML = categories.map(c => `
+                <a href="/categories?category=${c.slug}" class="mm-card-item mm-glass">
+                    <span class="mm-card-label">${c.name}</span>
+                </a>
+            `).join('');
         }
     }
 
     /* ── OPEN / CLOSE ── */
-    // Drawer được build SẴN một lần khi init, sau đó chỉ toggle class
-    // → không phải tạo DOM mỗi lần mở = menu xuất hiện tức thì
     let _drawerBuilt = false;
 
     function ensureDrawerBuilt() {
@@ -317,18 +339,12 @@
     }
 
     function openMenu() {
-        // Đảm bảo drawer đã được build (thường đã build khi init)
         ensureDrawerBuilt();
-
-        // Toggle class NGAY - không setTimeout, không delay
-        document.getElementById('mm-overlay')?.classList.add('open');
-        document.getElementById('mm-drawer')?.classList.add('open');
+        document.getElementById('mm-overlay') && document.getElementById('mm-overlay').classList.add('open');
+        document.getElementById('mm-drawer') && document.getElementById('mm-drawer').classList.add('open');
         document.body.classList.add('mm-open');
-
-        // FIX: dùng overflow:hidden thay vì position:fixed → không gây layout reflow
         document.body.style.overflow = 'hidden';
         document.body.style.overscrollBehavior = 'contain';
-
         const burger = document.querySelector('.mm-burger-btn');
         if (burger) burger.classList.add('open');
     }
@@ -336,19 +352,13 @@
     function closeMenu() {
         const overlay = document.getElementById('mm-overlay');
         const drawer = document.getElementById('mm-drawer');
-
         if (overlay) overlay.classList.remove('open');
         if (drawer) drawer.classList.remove('open');
-
         document.body.classList.remove('mm-open');
-        // FIX index.html: giữ mm-closing để catfish/chat FAB ẩn trong lúc drawer đang slide ra
         document.body.classList.add('mm-closing');
         setTimeout(() => document.body.classList.remove('mm-closing'), 350);
-
-        // FIX: khôi phục overflow, không cần scroll restore vì không dùng position:fixed
         document.body.style.overflow = '';
         document.body.style.overscrollBehavior = '';
-
         const burger = document.querySelector('.mm-burger-btn');
         if (burger) burger.classList.remove('open');
     }
@@ -358,65 +368,29 @@
         const drawer = document.getElementById('mm-drawer');
         const overlay = document.getElementById('mm-overlay');
         const wasOpen = drawer && drawer.classList.contains('open');
-
         if (drawer) drawer.remove();
         if (overlay) overlay.remove();
-
         buildDrawer();
-
-        if (wasOpen) {
-            document.getElementById('mm-overlay').classList.add('open');
-            document.getElementById('mm-drawer').classList.add('open');
-        }
+        _drawerBuilt = true;
+        if (wasOpen) openMenu();
     }
 
-    /* ── SETUP BUTTON ── */
-    function setupBtn() {
-        const oldBtn = document.getElementById('mobileMenuBtn');
-        if (!oldBtn) return;
+    /* ── UPDATE USER IN MENU ── */
+    window.updateMobileMenuUser = function () {
+        if (!_drawerBuilt) return;
+        rebuildMenu();
+    };
 
-        const btn = document.createElement('button');
-        // Giữ lg:hidden để ẩn trên desktop, chỉ hiện trên mobile
-        btn.className = 'mm-burger-btn lg:hidden';
-        btn.id = 'mobileMenuBtn';
-        btn.setAttribute('aria-label', 'Mở menu');
-        btn.innerHTML = `<div class="mm-burger-lines"><span></span><span></span><span></span></div>`;
-        btn.addEventListener('click', openMenu);
-        oldBtn.replaceWith(btn);
-    }
-
-    /* ── SUPPRESS OLD MENU ── */
-    function suppressOldMenu() {
-        const oldMenu = document.getElementById('mobileMenu');
-        if (!oldMenu) return;
-        oldMenu.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;';
-        oldMenu.classList.add('hidden');
-        oldMenu.setAttribute('aria-hidden', 'true');
-        oldMenu.innerHTML = '';
-        new MutationObserver(() => {
-            if (!oldMenu.classList.contains('hidden') || oldMenu.style.display !== 'none') {
-                oldMenu.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;';
-                oldMenu.classList.add('hidden');
-            }
-        }).observe(oldMenu, { attributes: true, attributeFilter: ['class', 'style'] });
-    }
+    document.addEventListener('auth:profileSynced', window.updateMobileMenuUser);
+    document.addEventListener('auth:logout', window.updateMobileMenuUser);
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-
-    function escHtml(str) {
-        const d = document.createElement('div');
-        d.textContent = str;
-        return d.innerHTML;
-    }
 
     /* ── INIT ── */
     function init() {
         suppressOldMenu();
         setupBtn();
-        // Pre-build drawer ngay khi init (chỉ trên mobile)
-        // → Khi user nhấn mở menu: DOM đã sẵn sàng, không cần tạo mới
         if (window.innerWidth < 1200) {
-            // Delay nhỏ để không cạnh tranh với critical page render
             setTimeout(ensureDrawerBuilt, 300);
         }
     }
@@ -431,5 +405,3 @@
     window.closeMobileMenu = closeMenu;
     window.rebuildMobileMenu = rebuildMenu;
 })();
-
-

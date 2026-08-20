@@ -25,7 +25,7 @@ async function loadActionMovies() {
         const data = await movieAPI.getMoviesFromMultipleSources(currentPage, CATEGORY_SLUG);
         console.log('Action movies data:', data);
 
-        if (data && data.status === 'success' && data.data && data.data.items) {
+        if (data && (data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items) {
             const movies = data.data.items;
             console.log('Movies found:', movies.length);
 
@@ -53,84 +53,77 @@ async function loadActionMovies() {
 // Render movies grid with special layout (landscape + portrait overlay)
 function renderMoviesGrid(movies) {
     const moviesGrid = document.getElementById('moviesGrid');
-    if (!moviesGrid) return;
 
-    let gridHTML = '';
-
-    movies.forEach((movie) => {
-        const thumbUrl = movie.thumb_url || movie.poster_url || '';
-        const posterUrl = thumbUrl ? `https://img.ophimimg.com/${thumbUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumbUrl}` : 'https://via.placeholder.com/200x300?text=No+Image';
-        const year = movie.year || 'N/A';
-        const quality = movie.quality || movie.lang || '';
-        const episodeCurrent = movie.episode_current || 'N/A';
-        const tmdbRating = movie.tmdb?.vote_average || null;
+    moviesGrid.innerHTML = movies.map(movie => {
+        // Get backdrop image (landscape) - use thumb_url or poster_url
+        const backdropUrl = movieAPI.getImageURL(movie.thumb_url || movie.poster_url);
+        const posterUrl = movieAPI.getImageURL(movie.poster_url || movie.thumb_url);
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
-        gridHTML += `
-            <a href="/phim/${movie.slug}" 
-               class="group relative block rounded-xl overflow-hidden bg-surface-dark hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl ${hiddenUI.containerClass}">
-                <!-- Poster -->
-                <div class="relative aspect-[2/3]">
-                    <img src="${posterUrl}" 
-                         alt="${movie.name}"
-                         class="w-full h-full object-cover ${hiddenUI.imgClass}"
-                         loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+        return `
+            <div class="group relative flex flex-col ${hiddenUI.containerClass}">
+                <!-- Landscape backdrop image -->
+                <div class="relative w-full aspect-video rounded-lg overflow-hidden mb-12 shadow-lg">
+                    <a href="movie-detail.html?slug=${movie.slug}">
+                        <img alt="${movie.name}" 
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${hiddenUI.imgClass}"
+                            src="${backdropUrl}"
+                            onerror="this.src='https://via.placeholder.com/640x360?text=No+Image'" />
+                    </a>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
                     
                     ${hiddenUI.badge}
                     
-                    <!-- Overlay gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <!-- Quality badge -->
-                    ${quality && !hiddenUI.badge ? `
-                        <div class="absolute top-2 left-2">
-                            <span class="px-2 py-1 bg-primary text-black text-xs font-bold rounded shadow-lg">
-                                ${quality}
-                            </span>
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Episode badge -->
-                    <div class="absolute top-2 right-2">
-                        <span class="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded shadow-lg">
-                            ${episodeCurrent}
-                        </span>
-                    </div>
-                    
-                    <!-- Rating -->
-                    ${tmdbRating ? `
-                        <div class="absolute bottom-2 left-2 flex items-center gap-0.5 bg-primary/90 backdrop-blur-sm shadow-[0_2px_8px_rgba(232,185,79,0.5)] px-1.5 py-0.5 rounded">
-                            <span class="material-icons-round text-black text-[12px]">star</span>
-                            <span class="text-black text-[10px] font-bold">${tmdbRating}</span>
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Year -->
-                    <div class="absolute bottom-2 right-2 bg-green-600 shadow-lg px-1.5 py-0.5 rounded">
-                        <span class="text-white text-[10px] font-bold">${year}</span>
-                    </div>
-                    
-                    <!-- Play icon on hover -->
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div class="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform">
-                            <span class="material-icons-round text-black text-4xl">play_arrow</span>
-                        </div>
+                    <!-- Tags -->
+                    <div class="absolute bottom-3 right-3 flex gap-2">
+                        ${movie.quality && !hiddenUI.badge ? `
+                        <span class="bg-gray-600/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm">
+                            ${movie.quality}
+                        </span>` : ''}
+                        ${movie.lang ? `
+                        <span class="bg-primary text-black text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                            ${movie.lang}
+                        </span>` : ''}
                     </div>
                 </div>
-                
-                <!-- Movie info -->
-                <div class="p-3">
-                    <h3 class="text-white font-bold text-sm mb-1 line-clamp-2 group-hover:text-primary transition-colors">
-                        ${movie.name}
-                    </h3>
-                    <p class="text-gray-400 text-xs line-clamp-1">${movie.origin_name || ''}</p>
-                </div>
-            </a>
-        `;
-    });
 
-    moviesGrid.innerHTML = gridHTML;
+                <!-- Portrait poster overlay -->
+                <a href="movie-detail.html?slug=${movie.slug}"
+                    class="absolute top-[40%] left-4 w-24 md:w-28 aspect-[2/3] rounded-md overflow-hidden shadow-2xl border border-gray-700/50 z-10 transition-transform duration-300 group-hover:-translate-y-2">
+                    <img alt="Poster ${movie.name}" 
+                        class="w-full h-full object-cover ${hiddenUI.imgClass}"
+                        src="${posterUrl}"
+                        onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
+                </a>
+
+                <!-- Movie info -->
+                <div class="pl-4 mt-2">
+                    <a href="movie-detail.html?slug=${movie.slug}">
+                        <h3 class="text-base font-bold text-white leading-tight truncate mt-1 group-hover:text-primary transition-colors">
+                            ${movie.name}
+                        </h3>
+                    </a>
+                    <p class="text-xs text-gray-400 mt-1 truncate">
+                        ${movie.origin_name || movie.name}
+                    </p>
+                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                        <span>${movie.year || 'N/A'}</span>
+                        ${movie.episode_current ? `
+                        <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                        <span>${movie.episode_current}</span>
+                        ` : ''}
+                        ${movie.tmdb?.vote_average ? `
+                        <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                        <span class="flex items-center gap-1 text-yellow-500 font-bold">
+                            <span class="material-icons-round text-[10px]">star</span>
+                            ${movie.tmdb.vote_average.toFixed(1)}
+                        </span>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // Show no movies message
@@ -147,18 +140,91 @@ function showNoMovies() {
 // Render pagination
 function renderPagination(params) {
     const pagination = document.getElementById('pagination');
-    if (!pagination) return;
-    const totalItems = Number(params.pagination?.totalItems || params.params?.pagination?.totalItems || params.totalItems || 0);
-    const totalItemsPerPage = Number(params.pagination?.totalItemsPerPage || params.params?.pagination?.totalItemsPerPage || params.totalItemsPerPage || 24);
-    const curPage = Number(params.pagination?.currentPage || params.params?.pagination?.currentPage || params.currentPage || currentPage || 1);
-    const totalPgs = Number(params.pagination?.totalPages || params.params?.pagination?.totalPages || params.totalPages || Math.ceil(totalItems / totalItemsPerPage) || 1);
-    
-    if (totalPgs <= 1 && totalItems === 0) {
+
+    const totalItems = params.pagination?.totalItems || params.params?.pagination?.totalItems || 0;
+    const totalItemsPerPage = params.pagination?.totalItemsPerPage || params.params?.pagination?.totalItemsPerPage || 24;
+    const currentPageNum = params.pagination?.currentPage || params.params?.pagination?.currentPage || currentPage;
+    const totalPages = params.pagination?.totalPages || params.params?.pagination?.totalPages || Math.ceil(totalItems / totalItemsPerPage);
+
+    if (totalPages <= 1) {
         pagination.innerHTML = '';
         return;
     }
-    
-    pagination.innerHTML = window.renderModernPagination(curPage, totalPgs, "goToPage(PAGE)");
+
+    let paginationHTML = '<div class="flex items-center gap-2">';
+
+    // Previous button
+    if (currentPageNum > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPageNum - 1})" 
+                class="px-3 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all">
+                <span class="material-icons-round text-sm">chevron_left</span>
+            </button>
+        `;
+    }
+
+    // Page numbers
+    const maxPages = 5;
+    let startPage = Math.max(1, currentPageNum - Math.floor(maxPages / 2));
+    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+    if (endPage - startPage < maxPages - 1) {
+        startPage = Math.max(1, endPage - maxPages + 1);
+    }
+
+    if (startPage > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(1)" 
+                class="px-3 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all">
+                1
+            </button>
+        `;
+        if (startPage > 2) {
+            paginationHTML += `<span class="text-gray-400">...</span>`;
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        if (Number(i) === Number(currentPageNum)) {
+            paginationHTML += `
+                <button class="px-3 py-2 bg-primary text-black font-bold rounded-lg">
+                    ${i}
+                </button>
+            `;
+        } else {
+            paginationHTML += `
+                <button onclick="goToPage(${i})" 
+                    class="px-3 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all">
+                    ${i}
+                </button>
+            `;
+        }
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHTML += `<span class="text-gray-400">...</span>`;
+        }
+        paginationHTML += `
+            <button onclick="goToPage(${totalPages})" 
+                class="px-3 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all">
+                ${totalPages}
+            </button>
+        `;
+    }
+
+    // Next button
+    if (currentPageNum < totalPages) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPageNum + 1})" 
+                class="px-3 py-2 bg-surface-dark text-white rounded-lg hover:bg-primary hover:text-black transition-all">
+                <span class="material-icons-round text-sm">chevron_right</span>
+            </button>
+        `;
+    }
+
+    paginationHTML += '</div>';
+    pagination.innerHTML = paginationHTML;
 }
 
 // Go to page

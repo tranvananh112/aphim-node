@@ -1,12 +1,7 @@
 // Load and render all movie sections from home API
 async function loadHomeMovies() {
     try {
-        const response = await movieAPI.fetchWithFallback('/home', {
-            method: 'GET',
-            headers: { 'accept': 'application/json' }
-        });
-
-        const data = await response.json();
+        const data = await movieAPI.getHome('phimapi');
         console.log('Home API data:', data);
 
         if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
@@ -48,12 +43,11 @@ async function loadHomeMovies() {
                 if (loading) loading.style.display = 'block';
                 if (container) container.style.display = 'block';
 
-                // Ophim /home trả về flat array movies (không có sections)
-                // Nếu có sections, render sections; nếu không, render flat list
-                if (data.data.sections && Array.isArray(data.data.sections) && data.data.sections.length > 0) {
+                // Nếu data.data có sections (v1/api/home version mới)
+                if (data.data.sections) {
                     renderAllSections(data.data.sections);
                 } else {
-                    // Ophim API trả về flat array - render thẳng
+                    // Fallback render flat list if no sections
                     renderLatestMoviesSection(movies);
                 }
 
@@ -112,7 +106,7 @@ function renderLatestMoviesSection(movies) {
                         <span class="w-1.5 h-8 bg-primary rounded-full block shadow-[0_0_10px_rgba(242,242,13,0.5)]"></span>
                         Phim Mới Cập Nhật
                     </h2>
-                    <a href="/danh-sach/phim-moi"
+                    <a href="danh-sach.html?list=phim-moi"
                         class="text-primary text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group">
                         Xem tất cả <span class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
@@ -122,7 +116,7 @@ function renderLatestMoviesSection(movies) {
                     ${filteredMovies.slice(0, 18).map(movie => {
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
         const hasCustomLink = !!movieLinks[movie.slug];
-        const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+        const linkUrl = hasCustomLink ? `watch-simple.html?slug=${movie.slug}` : `movie-detail.html?slug=${movie.slug}`;
 
         return `
                             <a href="${linkUrl}"
@@ -130,9 +124,14 @@ function renderLatestMoviesSection(movies) {
                                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                                             <img alt="Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                                data-src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`}"
-                                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 3'%3E%3C/svg%3E"
-                                                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                                src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                                                data-tmdb-slug="${movie.slug}"
+                                                data-tmdb-id="${movie.tmdb?.id || ''}"
+                                                data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                                                data-tmdb-year="${movie.year || ''}"
+                                                data-tmdb-type="poster"
+                                                loading="lazy"
+                                                onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                     ${hiddenUI.badge}
                                     ${!hiddenUI.badge ? `
                                     <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -234,7 +233,7 @@ function renderAllSections(sections) {
                             ${section.name || 'Phim'}
                         </h2>
                         ${section.slug ? `
-                        <a href="/tim-kiem?category=${section.slug}"
+                        <a href="search.html?category=${section.slug}"
                             class="text-primary text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group">
                             Xem tất cả <span class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </a>
@@ -244,7 +243,7 @@ function renderAllSections(sections) {
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         ${(section.items || []).slice(0, 20).map(movie => {
             const hasCustomLink = !!movieLinks[movie.slug];
-            const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+            const linkUrl = hasCustomLink ? `watch-simple.html?slug=${movie.slug}` : `movie-detail.html?slug=${movie.slug}`;
             const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
             return `
@@ -253,9 +252,14 @@ function renderAllSections(sections) {
                                     <div class="aspect-[2/3] w-full overflow-hidden relative">
                                         <img alt="Xem Phim ${movie.name} (${movie.year}) Vietsub"
                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                            data-src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`}"
-                                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 3'%3E%3C/svg%3E"
-                                            onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                            src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                                            data-tmdb-slug="${movie.slug}"
+                                            data-tmdb-id="${movie.tmdb?.id || ''}"
+                                            data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                                            data-tmdb-year="${movie.year || ''}"
+                                            data-tmdb-type="poster"
+                                            loading="lazy"
+                                            onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                         ${hiddenUI.badge}
                                         ${!hiddenUI.badge ? `
                                         <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -302,32 +306,19 @@ function renderAllSections(sections) {
 
 // Fallback function - load Vietnamese movies
 async function loadVietnameseMoviesHome() {
-    // Danh sách endpoint thử lần lượt
-    const endpoints = [
-        '/quoc-gia/viet-nam?page=1',
-        '/the-loai/phim-le?page=1',
-        '/danh-sach/phim-bo?page=1'
-    ];
-    for (const ep of endpoints) {
-        try {
-            const response = await movieAPI.fetchWithFallback(ep, {
-                method: 'GET',
-                headers: { 'accept': 'application/json' }
-            });
-            const data = await response.json();
-            if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items && data.data.items.length > 0) {
-                const movies = data.data.items.slice(0, 20);
-                renderVietnameseMovies(movies);
-                return; // success, stop trying
-            }
-        } catch (error) {
-            console.warn('Error loading Vietnamese movies from', ep, ':', error.message);
+    try {
+        const data = await movieAPI.getMoviesByCountry('viet-nam', 1);
+
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data && data.data.items) {
+            const movies = data.data.items.slice(0, 20);
+            renderVietnameseMovies(movies);
         }
-    }
-    // All failed
-    const loading = document.getElementById('vietnamLoading');
-    if (loading) {
-        loading.innerHTML = `<p class="text-red-400">Không thể tải phim Việt Nam</p>`;
+    } catch (error) {
+        console.error('Error loading Vietnamese movies:', error);
+        const loading = document.getElementById('vietnamLoading');
+        if (loading) {
+            loading.innerHTML = `<p class="text-red-400">Không thể tải phim Việt Nam</p>`;
+        }
     }
 }
 
@@ -344,7 +335,7 @@ function renderVietnameseMovies(movies) {
 
     grid.innerHTML = movies.map(movie => {
         const hasCustomLink = !!movieLinks[movie.slug];
-        const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+        const linkUrl = hasCustomLink ? `watch-simple.html?slug=${movie.slug}` : `movie-detail.html?slug=${movie.slug}`;
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
         return `
@@ -353,9 +344,15 @@ function renderVietnameseMovies(movies) {
             <div class="aspect-[2/3] w-full overflow-hidden relative">
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Thuyết Minh Vietsub"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                    src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`}"
-                    onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
-                    loading="lazy" />
+                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url}`}"
+                    data-tmdb-slug="${movie.slug}"
+                    data-tmdb-id="${movie.tmdb?.id || ''}"
+                    data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                    data-tmdb-year="${movie.year || ''}"
+                    data-tmdb-type="poster"
+                    loading="lazy"
+                    onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
+                    />
                 ${hiddenUI.badge}
                 ${!hiddenUI.badge ? `
                 <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">

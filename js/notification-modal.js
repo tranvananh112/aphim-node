@@ -279,12 +279,12 @@
                         
                         <!-- Action Buttons -->
                         <div class="flex flex-col gap-2.5 w-full">
-                            <a href="/pricing" class="group/btn px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-primary via-yellow-400 to-primary hover:from-yellow-400 hover:via-primary hover:to-yellow-400 text-black font-bold rounded-lg shadow-[0_0_25px_rgba(242,242,13,0.4)] hover:shadow-[0_0_40px_rgba(242,242,13,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 w-full uppercase tracking-wide text-xs sm:text-sm relative overflow-hidden">
+                            <a href="pricing.html" class="group/btn px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-primary via-yellow-400 to-primary hover:from-yellow-400 hover:via-primary hover:to-yellow-400 text-black font-bold rounded-lg shadow-[0_0_25px_rgba(242,242,13,0.4)] hover:shadow-[0_0_40px_rgba(242,242,13,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 w-full uppercase tracking-wide text-xs sm:text-sm relative overflow-hidden">
                                 <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></span>
                                 <span class="material-symbols-outlined relative z-10 text-lg">shopping_cart</span>
                                 <span class="relative z-10">Mua Gói</span>
                             </a>
-                            <a href="/support" class="group/btn px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 via-red-600 to-red-500 hover:from-red-600 hover:via-red-500 hover:to-red-600 text-white font-bold rounded-lg shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:shadow-[0_0_40px_rgba(239,68,68,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 w-full uppercase tracking-wide text-xs sm:text-sm relative overflow-hidden">
+                            <a href="support.html" class="group/btn px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 via-red-600 to-red-500 hover:from-red-600 hover:via-red-500 hover:to-red-600 text-white font-bold rounded-lg shadow-[0_0_25px_rgba(239,68,68,0.4)] hover:shadow-[0_0_40px_rgba(239,68,68,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 w-full uppercase tracking-wide text-xs sm:text-sm relative overflow-hidden">
                                 <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></span>
                                 <span class="material-symbols-outlined animate-pulse relative z-10 text-lg">favorite</span>
                                 <span class="relative z-10">Ủng Hộ</span>
@@ -415,5 +415,3 @@
         console.log('Modal data reset. Reload page to see modal.');
     };
 })();
-
-

@@ -1,5 +1,5 @@
 // Filter Page Script - Version 2 with better API handling
-const API_BASE = 'https://phimapi.com/v1/api';
+const API_BASE = 'https://ophim1.com/v1/api';
 
 // State
 let currentPage = 1;
@@ -229,7 +229,7 @@ async function loadMovies() {
         console.log('Loading movies from:', endpoint);
         const data = await fetchAPI(endpoint, currentPage);
 
-        if (data.status === 'success' && data.data) {
+        if ((data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
             const movies = data.data.items || [];
             const paginationData = data.data.params?.pagination || {};
 
@@ -255,85 +255,51 @@ async function loadMovies() {
 
 // Render Movies
 function renderMovies(movies) {
-    let gridHTML = '';
-
-    movies.forEach((movie) => {
-        const thumbUrl = movie.thumb_url || movie.poster_url || '';
-        const rawImg = thumbUrl || movie.poster_url || '';
-        const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
-            ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`));
+    moviesGrid.innerHTML = movies.map(movie => {
+        const posterUrl = movieAPI.getImageURL(movie.thumb_url);
         const year = movie.year || 'N/A';
         const quality = movie.quality || movie.lang || '';
-        const episodeCurrent = movie.episode_current || 'N/A';
-        const tmdbRating = movie.tmdb?.vote_average || null;
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
 
-        gridHTML += `
-            <a href="/phim/${movie.slug}" 
-               class="group relative block rounded-xl overflow-hidden bg-surface-dark hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl ${hiddenUI.containerClass}">
-                <!-- Poster -->
-                <div class="relative aspect-[2/3]">
+        return `
+            <a href="movie-detail.html?slug=${movie.slug}" 
+               class="group relative block rounded-xl overflow-hidden bg-surface-dark hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/20 ${hiddenUI.containerClass}">
+                <div class="aspect-[2/3] relative overflow-hidden">
                     <img src="${posterUrl}" 
                          alt="${movie.name}"
-                         class="w-full h-full object-cover ${hiddenUI.imgClass}"
-                         loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${hiddenUI.imgClass}"
+                         onerror="this.src='https://via.placeholder.com/300x450?text=No+Image'">
                     
                     ${hiddenUI.badge}
-                    
-                    <!-- Overlay gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    
-                    <!-- Quality badge -->
+                    <!-- Quality Badge -->
                     ${quality && !hiddenUI.badge ? `
-                        <div class="absolute top-2 left-2">
-                            <span class="px-2 py-1 bg-primary text-black text-xs font-bold rounded shadow-lg">
-                                ${quality}
-                            </span>
+                        <div class="absolute top-2 left-2 bg-primary text-black text-xs font-bold px-2 py-1 rounded">
+                            ${quality}
                         </div>
                     ` : ''}
                     
-                    <!-- Episode badge -->
-                    <div class="absolute top-2 right-2">
-                        <span class="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded shadow-lg">
-                            ${episodeCurrent}
-                        </span>
+                    <!-- Year Badge -->
+                    <div class="absolute top-2 right-2 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+                        ${year}
                     </div>
                     
-                    <!-- Rating -->
-                    ${tmdbRating ? `
-                        <div class="absolute bottom-2 left-2 flex items-center gap-0.5 bg-primary/90 backdrop-blur-sm shadow-[0_2px_8px_rgba(232,185,79,0.5)] px-1.5 py-0.5 rounded">
-                            <span class="material-icons-round text-black text-[12px]">star</span>
-                            <span class="text-black text-[10px] font-bold">${tmdbRating}</span>
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Year -->
-                    <div class="absolute bottom-2 right-2 bg-green-600 shadow-lg px-1.5 py-0.5 rounded">
-                        <span class="text-white text-[10px] font-bold">${year}</span>
-                    </div>
-                    
-                    <!-- Play icon on hover -->
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div class="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform">
-                            <span class="material-icons-round text-black text-4xl">play_arrow</span>
-                        </div>
+                    <!-- Play Overlay -->
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="material-icons-round text-primary text-6xl">play_circle</span>
                     </div>
                 </div>
                 
-                <!-- Movie info -->
-                <div class="p-3">
-                    <h3 class="text-white font-bold text-sm mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+                <div class="p-4">
+                    <h3 class="font-bold text-white group-hover:text-primary transition-colors line-clamp-2 mb-1">
                         ${movie.name}
                     </h3>
-                    <p class="text-gray-400 text-xs line-clamp-1">${movie.origin_name || ''}</p>
+                    <p class="text-sm text-gray-400 line-clamp-1">
+                        ${movie.origin_name || ''}
+                    </p>
                 </div>
             </a>
         `;
-    });
-
-    moviesGrid.innerHTML = gridHTML;
+    }).join('');
 }
 
 // Update Results Info
@@ -344,21 +310,82 @@ function updateResultsInfo(total, filterText) {
 }
 
 // Render Pagination
-function renderPagination(pagination) {
-    const paginationContainer = document.getElementById('pagination') || document.getElementById('paginationContainer');
-    if (!paginationContainer) return;
+function renderPagination(paginationData) {
+    const totalPages = paginationData.totalPages || 1;
+    const currentPageNum = paginationData.currentPage || currentPage;
 
-    const totalItems = Number(pagination.totalItems || pagination.total_items || pagination.total || 0);
-    const totalItemsPerPage = Number(pagination.totalItemsPerPage || 24);
-    const curPage = Number(pagination.currentPage || pagination.current_page || (typeof currentPage !== 'undefined' ? currentPage : 1) || 1);
-    const totalPgs = Number(pagination.totalPages || pagination.total_pages || pagination.totalPage || Math.ceil(totalItems / totalItemsPerPage) || 1);
-
-    if (totalPgs <= 1) {
-        paginationContainer.innerHTML = '';
+    if (totalPages <= 1) {
+        pagination.classList.add('hidden');
         return;
     }
 
-    paginationContainer.innerHTML = window.renderModernPagination(curPage, totalPgs, 'goToPage(PAGE)');
+    let paginationHTML = '';
+
+    // Previous button
+    if (currentPageNum > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPageNum - 1})" 
+                    class="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-primary hover:text-black transition-colors">
+                <span class="material-icons-round align-middle">chevron_left</span>
+            </button>
+        `;
+    }
+
+    // Page numbers
+    const maxButtons = 5;
+    let startPage = Math.max(1, currentPageNum - Math.floor(maxButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+    if (endPage - startPage < maxButtons - 1) {
+        startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+
+    if (startPage > 1) {
+        paginationHTML += `
+            <button onclick="goToPage(1)" 
+                    class="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-primary hover:text-black transition-colors">
+                1
+            </button>
+        `;
+        if (startPage > 2) {
+            paginationHTML += `<span class="px-2 text-gray-400">...</span>`;
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const isActive = Number(i) === Number(currentPageNum);
+        paginationHTML += `
+            <button onclick="goToPage(${i})" 
+                    class="px-4 py-2 ${isActive ? 'bg-primary text-black' : 'bg-white/10 text-white hover:bg-primary hover:text-black'} rounded-lg transition-colors font-bold">
+                ${i}
+            </button>
+        `;
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHTML += `<span class="px-2 text-gray-400">...</span>`;
+        }
+        paginationHTML += `
+            <button onclick="goToPage(${totalPages})" 
+                    class="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-primary hover:text-black transition-colors">
+                ${totalPages}
+            </button>
+        `;
+    }
+
+    // Next button
+    if (currentPageNum < totalPages) {
+        paginationHTML += `
+            <button onclick="goToPage(${currentPageNum + 1})" 
+                    class="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-primary hover:text-black transition-colors">
+                <span class="material-icons-round align-middle">chevron_right</span>
+            </button>
+        `;
+    }
+
+    pagination.innerHTML = paginationHTML;
+    pagination.classList.remove('hidden');
 }
 
 // Go to Page
@@ -413,7 +440,3 @@ window.addEventListener('hiddenMoviesSynced', () => {
     console.log('Hidden movies synced, re-rendering filter-v2...');
     loadMovies();
 });
-
-});
-
-

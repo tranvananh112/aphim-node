@@ -241,18 +241,12 @@
         s.id = 'ap-cmt-css-v4';
         s.textContent = `
         /* ── Wrapper ── */
-        .ap-cmt-wrapper {
-            margin-top: 0;
-            background: transparent;
-            border-radius: 0;
-            padding: 0;
-        }
+        .ap-cmt-wrapper { margin-top:0; }
 
-        /* ── BOX CHƯA ĐĂNG NHẬP ── */
+        /* ── BOX CHƯA ĐĂNG NHẬP (LẤY LẠI GIAO DIỆN CŨ) ── */
         .ap-cmt-guest {
             padding: 32px 20px; text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px dashed rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.12);
             border-radius: 16px; margin-bottom: 24px;
         }
         .ap-guest-icon { font-size: 48px; margin-bottom: 12px; color: rgba(255,255,255,0.3); }
@@ -400,7 +394,7 @@
         /* ── GIAO DIỆN BÌNH LUẬN TRẢ LỜI ĐẸP & THANH LỊCH NHƯ TIKTOK/YOUTUBE ── */
         .ap-cmt-list { 
             display: flex; flex-direction: column; text-align: left; gap: 2px;
-            width: 100%;
+            max-width: 900px;
             max-height: 600px;
             overflow-y: auto;
             padding-right: 0px; /* Bỏ padding vì không còn scrollbar đè */
@@ -466,7 +460,7 @@
         /* ── DESKTOP ONLY TWEAKS (>= 768px) ── */
         @media (min-width: 768px) {
             .ap-cmt-avatar.shop-frame-wrap.size-sm { width: 34px; height: 34px; }
-            .ap-cmt-list { width: 100%; }
+            .ap-cmt-list { max-width: 720px; }
             .ap-cmt-item { border-bottom: 1px solid rgba(255,255,255,0.06); padding: 12px 8px; transition: background 0.2s, border-radius 0.2s; }
             .ap-cmt-item:last-child { border-bottom: none; }
             .ap-cmt-item:hover { background: rgba(255,255,255,0.04); border-radius: 12px; border-bottom-color: transparent; }
@@ -537,12 +531,12 @@
             }
 
             .ap-cmt-wrapper {
-                padding: 0 0 120px 0 !important;
+                padding: 0 12px 120px 12px !important;
                 overflow-x: hidden !important;
                 width: 100% !important;
                 box-sizing: border-box !important;
+                width: 100% !important;
                 max-width: 100% !important;
-                background: transparent !important;
             }
 
             .ap-cmt-list {
@@ -750,7 +744,7 @@
                 ${avaHtml}
                 <span class="ap-form-user-name">${displayName}</span>
                 <span class="ap-form-user-badge">✓ Đã đăng nhập</span>
-                <button class="ap-form-logout-btn" onclick="try{ authService.logout(); } catch(e){ window.location.href = '/login'; }">Đăng xuất</button>
+                <button class="ap-form-logout-btn" onclick="try{ authService.logout(); } catch(e){ window.location.href = 'login.html'; }">Đăng xuất</button>
             </div>
             <textarea class="ap-cmt-textarea" id="ap-input-${pid}" placeholder="Chia sẻ cảm nhận của bạn về bộ phim này..." maxlength="1000"></textarea>
             <div class="ap-form-footer-wrap">
@@ -1098,18 +1092,10 @@
     function initCommentUI() {
         const params = new URLSearchParams(window.location.search);
         let slug = params.get('slug');
-        // /phim/slug
         if(!slug) {
             const m = window.location.pathname.match(/\/phim\/([^\/]+)/);
             if(m) slug = m[1];
         }
-        // /xem-phim/slug
-        if(!slug) {
-            const m = window.location.pathname.match(/\/xem-phim\/([^\/]+)/);
-            if(m) slug = m[1];
-        }
-        // Truyền trực tiếp qua biến global từ EJS (watch.ejs)
-        if(!slug && window.AP_MOVIE_SLUG) slug = window.AP_MOVIE_SLUG;
         if (!slug && window.location.pathname.includes('watch.html')) slug = 'demo-cam-nang-yeu';
         if (!slug) return;
 
@@ -1151,7 +1137,7 @@
 
         window.firebaseComments.onReady(() => {
             window.firebaseComments.listen(slug, ({ comments, count }) => {
-                if (heading) heading.innerHTML = `<span class="material-icons-round" style="color:#fff;font-size:22px;vertical-align:middle;">sms</span> Bình luận (${count})`;
+                if (heading) heading.innerHTML = `<span class="material-icons-round text-primary outline-none">sentiment_satisfied_alt</span> Bình luận (${count})`;
 
                 // ── Luôn re-render khi có cập nhật để đảm bảo dữ liệu like/dislike chính xác ──
 
@@ -1173,12 +1159,7 @@
 
                 setTimeout(() => {
                     if (comments.length === 0) {
-                        listEl.innerHTML = `
-                            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;min-height:220px;background:#161824;border:1px solid rgba(255,255,255,0.03);border-radius:16px;margin-bottom:20px;gap:16px;">
-                                <span class="material-icons-outlined" style="font-size:54px;color:rgba(255,255,255,0.2);">forum</span>
-                                <span style="font-size:14px;color:rgba(255,255,255,0.4);">Chưa có bình luận nào</span>
-                            </div>
-                        `;
+                        listEl.innerHTML = '<div style="text-align:center;color:#6b7280;padding:32px 20px;width:100%;">💬 Hãy là người đầu tiên bình luận!</div>';
                     } else {
                         listEl.innerHTML = comments.map(c => generateHtml(c, userEmail, false)).join('');
                     }
@@ -1226,5 +1207,3 @@
     });
 
 })();
-
-

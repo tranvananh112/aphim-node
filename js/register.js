@@ -27,11 +27,11 @@ function setupAuthLeftPanel() {
     // Fetch dynamic
     setTimeout(async () => {
         try {
-            const res = await fetch('https://phimapi.com/v1/api/quoc-gia/viet-nam');
+            const res = await movieAPI.fetchWithFallback('/quoc-gia/viet-nam');
             const data = await res.json();
             if (data?.data?.items?.length > 0) {
                 const latestMovie = data.data.items[0];
-                const url = `https://img.ophimimg.com/${latestMovie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url}`;
+                const url = `https://img.ophimimg.com/${latestMovie.thumb_url || latestMovie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url || latestMovie.poster_url}`;
                 panel.style.background = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}') center / cover no-repeat`;
             }
         } catch (e) {
@@ -269,6 +269,4 @@ document.getElementById('confirmPassword').addEventListener('input', function ()
         this.classList.remove('border-red-500');
     }
 });
-
-
 

@@ -6,7 +6,7 @@
  *
  * Logic:
  *  - Enter key / form submit → always goes to search.html?q=… (unchanged)
- *  - Clicking a suggestion → navigates directly to /phim/…
+ *  - Clicking a suggestion → navigates directly to movie-detail.html?slug=…
  *  - Blur / Escape / click-outside → hides panel
  */
 (function () {
@@ -158,53 +158,32 @@
     // ── API ──────────────────────────────────────────────────────────────────────
     function getOphimBase() {
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) return API_CONFIG.OPHIM_URL;
-        return 'https://phimapi.com/v1/api';
+        return 'https://ophim1.com/v1/api';
     }
 
     const IMG_CDN = 'https://img.ophimimg.com/';
 
+    // Proxy qua wsrv.nl để resize ngay về 38x54 WebP → tải cực nhanh
     function buildImgSrc(thumb) {
-        const rawImg = thumb || '';
-        const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
-            ? imageOptimizer.optimizeImageUrl(rawImg, 100, 70)
-            : (rawImg.startsWith('http') ? rawImg : (rawImg.startsWith('uploads/') ? `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}` : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`));
-        
-        return posterUrl;
+        if (!thumb) return '';
+        const full = thumb.startsWith('http') ? thumb : IMG_CDN + thumb;
+        return full;
     }
 
     async function fetchMovies(keyword, limit) {
-        let items = [];
-        const base1 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM_URL) ? API_CONFIG.OPHIM_URL : 'https://phimapi.com/v1/api';
-        const url1 = `${base1}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
-        
         try {
+            const base = getOphimBase();
+            const url = `${base}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
             const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
             const timer = ctrl ? setTimeout(() => ctrl.abort(), 5000) : null;
-            const res1 = await fetch(url1, ctrl ? { signal: ctrl.signal } : {});
+            const res = await fetch(url, ctrl ? { signal: ctrl.signal } : {});
             if (timer) clearTimeout(timer);
-            const data1 = await res1.json();
-            if (data1 && data1.data && data1.data.items && data1.data.items.length > 0) {
-                return data1.data.items;
-            }
-            throw new Error('Primary API returned empty or failed');
-        } catch (err) {
-            console.warn('Primary API failed, switching to backup API...', err);
-            try {
-                const base2 = (typeof API_CONFIG !== 'undefined' && API_CONFIG.OPHIM17_URL) ? API_CONFIG.OPHIM17_URL : 'https://phimapi.com/v1/api';
-                const url2 = `${base2}/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=${limit}&page=1`;
-                const ctrl2 = typeof AbortController !== 'undefined' ? new AbortController() : null;
-                const timer2 = ctrl2 ? setTimeout(() => ctrl2.abort(), 5000) : null;
-                const res2 = await fetch(url2, ctrl2 ? { signal: ctrl2.signal } : {});
-                if (timer2) clearTimeout(timer2);
-                const data2 = await res2.json();
-                if (data2 && data2.data && data2.data.items) {
-                    return data2.data.items;
-                }
-            } catch (backupErr) {
-                console.error('Both APIs failed for search');
-            }
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data?.data?.items || [];
+        } catch {
+            return [];
         }
-        return [];
     }
 
     // ── Determine how many results to show based on the input type ──────────────
@@ -223,7 +202,7 @@
         const badge = movie.year || movie.episode_current || 'HD';
         const slug = encodeURIComponent(movie.slug || '');
         return `
-            <a class="ap-suggest-row" href="/phim/${slug}" tabindex="-1">
+            <a class="ap-suggest-row" href="movie-detail.html?slug=${slug}" tabindex="-1">
                 <img class="ap-suggest-thumb"
                      src="${thumb}" alt="${title}"
                      loading="eager" fetchpriority="high" decoding="async"
@@ -279,7 +258,7 @@
 
             // "View all results" footer — navigates to search.html?q=…
             html += `<a class="ap-suggest-footer"
-                        href="/search?q=${encodeURIComponent(keyword)}"
+                        href="search.html?q=${encodeURIComponent(keyword)}"
                         tabindex="-1">
                         <span class="material-icons-round" style="font-size:14px;">search</span>
                         Xem tất cả kết quả cho "${keyword.length > 20 ? keyword.slice(0,20)+'…' : keyword}"
@@ -351,7 +330,7 @@
             clearTimeout(debounceTimer);
             const v = input.value.trim();
             if (!v || v.length < 2) { hide(); lastKeyword = ''; return; }
-            debounceTimer = setTimeout(() => onKeyword(v), 150);
+            debounceTimer = setTimeout(() => onKeyword(v), 180);
         });
 
         // Re-show panel on focus if there was a previous result
@@ -459,5 +438,4 @@
 
     window.initNavInstantSuggest = init;
 })();
-
-
+    

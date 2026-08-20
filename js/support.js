@@ -149,7 +149,7 @@ function confirmDonation() {
 
     // Optionally redirect to home after 2 seconds
     setTimeout(() => {
-        window.location.href = '/index';
+        window.location.href = 'index.html';
     }, 2000);
 }
 
@@ -278,5 +278,3 @@ function showNotification(message, type = 'info') {
         notification.remove();
     }, 3000);
 }
-
-

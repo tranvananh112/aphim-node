@@ -959,7 +959,7 @@
     <script src="/js/admin-tools.js?v=4"></script>
     <!-- Core Banner Logic -->
     <script src="/js/hero-banner.js?v=18"></script>
-    <script src="/js/top-movies.js?v=15"></script>
+    <script src="/js/top-movies.js?v=16"></script>
     <!-- Ad Tracker & Banner -->
     <script src="/js/coming-soon.js?v=15"></script>
     <script src="/js/interests-dynamic.js?v=15"></script>
@@ -1038,7 +1038,7 @@
                                 <img src="${finalImgUrl}" 
                                      alt="${movie.name}" 
                                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                     onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
                                      loading="lazy"
                                      decoding="async" />
                                 
@@ -1076,9 +1076,10 @@
                 });
 
                 const data = await response.json();
+
                 console.log('Latest movies data:', data);
 
-                if (data.status === 'success' && data.data && data.data.items) {
+                if (data && (data.status === 'success' || data.status === true) && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 10);
                     renderLatestMovies(movies);
                 } else {
@@ -1111,7 +1112,7 @@
                             <img alt="${movie.name}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
                                 src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : (movie.thumb_url.startsWith('uploads/') ? `https://img.ophimimg.com/${movie.thumb_url}` : `https://img.ophimimg.com/${movie.thumb_url}`)) : `https://via.placeholder.com/350x525`)}"
-                                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                                onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
                                 fetchpriority="high"
                                 decoding="async" />
                             
@@ -1149,18 +1150,12 @@
             const container = document.getElementById('actionMoviesContainer');
 
             try {
-                console.log('Loading action movies for homepage...');
+                // Load movies from category "hanh-dong" page 1 using phimapi
+                const data = await movieAPI.getMoviesFromMultipleSources(1, 'the-loai/hanh-dong', 'phimapi');
 
-                // Load movies from category "hanh-dong" page 1
-                const response = await movieAPI.fetchWithFallback('/the-loai/hanh-dong?page=1', {
-                    method: 'GET',
-                    headers: { 'accept': 'application/json' }
-                });
-
-                const data = await response.json();
                 console.log('Action movies data:', data);
 
-                if (data.status === 'success' && data.data && data.data.items) {
+                if (data && (data.status === 'success' || data.status === true) && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 10); // Get 10 movies
                     renderActionMovies(movies);
                 } else {
@@ -1322,13 +1317,13 @@
                                         <img src="${finalBackdrop}" 
                                              alt="${movie.name}" 
                                              class="group-hover:scale-105 transition-transform duration-500" 
-                                             onerror="this.src='https://via.placeholder.com/600x338?text=${encodeURIComponent(movie.name)}'" />
+                                             onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                         ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
                                     </div>
                                     <div class="action-small-poster">
                                         <img src="${finalPoster}" 
                                              alt="Mini ${movie.name}" 
-                                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'" />
+                                             onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                     </div>
                                     <div class="action-info-overlay">
                                         <h3 class="action-title-p group-hover:text-amber-500 transition-colors">${movie.name}</h3>
@@ -1376,7 +1371,7 @@
                             <div class="anime-card group">
                                 <a href="/phim/${movie.slug}" class="block">
                                     <div class="anime-poster-wrapper group-hover:scale-[1.03] transition-transform duration-500">
-                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                         
                                         <!-- Dynamic Badges -->
                                         ${window.renderMovieBadges(movie.lang || movie.quality, movie.episode_current)}
@@ -1406,9 +1401,8 @@
             const loading = document.getElementById('adventureLoading');
             const container = document.getElementById('adventureContainer');
             try {
-                const response = await movieAPI.fetchWithFallback('/the-loai/phieu-luu?page=1');
-                const data = await response.json();
-                if (data.status === 'success' && data.data && data.data.items) {
+                const data = await movieAPI.getMoviesFromMultipleSources(1, 'subteam', 'phimapi');
+                if (data && (data.status === 'success' || data.status === true) && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 18);
                     if (loading) loading.classList.add('hidden');
                     if (container) {
@@ -1424,7 +1418,7 @@
                             <div class="anime-card group">
                                 <a href="/phim/${movie.slug}" class="block">
                                     <div class="anime-poster-wrapper group-hover:scale-[1.03] transition-transform duration-500">
-                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                                         
                                         <div class="anime-badge-container">
                                             <div class="anime-pill anime-pill-dark">PĐ. ${movie.lang || 'VS'}</div>
@@ -1504,9 +1498,8 @@
             const container = document.getElementById('mythologyRankingContainer');
             const loading = document.getElementById('mythologyLoading');
             try {
-                const response = await movieAPI.fetchWithFallback('/the-loai/than-thoai?page=1');
-                const data = await response.json();
-                if (data.status === 'success' && data.data && data.data.items) {
+                const data = await movieAPI.getMoviesFromMultipleSources(1, 'the-loai/am-nhac', 'phimapi');
+                if (data && (data.status === 'success' || data.status === true) && data.data && data.data.items) {
                     const movies = data.data.items.slice(0, 10);
                     if (loading) loading.classList.add('hidden');
                     if (container) {

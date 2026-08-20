@@ -22,5 +22,3 @@
     
     window.addEventListener('load', enablePage);
 })();
-
-

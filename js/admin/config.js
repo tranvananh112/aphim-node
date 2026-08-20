@@ -88,5 +88,3 @@ function initializeAdminData() {
 
 // Call initialization
 initializeAdminData();
-
-

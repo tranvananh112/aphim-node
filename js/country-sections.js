@@ -5,27 +5,30 @@ const COUNTRY_CONFIGS = {
     korea: {
         id: 'korea',
         title: 'Phim Hàn Quốc mới',
-        url: 'https://phimapi.com/v1/api/quoc-gia/han-quoc?limit=20',
-        linkUrl: '/phim-theo-quoc-gia?country=han-quoc'
+        endpoint: '/quoc-gia/han-quoc?limit=20',
+        linkUrl: 'phim-theo-quoc-gia.html?country=han-quoc'
     },
     china: {
         id: 'china',
         title: 'Phim Trung Quốc mới',
-        url: 'https://phimapi.com/v1/api/quoc-gia/trung-quoc?limit=20',
-        linkUrl: '/phim-theo-quoc-gia?country=trung-quoc'
+        endpoint: '/quoc-gia/trung-quoc?limit=20',
+        linkUrl: 'phim-theo-quoc-gia.html?country=trung-quoc'
     },
     usuk: {
         id: 'usuk',
         title: 'Phim US-UK mới',
-        url: 'https://phimapi.com/v1/api/quoc-gia/au-my?limit=20',
-        linkUrl: '/phim-theo-quoc-gia?country=au-my'
+        endpoint: '/quoc-gia/au-my?limit=20',
+        linkUrl: 'phim-theo-quoc-gia.html?country=au-my'
     }
 };
 
 // Create Landscape Movie Card
 function createLandscapeMovieCard(movie) {
-    const posterUrl = `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
-    const detailUrl = `/phim/${movie.slug}`;
+    const rawImg = movie.poster_url || movie.thumb_url || '';
+    const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+        ? imageOptimizer.optimizeImageUrl(rawImg, 480, 70)
+        : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
+    const detailUrl = `movie-detail.html?slug=${movie.slug}`;
     const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
     
     const quality = movie.quality || movie.lang || 'HD';
@@ -34,10 +37,10 @@ function createLandscapeMovieCard(movie) {
         <div class="landscape-card ${hiddenUI.containerClass}">
             <a href="${detailUrl}">
                 <div class="landscape-poster">
-                    <img src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url || movie.poster_url, 480, 70) : posterUrl}" 
+                    <img src="${posterUrl}" 
                          alt="${movie.name}" 
                          class="${hiddenUI.imgClass}"
-                         onerror="this.src='https://via.placeholder.com/480x270?text=No+Image'"
+                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22480%22 height=%22270%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
                          loading="lazy" />
                     
                     <div class="landscape-overlay"></div>
@@ -103,12 +106,16 @@ async function loadRowMovies(config) {
     if (!container) return;
 
     try {
-        const response = await fetch(config.url);
-        const data = await response.json();
+        const response = await movieAPI.fetchWithFallback(config.endpoint);
+        const rawData = await response.json();
+        const data = movieAPI.normalizeResponse(rawData);
+        const items = data?.data?.items || [];
 
-        if (data.status === 'success' && data.data && data.data.items) {
-            const movies = data.data.items.slice(0, 15);
+        if (items && items.length > 0) {
+            const movies = items.slice(0, 15);
             container.innerHTML = movies.map(movie => createLandscapeMovieCard(movie)).join('');
+        } else {
+            container.innerHTML = `<p class="text-gray-400 p-4">Không thể tải phim</p>`;
         }
     } catch (error) {
         console.error(`Error loading ${config.id} row:`, error);
@@ -140,7 +147,7 @@ function initUnifiedCountryFrame() {
 
     const html = `
         <section class="pb-6 md:pb-8 pt-0 ${bridgeClass}">
-            <div class="w-full px-4 md:px-10 lg:px-16">
+            <div class="container mx-auto px-6">
                 <div class="country-unified-frame">
                     ${Object.values(COUNTRY_CONFIGS).map(config => createCountryRow(config)).join('')}
                 </div>
@@ -165,5 +172,3 @@ if (document.readyState === 'loading') {
 
 // Bind to window
 window.scrollRows = scrollRows;
-
-

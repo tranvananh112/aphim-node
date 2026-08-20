@@ -381,5 +381,3 @@ window.addEventListener('popstate', (event) => {
 console.log('🎬 Phim X Proxy Mode Loaded!');
 console.log('🛡️ All API requests go through your backend proxy');
 console.log('✅ Bypass ISP blocking (VNPT, Viettel, etc.)');
-
-

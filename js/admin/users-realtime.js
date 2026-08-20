@@ -1691,5 +1691,3 @@ window.applyPlanRewards = function() {
         });
     }, 2000);
 };
-
-

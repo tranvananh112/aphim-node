@@ -247,7 +247,7 @@
 
         backdrop.innerHTML = `
         <div id="ap-auth-modal">
-            <button class="ap-auth-close" id="ap-auth-close-btn" aria-label="Đóng">✕</button>
+            <button class="ap-auth-close" id="ap-auth-close-btn" aria-label="��ng">&times;</button>
 
             <div class="ap-auth-left" style="background: linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${randomBg}') center / cover no-repeat;">
 
@@ -256,16 +256,16 @@
                         <img src="/apple-touch-icon.png" alt="A Phim">
                     </div>
                     <div class="ap-auth-brand-name">A <span>Phim</span></div>
-                    <div class="ap-auth-brand-tagline">Phim hay cỡ rạp</div>
+                    <div class="ap-auth-brand-tagline">Giải trí không giới hạn</div>
                 </div>
             </div>
 
             <div class="ap-auth-right">
-                <h2 class="ap-auth-title">${isLogin ? 'Đăng nhập' : 'Đăng ký'}</h2>
+                <h2 class="ap-auth-title">${isLogin ? '�ang nh?p' : '�ang k�'}</h2>
                 <p class="ap-auth-subtitle">
                     ${isLogin
-                        ? 'Chưa có tài khoản? <a id="ap-switch-to-register">Đăng ký ngay</a>'
-                        : 'Đã có tài khoản? <a id="ap-switch-to-login">Đăng nhập</a>'
+                        ? 'Chua c� t�i kho?n? <a id="ap-switch-to-register">�ang k� ngay</a>'
+                        : '�� c� t�i kho?n? <a id="ap-switch-to-login">�ang nh?p</a>'
                     }
                 </p>
 
@@ -274,8 +274,8 @@
                 <form id="ap-auth-form" autocomplete="off">
                     ${!isLogin ? `
                     <div class="ap-auth-field">
-                        <label>Họ và tên</label>
-                        <input class="ap-auth-input" type="text" id="ap-field-name" placeholder="Nguyễn Văn A" required>
+                        <label>H? v� t�n</label>
+                        <input class="ap-auth-input" type="text" id="ap-field-name" placeholder="Nguy?n Van A" required>
                     </div>` : ''}
 
                     <div class="ap-auth-field">
@@ -285,27 +285,27 @@
 
                     ${!isLogin ? `
                     <div class="ap-auth-field">
-                        <label>Số điện thoại</label>
+                        <label>S? di?n tho?i</label>
                         <input class="ap-auth-input" type="tel" id="ap-field-phone" placeholder="0123456789">
                     </div>` : ''}
 
                     <div class="ap-auth-field">
-                        <label>Mật khẩu</label>
-                        <input class="ap-auth-input" type="password" id="ap-field-password" placeholder="••••••••" required>
+                        <label>M?t kh?u</label>
+                        <input class="ap-auth-input" type="password" id="ap-field-password" placeholder="��������" required>
                     </div>
 
                     ${!isLogin ? `
                     <div class="ap-auth-field">
-                        <label>Xác nhận mật khẩu</label>
-                        <input class="ap-auth-input" type="password" id="ap-field-confirm" placeholder="••••••••" required>
+                        <label>X�c nh?n m?t kh?u</label>
+                        <input class="ap-auth-input" type="password" id="ap-field-confirm" placeholder="��������" required>
                     </div>` : ''}
 
                     <button class="ap-auth-submit" type="submit" id="ap-auth-submit-btn">
-                        ${isLogin ? 'ĐĂNG NHẬP' : 'ĐĂNG KÝ'}
+                        ${isLogin ? '�ANG NH?P' : '�ANG K�'}
                     </button>
                 </form>
 
-                ${isLogin ? `<div class="ap-auth-forgot" id="ap-forgot-link">Quên mật khẩu?</div>` : ''}
+                ${isLogin ? `<div class="ap-auth-forgot" id="ap-forgot-link">Qu�n m?t kh?u?</div>` : ''}
             </div>
         </div>`;
 
@@ -502,7 +502,5 @@
     }
 
 })();
-
-
 
 

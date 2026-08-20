@@ -27,7 +27,7 @@ async function loadMovies(page = 1) {
         const response = await fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`);
         const data = await response.json();
 
-        if (data && data.status === 'success' && data.data) {
+        if (data && (data && (data.status === 'success' || data.status === true || data.status)) && data.data) {
             moviesData = data.data.items || [];
             currentPage = page;
 
@@ -323,5 +323,3 @@ function showToast(message, type = 'info') {
         toast.remove();
     }, 3000);
 }
-
-

@@ -84,5 +84,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Store instance globally
     window.lazyLoaderInstance = lazyLoader;
 });
-
-

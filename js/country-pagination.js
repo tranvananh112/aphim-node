@@ -31,24 +31,13 @@ async function loadCountryMovies(countrySlug, countryName, page = 1) {
 
         console.log(`Loading ${countryName} movies - Page ${page}...`);
 
-        const url = `https://phimapi.com/v1/api/quoc-gia/${countrySlug}?page=${page}`;
-        console.log('Fetching from:', url);
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 'accept': 'application/json' }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await movieAPI.getMoviesByCountry(countrySlug, page);
+        const items = data?.data?.items || [];
         console.log(`${countryName} movies data:`, data);
 
-        if (data.status === 'success' && data.data && data.data.items) {
-            const movies = data.data.items;
-            const params = data.data.params || {};
+        if (items && items.length > 0) {
+            const movies = items;
+            const params = data.data?.params || {};
             const pagination = params.pagination || {};
 
             // Calculate pagination from API data
@@ -63,13 +52,6 @@ async function loadCountryMovies(countrySlug, countryName, page = 1) {
                 totalPages = 18; // Default estimate
                 totalItems = movies.length * totalPages;
             }
-
-            console.log('Pagination:', pagination);
-            console.log('=== PAGINATION DEBUG ===');
-            console.log('totalItems:', totalItems);
-            console.log('itemsPerPage:', itemsPerPage);
-            console.log('Calculated totalPages:', totalPages);
-            console.log('========================');
 
             renderMovies(movies, countryName);
             showPagination();
@@ -96,8 +78,12 @@ function renderMovies(movies, countryName) {
 
     moviesList.innerHTML = movies.map(movie => {
         const hasCustomLink = !!movieLinks[movie.slug];
-        const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
+        const linkUrl = hasCustomLink ? `watch-simple.html?slug=${movie.slug}` : `movie-detail.html?slug=${movie.slug}`;
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
+        const rawImg = movie.poster_url || movie.thumb_url || '';
+        const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
+            ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
+            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
 
         return `
             <a href="${linkUrl}"
@@ -105,9 +91,15 @@ function renderMovies(movies, countryName) {
                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                     <img alt="${movie.name}"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                        src="https://img.ophimimg.com/uploads/movies/${movie.thumb_url}"
+                        data-src="${posterUrl}"
+                        data-tmdb-slug="${movie.slug}"
+                        data-tmdb-id="${movie.tmdb?.id || ''}"
+                        data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                        data-tmdb-year="${movie.year || ''}"
+                        data-tmdb-type="poster"
                         loading="lazy"
-                        onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                        src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E"
+                        onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
                     ${hiddenUI.badge}
                     ${!hiddenUI.badge ? `
                     <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -277,5 +269,3 @@ window.addEventListener('hiddenMoviesSynced', () => {
         loadCountryMovies(currentCountry, currentCountryName, currentPage);
     }
 });
-
-

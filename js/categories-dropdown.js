@@ -1,4 +1,4 @@
-// Load categories for dropdown menu (Zero-latency version)
+﻿// Load categories for dropdown menu (Zero-latency version)
 function loadCategoriesDropdown() {
     try {
         const dropdown = document.getElementById('categoryDropdown');
@@ -20,8 +20,8 @@ function loadCategoriesDropdown() {
             { slug: 'short-drama', name: 'Short Drama' }
         ];
 
-        // Khởi tạo mảng các thể loại trực tiếp
-        const categories = [...categoriesData];
+        // Gộp mục Tất Cả vào chung 1 lưới thiết kế để không vỡ khung grid-cols-4
+        const categories = [{ slug: 'all', name: 'Tất Cả Thể Loại' }, ...categoriesData];
 
         // Tính toán số ô bị thiếu để grid đầy đủ viền (đang dùng 4 cột)
         const totalCells = Math.ceil(categories.length / 4) * 4;
@@ -30,10 +30,10 @@ function loadCategoriesDropdown() {
         // Render as grid 4 columns — bọc trong nền xanh dương
         let gridHTML = `
             <div style="
-                background: #2b3a72;
+                background: linear-gradient(160deg, #1e4d8c 0%, #2563b8 40%, #1a3d7a 100%);
                 border-radius: 12px;
                 padding: 6px;
-                border: 1px solid rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(59,130,246,0.25);
                 box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
             ">
                 <div class="grid grid-cols-4 gap-0">`;
@@ -52,15 +52,18 @@ function loadCategoriesDropdown() {
             const url = (cat.slug === 'all') 
                 ? 'categories.html' 
                 : `categories.html?category=${cat.slug}`;
- 
+
+            // Bold for Tất Cả
+            const fontWeight = (cat.slug === 'all') ? 'font-weight:700;' : '';
+
             return `
                 <a href="${url}" 
                    style="
                        display: flex; align-items: center;
                        padding: 11px 16px;
-                       color: rgba(255, 255, 255, 0.88);
+                       color: rgba(255,255,255,0.88);
                        font-size: 0.82rem;
-                       font-weight: 700;
+                       ${fontWeight}
                        ${borderStyle}
                        white-space: nowrap;
                        transition: background 0.18s, color 0.18s;
@@ -68,7 +71,7 @@ function loadCategoriesDropdown() {
                        text-decoration: none;
                    "
                    onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#ffd700';"
-                   onmouseout="this.style.background='';this.style.color='rgba(255, 255, 255, 0.88)';"
+                   onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.88)';"
                 >
                     <span style="overflow:hidden;text-overflow:ellipsis;">${cat.name}</span>
                 </a>
@@ -102,5 +105,4 @@ if (document.readyState === 'loading') {
 } else {
     loadCategoriesDropdown();
 }
-
 

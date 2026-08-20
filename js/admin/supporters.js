@@ -405,5 +405,3 @@ function showSuccess(message) {
 function showError(message) {
     alert('Lỗi: ' + message);
 }
-
-

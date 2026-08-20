@@ -4,7 +4,7 @@ class APIOptimizer {
         this.requestQueue = [];
         this.isProcessing = false;
         this.maxConcurrentRequests = 3;
-        this.requestTimeout = 15000; // 15 seconds
+        this.requestTimeout = 10000; // 10 seconds
     }
 
     // Queue request with concurrency control
@@ -78,7 +78,7 @@ const apiOptimizer = new APIOptimizer();
 const originalFetch = window.fetch;
 window.fetch = function (...args) {
     const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Fetch timeout')), 15000)
+        setTimeout(() => reject(new Error('Fetch timeout')), 10000)
     );
 
     return Promise.race([
@@ -96,5 +96,3 @@ MovieAPI.prototype.fetchWithAuth = async function (url, options = {}) {
         options.priority || 0
     );
 };
-
-

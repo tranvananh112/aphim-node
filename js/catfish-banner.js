@@ -18,7 +18,6 @@
             enabled: true,
             sessionKey: 'aphim_catfish_closed_v4'  // per-page sessionStorage key
         },
-
         popup: {
             enabled: false, // Đã tắt theo yêu cầu để tránh gây khó chịu
             showAfterMs: 800,         // Delay trước khi popup hiện (ms)
@@ -145,6 +144,55 @@
                 setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 450);
                 // Đánh dấu đã đóng theo từng trang (sessionStorage)
                 var pageKey = CONFIG.catfish.sessionKey;
+                setSession(pageKey);
+            });
+        }
+    }
+
+    
+    /* ─────────────────────────────────────────────────────────
+       CATFISH TOP STICKY BAR (8QBet) — Treo từ thanh điều hướng xuống
+    ───────────────────────────────────────────────────────── */
+    function shouldShowCatfishTop() {
+        if (!CONFIG.catfishTop || !CONFIG.catfishTop.enabled) return false;
+        if (window.innerWidth >= 768) {
+            return true;
+        }
+        var pageKey = CONFIG.catfishTop.sessionKey;
+        return !getSession(pageKey);
+    }
+
+    function initCatfishTop() {
+        if (!shouldShowCatfishTop()) return;
+
+        var bar = document.createElement('div');
+        bar.id = 'aphim-catfish-top';
+        bar.setAttribute('role', 'complementary');
+        bar.setAttribute('aria-label', 'Quảng cáo đối tác 8QBet');
+        bar.innerHTML =
+            '<div class="catfish-inner">' +
+                '<div class="catfish-row">' +
+                    '<a class="catfish-item" href="https://www.aa8qbet.com/?ch=74858ce908" target="_blank" rel="noopener nofollow" aria-label="8QBet — Thưởng Khủng 888K">' +
+                        '<img src="/quangcao/8pbet/banner_8Qbet.gif" alt="8QBet Thưởng Khủng" loading="eager">' +
+                    '</a>' +
+                '</div>' +
+            '</div>' +
+            '<button id="aphim-catfish-top-close" title="Đóng quảng cáo" aria-label="Đóng">&#10005;</button>';
+
+        document.body.appendChild(bar);
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () { 
+                bar.classList.add('visible'); 
+            });
+        });
+
+        var closeBtn = document.getElementById('aphim-catfish-top-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                bar.classList.remove('visible');
+                setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 450);
+                var pageKey = CONFIG.catfishTop.sessionKey;
                 setSession(pageKey);
             });
         }
@@ -319,5 +367,3 @@
     }
 
 })();
-
-

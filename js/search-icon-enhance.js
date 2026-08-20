@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Only apply on desktop
     if (window.innerWidth >= 1024) {
         // Only select search.html links that contain material-icons (icon, not text link)
-        const searchLinks = document.querySelectorAll('a[href="/search"]');
+        const searchLinks = document.querySelectorAll('a[href="search.html"]');
 
         searchLinks.forEach(link => {
             // Check if this link contains a material-icons element
@@ -23,5 +23,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
-

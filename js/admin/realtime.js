@@ -189,5 +189,3 @@ if (typeof module !== 'undefined' && module.exports) {
 window.addEventListener('beforeunload', () => {
     realtimeSync.destroy();
 });
-
-
