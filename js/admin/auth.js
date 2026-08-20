@@ -36,7 +36,7 @@ class AdminAuthService {
         localStorage.removeItem(ADMIN_STORAGE_KEYS.ADMIN_TOKEN);
         localStorage.removeItem('cinestream_admin_token');
         localStorage.removeItem('cinestream_admin_user');
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
     }
 
     // Check authentication and redirect if needed
@@ -48,7 +48,7 @@ class AdminAuthService {
         // Only redirect if not already redirecting
         if (!isLoggedIn && !isLoginPage) {
             // Not logged in and not on login page -> redirect to login
-            window.location.href = '/admin/login.html';
+            window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
         }
         // Don't auto-redirect from login to dashboard to prevent loops
         // Let the login form handle the redirect after successful login

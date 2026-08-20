@@ -250,7 +250,7 @@ function logout() {
     confirmDialog('Bạn có chắc muốn đăng xuất?', () => {
         try { localStorage.removeItem('cinestream_admin_token'); } catch (e) { }
         try { sessionStorage.removeItem('cinestream_admin_token'); } catch (e) { }
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
     });
 }
 

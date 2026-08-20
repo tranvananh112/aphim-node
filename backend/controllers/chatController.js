@@ -5,17 +5,26 @@ const ChatMessage = require('../models/ChatMessage');
 // @access  Private
 exports.saveMessage = async (req, res) => {
     try {
-        const { text, tab, firebaseId, avatar, chatRole, frame } = req.body;
+        // Kiểm tra ban chat
+        if (req.user && req.user.isChatBanned) {
+            return res.status(403).json({ success: false, message: 'Tài khoản của bạn đã bị cấm tham gia chat cộng đồng.' });
+        }
+
+        const { text, tab, firebaseId, avatar, frame } = req.body;
 
         if (!text || !firebaseId) {
             return res.status(400).json({ success: false, message: 'Missing required fields' });
         }
 
+        // BẢO MẬT: Bắt buộc lấy chatRole & tên user từ DB (req.user), TUYỆT ĐỐI KHÔNG tin req.body gửi từ F12 Console!
+        const verifiedChatRole = (req.user.role === 'admin' || req.user.chatRole === 'admin') ? 'admin' : (req.user.chatRole || 'user');
+        const verifiedUserName = req.user.name || req.user.user || req.user.email || 'Thành viên';
+
         const message = await ChatMessage.create({
             userId: req.user.id,
-            user: req.user.user || req.user.name,
+            user: verifiedUserName,
             avatar: avatar || req.user.avatar || '/apple-touch-icon.png',
-            chatRole: chatRole || req.user.chatRole || 'user',
+            chatRole: verifiedChatRole,
             frame: frame || req.user.equippedFrameClass || '',
             text,
             tab,
@@ -197,8 +206,8 @@ exports.toggleReaction = async (req, res) => {
             message = new ChatMessage({
                 firebaseId,
                 tab: tab || 'general',
-                text: '[�ang d?ng b?...]',
-                user: 'Kh�ch',
+                text: '[�ang d?ng b?...]',
+                user: 'Kh�ch',
                 userId: req.user._id
             });
         }
@@ -227,7 +236,7 @@ exports.toggleReaction = async (req, res) => {
             reactionData.uids.push(uid);
             reactionData.avatars.push(avatar || '');
             if (!reactionData.names) reactionData.names = [];
-            reactionData.names.push(name || req.user.user || 'Kh�ch');
+            reactionData.names.push(name || req.user.user || 'Kh�ch');
         }
 
         // Critical: Tell Mongoose that the Map has changed
@@ -301,3 +310,36 @@ exports.getPinned = async (req, res) => {
 
 
 
+
+// @desc    Clean spam messages (Admin only)
+// @route   DELETE /api/chat/clean-spam
+exports.cleanSpam = async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.chatRole !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Admin access required' });
+        }
+
+        const keywords = ['spam', 'xâm nhập', 'bot@', 'bot đang spam', 'cảnh báo bảo mật', 'test spam'];
+        const regexPatterns = keywords.map(kw => new RegExp(kw, 'i'));
+
+        const socketUtil = require('../utils/socket');
+        const result = await ChatMessage.deleteMany({
+            $or: [
+                { text: { $in: regexPatterns } },
+                { user: { $in: regexPatterns } }
+            ]
+        });
+
+        if (socketUtil && socketUtil.emitEvent) {
+            socketUtil.emitEvent('chat:clean_spam', { deletedCount: result.deletedCount });
+        }
+
+        res.json({
+            success: true,
+            message: `Đã dọn dẹp thành công ${result.deletedCount} tin nhắn spam.`,
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

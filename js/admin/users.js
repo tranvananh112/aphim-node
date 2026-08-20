@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function checkAdminAuth() {
     const token = localStorage.getItem('cinestream_admin_token');
     if (!token) {
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
         return false;
     }
     return true;
@@ -70,7 +70,7 @@ async function loadUsers(silent = false) {
         if (!response.ok) {
             if (response.status === 401) {
                 localStorage.removeItem('cinestream_admin_token');
-                window.location.href = '/admin/login.html';
+                window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
                 return;
             }
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -701,6 +701,6 @@ function logout() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
         localStorage.removeItem('cinestream_admin_token');
         localStorage.removeItem('cinestream_admin_user');
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/quan-ly-secret-aphim-8899.html';
     }
 }
