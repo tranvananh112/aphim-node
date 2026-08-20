@@ -628,3 +628,176 @@
         color: #0d0f1a !important;
     }
 }
+
+
+/* ==========================================================
+   ✨ DESKTOP NAV PILL FLEX & RESPONSIVE COLLISION FIX ✨
+   Prevents overlapping between search bar & nav links on desktop/laptop screens & zoom levels (1280px - 1600px).
+   ========================================================== */
+
+@media (min-width: 1280px) {
+    .desktop-nav-pill {
+        display: flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    nav-links, .nav-links {
+        display: flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+        min-width: max-content !important;
+    }
+
+    .nav-search-v2 {
+        flex-shrink: 1 !important;
+        min-width: 120px !important;
+        transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s, border-color 0.25s !important;
+    }
+}
+
+/* Fluid responsive adjustments for laptops / 125% - 150% zoom */
+@media (max-width: 1600px) and (min-width: 1280px) {
+    .nav-flat-link {
+        padding: 5px clamp(6px, 0.7vw, 12px) !important;
+        font-size: clamp(0.76rem, 0.82vw, 0.88rem) !important;
+        flex-shrink: 0 !important;
+    }
+    .nav-search-v2 {
+        width: clamp(140px, 14vw, 240px) !important;
+    }
+    .nav-search-v2:focus-within {
+        width: clamp(200px, 20vw, 300px) !important;
+    }
+    .nav-search-v2 input {
+        font-size: 0.8rem !important;
+    }
+}
+
+@media (max-width: 1366px) and (min-width: 1280px) {
+    .desktop-nav-pill {
+        padding: 4px 6px !important;
+    }
+    .nav-flat-link {
+        padding: 4px 6px !important;
+        font-size: 0.75rem !important;
+    }
+    nav-links, .nav-links {
+        gap: 1px !important;
+    }
+    .nav-search-v2 {
+        width: 130px !important;
+    }
+    .nav-search-v2:focus-within {
+        width: 180px !important;
+    }
+    .nav-search-v2 input::placeholder {
+        font-size: 0.75rem !important;
+    }
+}
+
+
+/* ==========================================================
+   ✨ SEARCH BAR & MIC BUTTON OVERLAP FIX (DESKTOP & LAPTOP) ✨
+   Fixes input intrinsic min-width bug causing mic button to spill onto "Trang Chủ".
+   ========================================================== */
+
+@media (min-width: 1280px) {
+    /* Fix input flex shrink bug */
+    .nav-search-v2 {
+        display: flex !important;
+        align-items: center !important;
+        position: relative !important;
+        box-sizing: border-box !important;
+        width: clamp(210px, 18vw, 300px) !important;
+        min-width: 190px !important;
+        margin-right: 6px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .nav-search-v2 input {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        width: 0 !important;
+    }
+
+    .nav-search-v2 .search-icon {
+        flex-shrink: 0 !important;
+    }
+
+    .nav-search-v2 .vs-nav-mic-btn {
+        flex-shrink: 0 !important;
+        margin-left: 2px !important;
+        margin-right: 4px !important;
+    }
+
+    /* Ensure desktopNavPill children stay separated */
+    .desktop-nav-pill {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        padding: 4px 10px 4px 6px !important;
+    }
+
+    .desktop-nav-pill > div[style*="width:1px"] {
+        margin: 0 8px !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+@media (max-width: 1536px) and (min-width: 1280px) {
+    .nav-search-v2 {
+        width: clamp(180px, 15vw, 240px) !important;
+        min-width: 170px !important;
+    }
+    .nav-search-v2:focus-within {
+        width: clamp(220px, 20vw, 290px) !important;
+    }
+}
+
+@media (max-width: 1366px) and (min-width: 1280px) {
+    .nav-search-v2 {
+        width: 170px !important;
+        min-width: 160px !important;
+    }
+    .nav-search-v2:focus-within {
+        width: 210px !important;
+    }
+}
+
+
+/* ==========================================================
+   ✨ ACTIVE NAV UNDERLINE PERFECT CENTERING FIX ✨
+   Ensures yellow active indicator line is ALWAYS 100% centered under any active nav item regardless of screen size or padding.
+   ========================================================== */
+
+.nav-flat-link {
+    position: relative !important;
+}
+
+.nav-flat-link::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0px !important;
+    left: 50% !important;
+    right: auto !important;
+    width: clamp(20px, 65%, 44px) !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #f2f20d, #ffd700) !important;
+    border-radius: 99px !important;
+    box-shadow: 0 0 10px rgba(242, 242, 13, 0.7), 0 2px 4px rgba(0,0,0,0.5) !important;
+    transform: translateX(-50%) scaleX(0) !important;
+    transform-origin: center center !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.nav-flat-link:hover::after,
+.nav-flat-link.active::after,
+.nav-flat-dropdown.active > button.nav-flat-link::after,
+.nav-flat-dropdown:hover > button.nav-flat-link::after {
+    transform: translateX(-50%) scaleX(1) !important;
+    left: 50% !important;
+    right: auto !important;
+}
