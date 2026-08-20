@@ -77,9 +77,11 @@ async function loadHeroBanner() {
 // -- Fallback từ PhimAPI khi không có admin banner ----------------------------------------
 async function loadFallbackBanner() {
     try {
-        const data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-moi-cap-nhat', 'phimapi');
-        const items = data?.data?.items || data?.items || [];
-        if (items && items.length > 0) {
+        const data = await movieAPI.getMoviesByCountry('viet-nam', 1);
+        const items = data?.data?.items || data?.items;
+        const isOk = data && ((data && (data.status === 'success' || data.status === true || data.status)) || data.status === true || data.status);
+        
+        if (isOk && items && items.length > 0) {
             currentAdminBanner = items[0];
             heroSlides[0] = currentAdminBanner;
             renderHeroBannerContent(currentAdminBanner, false);
