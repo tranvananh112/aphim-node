@@ -34,6 +34,37 @@
             </div>
         </div>
     </div>
+    <!-- ✅ Splash Auto-Progress: tự chạy 0→100% rồi ẩn ngay -->
+    <script>
+    (function() {
+        var bar = document.getElementById('splashProgressBar');
+        var txt = document.getElementById('splashProgressText');
+        var splash = document.getElementById('splashLoader');
+        if (!splash) return;
+        var progress = 0;
+        var startTime = Date.now();
+        var duration = 1200; // ms tổng thời gian chạy
+        function step() {
+            var elapsed = Date.now() - startTime;
+            progress = Math.min(100, Math.round((elapsed / duration) * 100));
+            if (bar) bar.style.width = progress + '%';
+            if (txt) txt.textContent = progress + '%';
+            if (progress < 100) {
+                requestAnimationFrame(step);
+            } else {
+                // Ẩn splash sau khi đạt 100%
+                setTimeout(function() {
+                    splash.classList.add('splash-fade-out');
+                    setTimeout(function() {
+                        splash.style.display = 'none';
+                        document.body.classList.add('splash-ready');
+                    }, 500);
+                }, 100);
+            }
+        }
+        requestAnimationFrame(step);
+    })();
+    </script>
     <!-- Ambient Background (7 Orbs for Full Coverage) -->
     <div class="ambient-bg">
         <div class="ambient-orb ambient-orb-1"></div>

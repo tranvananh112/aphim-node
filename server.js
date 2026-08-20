@@ -49,19 +49,50 @@ function queuedFetch(url, options) {
 // Helper lấy dữ liệu gộp từ 3 nguồn (Ophim, NguonC, VSMov) cho SSR
 async function fetchAndMergeMovieData(slug) {
     try {
-        const [ophimRes, ncRes, vsRes] = await Promise.allSettled([
+        const [ophimRes, ncRes, vsRes, phimapiRes] = await Promise.allSettled([
             axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 }),
             axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 5000 }),
-            axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 5000 })
+            axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 5000 }),
+            axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 8000 })
         ]);
         
         let ophimData = null;
-        if (ophimRes.status === 'fulfilled' && ophimRes.value && ophimRes.value.data) {
+
+        // Ưu tiên Ophim1 trước
+        if (ophimRes.status === 'fulfilled' && ophimRes.value && ophimRes.value.data &&
+            (ophimRes.value.data.status === true || ophimRes.value.data.status === 'success') &&
+            ophimRes.value.data.movie) {
             ophimData = ophimRes.value.data;
-        } else {
-            return null; // OPhim is required
         }
         
+        // Fallback: nếu Ophim1 fail → dùng PhimAPI
+        if (!ophimData && phimapiRes.status === 'fulfilled' && phimapiRes.value && phimapiRes.value.data &&
+            phimapiRes.value.data.movie) {
+            const pd = phimapiRes.value.data;
+            const movie = pd.movie;
+            // Chuẩn hoá ảnh từ phimapi
+            const cdnImg = pd.pathImage || 'https://phimimg.com';
+            if (movie.thumb_url && !movie.thumb_url.startsWith('http')) {
+                movie.thumb_url = `${cdnImg}/${movie.thumb_url.replace(/^\//, '')}`;
+            }
+            if (movie.poster_url && !movie.poster_url.startsWith('http')) {
+                movie.poster_url = `${cdnImg}/${movie.poster_url.replace(/^\//, '')}`;
+            }
+            // Chuẩn hoá cấu trúc về dạng Ophim để tương thích views
+            ophimData = {
+                status: true,
+                movie: movie,
+                episodes: pd.episodes || []
+            };
+            console.log(`[PhimAPI Fallback] Loaded: ${movie.name} (${slug})`);
+        }
+
+        if (!ophimData) {
+            console.warn(`[SSR] Không tìm thấy phim: ${slug}`);
+            return null;
+        }
+        
+        // Thêm nguồn từ NguonC
         if (ncRes.status === 'fulfilled' && ncRes.value && ncRes.value.data && ncRes.value.data.movie && ncRes.value.data.movie.episodes) {
             const ncData = ncRes.value.data;
             const mappedEps = ncData.movie.episodes.map(s => ({
@@ -77,6 +108,7 @@ async function fetchAndMergeMovieData(slug) {
             mappedEps.forEach(s => ophimData.episodes.push(s));
         }
         
+        // Thêm nguồn từ VSMov
         if (vsRes.status === 'fulfilled' && vsRes.value && vsRes.value.data && vsRes.value.data.episodes) {
             const vsData = vsRes.value.data;
             if (!ophimData.episodes) ophimData.episodes = [];
