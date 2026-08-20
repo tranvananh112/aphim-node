@@ -74,10 +74,10 @@ async function loadHeroBanner() {
     attachSwipeHandler();
 }
 
-// -- Fallback từ ophim API ----------------------------------------
+// -- Fallback từ PhimAPI khi không có admin banner ----------------------------------------
 async function loadFallbackBanner() {
     try {
-        const data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-bo');
+        const data = await movieAPI.getMoviesFromMultipleSources(1, 'phim-moi-cap-nhat', 'phimapi');
         const items = data?.data?.items || data?.items || [];
         if (items && items.length > 0) {
             currentAdminBanner = items[0];
@@ -547,7 +547,7 @@ function updateHeroBannerText(movie) {
     if (heroDescription) {
         heroDescription.textContent = movie.content
             ? movie.content.replace(/<[^>]*>/g, '').substring(0, 180) + '...'
-            : 'ang t?i thng tin phim...';
+            : 'Đang tải thông tin phim...';
     }
 }
 
@@ -1019,42 +1019,44 @@ function showHeroImage() {
 async function fetchLatestEpisodeCount(movie) {
     if (!movie?.slug) return;
     try {
-        const data = await movieAPI.getMovieDetail(movie.slug);
-        if (!data) return;
+        // Gọi thẳng PhimAPI để lấy chi tiết phim (nội dung, số tập)
+        const res = await fetch(`https://phimapi.com/phim/${movie.slug}`);
+        if (!res.ok) throw new Error('PhimAPI detail failed');
+        const detail = await res.json();
 
-        const item = data.movie || data.data?.item;
+        const item = detail.movie || detail.data?.item || detail;
         if (!item) return;
 
-        // Sync and update real description from database/API
-        if (item.content) {
-            const cleanContent = item.content.replace(/<[^>]*>/g, '').trim();
+        // Cập nhật mô tả phim
+        const rawContent = item.content || item.description || '';
+        if (rawContent) {
+            const cleanContent = rawContent.replace(/<[^>]*>/g, '').trim();
             const heroDescription = document.getElementById('heroDescription');
             if (heroDescription) {
-                heroDescription.textContent = cleanContent.length > 180 
+                heroDescription.textContent = cleanContent.length > 180
                     ? cleanContent.substring(0, 180) + '...'
                     : cleanContent;
             }
-            movie.content = item.content; // Save so we don't refetch
+            movie.content = rawContent; // lưu lại để không cần fetch lại
         }
 
+        // Cập nhật số tập mới nhất
         let latestEpLabel = item.episode_current || '';
-        const eps = data.episodes || item.episodes;
+        const eps = detail.episodes || item.episodes;
         if (Array.isArray(eps) && eps.length > 0) {
             const serverData = eps[0]?.server_data;
             if (Array.isArray(serverData) && serverData.length > 0) {
                 const count = serverData.length;
-                
                 const lcLabel = latestEpLabel.toLowerCase().trim();
-                // Preserve 'Full' if it's a single movie or already labeled as Full
-                if (item.type === 'single' || lcLabel.includes('full') || lcLabel.includes('ho�n t?t')) {
+                if (item.type === 'single' || lcLabel.includes('full') || lcLabel.includes('hoàn tất')) {
                     latestEpLabel = 'Full';
                 } else {
                     const match = latestEpLabel.match(/\d+/);
                     const storedNum = match ? parseInt(match[0]) : 0;
                     if (count > storedNum) {
-                        latestEpLabel = `T?p ${count}`;
-                    } else if (lcLabel === 't?p' || lcLabel === 't?p ') {
-                        latestEpLabel = count > 0 ? `T?p ${count}` : 'Full';
+                        latestEpLabel = `Tập ${count}`;
+                    } else if (lcLabel === 'tập' || lcLabel === 'tập ') {
+                        latestEpLabel = count > 0 ? `Tập ${count}` : 'Full';
                     }
                 }
             }
@@ -1066,7 +1068,23 @@ async function fetchLatestEpisodeCount(movie) {
             badge.textContent = latestEpLabel;
             badge.classList.remove('hidden');
         }
-    } catch (e) { /* silent */ }
+    } catch (e) {
+        // Fallback: thử dùng movieAPI nếu phimapi lỗi
+        try {
+            const data = await movieAPI.getMovieDetail(movie.slug);
+            if (!data) return;
+            const item = data.movie || data.data?.item;
+            if (item?.content) {
+                const cleanContent = item.content.replace(/<[^>]*>/g, '').trim();
+                const heroDescription = document.getElementById('heroDescription');
+                if (heroDescription) {
+                    heroDescription.textContent = cleanContent.length > 180
+                        ? cleanContent.substring(0, 180) + '...'
+                        : cleanContent;
+                }
+            }
+        } catch (e2) { /* silent */ }
+    }
 }
 
 // ================================================================
