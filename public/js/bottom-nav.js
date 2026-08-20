@@ -80,17 +80,17 @@
         const path = window.location.pathname;
         
         // 1. Trang chủ
-        if (path === '/' || path.includes('index.html') || path === '/index') {
+        if (path === '/' || path.includes('index') || path === '') {
             return 'home';
         }
         
         // 2. Khám phá
-        if (path.includes('search.html')) {
+        if (path.includes('search')) {
             return 'search';
         }
         
         // 3. Lịch chiếu
-        if (path.includes('lich-chieu.html')) {
+        if (path.includes('lich-chieu')) {
             return 'calendar';
         }
         
@@ -130,7 +130,7 @@
         dock.setAttribute('aria-label', 'Điều hướng chính');
 
         const accountHtml = !user ? `
-            <a href="profile.html" class="bn-tab ${active === 'account' ? 'active' : ''}" id="bn-tab-account" aria-label="Tài khoản"
+            <a href="/profile" class="bn-tab ${active === 'account' ? 'active' : ''}" id="bn-tab-account" aria-label="Tài khoản"
                onclick="return handleAccountTabClick(event)">
                 <span class="material-icons-round bn-tab-icon" id="bn-account-icon">person</span>
                 <span class="bn-tab-label">Tài khoản</span>
@@ -138,17 +138,17 @@
         ` : '';
 
         dock.innerHTML = `
-            <a href="search.html" class="bn-tab ${active === 'search' ? 'active' : ''}" id="bn-tab-search" aria-label="Khám phá">
+            <a href="/search" class="bn-tab ${active === 'search' ? 'active' : ''}" id="bn-tab-search" aria-label="Khám phá">
                 <span class="material-icons-round bn-tab-icon">grid_view</span>
                 <span class="bn-tab-label">Khám phá</span>
             </a>
-            <a href="lich-chieu.html" class="bn-tab ${active === 'calendar' ? 'active' : ''}" id="bn-tab-calendar" aria-label="Lịch chiếu">
+            <a href="/lich-chieu" class="bn-tab ${active === 'calendar' ? 'active' : ''}" id="bn-tab-calendar" aria-label="Lịch chiếu">
                 <span class="material-icons-round bn-tab-icon">calendar_today</span>
                 <span class="bn-tab-label">Lịch chiếu</span>
             </a>
-            <a href="index.html" class="bn-tab bn-tab-center ${active === 'home' ? 'active' : ''}" id="bn-tab-home" aria-label="Trang chủ">
+            <a href="/" class="bn-tab bn-tab-center ${active === 'home' ? 'active' : ''}" id="bn-tab-home" aria-label="Trang chủ">
                 <span class="bn-tab-icon flex items-center justify-center">
-                    <dotlottie-player src="icons/home-loading.lottie" background="transparent" speed="1" style="width:24px;height:24px;" loop autoplay></dotlottie-player>
+                    <dotlottie-player src="/icons/home-loading.lottie" background="transparent" speed="1" style="width:24px;height:24px;" loop autoplay></dotlottie-player>
                 </span>
                 <span class="bn-tab-label">Trang chủ</span>
             </a>
@@ -209,11 +209,11 @@
         ).join('');
 
         const categoriesHtml = CATEGORIES.map(c =>
-            `<a href="categories.html?category=${c.slug}" class="bn-sub-item">${esc(c.name)}</a>`
+            `<a href="/categories?category=${c.slug}" class="bn-sub-item">${esc(c.name)}</a>`
         ).join('');
 
         const countriesHtml = COUNTRIES.map(c =>
-            `<a href="phim-theo-quoc-gia.html?country=${c.slug}" class="bn-sub-item">
+            `<a href="/phim-theo-quoc-gia?country=${c.slug}" class="bn-sub-item">
                 <img src="https://flagcdn.com/16x12/${c.code}.png" alt="${c.code}" width="16" height="12" style="margin-right:6px;border-radius:2px;">
                 ${esc(c.name)}
             </a>`
@@ -226,7 +226,7 @@
                  </button>
                </div>`
             : `<div class="bn-auth-footer">
-                 <a href="login.html" onclick="if(window.showAuthModal){event.preventDefault();window.closeBnSheet&&window.closeBnSheet();window.showAuthModal('login');return false;}"
+                 <a href="/login" onclick="if(window.showAuthModal){event.preventDefault();window.closeBnSheet&&window.closeBnSheet();window.showAuthModal('login');return false;}"
                     class="bn-auth-btn login">
                      <span class="material-icons-round" style="font-size:18px;">login</span>Đăng nhập
                  </a>
@@ -254,19 +254,19 @@
             <div id="bn-sheet-scroll">
                 <!-- Quick Nav Grid 5 ô -->
                 <div class="bn-sf-quick-nav">
-                    <a href="index.html" class="bn-sf-quick-btn">
+                    <a href="/" class="bn-sf-quick-btn">
                         <span class="material-icons-round">home</span>
                         <span>Trang chủ</span>
                     </a>
-                    <a href="danh-sach.html" class="bn-sf-quick-btn">
+                    <a href="/danh-sach" class="bn-sf-quick-btn">
                         <span class="material-icons-round">view_list</span>
                         <span>Lọc phim</span>
                     </a>
-                    <a href="search.html" class="bn-sf-quick-btn">
+                    <a href="/search" class="bn-sf-quick-btn">
                         <span class="material-icons-round">explore</span>
                         <span>Khám phá</span>
                     </a>
-                    <a href="lich-chieu.html" class="bn-sf-quick-btn">
+                    <a href="/lich-chieu" class="bn-sf-quick-btn">
                         <span class="material-icons-round">event_note</span>
                         <span>Lịch chiếu</span>
                     </a>
@@ -327,7 +327,7 @@
                         Nâng cấp trải nghiệm
                     </div>
                     <div class="bn-upgrade-desc">Xem phim không quảng cáo, chất lượng HD và tốc độ tải nhanh hơn.</div>
-                    <a href="pricing.html" class="bn-upgrade-btn">NÂNG CẤP NGAY</a>
+                    <a href="/pricing" class="bn-upgrade-btn">NÂNG CẤP NGAY</a>
                 </div>
 
                 ${authHtml}

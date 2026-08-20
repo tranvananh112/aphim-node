@@ -555,3 +555,66 @@
         display: none !important;
     }
 }
+
+
+/* ============================================================
+   ✨ MOBILE BOTTOM NAV TACTILE TAP & ACTIVE FEEDBACK ENHANCEMENT ✨
+   Tactile spring feedback, active top indicator bar & gold glow.
+   ============================================================ */
+
+.bn-tab {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, opacity 0.2s ease !important;
+    position: relative !important;
+}
+
+.bn-tab:active {
+    transform: scale(0.90) !important;
+    opacity: 0.82 !important;
+}
+
+.bn-tab:active .bn-tab-icon {
+    transform: scale(0.86) !important;
+}
+
+.bn-tab.active {
+    color: #ffffff !important;
+}
+
+.bn-tab.active .bn-tab-label {
+    color: #fcd576 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 8px rgba(252, 213, 118, 0.4) !important;
+}
+
+.bn-tab.active .bn-tab-icon {
+    background: linear-gradient(135deg, #fcd576 0%, #eab308 100%) !important;
+    color: #0d0f1a !important;
+    box-shadow: 0 6px 18px rgba(234, 179, 8, 0.65), 0 0 14px rgba(252, 213, 118, 0.5) !important;
+    transform: translateY(-2px) scale(1.08) !important;
+}
+
+.bn-tab.active::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 24px !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #f2f20d, #ffd700) !important;
+    border-radius: 0 0 4px 4px !important;
+    box-shadow: 0 2px 8px rgba(242, 242, 13, 0.8) !important;
+    animation: bnTabPulse 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes bnTabPulse {
+    from { width: 0px; opacity: 0; }
+    to { width: 24px; opacity: 1; }
+}
+
+.bn-tab-center.active .bn-tab-icon {
+    background: rgba(252, 213, 118, 0.15) !important;
+    border: 2px solid #fcd576 !important;
+    box-shadow: 0 0 16px rgba(252, 213, 118, 0.6), inset 0 0 10px rgba(252, 213, 118, 0.4) !important;
+    transform: translateY(-2px) scale(1.1) !important;
+}
