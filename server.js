@@ -16,6 +16,28 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ===== DMCA COMPLIANCE / BLOCKED MOVIES MIDDLEWARE =====
+const DMCA_BLOCKED_SLUGS = [
+    'nhung-manh-ghep-cam-xuc-2',
+    'quai-thu-vo-hinh-vung-dat-chet-choc',
+    'yeu-nu-thich-hang-hieu-2',
+    'star-wars-mandalorian-va-grogu',
+    'cau-chuyen-do-choi-5',
+    'phi-vu-dong-troi-2'
+];
+
+app.use((req, res, next) => {
+    if (DMCA_BLOCKED_SLUGS.some(slug => req.path.includes(slug))) {
+        res.status(404);
+        try {
+            return res.render('404', { title: '404 - Không tìm thấy trang' });
+        } catch (e) {
+            return res.send('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1></body></html>');
+        }
+    }
+    next();
+});
+
 // ===== STATIC FILES: Serve từ thư mục gốc =====
 app.use(express.static(__dirname));
 
