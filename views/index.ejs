@@ -488,18 +488,18 @@
             }
         </style>
     <!-- Premium ads disabled -->
-        <section class="py-2 md:py-3 !bg-transparent" id="animation-section">
+        <section class="py-2 coming-soon-section ambient-section !bg-transparent">
             <div class="w-full px-4 md:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito lg:-ml-5">
-                            <span class="text-white">Thế Giới</span> <span class="text-gradient-blue">Hoạt Hình</span>
+                            <span class="text-white">Phim</span> <span class="text-gradient-orange">Chiếu Rạp</span>
                         </h2>
                     <div class="flex gap-3">
-                        <button onclick="scrollSection('animationContainer', 'left')"
+                        <button id="comingSoonScrollLeft"
                             class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                             <span class="material-icons-round text-xl">chevron_left</span>
                         </button>
-                        <button onclick="scrollSection('animationContainer', 'right')"
+                        <button id="comingSoonScrollRight"
                             class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                             <span class="material-icons-round text-xl">chevron_right</span>
                         </button>
@@ -507,15 +507,14 @@
                 </div>
 
                 <!-- Loading -->
-                <div id="animationLoading" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-                    <p class="text-gray-400">Đang tải phim hoạt hình...</p>
+                <div id="comingSoonLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim chiếu rạp...</p>
                 </div>
 
-                <!-- Movies Container -->
-                <div id="animationContainer"
+                <div id="comingSoonContainer"
                     class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-4 items-start py-4">
-                    <!-- Movies will be loaded here -->
+                    <!-- Content will be injected here via coming-soon.js -->
                 </div>
             </div>
         </section>
@@ -746,18 +745,18 @@
         </section>
 
         <!-- Coming Soon Movies Section - Top 10 Style -->
-        <section class="py-2 coming-soon-section ambient-section !bg-transparent">
+        <section class="py-2 md:py-3 !bg-transparent" id="animation-section">
             <div class="w-full px-4 md:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-xl md:text-2xl lg:text-3xl font-black tracking-tight font-nunito lg:-ml-5">
-                            <span class="text-white">Phim</span> <span class="text-gradient-orange">Chiếu Rạp</span>
+                            <span class="text-white">Thế Giới</span> <span class="text-gradient-blue">Hoạt Hình</span>
                         </h2>
                     <div class="flex gap-3">
-                        <button id="comingSoonScrollLeft"
+                        <button onclick="scrollSection('animationContainer', 'left')"
                             class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                             <span class="material-icons-round text-xl">chevron_left</span>
                         </button>
-                        <button id="comingSoonScrollRight"
+                        <button onclick="scrollSection('animationContainer', 'right')"
                             class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
                             <span class="material-icons-round text-xl">chevron_right</span>
                         </button>
@@ -765,14 +764,15 @@
                 </div>
 
                 <!-- Loading -->
-                <div id="comingSoonLoading" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
-                    <p class="text-gray-400">Đang tải phim chiếu rạp...</p>
+                <div id="animationLoading" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Đang tải phim hoạt hình...</p>
                 </div>
 
-                <div id="comingSoonContainer"
+                <!-- Movies Container -->
+                <div id="animationContainer"
                     class="hidden flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide pb-4 items-start py-4">
-                    <!-- Content will be injected here via coming-soon.js -->
+                    <!-- Movies will be loaded here -->
                 </div>
             </div>
         </section>
@@ -1480,27 +1480,42 @@
             const container = document.getElementById('sofaflixContainer');
             const loading = document.getElementById('sofaflixLoading');
             try {
-                const response = await movieAPI.fetchWithFallback('/danh-sach/phim-bo?page=1');
-                const data = await response.json();
-                if ((data.status === 'success' || data.status === true) && data.data && data.data.items) {
-                    const movies = data.data.items.slice(0, 10);
+                const response = await movieAPI.fetchWithFallback('/danh-sach/phim-bo?page=1', {}, 'phimapi');
+                const rawData = await response.json();
+                const data = movieAPI.normalizeResponse ? movieAPI.normalizeResponse(rawData) : rawData;
+                const items = data?.data?.items || data?.items || [];
+                if (items && items.length > 0) {
+                    const movies = items.slice(0, 10);
                     if (loading) loading.classList.add('hidden');
                     if (container) {
                         container.classList.remove('hidden');
                         container.innerHTML = movies.map((movie, index) => {
                             const rank = index + 1;
-                            const thumb = movie.thumb_url || '';
-                            const poster = movie.poster_url || '';
-                            const finalImg = (typeof imageOptimizer !== 'undefined') ?
-                                imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb}`) : `https://img.ophimimg.com/${poster}`);
+                            let rawImg = movie.poster_url || movie.thumb_url || '';
+                            let finalImg = 'https://aphim.top/android-chrome-512x512.png';
+                            if (rawImg) {
+                                if (rawImg.startsWith('http')) {
+                                    finalImg = rawImg;
+                                } else {
+                                    const cleanPath = rawImg.replace(/^\/?(uploads\/movies\/)?/, '');
+                                    finalImg = `https://img.ophimimg.com/uploads/movies/${cleanPath}`;
+                                }
+                            }
+                            if (typeof imageOptimizer !== 'undefined' && finalImg.startsWith('http')) {
+                                finalImg = imageOptimizer.optimizeImageUrl(finalImg, 400, 80);
+                            }
+
+                            const cleanFallback = (movie.thumb_url || movie.poster_url || '').replace(/^\/?(uploads\/movies\/)?/, '');
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
-                                <a href="/phim/${movie.slug}" class="flex flex-col gap-[12px] h-full w-full">
+                                <a href="/phim/${movie.slug}">
                                     <div class="ranking-poster-w">
-                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                                        ${window.renderMovieBadges(movie.lang, movie.episode_current)}
+                                        <img src="${finalImg}" alt="${movie.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" onerror="this.onerror=null; this.src='https://phimimg.com/uploads/movies/${cleanFallback}';" />
+                                        <div class="ranking-badges-bottom">
+                                            <span class="badge-pd">PD. ${movie.lang || 'HD'}</span>
+                                            <span class="badge-lt">LT. ${movie.episode_current || 'Full'}</span>
+                                        </div>
                                         <div class="ranking-icon-circle"><span class="material-icons-round">local_fire_department</span></div>
                                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
