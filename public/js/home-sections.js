@@ -89,7 +89,7 @@ function renderLatestMoviesSection(movies) {
     const loading = document.getElementById('sectionsLoading');
 
     if (!container) {
-        console.error('dynamicSections container not found!');
+        // container check
         return;
     }
 
@@ -131,7 +131,7 @@ function renderLatestMoviesSection(movies) {
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
                                                 src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                                 loading="lazy"
-                                                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                                onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                     ${hiddenUI.badge}
                                     ${!hiddenUI.badge ? `
                                     <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -182,7 +182,7 @@ function renderAllSections(sections) {
     const loading = document.getElementById('sectionsLoading');
 
     if (!container) {
-        console.error('dynamicSections container not found!');
+        // container check
         return;
     }
 
@@ -254,7 +254,7 @@ function renderAllSections(sections) {
                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
                                             src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                             loading="lazy"
-                                            onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'" />
+                                            onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                         ${hiddenUI.badge}
                                         ${!hiddenUI.badge ? `
                                         <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -345,7 +345,7 @@ function renderVietnameseMovies(movies) {
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Thuyết Minh Vietsub"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
                     src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
-                    onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'"
+                    onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null"
                     loading="lazy" />
                 ${hiddenUI.badge}
                 ${!hiddenUI.badge ? `

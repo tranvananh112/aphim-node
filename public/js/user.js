@@ -59,35 +59,50 @@ class UserService {
         return historyStr ? JSON.parse(historyStr) : [];
     }
 
-    // Add to watch history
-    addToHistory(movie, episode = null) {
-        if (!this.authService.isLoggedIn()) return;
+    // Add to watch history (Hỗ trợ cả Khách & Thành viên)
+    addToHistory(movie, episode = null, extra = {}) {
+        if (!movie || !movie.slug) return;
 
         const history = this.getWatchHistory();
-
-        // Remove if already exists
         const filtered = history.filter(m => m.slug !== movie.slug);
 
-        // Add to beginning
-        filtered.unshift({
+        const item = {
             slug: movie.slug,
-            name: movie.name,
-            thumb_url: movie.thumb_url,
-            year: movie.year,
-            episode: episode,
+            name: movie.name || movie.title || '',
+            thumb_url: movie.thumb_url || movie.poster_url || '',
+            poster_url: movie.poster_url || movie.thumb_url || '',
+            year: movie.year || '',
+            episode: episode || extra.episode || '',
+            episodeSlug: extra.episodeSlug || (typeof episode === 'string' ? episode : (episode?.slug || '')),
+            currentTime: extra.currentTime || 0,
+            duration: extra.duration || 0,
             watchedAt: new Date().toISOString()
-        });
+        };
+
+        filtered.unshift(item);
 
         // Keep only last 50 items
         const limited = filtered.slice(0, 50);
         localStorage.setItem(STORAGE_KEYS.WATCH_HISTORY, JSON.stringify(limited));
-        this.authService.updateProfile({ watchHistory: limited }).catch(()=>{});
+
+        try {
+            window.dispatchEvent(new CustomEvent('watchHistoryUpdated', { detail: limited }));
+        } catch(e) {}
+
+        if (this.authService && this.authService.isLoggedIn()) {
+            this.authService.updateProfile({ watchHistory: limited }).catch(()=>{});
+        }
     }
 
     // Clear watch history
     clearHistory() {
         localStorage.removeItem(STORAGE_KEYS.WATCH_HISTORY);
-        this.authService.updateProfile({ watchHistory: [] }).catch(()=>{});
+        try {
+            window.dispatchEvent(new CustomEvent('watchHistoryUpdated', { detail: [] }));
+        } catch(e) {}
+        if (this.authService && this.authService.isLoggedIn()) {
+            this.authService.updateProfile({ watchHistory: [] }).catch(()=>{});
+        }
     }
 
     // Get watch progress for a movie
@@ -96,35 +111,49 @@ class UserService {
         const allProgress = progressStr ? JSON.parse(progressStr) : {};
 
         const key = episode ? `${slug}_${episode}` : slug;
-        return allProgress[key] || { currentTime: 0, duration: 0 };
+        return allProgress[key] || allProgress[slug] || { currentTime: 0, duration: 0 };
     }
 
-    // Save watch progress
-    saveWatchProgress(slug, currentTime, duration, episode = null) {
-        if (!this.authService.isLoggedIn()) return;
+    // Save watch progress (Hỗ trợ cả Khách & Thành viên)
+    saveWatchProgress(slug, currentTime, duration, episode = null, movieInfo = null) {
+        if (!slug) return;
 
         const progressStr = localStorage.getItem(STORAGE_KEYS.WATCH_PROGRESS);
         const allProgress = progressStr ? JSON.parse(progressStr) : {};
 
         const key = episode ? `${slug}_${episode}` : slug;
-        allProgress[key] = {
+        const progressData = {
+            slug,
+            episode,
             currentTime,
             duration,
-            percentage: (currentTime / duration) * 100,
+            percentage: duration > 0 ? (currentTime / duration) * 100 : 0,
             updatedAt: new Date().toISOString()
         };
+
+        allProgress[key] = progressData;
+        allProgress[slug] = progressData; // Luôn cập nhật tiến trình mới nhất cho movie slug
 
         // 1. Luôn lưu ngay lập tức vào LocalStorage trên máy hiện tại
         localStorage.setItem(STORAGE_KEYS.WATCH_PROGRESS, JSON.stringify(allProgress));
 
-        // 2. Đồng bộ lên Server để liên kết đa thiết bị
-        // Dùng throttle: Chỉ đẩy lên server tối đa 10 giây một lần để tránh làm chậm mạng/quá tải request
-        const now = Date.now();
-        if (!this.lastProgressSyncTime || (now - this.lastProgressSyncTime > 10000)) {
-            this.lastProgressSyncTime = now;
-            this.authService.updateProfile({ watchProgress: allProgress })
-                .then(() => { console.log('☁️ [CloudSync] Watch progress backed up'); })
-                .catch(() => {});
+        try {
+            window.dispatchEvent(new CustomEvent('watchProgressUpdated', { detail: allProgress }));
+        } catch(e) {}
+
+        if (movieInfo) {
+            this.addToHistory(movieInfo, episode, { currentTime, duration, episodeSlug: episode });
+        }
+
+        // 2. Đồng bộ lên Server nếu đã đăng nhập
+        if (this.authService && this.authService.isLoggedIn()) {
+            const now = Date.now();
+            if (!this.lastProgressSyncTime || (now - this.lastProgressSyncTime > 10000)) {
+                this.lastProgressSyncTime = now;
+                this.authService.updateProfile({ watchProgress: allProgress })
+                    .then(() => { console.log('☁️ [CloudSync] Watch progress backed up'); })
+                    .catch(() => {});
+            }
         }
     }
 

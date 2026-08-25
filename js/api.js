@@ -65,20 +65,20 @@ class MovieAPI {
             urlsToTry = [
                 `https://phimapi.com/v1/api${basePath}${paramStr}`,
                 `https://phimapi.com${basePath}${paramStr}`,
-                `https://ophim1.com/v1/api${basePath}${paramStr}`,
-                `https://ophim1.com${basePath}${paramStr}`
+                `https://phimapi.com/v1/api${basePath}${paramStr}`,
+                `https://phimapi.com${basePath}${paramStr}`
             ];
         } else if (preferredSource === 'ophim1') {
             urlsToTry = [
-                `https://ophim1.com/v1/api${basePath}${paramStr}`,
-                `https://ophim1.com${basePath}${paramStr}`,
+                `https://phimapi.com/v1/api${basePath}${paramStr}`,
+                `https://phimapi.com${basePath}${paramStr}`,
                 `https://phimapi.com/v1/api${basePath}${paramStr}`,
                 `https://phimapi.com${basePath}${paramStr}`
             ];
         } else {
             urlsToTry = [
-                `https://ophim1.com/v1/api${basePath}${paramStr}`,
-                `https://ophim1.com${basePath}${paramStr}`,
+                `https://phimapi.com/v1/api${basePath}${paramStr}`,
+                `https://phimapi.com${basePath}${paramStr}`,
                 `https://phimapi.com/v1/api${basePath}${paramStr}`,
                 `https://phimapi.com${basePath}${paramStr}`
             ];
@@ -88,7 +88,7 @@ class MovieAPI {
             if (preferredSource === 'phimapi' || preferredSource === 'both') {
                 urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
             } else {
-                urlsToTry.unshift(`https://ophim1.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
+                urlsToTry.unshift(`https://phimapi.com/danh-sach/phim-moi-cap-nhat${paramStr}`);
             }
         }
 
@@ -200,7 +200,7 @@ class MovieAPI {
                     fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'phimapi' })));
                 }
                 if (preferredSource === 'ophim1' || preferredSource === 'both') {
-                    fetchPromises.push(this.fetchWithTimeout(`https://ophim1.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
+                    fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
                 }
 
                 const results = await Promise.allSettled(fetchPromises);
@@ -386,7 +386,7 @@ class MovieAPI {
                     fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'phimapi' })));
                 }
                 if (preferredSource === 'ophim1' || preferredSource === 'both') {
-                    fetchPromises.push(this.fetchWithTimeout(`https://ophim1.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
+                    fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
                 }
 
                 const results = await Promise.allSettled(fetchPromises);
@@ -476,7 +476,7 @@ class MovieAPI {
                     fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'phimapi' })));
                 }
                 if (preferredSource === 'ophim1' || preferredSource === 'both') {
-                    fetchPromises.push(this.fetchWithTimeout(`https://ophim1.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
+                    fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
                 }
 
                 const results = await Promise.allSettled(fetchPromises);
@@ -555,7 +555,7 @@ class MovieAPI {
                     fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'phimapi' })));
                 }
                 if (preferredSource === 'ophim1' || preferredSource === 'both') {
-                    fetchPromises.push(this.fetchWithTimeout(`https://ophim1.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
+                    fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
                 }
 
                 const results = await Promise.allSettled(fetchPromises);
@@ -683,7 +683,7 @@ class MovieAPI {
                 fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'phimapi' })));
             }
             if (preferredSource === 'ophim1' || preferredSource === 'both') {
-                fetchPromises.push(this.fetchWithTimeout(`https://ophim1.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
+                fetchPromises.push(this.fetchWithTimeout(`https://phimapi.com/v1/api${endpoint}`, { headers: { 'accept': 'application/json' }, timeout: 8000 }).then(r => r.json()).then(data => ({ data, source: 'ophim1' })));
             }
 
             const results = await Promise.allSettled(fetchPromises);

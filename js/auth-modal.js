@@ -198,7 +198,7 @@
         setTimeout(async () => {
             try {
                 // Fetch t? ophim1.com d? l?y d? li?u d? tránh l?i CORS image t? phimapi
-                const res = await fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1');
+                const res = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1');
                 const data = await res.json();
                 if (data?.items?.length > 0) {
                     let bestMovie = data.items[0];

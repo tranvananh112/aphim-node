@@ -1,45 +1,68 @@
-// Top Movies Hot Section — New Premium Ranking Layout (Sắp xếp theo Số Sao & Đánh Giá Cao Nhất)
+// Top Movies Hot Section — Ranking Layout (Load từ Phim Theo Quốc Gia Hàn Quốc /quoc-gia/han-quoc)
 async function loadTopMovies() {
     const loading = document.getElementById('topMoviesLoading');
     const container = document.getElementById('topMoviesContainer');
 
     try {
-        // Lấy dữ liệu từ OPhim
-        let movies = [];
+        let finalMovies = [];
 
-        // 1. Thử lấy từ movieAPI.getHome()
-        const homeData = await movieAPI.getHome();
-        if (homeData && homeData.status === 'success' && homeData.data && homeData.data.items) {
-            movies = homeData.data.items;
-        }
-
-        // 2. Nếu chưa đủ phim, lấy thêm từ danh sách phim lẻ & phim bộ hot
-        if (movies.length < 10) {
-            const fallbackRes = await movieAPI.fetchWithFallback('/danh-sach/phim-moi-cap-nhat?page=1', {
+        // 1. Fetch từ endpoint Phim Theo Quốc Gia Hàn Quốc: /quoc-gia/han-quoc?page=1
+        try {
+            const res = await movieAPI.fetchWithFallback('/quoc-gia/han-quoc?page=1', {
                 method: 'GET',
                 headers: { 'accept': 'application/json' }
             }, 'phimapi');
-            const rawData = await fallbackRes.json();
-            const normData = movieAPI.normalizeResponse(rawData);
-            if (normData && normData.data && normData.data.items) {
-                movies = [...movies, ...normData.data.items];
+            const rawData = await res.json();
+            const data = movieAPI.normalizeResponse(rawData);
+            const items = data?.data?.items || data?.items || [];
+            if (items && items.length > 0) {
+                finalMovies = items;
+            }
+        } catch (e) {
+            console.warn('Fallback loading top movies from home:', e);
+        }
+
+        // 2. Fetch TMDB Trending nếu cần làm phong phú danh sách
+        if (finalMovies.length < 10 && typeof getTrendingFromTMDB !== 'undefined') {
+            const tmdbMovies = await getTrendingFromTMDB();
+            if (tmdbMovies && tmdbMovies.length > 0) {
+                const topTmdb = tmdbMovies.slice(0, 15);
+                const searchPromises = topTmdb.map(async (tmdbMovie) => {
+                    const query = tmdbMovie.title || tmdbMovie.name || tmdbMovie.original_title;
+                    if (!query) return null;
+                    try {
+                        const searchRes = await movieAPI.searchMovies(query, 1, 'phimapi');
+                        if (searchRes && searchRes.data && searchRes.data.items && searchRes.data.items.length > 0) {
+                            const ophimMatch = searchRes.data.items[0];
+                            ophimMatch.tmdb = { vote_average: tmdbMovie.vote_average, id: tmdbMovie.id };
+                            if (tmdbMovie.poster_path) {
+                                ophimMatch.custom_poster = `https://image.tmdb.org/t/p/w500${tmdbMovie.poster_path}`;
+                            }
+                            return ophimMatch;
+                        }
+                    } catch (e) { return null; }
+                    return null;
+                });
+                const results = await Promise.all(searchPromises);
+                const tmdbMatches = results.filter(m => m !== null);
+                finalMovies = [...finalMovies, ...tmdbMatches];
             }
         }
 
-        // Lọc bỏ trùng lặp slug
+        // 3. Deduplicate by slug
         const uniqueMovies = [];
         const seenSlugs = new Set();
-        for (const m of movies) {
+        for (const m of finalMovies) {
             if (m.slug && !seenSlugs.has(m.slug)) {
                 seenSlugs.add(m.slug);
                 uniqueMovies.push(m);
             }
         }
 
-        // Sắp xếp ưu tiên phim có Đánh giá Sao / IMDb / TMDB điểm cao nhất
+        // Sắp xếp theo điểm số
         uniqueMovies.sort((a, b) => {
-            const scoreA = parseFloat(a.tmdb?.vote_average || a.rating || a.imdb?.vote_average || (9.8 - (uniqueMovies.indexOf(a) * 0.1)));
-            const scoreB = parseFloat(b.tmdb?.vote_average || b.rating || b.imdb?.vote_average || (9.8 - (uniqueMovies.indexOf(b) * 0.1)));
+            const scoreA = parseFloat(a.tmdb?.vote_average || a.rating || (9.8 - (uniqueMovies.indexOf(a) * 0.1)));
+            const scoreB = parseFloat(b.tmdb?.vote_average || b.rating || (9.8 - (uniqueMovies.indexOf(b) * 0.1)));
             return scoreB - scoreA;
         });
 
@@ -48,11 +71,11 @@ async function loadTopMovies() {
         if (top10Movies.length > 0) {
             renderTopMovies(top10Movies);
         } else {
-            loading.innerHTML = '<p class="text-gray-400">Không thể tải top phim</p>';
+            if (loading) loading.innerHTML = '<p class="text-gray-400">Không thể tải top phim</p>';
         }
     } catch (error) {
         console.error('Error loading top movies:', error);
-        loading.innerHTML = '<p class="text-red-400">Lỗi khi tải top phim</p>';
+        if (loading) loading.innerHTML = '<p class="text-red-400">Lỗi khi tải top phim</p>';
     }
 }
 
@@ -65,19 +88,19 @@ function renderTopMovies(movies) {
 
     if (!container) return;
 
+    const pathname = window.location.pathname;
+    const isCleanRoute = !pathname.endsWith('.html') && (pathname === '/' || pathname.startsWith('/xem-phim') || pathname.startsWith('/phim') || pathname.startsWith('/phim-theo-quoc-gia'));
+
     container.innerHTML = movies.map((movie, index) => {
         const rank = index + 1;
-        const thumb = movie.thumb_url || '';
-        const poster = movie.poster_url || '';
-        
-        const posterUrl = thumb ? 
-            (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumb}`) : 
-            (poster ? (poster.startsWith('http') ? poster : `https://img.ophimimg.com/${poster.startsWith('uploads/') ? '' : 'uploads/movies/'}${poster}`) : '');
-            
-        const optimizedUrl = (typeof imageOptimizer !== 'undefined' && (thumb || poster)) ? 
-            imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) : posterUrl;
-        
-        const detailUrl = `movie-detail.html?slug=${movie.slug}`;
+        let optimizedUrl = movie.custom_poster ? movie.custom_poster : (typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 400, 80) : (movie.poster_url || movie.thumb_url || ''));
+        if (optimizedUrl && optimizedUrl.includes('img.ophimimg.com')) {
+            optimizedUrl = optimizedUrl.replace('img.ophimimg.com', 'phimimg.com');
+        } else if (optimizedUrl && !optimizedUrl.startsWith('http')) {
+            optimizedUrl = 'https://phimimg.com/' + optimizedUrl.replace(/^\//, '');
+        }
+
+        const detailUrl = isCleanRoute ? `/xem-phim/${movie.slug}/tap-1` : `movie-detail.html?slug=${movie.slug}`;
         
         // Rating & Stars
         const ratingVal = (movie.tmdb?.vote_average || movie.rating || movie.imdb?.vote_average || (9.9 - index * 0.2)).toFixed(1);
@@ -99,10 +122,17 @@ function renderTopMovies(movies) {
                 <a href="${detailUrl}">
                     <div class="ranking-poster-w">
                         <img src="${optimizedUrl}" 
+                             data-ophim-src="${optimizedUrl}"
+                             data-tmdb-slug="${movie.slug}"
+                             data-tmdb-id="${movie.tmdb?.id || ''}"
+                             data-tmdb-name="${(movie.name || '').replace(/"/g, '&quot;')}"
+                             data-tmdb-year="${movie.year || ''}"
+                             data-tmdb-type="poster"
                              alt="${movie.name}" 
                              class="w-full h-full object-cover"
-                             onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
-                             loading="lazy" />
+                             loading="lazy"
+                             onerror="if(!this.dataset.fallbackTried){this.dataset.fallbackTried='1';if(this.src.includes('img.ophimimg.com')){this.src=this.src.replace('img.ophimimg.com','phimimg.com');}else if(this.src.includes('ophim1.com')){this.src=this.src.replace('ophim1.com','phimimg.com');}else{this.src='https://aphim.top/android-chrome-512x512.png';}}"
+                              />
                         
                         <div class="ranking-badges-bottom">
                             <span class="badge-pd flex items-center gap-1 font-bold text-amber-300 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded">
@@ -138,6 +168,24 @@ function renderTopMovies(movies) {
         `;
 
     }).join('');
+
+    // Sau khi render xong, upgrade ảnh lên TMDB trong nền (không block UI)
+    setTimeout(() => {
+        if (typeof imageOptimizer !== 'undefined' && imageOptimizer.getTMDBImageUrl) {
+            container.querySelectorAll('img[data-tmdb-name]').forEach(async (img) => {
+                try {
+                    const tmdbUrl = await imageOptimizer.getTMDBImageUrl(img);
+                    if (tmdbUrl && img.src !== tmdbUrl) {
+                        const tempImg = new Image();
+                        tempImg.onload = () => { img.src = tmdbUrl; };
+                        tempImg.src = tmdbUrl;
+                    }
+                } catch (e) {
+                    // Giữ nguyên ảnh nếu TMDB thất bại
+                }
+            });
+        }
+    }, 500);
 }
 
 // Scroll logic
@@ -163,5 +211,3 @@ window.scrollTopMovies = (dir) => {
     const container = document.getElementById('topMoviesContainer');
     if (container) container.scrollBy({ left: dir === 'right' ? 800 : -800, behavior: 'smooth' });
 };
-
-

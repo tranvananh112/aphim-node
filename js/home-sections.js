@@ -84,7 +84,7 @@ function renderLatestMoviesSection(movies) {
     const loading = document.getElementById('sectionsLoading');
 
     if (!container) {
-        console.error('dynamicSections container not found!');
+        // container check
         return;
     }
 
@@ -131,7 +131,7 @@ function renderLatestMoviesSection(movies) {
                                                 data-tmdb-year="${movie.year || ''}"
                                                 data-tmdb-type="poster"
                                                 loading="lazy"
-                                                onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
+                                                onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                     ${hiddenUI.badge}
                                     ${!hiddenUI.badge ? `
                                     <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -182,7 +182,7 @@ function renderAllSections(sections) {
     const loading = document.getElementById('sectionsLoading');
 
     if (!container) {
-        console.error('dynamicSections container not found!');
+        // container check
         return;
     }
 
@@ -259,7 +259,7 @@ function renderAllSections(sections) {
                                             data-tmdb-year="${movie.year || ''}"
                                             data-tmdb-type="poster"
                                             loading="lazy"
-                                            onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
+                                            onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                         ${hiddenUI.badge}
                                         ${!hiddenUI.badge ? `
                                         <div class="absolute top-2 left-2 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded">
@@ -351,7 +351,7 @@ function renderVietnameseMovies(movies) {
                     data-tmdb-year="${movie.year || ''}"
                     data-tmdb-type="poster"
                     loading="lazy"
-                    onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
+                    onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null"
                     />
                 ${hiddenUI.badge}
                 ${!hiddenUI.badge ? `

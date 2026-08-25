@@ -72,7 +72,7 @@ function queuedFetch(url, options) {
 async function fetchAndMergeMovieData(slug) {
     try {
         const [ophimRes, ncRes, vsRes, phimapiRes] = await Promise.allSettled([
-            axios.get(`https://ophim1.com/phim/${slug}`, { timeout: 5000 }),
+            axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 5000 }),
             axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 5000 }),
             axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 5000 }),
             axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 8000 })
@@ -155,7 +155,7 @@ async function fetchAndMergeMovieData(slug) {
 // Trang chủ
 app.get('/', async (req, res) => {
     try {
-        const response = await axios.get('https://ophim1.com/v1/api/home', { timeout: 5000 });
+        const response = await axios.get('https://phimapi.com/v1/api/home', { timeout: 5000 });
         const movies = response.data && response.data.data ? response.data.data.items || [] : [];
         res.render('index', {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
@@ -568,7 +568,7 @@ app.get('/sitemap-images.xml', async (req, res) => {
         await Promise.all(pages.slice(0, 1).map(async (page) => {
             try {
                 // /danh-sach/phim-moi-cap-nhat không còn tồn tại (404) - dùng /home
-                const r = await axios.get('https://ophim1.com/v1/api/home', { timeout: 6000 });
+                const r = await axios.get('https://phimapi.com/v1/api/home', { timeout: 6000 });
                 if (r.data && r.data.data && r.data.data.items) {
                     allMovies.push(...r.data.data.items);
                 }
@@ -632,9 +632,9 @@ app.get('/sitemap.xml', (req, res) => {
 // ==========================================
 app.use('/v1/api', async (req, res) => {
     const urlsToTry = [
-        `https://ophim1.com/v1/api${req.path}`,
-        `https://ophim1.com/v1/api${req.path}`,
-        `https://ophim1.com/v1/api${req.path}`
+        `https://phimapi.com/v1/api${req.path}`,
+        `https://phimapi.com/v1/api${req.path}`,
+        `https://phimapi.com/v1/api${req.path}`
     ];
     
     let lastError = null;

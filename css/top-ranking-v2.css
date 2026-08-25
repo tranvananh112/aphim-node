@@ -218,6 +218,7 @@
 
 /* --- ĐỒNG BỘ CĂN LỀ Y HỆT MỤC "BẠN ĐANG QUAN TÂM GÌ" --- */
 @media (min-width: 1024px) {
+    #continueWatchingContainer,
     #topMoviesContainer,
     #romanceContainer,
     #animationContainer,
