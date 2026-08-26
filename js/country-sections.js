@@ -27,7 +27,7 @@ function createLandscapeMovieCard(movie) {
     const rawImg = movie.poster_url || movie.thumb_url || '';
     const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
         ? imageOptimizer.optimizeImageUrl(rawImg, 480, 70)
-        : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
+        : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawImg}`);
     const detailUrl = `movie-detail.html?slug=${movie.slug}`;
     const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
     
@@ -40,7 +40,7 @@ function createLandscapeMovieCard(movie) {
                     <img src="${posterUrl}" 
                          alt="${movie.name}" 
                          class="${hiddenUI.imgClass}"
-                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22480%22 height=%22270%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
+                         onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '', typeof movie !== 'undefined' ? (movie.name || movie.title) : '') : null"
                          loading="lazy" />
                     
                     <div class="landscape-overlay"></div>

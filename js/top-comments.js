@@ -146,7 +146,7 @@ function renderFeaturedComments(movies) {
         const rawImg = m.thumb_url || m.poster_url || '';
         const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
         const avatarUrl = `https://i.pravatar.cc/150?img=${i + 10}`;
         const genderIcons = ['all_inclusive', 'female', 'male'];
         const gender = genderIcons[Math.floor(Math.random() * genderIcons.length)];
@@ -194,7 +194,7 @@ function renderMovieList(elementId, items, displayMode = 'views') {
         const rawImg = item.thumb_url || item.poster_url || '';
         const thumbUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 200, 75)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
         
         // Giả lập view cao và rating 9.5-10
         const views = Math.floor(Math.random() * 500) + 100; // 100k - 600k

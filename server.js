@@ -214,7 +214,7 @@ app.get('/phim/:slug', async (req, res) => {
             desc = desc.substring(0, 155);
 
             const img = movie.thumb_url
-                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
+                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
                 : 'https://aphim.top/android-chrome-512x512.png';
             const pageUrl = `https://aphim.top/phim/${slug}`;
 
@@ -342,7 +342,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
             
             title = `Xem Phim ${name} ${currentEpStr} - Vietsub Thuyết Minh HD ${year}`;
             metaDescription = `Xem phim ${name} ${currentEpStr} Vietsub Thuyết Minh Full HD trực tuyến. Xem ngay không quảng cáo, tải trang siêu tốc tại APhim.`;
-            ogImage = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url) : ogImage;
+            ogImage = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url) : ogImage;
             
             ogType = 'video.episode';
             releaseDate = `${year}-01-01`;
@@ -580,10 +580,10 @@ app.get('/sitemap-images.xml', async (req, res) => {
             const name = (movie.name || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
             const pageUrl = 'https://aphim.top/phim/' + slug;
             const thumb = movie.thumb_url
-                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
+                ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
                 : '';
             const poster = movie.poster_url
-                ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://img.ophimimg.com/' + (movie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.poster_url)
+                ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://phimimg.com/' + (movie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.poster_url)
                 : '';
 
             let imageEntries = '';

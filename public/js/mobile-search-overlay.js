@@ -167,7 +167,7 @@
         let html = '';
         display.forEach(function (movie) {
             const thumb = movie.thumb_url || movie.poster_url || '';
-            const poster = thumb ? `https://img.ophimimg.com/${thumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumb}` : '';
+            const poster = thumb ? `https://phimimg.com/${thumb.startsWith('uploads/') ? '' : 'uploads/movies/'}${thumb}` : '';
             const badge = movie.year || movie.episode_current || 'HD';
             const title = (movie.name || '').replace(/</g, '&lt;');
             const enTitle = (movie.origin_name || '').replace(/</g, '&lt;');

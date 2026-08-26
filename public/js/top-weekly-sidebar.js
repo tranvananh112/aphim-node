@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!result.data || !result.data.items) return;
 
         let items = result.data.items;
-        const imgDomain = result.data.APP_DOMAIN_CDN_IMAGE || 'https://img.ophimimg.com/';
+        const imgDomain = result.data.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/';
 
         // Sort theo IMDb/TMDB (vote_average) giảm dần, nếu bằng thì ưu tiên vote_count
         items.sort((a, b) => {

@@ -13,7 +13,7 @@ class OphimService {
     constructor() {
         // Use HTTP instead of HTTPS to avoid SSL issues
         this.baseURL = process.env.OPHIM_API_URL || 'https://phimapi.com';
-        this.cdnImage = process.env.OPHIM_CDN_IMAGE || 'https://img.ophimimg.com';
+        this.cdnImage = process.env.OPHIM_CDN_IMAGE || 'https://phimimg.com';
     }
 
     // Fetch movie list from Ophim API

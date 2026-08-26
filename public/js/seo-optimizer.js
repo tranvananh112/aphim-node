@@ -85,7 +85,7 @@ const SEO = {
         this.setOG('og:title', pageTitle);
         this.setOG('og:description', description);
         if (movie.thumb_url) {
-            const img = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
+            const img = movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`;
             this.setOG('og:image', img);
         }
         this.setOG('og:url', window.location.href);
@@ -160,7 +160,7 @@ const SEO = {
         if (oldSchema) oldSchema.remove();
 
         const name = movie.name || movie.title;
-        const img = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`) : 'https://aphim.io.vn/apple-touch-icon.png';
+        const img = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`) : 'https://aphim.io.vn/apple-touch-icon.png';
         
         const schemaType = (movie.type === 'series') ? 'TVSeries' : 'Movie';
         const schemaData = {
@@ -206,7 +206,7 @@ const SEO = {
 
         const itemListElement = movies.slice(0, 30).map((movie, index) => {
             const name = movie.name || movie.title;
-            const img = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://img.ophimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`) : `${siteOrigin}/apple-touch-icon.png`;
+            const img = movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : `https://phimimg.com/${movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.thumb_url}`) : `${siteOrigin}/apple-touch-icon.png`;
             const hasCustomLink = !!movieLinks[movie.slug];
             const slug = movie.slug || '';
             const movieUrl = `${siteOrigin}/${hasCustomLink ? 'watch-simple.html' : 'movie-detail.html'}?slug=${slug}`;

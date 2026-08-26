@@ -466,7 +466,7 @@ function buildImageUrl(rawUrl, width) {
     }
     return rawUrl.startsWith('http')
         ? rawUrl
-        : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
+        : `https://phimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
 }
 
 // -- Update ch? ph?n text c?a hero banner -----------------------
@@ -874,7 +874,7 @@ function renderThumbnails(movies) {
                     data-tmdb-year="${movie.year || ''}"
                     data-tmdb-type="backdrop"
                     src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E"
-                    onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22%3E%3Crect fill=%22%23111%22 width=%22400%22 height=%22600%22/%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'"
+                    onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '', typeof movie !== 'undefined' ? (movie.name || movie.title) : '') : null"
                      />
             </div>
             <div class="hero-thumb-glow"></div>
@@ -982,7 +982,7 @@ function renderHeroBannerContent(movie, isInstant) {
     heroImage.decoding = 'async';
 
     heroImage.onerror = () => {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
         if (heroImage.src !== fallbackUrl) heroImage.src = fallbackUrl;
         showHeroImage();
     };
@@ -991,7 +991,7 @@ function renderHeroBannerContent(movie, isInstant) {
         heroImage.setAttribute('data-current-src', optUrl);
         heroImage.src = optUrl;
     } else if (rawUrl) {
-        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://img.ophimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
+        const fallbackUrl = rawUrl.startsWith('http') ? rawUrl : `https://phimimg.com/${rawUrl.startsWith('uploads/') ? '' : 'uploads/movies/'}${rawUrl}`;
         heroImage.src = fallbackUrl;
     }
     showHeroImage();

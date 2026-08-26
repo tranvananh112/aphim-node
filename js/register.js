@@ -31,7 +31,7 @@ function setupAuthLeftPanel() {
             const data = await res.json();
             if (data?.data?.items?.length > 0) {
                 const latestMovie = data.data.items[0];
-                const url = `https://img.ophimimg.com/${latestMovie.thumb_url || latestMovie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url || latestMovie.poster_url}`;
+                const url = `https://phimimg.com/${latestMovie.thumb_url || latestMovie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${latestMovie.thumb_url || latestMovie.poster_url}`;
                 panel.style.background = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}') center / cover no-repeat`;
             }
         } catch (e) {

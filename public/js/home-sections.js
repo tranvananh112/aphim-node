@@ -129,7 +129,7 @@ function renderLatestMoviesSection(movies) {
                                 <div class="aspect-[2/3] w-full overflow-hidden relative">
                                             <img alt="Xem Phim ${movie.name} (${movie.year}) Full HD Vietsub"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                                src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
+                                                src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                                 loading="lazy"
                                                 onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                     ${hiddenUI.badge}
@@ -252,7 +252,7 @@ function renderAllSections(sections) {
                                     <div class="aspect-[2/3] w-full overflow-hidden relative">
                                         <img alt="Xem Phim ${movie.name} (${movie.year}) Vietsub"
                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                            src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
+                                            src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                                             loading="lazy"
                                             onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null" />
                                         ${hiddenUI.badge}
@@ -344,7 +344,7 @@ function renderVietnameseMovies(movies) {
             <div class="aspect-[2/3] w-full overflow-hidden relative">
                 <img alt="Xem Phim ${movie.name} (${movie.year}) Thuyết Minh Vietsub"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://img.ophimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
+                    src="${typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 350, 75) : `https://phimimg.com/${movie.poster_url || movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/'}${movie.poster_url || movie.thumb_url}`}"
                     onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null"
                     loading="lazy" />
                 ${hiddenUI.badge}

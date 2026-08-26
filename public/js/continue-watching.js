@@ -73,7 +73,7 @@
                 let imgUrl = item.thumb_url || item.poster_url || '';
                 if (imgUrl) {
                     if (!imgUrl.startsWith('http')) {
-                        imgUrl = 'https://img.ophimimg.com/uploads/movies/' + imgUrl.replace(/^\/?(uploads\/movies\/)?/, '');
+                        imgUrl = 'https://phimimg.com/uploads/movies/' + imgUrl.replace(/^\/?(uploads\/movies\/)?/, '');
                     }
                     if (typeof imageOptimizer !== 'undefined' && typeof imageOptimizer.optimizeImageUrl === 'function') {
                         imgUrl = imageOptimizer.optimizeImageUrl(imgUrl, 350, 75);

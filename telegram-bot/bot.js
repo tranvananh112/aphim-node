@@ -113,7 +113,7 @@ async function getMovieInfo(slug) {
 
             let posterUrl = null;
             if (posterFileName) {
-                posterUrl = `https://img.ophimimg.com/${posterFileName.startsWith('uploads/') ? '' : 'uploads/movies/'}${posterFileName}`;
+                posterUrl = `https://phimimg.com/${posterFileName.startsWith('uploads/') ? '' : 'uploads/movies/'}${posterFileName}`;
                 console.log(`🖼️ Poster URL: ${posterUrl}`);
             }
 

@@ -121,7 +121,7 @@ function renderMovies(movies) {
         const rawImg = movie.poster_url || movie.thumb_url || '';
         const posterUrl = (typeof imageOptimizer !== 'undefined' && rawImg)
             ? imageOptimizer.optimizeImageUrl(rawImg, 400, 80)
-            : (rawImg.startsWith('http') ? rawImg : `https://img.ophimimg.com/${rawImg}`);
+            : (rawImg.startsWith('http') ? rawImg : `https://phimimg.com/${rawImg}`);
         const quality = movie.quality || 'HD';
         const year = movie.year || '';
         const hiddenUI = window.getHiddenMovieOverlay ? window.getHiddenMovieOverlay(movie.slug) : { badge: '', imgClass: '', containerClass: '' };
@@ -139,7 +139,7 @@ function renderMovies(movies) {
                          data-tmdb-year="${movie.year || ''}"
                          data-tmdb-type="poster"
                          loading="lazy"
-                         onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                         onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '', typeof movie !== 'undefined' ? (movie.name || movie.title) : '') : null">
                     
                     ${hiddenUI.badge}
                     <!-- Quality Badge -->

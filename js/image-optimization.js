@@ -9,7 +9,7 @@ class ImageOptimizer {
         }, { passive: true });
     }
 
-    // Helper: Normalize image URL to absolute OPhim CDN URL (img.ophimimg.com)
+    // Helper: Normalize image URL to absolute OPhim CDN URL (phimimg.com)
     resolveUrl(url, fallbackUrl = '') {
         let raw = url || fallbackUrl;
         if (!raw) return 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E';
@@ -19,7 +19,7 @@ class ImageOptimizer {
         if (!raw.startsWith('uploads/movies/')) {
             raw = 'uploads/movies/' + raw.replace(/^\//, '');
         }
-        return 'https://img.ophimimg.com/' + raw;
+        return 'https://phimimg.com/' + raw;
     }
 
     optimizeImageUrl(url, width = 400, quality = 80, isPriority = false) {
@@ -31,7 +31,7 @@ class ImageOptimizer {
             if (!filename.startsWith('uploads/')) {
                 filename = 'uploads/movies/' + filename;
             }
-            resolvedUrl = "https://img.ophimimg.com/" + filename;
+            resolvedUrl = "https://phimimg.com/" + filename;
         }
 
         if (!resolvedUrl.includes('localhost') && !resolvedUrl.includes('127.0.0.1')) {
@@ -78,7 +78,7 @@ class ImageOptimizer {
             if (!filename.startsWith('uploads/')) {
                 filename = 'uploads/movies/' + filename;
             }
-            full = "https://img.ophimimg.com/" + filename;
+            full = "https://phimimg.com/" + filename;
         }
 
         return { placeholder: null, full: full };
@@ -145,7 +145,7 @@ class ImageOptimizer {
 
     createProgressiveImgTag({ originalUrl, altText, extraClasses = '', extraAttrs = '' }) {
         const full = this.resolveUrl(originalUrl);
-        const fallbackHandler = "if(!this.dataset.triedOphimCdn && this.src.includes('img.ophimimg.com')){this.dataset.triedOphimCdn=1;this.src=this.src.replace('img.ophimimg.com','img.phimapi.com');}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E';}";
+        const fallbackHandler = "if(!this.dataset.triedOphimCdn && this.src.includes('phimimg.com')){this.dataset.triedOphimCdn=1;this.src=this.src.replace('phimimg.com','img.phimapi.com');}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22600%22 style=%22background:%23111%22%3E%3Ctext fill=%22%23555%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22 font-family=%22sans-serif%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E';}";
         return `<img
             alt="${altText}"
             class="img-progressive img-desktop ${extraClasses}"

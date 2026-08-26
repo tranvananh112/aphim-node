@@ -94,8 +94,8 @@ function renderTopMovies(movies) {
     container.innerHTML = movies.map((movie, index) => {
         const rank = index + 1;
         let optimizedUrl = movie.custom_poster ? movie.custom_poster : (typeof movieAPI !== 'undefined' ? movieAPI.getImageURL(movie.poster_url || movie.thumb_url, 400, 80) : (movie.poster_url || movie.thumb_url || ''));
-        if (optimizedUrl && optimizedUrl.includes('img.ophimimg.com')) {
-            optimizedUrl = optimizedUrl.replace('img.ophimimg.com', 'phimimg.com');
+        if (optimizedUrl && optimizedUrl.includes('phimimg.com')) {
+            optimizedUrl = optimizedUrl.replace('phimimg.com', 'phimimg.com');
         } else if (optimizedUrl && !optimizedUrl.startsWith('http')) {
             optimizedUrl = 'https://phimimg.com/' + optimizedUrl.replace(/^\//, '');
         }
@@ -131,7 +131,7 @@ function renderTopMovies(movies) {
                              alt="${movie.name}" 
                              class="w-full h-full object-cover"
                              loading="lazy"
-                             onerror="if(!this.dataset.fallbackTried){this.dataset.fallbackTried='1';if(this.src.includes('img.ophimimg.com')){this.src=this.src.replace('img.ophimimg.com','phimimg.com');}else if(this.src.includes('ophim1.com')){this.src=this.src.replace('ophim1.com','phimimg.com');}else{this.src='https://aphim.top/android-chrome-512x512.png';}}"
+                             onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '', typeof movie !== 'undefined' ? (movie.name || movie.title) : '') : null"
                               />
                         
                         <div class="ranking-badges-bottom">

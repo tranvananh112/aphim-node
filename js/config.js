@@ -64,7 +64,7 @@ const API_CONFIG = {
         COUNTRY: '/quoc-gia',
         YEAR: '/nam-phat-hanh'
     },
-    IMAGE_BASE: 'https://img.ophimimg.com/',
+    IMAGE_BASE: 'https://phimimg.com/',
     IMAGE_BASE_BACKUP: 'https://img.phimapi.com/uploads/movies/',
     STREAM_BASE: 'https://vip.opstream13.com',
 

@@ -121,7 +121,7 @@ class InstantUI {
         if (url.startsWith('http')) return url;
 
         // Build optimized CDN URL
-        const baseURL = 'https://img.ophimimg.com/';
+        const baseURL = 'https://phimimg.com/';
         return `${baseURL}${url}?w=${width}&q=${quality}`;
     }
 

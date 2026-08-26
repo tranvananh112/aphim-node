@@ -161,7 +161,7 @@
         return 'https://phimapi.com/v1/api';
     }
 
-    const IMG_CDN = 'https://img.ophimimg.com/';
+    const IMG_CDN = 'https://phimimg.com/';
 
     // Proxy qua wsrv.nl để resize ngay về 38x54 WebP → tải cực nhanh
     function buildImgSrc(thumb) {

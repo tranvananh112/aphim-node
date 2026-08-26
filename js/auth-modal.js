@@ -208,11 +208,11 @@
                         }
                     }
                     
-                    // Xây d?ng URL ?nh chu?n, img.ophimimg.com không ch?n hotlink
+                    // Xây d?ng URL ?nh chu?n, phimimg.com không ch?n hotlink
                     const imgPath = bestMovie.poster_url || bestMovie.thumb_url;
                     let url = 'https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg';
                     if (imgPath) {
-                        url = `https://img.ophimimg.com/uploads/movies/${imgPath}`;
+                        url = `https://phimimg.com/uploads/movies/${imgPath}`;
                     }
                     
                     dynamicPosterURL = url;

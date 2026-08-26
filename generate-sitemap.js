@@ -64,10 +64,10 @@ const fs = require('fs');
             .replace(/"/g,'&quot;');
         const pageUrl = 'https://aphim.top/phim/' + slug;
         const thumb = movie.thumb_url
-            ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://img.ophimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
+            ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : 'https://phimimg.com/' + (movie.thumb_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.thumb_url)
             : '';
         const poster = movie.poster_url
-            ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://img.ophimimg.com/' + (movie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.poster_url)
+            ? (movie.poster_url.startsWith('http') ? movie.poster_url : 'https://phimimg.com/' + (movie.poster_url.startsWith('uploads/') ? '' : 'uploads/movies/') + movie.poster_url)
             : '';
         
         let imgs = '';

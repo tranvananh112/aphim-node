@@ -1097,7 +1097,7 @@
 
                 const finalImgUrl = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-(thumb ? (thumb.startsWith('http') ? thumb : (thumb.startsWith('uploads/') ? `https://img.ophimimg.com/${thumb}` : `https://img.ophimimg.com/${thumb}`)) : (poster ? (poster.startsWith('http') ? poster : (poster.startsWith('uploads/') ? `https://img.ophimimg.com/${poster}` : `https://img.ophimimg.com/${poster}`)) : ''));
+(thumb ? (thumb.startsWith('http') ? thumb : (thumb.startsWith('uploads/') ? `https://phimimg.com/${thumb}` : `https://phimimg.com/${thumb}`)) : (poster ? (poster.startsWith('http') ? poster : (poster.startsWith('uploads/') ? `https://phimimg.com/${poster}` : `https://phimimg.com/${poster}`)) : ''));
 
                 return `
                     <div class="portrait-card group ${hiddenUI.containerClass}">
@@ -1179,7 +1179,7 @@
                         <div class="portrait-poster-w">
                             <img alt="${movie.name}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : (movie.thumb_url.startsWith('uploads/') ? `https://img.ophimimg.com/${movie.thumb_url}` : `https://img.ophimimg.com/${movie.thumb_url}`)) : `https://via.placeholder.com/350x525`)}"
+                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : (movie.thumb_url.startsWith('uploads/') ? `https://phimimg.com/${movie.thumb_url}` : `https://phimimg.com/${movie.thumb_url}`)) : `https://via.placeholder.com/350x525`)}"
                                 onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null"
                                 fetchpriority="high"
                                 decoding="async" />
@@ -1256,13 +1256,13 @@
                 const backdropUrl = poster || thumb;
                 const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                    (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://img.ophimimg.com/${backdropUrl}` : `https://img.ophimimg.com/${backdropUrl}`));
+                    (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
                 // Poster prioritized for portrait (thumb_url)
                 const posterUrl = thumb || poster;
                 const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                    (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://img.ophimimg.com/${posterUrl}` : `https://img.ophimimg.com/${posterUrl}`));
+                    (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
 
                 return `
                 <div class="action-premium-card group">
@@ -1371,12 +1371,12 @@
                             const backdropUrl = poster || thumb;
                             const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
-                                (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://img.ophimimg.com/${backdropUrl}` : `https://img.ophimimg.com/${backdropUrl}`));
+                                (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
                             const posterUrl = thumb || poster;
                             const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
-                                (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://img.ophimimg.com/${posterUrl}` : `https://img.ophimimg.com/${posterUrl}`));
+                                (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
 
                             return `
                             <div class="action-premium-card group">
@@ -1433,7 +1433,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb}`) : `https://img.ophimimg.com/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : `https://phimimg.com/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -1480,7 +1480,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb}`) : `https://img.ophimimg.com/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : `https://phimimg.com/${poster}`);
 
                             return `
                             <div class="anime-card group">
@@ -1535,7 +1535,7 @@
                                     finalImg = rawImg;
                                 } else {
                                     const cleanPath = rawImg.replace(/^\/?(uploads\/movies\/)?/, '');
-                                    finalImg = `https://img.ophimimg.com/uploads/movies/${cleanPath}`;
+                                    finalImg = `https://phimimg.com/uploads/movies/${cleanPath}`;
                                 }
                             }
                             if (typeof imageOptimizer !== 'undefined' && finalImg.startsWith('http')) {
@@ -1593,7 +1593,7 @@
                             const poster = movie.poster_url || '';
                             const finalImg = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(thumb || poster, 400, 80) :
-                                (thumb ? (thumb.startsWith('http') ? thumb : `https://img.ophimimg.com/${thumb}`) : `https://img.ophimimg.com/${poster}`);
+                                (thumb ? (thumb.startsWith('http') ? thumb : `https://phimimg.com/${thumb}`) : `https://phimimg.com/${poster}`);
 
                             return `
                             <div class="ranking-item group" data-rank="${rank}">
