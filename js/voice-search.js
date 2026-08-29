@@ -30,14 +30,20 @@
         .vs-nav-mic-btn .material-icons-round {
             font-size: 18px;
         }
+        /* ── Tự động ẩn mic trùng trong Mobile Search Overlay ── */
+        .mso-input-wrap .vs-nav-mic-btn {
+            display: none !important;
+        }
     `;
     document.head.appendChild(style);
 
     function injectMicButtonToForm(searchForm) {
         if (!searchForm) return;
+        // Nếu là .mso-input-wrap (Mobile Overlay) đã có #msoVoiceBtn thì bỏ qua không inject trùng
+        if (searchForm.classList.contains('mso-input-wrap') || searchForm.querySelector('#msoVoiceBtn')) return;
         if (searchForm.querySelector('.vs-nav-mic-btn')) return;
 
-        // Xóa nút mic tĩnh cũ (nếu có) trên trang search/khám phá để tránh trùng 2 nút
+        // Xóa nút mic tĩnh cũ (nếu có)
         var oldMic = searchForm.querySelector('.sp-voice-btn');
         if (oldMic) {
             oldMic.remove();
@@ -59,39 +65,32 @@
             alert("Tính năng tìm kiếm bằng giọng nói hiện đang được bảo trì!");
         });
 
-        // Insert vào cuối input container (cùng hàng với input)
+        // Insert vào cuối input container
         input.parentNode.insertBefore(micBtn, input.nextSibling);
         
-        // Cố định CSS để icon luôn nằm gọn trên thanh search
         searchForm.style.display = 'flex';
         searchForm.style.alignItems = 'center';
         if (searchForm.className && typeof searchForm.className === 'string' && searchForm.className.includes('sp-search-box')) {
-            // Dành cho trang /search
             micBtn.style.marginRight = '4px';
         }
     }
 
     function bindAllSearchForms() {
-        // Hỗ trợ tất cả các thanh search: header, trang search, mobile overlay
-        var forms = document.querySelectorAll('.nav-search-v2, .sp-search-box, .mso-input-wrap');
+        // Chỉ inject cho Desktop header & Search page
+        var forms = document.querySelectorAll('.nav-search-v2, .sp-search-box');
         forms.forEach(function(f) {
             injectMicButtonToForm(f);
         });
     }
 
-    // Bind ngay lập tức
     bindAllSearchForms();
 
-    // Bind khi DOM Ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', bindAllSearchForms);
     } else {
         bindAllSearchForms();
     }
 
-    // Load lại sau khi các component đã render đầy đủ
     setTimeout(bindAllSearchForms, 500);
     setTimeout(bindAllSearchForms, 1500);
-    setInterval(bindAllSearchForms, 3000);
-
 })();
