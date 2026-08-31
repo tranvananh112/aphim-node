@@ -1179,7 +1179,7 @@
                         <div class="portrait-poster-w">
                             <img alt="${movie.name}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${hiddenUI.imgClass}"
-                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.thumb_url, 350, 70) : (movie.thumb_url ? (movie.thumb_url.startsWith('http') ? movie.thumb_url : (movie.thumb_url.startsWith('uploads/') ? `https://phimimg.com/${movie.thumb_url}` : `https://phimimg.com/${movie.thumb_url}`)) : `https://via.placeholder.com/350x525`)}"
+                                src="${typeof imageOptimizer !== 'undefined' ? imageOptimizer.optimizeImageUrl(movie.poster_url || movie.thumb_url, 350, 70) : ((movie.poster_url || movie.thumb_url) ? ((movie.poster_url || movie.thumb_url).startsWith('http') ? (movie.poster_url || movie.thumb_url) : `https://phimimg.com/${(movie.poster_url || movie.thumb_url).replace(/^\//, '')}`) : `https://via.placeholder.com/350x525`)}"
                                 onerror="window.autoHealMovieImage ? window.autoHealMovieImage(this, typeof movie !== 'undefined' ? movie.slug : '') : null"
                                 fetchpriority="high"
                                 decoding="async" />
