@@ -1248,18 +1248,22 @@
                 const hasCustomLink = !!movieLinks[movie.slug];
                 const linkUrl = hasCustomLink ? `/xem-phim/${movie.slug}` : `/phim/${movie.slug}`;
 
-                // OPhim: thumb_url is portrait, poster_url is landscape
                 const thumb = movie.thumb_url || '';
                 const poster = movie.poster_url || '';
 
-                // Backdrop prioritized for landscape (poster_url)
-                const backdropUrl = poster || thumb;
+                // Backdrop (16:9 ngang): Ưu tiên poster_url nếu là ảnh ngang, hoặc thumb_url
+                let backdropUrl = thumb || poster;
+                if (poster && (poster.includes('banner') || poster.includes('backdrop') || poster.includes('thumb'))) {
+                    backdropUrl = poster;
+                }
+
+                // Poster (2:3 dọc): Ưu tiên poster_url
+                let posterUrl = poster || thumb;
+
                 const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
                     (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
-                // Poster prioritized for portrait (thumb_url)
-                const posterUrl = thumb || poster;
                 const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
                     (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
@@ -1367,13 +1371,19 @@
                             const thumb = movie.thumb_url || '';
                             const poster = movie.poster_url || '';
 
-                            // Đảo lại logic: Backdrop ưu tiên poster_url (ngang), Poster ưu tiên thumb_url (dọc)
-                            const backdropUrl = poster || thumb;
+                            // Backdrop (16:9 ngang): Ưu tiên poster_url nếu là ảnh ngang, hoặc thumb_url
+                            let backdropUrl = thumb || poster;
+                            if (poster && (poster.includes('banner') || poster.includes('backdrop') || poster.includes('thumb'))) {
+                                backdropUrl = poster;
+                            }
+
+                            // Poster (2:3 dọc): Ưu tiên poster_url
+                            let posterUrl = poster || thumb;
+
                             const finalBackdrop = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
                                 (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
-                            const posterUrl = thumb || poster;
                             const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
                                 (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
