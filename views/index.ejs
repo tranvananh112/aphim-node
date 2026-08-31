@@ -1258,8 +1258,8 @@
                     imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
                     (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
-                // Poster prioritized for portrait (thumb_url)
-                const posterUrl = thumb || poster;
+                // Poster prioritized for portrait
+                const posterUrl = poster || thumb;
                 const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                     imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
                     (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
@@ -1373,7 +1373,7 @@
                                 imageOptimizer.optimizeImageUrl(backdropUrl, 600, 75) :
                                 (backdropUrl.startsWith('http') ? backdropUrl : (backdropUrl.startsWith('uploads/') ? `https://phimimg.com/${backdropUrl}` : `https://phimimg.com/${backdropUrl}`));
 
-                            const posterUrl = thumb || poster;
+                            const posterUrl = poster || thumb;
                             const finalPoster = (typeof imageOptimizer !== 'undefined') ?
                                 imageOptimizer.optimizeImageUrl(posterUrl, 200, 70) :
                                 (posterUrl.startsWith('http') ? posterUrl : (posterUrl.startsWith('uploads/') ? `https://phimimg.com/${posterUrl}` : `https://phimimg.com/${posterUrl}`));
