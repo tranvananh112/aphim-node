@@ -164,9 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
     imageOptimizer.setupLazyLoading();
 });
 
+// Debounced DOM observer for dynamic content
+let _mutationDebounceTimer = null;
 const _progressiveMutationObserver = new MutationObserver(() => {
-    imageOptimizer.setupLazyLoading();
-    imageOptimizer.setupProgressiveObserver();
+    if (_mutationDebounceTimer) return;
+    _mutationDebounceTimer = setTimeout(() => {
+        _mutationDebounceTimer = null;
+        imageOptimizer.setupLazyLoading();
+        imageOptimizer.setupProgressiveObserver();
+    }, 300);
 });
 
 _progressiveMutationObserver.observe(document.body, {

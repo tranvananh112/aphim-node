@@ -65,8 +65,8 @@ window.autoHealMovieImage = async function(imgEl, slug, movieTitle) {
     // STEP 4: Query TMDB Image Search
     if (step <= 4 && nameStr) {
         try {
-            const tmdbKey = '3fd2be6f0cd706635c9e308d824d37ce';
-            const cleanTitle = nameStr.split('(')[0].replace(/xem phim/gi, '').trim();
+            const tmdbKey = '5fb3c8d9ad2ca4cd2029836befcc3ab5';
+            const cleanTitle = nameStr.replace(/^mini\s+/i, '').split('(')[0].replace(/xem phim/gi, '').trim();
             const res = await fetch('https://api.themoviedb.org/3/search/multi?api_key=' + tmdbKey + '&query=' + encodeURIComponent(cleanTitle) + '&language=vi-VN');
             if (res.ok) {
                 const data = await res.json();
