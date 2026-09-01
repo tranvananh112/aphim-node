@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
+const compression = require('compression');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -12,6 +13,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -68,53 +70,41 @@ function queuedFetch(url, options) {
 // ROUTES: PAGES (SSR với EJS)
 // ==========================================
 
+// ===== IN-MEMORY SSR MOVIE DATA CACHE =====
+const ssrMovieCache = new Map();
+const SSR_MOVIE_CACHE_TTL = 10 * 60 * 1000; // 10 phút
+
 // Helper lấy dữ liệu gộp từ 3 nguồn (Ophim, NguonC, VSMov) cho SSR
 async function fetchAndMergeMovieData(slug) {
+    // ⚡ 1. CHECK IN-MEMORY CACHE (Khởi tạo phản hồi trong < 5ms cho các lượt xem tiếp theo)
+    const cached = ssrMovieCache.get(slug);
+    if (cached && (Date.now() - cached.timestamp < SSR_MOVIE_CACHE_TTL)) {
+        return cached.data;
+    }
+
     try {
-        const [ophimRes, ncRes, vsRes, phimapiRes] = await Promise.allSettled([
-            axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 5000 }),
-            axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 5000 }),
-            axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 5000 }),
-            axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 8000 })
+        // ⚡ 2. THỰC THI THỜI GIAN CHỜ (TIMEOUT) NGẮN 1.8s ĐỂ NẠP SIÊU TỐC
+        const [ophimRes, ncRes, vsRes] = await Promise.allSettled([
+            axios.get(`https://phimapi.com/phim/${slug}`, { timeout: 1800 }),
+            axios.get(`https://phim.nguonc.com/api/film/${slug}`, { timeout: 2000 }),
+            axios.get(`https://vsmov.com/api/phim/${slug}`, { timeout: 2000 })
         ]);
         
         let ophimData = null;
 
-        // Ưu tiên Ophim1 trước
+        // Ưu tiên nguồn PhimAPI/Ophim trước
         if (ophimRes.status === 'fulfilled' && ophimRes.value && ophimRes.value.data &&
             (ophimRes.value.data.status === true || ophimRes.value.data.status === 'success') &&
             ophimRes.value.data.movie) {
             ophimData = ophimRes.value.data;
         }
-        
-        // Fallback: nếu Ophim1 fail → dùng PhimAPI
-        if (!ophimData && phimapiRes.status === 'fulfilled' && phimapiRes.value && phimapiRes.value.data &&
-            phimapiRes.value.data.movie) {
-            const pd = phimapiRes.value.data;
-            const movie = pd.movie;
-            // Chuẩn hoá ảnh từ phimapi
-            const cdnImg = pd.pathImage || 'https://phimimg.com';
-            if (movie.thumb_url && !movie.thumb_url.startsWith('http')) {
-                movie.thumb_url = `${cdnImg}/${movie.thumb_url.replace(/^\//, '')}`;
-            }
-            if (movie.poster_url && !movie.poster_url.startsWith('http')) {
-                movie.poster_url = `${cdnImg}/${movie.poster_url.replace(/^\//, '')}`;
-            }
-            // Chuẩn hoá cấu trúc về dạng Ophim để tương thích views
-            ophimData = {
-                status: true,
-                movie: movie,
-                episodes: pd.episodes || []
-            };
-            console.log(`[PhimAPI Fallback] Loaded: ${movie.name} (${slug})`);
-        }
 
         if (!ophimData) {
-            console.warn(`[SSR] Không tìm thấy phim: ${slug}`);
+            console.warn(`[SSR] Không tìm thấy phim từ nguồn chính: ${slug}`);
             return null;
         }
         
-        // Thêm nguồn từ NguonC
+        // Thêm nguồn từ NguonC (nếu kịp)
         if (ncRes.status === 'fulfilled' && ncRes.value && ncRes.value.data && ncRes.value.data.movie && ncRes.value.data.movie.episodes) {
             const ncData = ncRes.value.data;
             const mappedEps = ncData.movie.episodes.map(s => ({
@@ -130,7 +120,7 @@ async function fetchAndMergeMovieData(slug) {
             mappedEps.forEach(s => ophimData.episodes.push(s));
         }
         
-        // Thêm nguồn từ VSMov
+        // Thêm nguồn từ VSMov (nếu kịp)
         if (vsRes.status === 'fulfilled' && vsRes.value && vsRes.value.data && vsRes.value.data.episodes) {
             const vsData = vsRes.value.data;
             if (!ophimData.episodes) ophimData.episodes = [];
@@ -145,18 +135,34 @@ async function fetchAndMergeMovieData(slug) {
             });
         }
         
+        // ⚡ LƯU KẾT QUẢ VÀO MEMORY CACHE
+        ssrMovieCache.set(slug, { data: ophimData, timestamp: Date.now() });
+
         return ophimData;
     } catch (e) {
-        console.error('Lỗi khi fetch và gộp dữ liệu SSR:', e.message);
+        console.error('Lỗi khi fetch dữ liệu SSR:', e.message);
         return null;
     }
 }
 
 // Trang chủ
+const homeCache = { data: null, timestamp: 0 };
+const HOME_CACHE_TTL = 5 * 60 * 1000; // 5 phút
+
 app.get('/', async (req, res) => {
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
     try {
-        const response = await axios.get('https://phimapi.com/v1/api/home', { timeout: 5000 });
-        const movies = response.data && response.data.data ? response.data.data.items || [] : [];
+        let movies = [];
+        if (homeCache.data && (Date.now() - homeCache.timestamp < HOME_CACHE_TTL)) {
+            movies = homeCache.data;
+        } else {
+            const response = await axios.get('https://phimapi.com/v1/api/home', { timeout: 3000 });
+            movies = response.data && response.data.data ? response.data.data.items || [] : [];
+            if (movies.length > 0) {
+                homeCache.data = movies;
+                homeCache.timestamp = Date.now();
+            }
+        }
         res.render('index', {
             title: 'APhim | Xem Phim Mới 2026 | Phim Hay Vietsub | Phim Full HD Miễn Phí',
             currentPage: 'home',
@@ -185,6 +191,7 @@ app.get('/phim/:slug', async (req, res) => {
         const cleanUrl = req.url.replace('/phim/', '/').replace('.html', '');
         return res.redirect(301, cleanUrl);
     }
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
     try {
         const data = await fetchAndMergeMovieData(slug);
 
@@ -321,6 +328,7 @@ app.get('/xem-phim/:slug/:episode?', async (req, res) => {
         const cleanEp = ep.toString().replace(/^tap-/, '');
         return res.redirect(301, `/xem-phim/${slug}/tap-${cleanEp}`);
     }
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
     try {
         const data = await fetchAndMergeMovieData(slug);
         const movie = data && data.movie ? data.movie : null;
@@ -631,8 +639,16 @@ app.get('/sitemap.xml', (req, res) => {
 // API PROXY CHO OPHIM (cho client-side JS)
 // ==========================================
 app.use('/v1/api', async (req, res) => {
+    const cacheKey = req.originalUrl;
+    if (req.method === 'GET') {
+        const cachedData = getCached(cacheKey);
+        if (cachedData) {
+            res.setHeader('Cache-Control', 'public, max-age=300');
+            return res.status(200).json(cachedData);
+        }
+    }
+
     const urlsToTry = [
-        `https://phimapi.com/v1/api${req.path}`,
         `https://phimapi.com/v1/api${req.path}`,
         `https://phimapi.com/v1/api${req.path}`
     ];
@@ -646,17 +662,20 @@ app.use('/v1/api', async (req, res) => {
                 url: targetUrl,
                 params: req.query,
                 data: req.method === 'POST' || req.method === 'PUT' ? req.body : undefined,
-                timeout: 4000,
+                timeout: 3500,
                 headers: {
                     'Accept': 'application/json',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                 },
                 responseType: 'json'
             });
+            if (req.method === 'GET' && response.data) {
+                setCache(cacheKey, response.data);
+            }
+            res.setHeader('Cache-Control', 'public, max-age=300');
             return res.status(response.status).json(response.data);
         } catch (error) {
             lastError = error;
-            // Continue to the next URL if there's an error
             console.warn(`Proxy to ${targetUrl} failed:`, error.message);
         }
     }
