@@ -195,6 +195,8 @@
     /* ── Dropdown Trigger Button ── */
     .nav-flat-dropdown {
         position: relative;
+        padding-bottom: 6px;
+        margin-bottom: -6px;
     }
 
     .nav-flat-dropdown > button.nav-flat-link {
@@ -217,35 +219,43 @@
     /* ── Dropdown Panel: Shell Container ── */
     .nav-flat-dropdown > .nav-dropdown-panel {
         position: absolute;
-        top: calc(100% + 10px);
+        top: 100%;
         left: 0;
-        /* Background transparent — nội dung bên trong tự mang màu nền xanh */
         background: transparent !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
         border: none !important;
         border-radius: 14px !important;
         box-shadow: none !important;
-        /* Bỏ overflow:hidden — cho phép inner container hiển thị rounded corners */
         overflow: visible;
-        padding: 2px;
+        padding: 4px 2px 2px 2px;
         opacity: 0;
         visibility: hidden;
-        transform: translateY(-6px);
-        /* Tối ưu hiệu năng: bỏ filter để chống lag */
-        transition:
-            opacity 0.1s ease,
-            visibility 0.1s ease,
-            transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 10000;
-        /* Ép trình duyệt sử dụng GPU để render trước, chống giật lag tuyệt đối */
+        transform: translateY(-4px);
+        transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+        z-index: 10000 !important;
         will-change: opacity, transform;
+        pointer-events: none;
     }
 
-    .nav-flat-dropdown:hover > .nav-dropdown-panel {
+    .nav-flat-dropdown:hover > .nav-dropdown-panel,
+    .nav-flat-dropdown:focus-within > .nav-dropdown-panel {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* Cau noi vo hinh chong khung giat khi re chuot tu nut xuong bang menu */
+    .nav-flat-dropdown > .nav-dropdown-panel::before {
+        content: '';
+        position: absolute;
+        top: -16px;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background: transparent;
+        pointer-events: auto;
     }
 
     /* ── Page Dim Overlay when dropdown is open ── */
