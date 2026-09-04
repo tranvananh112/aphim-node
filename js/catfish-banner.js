@@ -28,7 +28,7 @@
 
         banners: [
             {
-                img: '/ads/catfish/728x90-AFF-Cup.gif',
+                img: '/ads/catfish/animation.mp4', isVideo: true,
                 url: 'https://vsbet520x.com/p/BSYk',
                 label: 'VSBet — Nạp Đầu Nhận 68,888,000đ'
             },
@@ -101,6 +101,14 @@
     /* ─────────────────────────────────────────────────────────
        CATFISH STICKY BAR
     ───────────────────────────────────────────────────────── */
+        function renderBannerMedia(b) {
+        if (!b) return '';
+        if (b.isVideo || (b.img && b.img.toLowerCase().indexOf('.mp4') !== -1)) {
+            return '<video src="' + b.img + '" autoplay loop muted playsinline disablePictureInPicture style="width:100%; height:100%; object-fit:fill; display:block; pointer-events:none;"></video>';
+        }
+        return '<img src="' + b.img + '" alt="' + (b.label || '') + '" loading="eager">';
+    }
+
     function initCatfish() {
         if (!shouldShowCatfish()) return;
 
@@ -113,15 +121,15 @@
             '<div class="catfish-inner">' +
                 '<div class="catfish-row">' +
                     '<a class="catfish-item" href="' + b[0].url + '" target="_blank" rel="noopener nofollow" aria-label="' + b[0].label + '">' +
-                        '<img src="' + b[0].img + '" alt="' + b[0].label + '" loading="eager">' +
+                        '' + renderBannerMedia(b[0]) + '' +
                     '</a>' +
                 '</div>' +
                 '<div class="catfish-row">' +
                     '<a class="catfish-item" href="' + b[1].url + '" target="_blank" rel="noopener nofollow" aria-label="' + b[1].label + '">' +
-                        '<img src="' + b[1].img + '" alt="' + b[1].label + '" loading="eager">' +
+                        '' + renderBannerMedia(b[1]) + '' +
                     '</a>' +
                     '<a class="catfish-item" href="' + b[2].url + '" target="_blank" rel="noopener nofollow" aria-label="' + b[2].label + '">' +
-                        '<img src="' + b[2].img + '" alt="' + b[2].label + '" loading="eager">' +
+                        '' + renderBannerMedia(b[2]) + '' +
                     '</a>' +
                 '</div>' +
             '</div>' +
