@@ -1,4 +1,4 @@
-﻿/**
+/**
  * APhim — Catfish Banner + Welcome Popup Slideshow
  * Version: 4.0 | 2026-05-18
  *
@@ -29,7 +29,7 @@
         banners: [
             {
                 img: '/ads/catfish/animation.mp4', isVideo: true,
-                url: 'https://vsbet520x.com/p/BSYk',
+                url: 'https://vsbet9k8.com/p/BSYk',
                 label: 'VSBet — Nạp Đầu Nhận 68,888,000đ'
             },
             {
