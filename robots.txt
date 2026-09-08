@@ -65,4 +65,7 @@ Disallow: /backend/
 Disallow: /api/
 Allow: /
 
+Sitemap: https://aphim.top/sitemap.xml
+Sitemap: https://aphim.top/sitemap-images.xml
 Sitemap: https://aphim.io.vn/sitemap.xml
+Sitemap: https://aphim.io.vn/sitemap-images.xml
