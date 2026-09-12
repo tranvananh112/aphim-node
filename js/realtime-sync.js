@@ -8,7 +8,7 @@ class RealtimeSync {
         this.socket = null;
         this.backendUrl = (typeof API_CONFIG !== 'undefined' && API_CONFIG.BACKEND_URL)
             ? API_CONFIG.BACKEND_URL.replace(/\/api$/, '')
-            : 'http://localhost:5000';
+            : (location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://a-phim-production-eba6.up.railway.app');
 
         console.log('🚀 [Realtime] Module starting...');
 
