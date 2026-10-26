@@ -1,4 +1,4 @@
-/**
+﻿/**
  * APhim — Catfish Banner + Welcome Popup Slideshow
  * Version: 4.0 | 2026-05-18
  *
@@ -29,17 +29,17 @@
         banners: [
             {
                 img: '/ads/catfish/animation.mp4', isVideo: true,
-                url: 'https://vsbet9k8.com/p/BSYk',
+                url: 'https://vsbetnova88.com/p/BSYk',
                 label: 'VSBet — Nạp Đầu Nhận 68,888,000đ'
             },
             {
                 img: '/ads/catfish/colatv.gif',
-                url: 'https://colatv77.live',
+                url: 'https://colatv22.live',
                 label: 'ColaTV — Xem Phim HD Miễn Phí'
             },
             {
                 img: '/ads/catfish/colascore.gif',
-                url: 'https://colascores.com',
+                url: 'https://colascores.ai',
                 label: 'ColaScore — Tỷ Số Bóng Đá Trực Tiếp'
             }
         ]
