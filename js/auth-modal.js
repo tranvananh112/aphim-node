@@ -52,12 +52,14 @@
         .ap-auth-left {
             width: 280px; flex-shrink: 0;
             background:
-                linear-gradient(160deg, rgba(15,15,30,0.6) 0%, rgba(30,32,60,0.8) 100%),
-                url('https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg') center / cover no-repeat;
+                linear-gradient(180deg, rgba(15,15,30,0.1) 0%, rgba(15,15,30,0.5) 55%, rgba(15,15,30,0.95) 100%),
+                url('https://beam-images.warnermediacdn.com/2024-03/leadimage_background_hotd_eng_0.jpg?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=1200') center top / cover no-repeat;
             display: flex; flex-direction: column;
             align-items: center; justify-content: flex-end;
             padding: 40px 24px;
             gap: 12px;
+            position: relative;
+            border-right: 1px solid rgba(255,255,255,0.06);
         }
         @media (max-width: 600px) { .ap-auth-left { display: none; } }
         .ap-auth-brand {
@@ -192,12 +194,11 @@
     }
 
     // -- Preload images silently in background so modal opens instantly --
-    let dynamicPosterURL = 'https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg'; // fallback
+    let dynamicPosterURL = 'https://beam-images.warnermediacdn.com/2024-03/leadimage_background_hotd_eng_0.jpg?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=1200'; // fallback
     
     if (typeof window !== 'undefined') {
         setTimeout(async () => {
             try {
-                // Fetch t? ophim1.com d? l?y d? li?u d? tránh l?i CORS image t? phimapi
                 const res = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1');
                 const data = await res.json();
                 if (data?.items?.length > 0) {
@@ -208,11 +209,10 @@
                         }
                     }
                     
-                    // Xây d?ng URL ?nh chu?n, phimimg.com không ch?n hotlink
                     const imgPath = bestMovie.poster_url || bestMovie.thumb_url;
-                    let url = 'https://image.tmdb.org/t/p/w780/8b8R8l88Qje9dn9OE8Ez05N5cKk.jpg';
+                    let url = 'https://beam-images.warnermediacdn.com/2024-03/leadimage_background_hotd_eng_0.jpg?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com&w=1200';
                     if (imgPath) {
-                        url = `https://phimimg.com/uploads/movies/${imgPath}`;
+                        url = imgPath.startsWith('http') ? imgPath : `https://phimimg.com/uploads/movies/${imgPath}`;
                     }
                     
                     dynamicPosterURL = url;
@@ -221,8 +221,8 @@
                     
                     const leftPanels = document.querySelectorAll('.ap-auth-left, #auth-left-panel, #dynamic-auth-bg');
                     leftPanels.forEach(p => {
-                        p.style.backgroundImage = `linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${url}')`;
-                        p.style.backgroundPosition = 'center';
+                        p.style.backgroundImage = `linear-gradient(180deg, rgba(15,15,30,0.1) 0%, rgba(15,15,30,0.5) 55%, rgba(15,15,30,0.95) 100%), url('${url}')`;
+                        p.style.backgroundPosition = 'center top';
                         p.style.backgroundSize = 'cover';
                         p.style.backgroundRepeat = 'no-repeat';
                     });
@@ -249,7 +249,7 @@
         <div id="ap-auth-modal">
             <button class="ap-auth-close" id="ap-auth-close-btn" aria-label="��ng">&times;</button>
 
-            <div class="ap-auth-left" style="background: linear-gradient(to bottom, rgba(15,15,30,0.15) 0%, rgba(15,15,30,0.95) 100%), url('${randomBg}') center / cover no-repeat;">
+            <div class="ap-auth-left" style="background: linear-gradient(180deg, rgba(15,15,30,0.1) 0%, rgba(15,15,30,0.5) 55%, rgba(15,15,30,0.95) 100%), url('${randomBg}') center top / cover no-repeat;">
 
                 <div class="ap-auth-brand">
                     <div class="ap-auth-brand-logo">
